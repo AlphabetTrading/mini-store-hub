@@ -1,13 +1,13 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
-export class CreatePriceHistoryInput {
+export class CreateProductInventoryInput {
   @Field(() => String)
   productId: string;
 
-  @Field(() => Float)
-  price: number;
+  @Field(() => String)
+  warehouseId: string;
 
   @Field(() => Float)
-  purchasedPrice: number;
+  quantity: number;
 }

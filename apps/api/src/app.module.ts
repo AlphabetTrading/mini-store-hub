@@ -22,6 +22,7 @@ import { RetailShopsModule } from './retail-shops/retail-shops.module';
 import { GoodsTransfersModule } from './goods-transfers/goods-transfers.module';
 import { ProductInventoriesModule } from './product-inventories/product-inventories.module';
 import { UserProfileModule } from './user-profile/user-profile.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { UserProfileModule } from './user-profile/user-profile.module';
     UsersModule,
     WarehousesModule,
     UserProfileModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppResolver, AppService],

@@ -12,8 +12,14 @@ import { PrismaService } from './prisma/prisma.service';
 // import { PrismaService } from './prisma/prisma.service';
 // import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 
+import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(
+    '/graphql',
+    graphqlUploadExpress({ maxFileSize: 50000000, maxFiles: 10 }),
+  );
 
   app.setGlobalPrefix('api');
 

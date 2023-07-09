@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// generator dbml {
+//   provider = "prisma-dbml-generator"
+// }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -28,10 +32,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userProfileId String?      @unique
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
-  RetailShop    RetailShop[] @relation("RetailShopManager")
-  Warehouse     Warehouse[]  @relation("WarehouseManager")
+  Profile    UserProfile?
+  RetailShop RetailShop[] @relation("RetailShopManager")
+  Warehouse  Warehouse[]  @relation("WarehouseManager")
 
   @@index([username, phone])
 }
@@ -39,10 +42,10 @@ model User {
 model UserProfile {
   id        String   @id @default(cuid())
   userId    String   @unique
-  photoUrl  String
+  photoUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User?
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 model Category {
@@ -154,7 +157,7 @@ model ProductInventory {
   product       Product         @relation(fields: [productId], references: [id])
   warehouseId   String
   warehouse     Warehouse       @relation(fields: [warehouseId], references: [id])
-  quantity      String
+  quantity      Float
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   GoodsTransfer GoodsTransfer[]

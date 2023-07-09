@@ -52,9 +52,16 @@ input CreateProductInput {
   unit: UnitType!
 }
 
+input CreateProductInventoryInput {
+  productId: String!
+  quantity: Float!
+  warehouseId: String!
+}
+
 input CreateRetailShopInput {
   address: Float!
   name: String!
+  retailShopManagerId: String
 }
 
 input CreateSaleTransactionInput {
@@ -62,6 +69,16 @@ input CreateSaleTransactionInput {
   productId: String!
   quantity: Float!
   retailShopId: String!
+}
+
+input CreateUserProfileInput {
+  photoUrl: String
+}
+
+input CreateWarehouseInput {
+  address: String!
+  name: String!
+  warehouseManagerId: String
 }
 
 """
@@ -97,21 +114,31 @@ type Mutation {
   """Create a new price history"""
   createPriceHistory(priceHistory: CreatePriceHistoryInput!): PriceHistory!
   createProduct(data: CreateProductInput!): Product!
+  createProductInventory(data: CreateProductInventoryInput!): ProductInventory!
   createRetailShop(data: CreateRetailShopInput!): RetailShop!
   createSaleTransaction(data: CreateSaleTransactionInput!): SaleTransaction!
+  createUserProfile(createUserProfileInput: CreateUserProfileInput!): UserProfile!
+  createWarehouse(data: CreateWarehouseInput!): Warehouse!
   deleteCategory(id: String!): Category!
   deletePriceHistory(id: String!): PriceHistory!
   deleteProduct(id: String!): Product!
+  deleteProductInventory(id: String!): ProductInventory!
   deleteRetailShop(id: String!): RetailShop!
   deleteSaleTransaction(id: String!): SaleTransaction!
+  deleteUserProfile(id: String!): UserProfile!
+  deleteWarehouse(id: String!): Warehouse!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
   updateProduct(data: CreateProductInput!, id: String!): Product!
+  updateProductInventory(data: UpdateProductInventoryInput!, id: String!): ProductInventory!
   updateRetailShop(data: UpdateRetailShopInput!, id: String!): RetailShop!
   updateSaleTransaction(data: UpdateSaleTransactionInput!, id: String!): SaleTransaction!
   updateUser(data: UpdateUserInput!): User!
+  updateUserProfile(id: String!, updateProfileInput: UpdateUserProfileInput!): UserProfile!
+  updateWarehouse(data: UpdateWarehouseInput!, id: String!): Warehouse!
+  uploadFile(file: Upload!): String!
 }
 
 """
@@ -154,6 +181,21 @@ type Product {
   updatedAt: DateTime!
 }
 
+type ProductInventory {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  goodsTransfers: [GoodsTransfer!]
+  id: ID!
+  product: Product
+  productId: String!
+  quantity: Float!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  warehouse: Warehouse
+  warehouseId: String!
+}
+
 type Query {
   categories: [Category!]!
   me: User!
@@ -161,6 +203,11 @@ type Query {
   priceHistory: PriceHistory!
   priceHistoryByProduct: [PriceHistory!]!
   product: Product!
+  productInventories: [ProductInventory!]!
+  productInventory(id: String!): ProductInventory!
+  productInventoryByProductId(productId: String!): [ProductInventory!]!
+  productInventoryByProductIdAndWarehouseId(productId: String!, warehouseId: String!): [ProductInventory!]!
+  productInventoryByWarehouseId(warehouseId: String!): [ProductInventory!]!
   products: [Product!]!
   productsByCategory: [Product!]!
   retailManagers: [User!]!
@@ -174,6 +221,9 @@ type Query {
   user(id: String!): User!
   users(orderBy: UserOrder): [User!]!
   warehouseManagers: [User!]!
+  warehouseWarehouse(id: String!): Warehouse!
+  warehouseWarehouses: [Warehouse!]!
+  warehousesByAddress(address: String!): [Warehouse!]!
 }
 
 type RetailShop {
@@ -185,6 +235,8 @@ type RetailShop {
   createdAt: DateTime!
   id: ID!
   name: String!
+  retailShopManager: User
+  retailShopManagerId: String
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -232,9 +284,16 @@ input UpdateCategoryInput {
   name: String
 }
 
+input UpdateProductInventoryInput {
+  productId: String
+  quantity: Float
+  warehouseId: String
+}
+
 input UpdateRetailShopInput {
   address: Float
   name: String
+  retailShopManagerId: String
 }
 
 input UpdateSaleTransactionInput {
@@ -252,6 +311,19 @@ input UpdateUserInput {
   role: UserRole!
   username: String
 }
+
+input UpdateUserProfileInput {
+  photoUrl: String
+}
+
+input UpdateWarehouseInput {
+  address: String
+  name: String
+  warehouseManagerId: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   """Identifies the date and time when the object was created."""
@@ -288,4 +360,20 @@ enum UserRole {
   RETAIL_SHOP_MANAGER
   USER
   WAREHOUSE_MANAGER
+}
+
+type Warehouse {
+  address: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  goodsTransfer: [GoodsTransfer!]
+  id: ID!
+  name: String!
+  productInventory: [ProductInventory!]
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  warehouseManager: User
+  warehouseManagerId: String
 }

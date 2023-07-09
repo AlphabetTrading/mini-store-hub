@@ -22,6 +22,7 @@ export class GqlConfigService implements GqlOptionsFactory {
       includeStacktraceInErrorResponses: graphqlConfig.debug,
       playground: graphqlConfig.playgroundEnabled,
       path: graphqlConfig.path,
+
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       context: ({ req }) => ({ req }),
     };

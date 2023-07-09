@@ -4,6 +4,7 @@ export interface Config {
   swagger: SwaggerConfig;
   graphql: GraphqlConfig;
   security: SecurityConfig;
+  storage: StorageConfig;
 }
 
 export interface NestConfig {
@@ -34,4 +35,12 @@ export interface SecurityConfig {
   expiresIn: string;
   refreshIn: string;
   bcryptSaltOrRound: string | number;
+}
+
+export interface StorageConfig {
+  AWS_S3_BUCKET_NAME: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
+  AWS_REGION: string;
+  AWS_S3_URL: string;
 }
