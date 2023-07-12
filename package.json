@@ -8,7 +8,8 @@
     "start": "node apps/api/dist/src/main"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "mobile/*"
   ],
   "dependencies": {}
 }
