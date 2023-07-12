@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { StorageService } from 'src/storage1/storage.service';
 import { CreateUserProfileInput } from './dto/create-user-profile.input';
 import { UpdateUserProfileInput } from './dto/update-user-profile.input';
 
 @Injectable()
 export class UserProfileService {
-  constructor(
-    private readonly storageService: StorageService,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateUserProfileInput) {
-    return this.prisma.userProfile.create({ data });
+    return this.prisma.userProfile.create({
+      data: {
+        addressId: data.addressId,
+        userId: data.userId,
+      },
+    });
   }
 
   async update(userId: string, data: UpdateUserProfileInput) {

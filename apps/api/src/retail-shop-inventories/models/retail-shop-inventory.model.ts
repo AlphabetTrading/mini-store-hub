@@ -5,7 +5,7 @@ import { Product } from 'src/products/models/product.model';
 import { Warehouse } from 'src/warehouses/models/warehouse.model';
 
 @ObjectType()
-export class ProductInventory extends BaseModel {
+export class RetailShopStock extends BaseModel {
   @Field(() => String)
   productId: string;
 

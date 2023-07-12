@@ -2,7 +2,7 @@ import { GraphqlConfig } from './common/configs/config.interface';
 import { ConfigService } from '@nestjs/config';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
-import { GqlOptionsFactory } from '@nestjs/graphql';
+import { GqlOptionsFactory, GraphQLISODateTime } from '@nestjs/graphql';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 @Injectable()
@@ -22,6 +22,15 @@ export class GqlConfigService implements GqlOptionsFactory {
       includeStacktraceInErrorResponses: graphqlConfig.debug,
       playground: graphqlConfig.playgroundEnabled,
       path: graphqlConfig.path,
+      resolvers: { DateTime: GraphQLISODateTime },
+      subscriptions: {
+        'graphql-ws': {
+          path: '/graphql',
+        },
+        'subscriptions-transport-ws': {
+          path: '/graphql',
+        },
+      },
 
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       context: ({ req }) => ({ req }),

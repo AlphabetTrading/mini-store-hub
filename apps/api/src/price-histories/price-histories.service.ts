@@ -8,7 +8,9 @@ export class PriceHistoriesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreatePriceHistoryInput) {
-    return this.prisma.priceHistory.create({ data });
+    return this.prisma.priceHistory.create({
+      data,
+    });
   }
 
   async findAll() {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductInventoriesResolver } from './product-inventories.resolver';
-import { ProductInventoriesService } from './product-inventories.service';
+import { ProductInventoriesResolver } from './retail-shop-inventories.resolver';
+import { ProductInventoriesService } from './retail-shop-inventories.service';
 
 describe('ProductInventoriesResolver', () => {
   let resolver: ProductInventoriesResolver;
@@ -10,7 +10,9 @@ describe('ProductInventoriesResolver', () => {
       providers: [ProductInventoriesResolver, ProductInventoriesService],
     }).compile();
 
-    resolver = module.get<ProductInventoriesResolver>(ProductInventoriesResolver);
+    resolver = module.get<ProductInventoriesResolver>(
+      ProductInventoriesResolver,
+    );
   });
 
   it('should be defined', () => {

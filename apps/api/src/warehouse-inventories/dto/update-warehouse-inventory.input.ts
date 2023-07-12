@@ -1,9 +1,9 @@
 import { InputType, Field, PartialType, Float } from '@nestjs/graphql';
-import { CreateProductInventoryInput } from './create-product-inventory.input';
+import { CreateWarehouseStockInput } from './create-warehouse-inventory.input';
 
 @InputType()
-export class UpdateProductInventoryInput extends PartialType(
-  CreateProductInventoryInput,
+export class UpdateWarehouseStockInput extends PartialType(
+  CreateWarehouseStockInput,
 ) {
   @Field(() => String, { nullable: true })
   productId: string;

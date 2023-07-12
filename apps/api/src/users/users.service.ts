@@ -1,10 +1,16 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { PasswordService } from 'src/auth/password.service';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserIdArgs } from 'src/categories/args/user-ids.args';
 import { PaginationArgs } from 'src/common/pagination/paginations.args';
+import { Prisma } from '@prisma/client';
+import { SignupInput } from 'src/auth/dto/signup.input';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +26,66 @@ export class UsersService {
         id: userId,
       },
     });
+  }
+
+  async createWarehouseManager(payload: SignupInput) {
+    const hashedPassword = await this.passwordService.hashPassword(
+      payload.password,
+    );
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          ...payload,
+          password: hashedPassword,
+          role: 'WAREHOUSE_MANAGER',
+        },
+      });
+
+      return {
+        userId: user.id,
+      };
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          `Username/Phone ${payload.phone} already used.`,
+        );
+      }
+      throw new Error(e);
+    }
+  }
+
+  async createRetailShopManager(payload: SignupInput) {
+    const hashedPassword = await this.passwordService.hashPassword(
+      payload.password,
+    );
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          ...payload,
+          password: hashedPassword,
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+      });
+
+      return {
+        userId: user.id,
+      };
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          `Username/Phone ${payload.phone} already used.`,
+        );
+      }
+      throw new Error(e);
+    }
   }
 
   async changePassword(
@@ -49,15 +115,24 @@ export class UsersService {
   }
 
   async getUsers({ first, last, after, before, skip }: PaginationArgs) {
-    return this.prisma.user.findMany({ skip, take: 1 });
+    return this.prisma.user.findMany({
+      skip,
+      include: { userProfile: { include: { address: true } } },
+    });
   }
 
   async getUser(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: { userProfile: { include: { address: true } } },
+    });
   }
 
   async getUserByEmail(username: string) {
-    return this.prisma.user.findUnique({ where: { username } });
+    return this.prisma.user.findUnique({
+      where: { username },
+      include: { userProfile: { include: { address: true } } },
+    });
   }
 
   async deleteUser(id: string) {

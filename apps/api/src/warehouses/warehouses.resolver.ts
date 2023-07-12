@@ -8,12 +8,12 @@ import { UpdateWarehouseInput } from './dto/update-warehouse.input';
 export class WarehousesResolver {
   constructor(private readonly warehousesService: WarehousesService) {}
 
-  @Query(() => [Warehouse], { name: 'warehouseWarehouses' })
+  @Query(() => [Warehouse], { name: 'warehouses' })
   async warehouses() {
     return this.warehousesService.findAll();
   }
 
-  @Query(() => Warehouse, { name: 'warehouseWarehouse' })
+  @Query(() => Warehouse, { name: 'warehouse' })
   async warehouse(@Args('id') id: string) {
     return this.warehousesService.findOne(id);
   }

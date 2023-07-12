@@ -5,9 +5,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// generator dbml {
-//   provider = "prisma-dbml-generator"
-// }
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 datasource db {
   provider = "postgresql"
@@ -32,9 +32,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Profile    UserProfile?
-  RetailShop RetailShop[] @relation("RetailShopManager")
-  Warehouse  Warehouse[]  @relation("WarehouseManager")
+  userProfile UserProfile?
+  retailShop  RetailShop[] @relation("RetailShopManager")
+  warehouse   Warehouse[]  @relation("WarehouseManager")
 
   @@index([username, phone])
 }
@@ -43,9 +43,12 @@ model UserProfile {
   id        String   @id @default(cuid())
   userId    String   @unique
   photoUrl  String?
+  idUrl     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User?    @relation(fields: [userId], references: [id])
+  addressId String?  @unique
+  address   Address? @relation("User Address", fields: [addressId], references: [id])
 }
 
 model Category {
@@ -77,73 +80,112 @@ model Product {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  activePriceId String? @unique
+  activePrice     PriceHistory?     @relation("ActivePrice")
+  priceHistory    PriceHistory[]    @relation("ProductPriceHistory")
+  saleTransaction SaleTransaction[]
+  retailShopStock RetailShopStock[]
+  warehouseStock  WarehouseStock[]
+  goods           StockItem[]
 
-  ActivePrice      PriceHistory?      @relation("ActivePrice", fields: [activePriceId], references: [id])
-  PriceHistory     PriceHistory[]     @relation("ProductPriceHistory")
-  ProductInventory ProductInventory[]
-  GoodsTransfer    GoodsTransfer[]
-  SaleTransaction  SaleTransaction[]
+  @@unique([id, createdAt])
 }
 
 model PriceHistory {
-  id             String    @id @default(cuid())
-  productId      String
-  price          Float
-  purchasedPrice Float
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  products       Product[] @relation("ActivePrice")
-  product        Product   @relation("ProductPriceHistory", fields: [productId], references: [id])
+  id               String   @id @default(cuid())
+  productId        String
+  productCreatedAt DateTime
+  price            Float
+  purchasedPrice   Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  activeProduct    Product  @relation("ActivePrice", fields: [productId, productCreatedAt], references: [id, createdAt])
+  product          Product  @relation("ProductPriceHistory", fields: [productId], references: [id])
 
-  @@unique([productId, createdAt])
+  @@unique([productId, productCreatedAt])
+}
+
+model Address {
+  id               String       @id @default(cuid())
+  street           String?
+  city             String?
+  lng              Float?
+  lat              Float?
+  formattedAddress String?
+  retailShop       RetailShop?  @relation("RetailShop Address")
+  warehouse        Warehouse?   @relation("Warehouse Address")
+  userProfile      UserProfile? @relation("User Address")
 }
 
 model RetailShop {
-  id                  String  @id @default(cuid())
+  id                  String   @id @default(cuid())
   name                String
-  address             String
+  addressId           String?  @unique
+  address             Address? @relation("RetailShop Address", fields: [addressId], references: [id])
   retailShopManagerId String?
-  retailShopManager   User?   @relation("RetailShopManager", fields: [retailShopManagerId], references: [id])
+  retailShopManager   User?    @relation("RetailShopManager", fields: [retailShopManagerId], references: [id])
 
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  GoodsTransfer   GoodsTransfer[]
-  SaleTransaction SaleTransaction[]
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @updatedAt
+  saleTransaction             SaleTransaction[]
+  retailShopStock             RetailShopStock[]
+  goodsTransfersAsDestination GoodsTransfer[]      @relation("DestinationShop")
+  dailyTransaction            DailyTransaction[]
+  monthlyTransaction          MonthlyTransaction[]
+  annualTransaction           AnnualTransaction[]
 }
 
 model Warehouse {
-  id                 String  @id @default(cuid())
-  name               String
-  address            String
+  id        String   @id @default(cuid())
+  name      String
+  addressId String?  @unique
+  address   Address? @relation("Warehouse Address", fields: [addressId], references: [id])
+
   warehouseManagerId String?
   warehouseManager   User?   @relation("WarehouseManager", fields: [warehouseManagerId], references: [id])
 
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  ProductInventory ProductInventory[]
-  GoodsTransfer    GoodsTransfer[]
+  createdAt                   DateTime          @default(now())
+  updatedAt                   DateTime          @updatedAt
+  goodsTransfersAsSource      GoodsTransfer[]   @relation("SourceWarehouse")
+  warehouseStock              WarehouseStock[]
+  retailShopStock             RetailShopStock[]
+  goodsTransfersAsDestination GoodsTransfer[]   @relation("DestinationWarehouse")
+}
+
+enum TransferType {
+  WarehouseToWarehouse
+  WarehouseToRetailShop
 }
 
 model GoodsTransfer {
-  id                 String            @id @default(cuid())
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  retailShopId       String?
-  RetailShop         RetailShop?       @relation(fields: [retailShopId], references: [id])
-  productInventoryId String?
-  ProductInventory   ProductInventory? @relation(fields: [productInventoryId], references: [id])
-  productId          String?
-  products           Product?          @relation(fields: [productId], references: [id])
-  Warehouse          Warehouse?        @relation(fields: [warehouseId], references: [id])
-  warehouseId        String?
+  id                     String       @id @default(cuid())
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  retailShopId           String?
+  retailShop             RetailShop?  @relation("DestinationShop", fields: [retailShopId], references: [id])
+  sourceWarehouseId      String
+  sourceWarehouse        Warehouse    @relation("SourceWarehouse", fields: [sourceWarehouseId], references: [id])
+  destinationWarehouseId String?
+  destinationWarehouse   Warehouse?   @relation("DestinationWarehouse", fields: [destinationWarehouseId], references: [id])
+  transferType           TransferType @default(WarehouseToWarehouse)
+  goods                  StockItem[]  @relation("Goods Transfer")
+}
+
+model StockItem {
+  id              String        @id @default(cuid())
+  goodsTransferId String
+  productId       String
+  product         Product?      @relation(fields: [productId], references: [id])
+  quantity        Float
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  goodsTransfer   GoodsTransfer @relation("Goods Transfer", fields: [goodsTransferId], references: [id])
 }
 
 model SaleTransaction {
   id           String     @id @default(cuid())
   productId    String
   product      Product    @relation(fields: [productId], references: [id])
-  quantity     Int
+  quantity     Float
   price        Float
   retailShopId String
   retailShop   RetailShop @relation(fields: [retailShopId], references: [id])
@@ -151,14 +193,56 @@ model SaleTransaction {
   updatedAt    DateTime   @updatedAt
 }
 
-model ProductInventory {
-  id            String          @id @default(cuid())
-  productId     String
-  product       Product         @relation(fields: [productId], references: [id])
-  warehouseId   String
-  warehouse     Warehouse       @relation(fields: [warehouseId], references: [id])
-  quantity      Float
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  GoodsTransfer GoodsTransfer[]
+model RetailShopStock {
+  id           String      @id @default(cuid())
+  productId    String
+  product      Product     @relation(fields: [productId], references: [id])
+  warehouseId  String
+  warehouse    Warehouse   @relation(fields: [warehouseId], references: [id])
+  quantity     Float
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  retailShop   RetailShop? @relation(fields: [retailShopId], references: [id])
+  retailShopId String?
+}
+
+model WarehouseStock {
+  id          String    @id @default(cuid())
+  productId   String
+  warehouseId String
+  quantity    Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
+}
+
+model DailyTransaction {
+  id           String     @id @default(cuid())
+  retailShopId String
+  date         DateTime
+  totalSales   Float
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  retailShop   RetailShop @relation(fields: [retailShopId], references: [id])
+}
+
+model MonthlyTransaction {
+  id           String     @id @default(cuid())
+  retailShopId String
+  month        String
+  totalSales   Float
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  retailShop   RetailShop @relation(fields: [retailShopId], references: [id])
+}
+
+model AnnualTransaction {
+  id           String     @id @default(cuid())
+  retailShopId String
+  year         String
+  totalSales   Float
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  retailShop   RetailShop @relation(fields: [retailShopId], references: [id])
 }

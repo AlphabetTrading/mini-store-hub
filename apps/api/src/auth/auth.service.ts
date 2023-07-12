@@ -53,6 +53,66 @@ export class AuthService {
     }
   }
 
+  async createWarehouseManager(payload: SignupInput): Promise<Token> {
+    const hashedPassword = await this.passwordService.hashPassword(
+      payload.password,
+    );
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          ...payload,
+          password: hashedPassword,
+          role: 'WAREHOUSE_MANAGER',
+        },
+      });
+
+      return this.generateTokens({
+        userId: user.id,
+      });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          `Username/Phone ${payload.phone} already used.`,
+        );
+      }
+      throw new Error(e);
+    }
+  }
+
+  async createRetailShopManager(payload: SignupInput): Promise<Token> {
+    const hashedPassword = await this.passwordService.hashPassword(
+      payload.password,
+    );
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          ...payload,
+          password: hashedPassword,
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+      });
+
+      return this.generateTokens({
+        userId: user.id,
+      });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          `Username/Phone ${payload.phone} already used.`,
+        );
+      }
+      throw new Error(e);
+    }
+  }
+
   async login(username: string, password: string): Promise<Token> {
     const user = await this.prisma.user.findUnique({ where: { username } });
 

@@ -8,7 +8,13 @@ export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.product.findMany();
+    return this.prisma.product.findMany({
+      include: {
+        category: true,
+        activePrice: true,
+        priceHistory: true,
+      },
+    });
   }
 
   async findOne(id: string) {
@@ -16,11 +22,12 @@ export class ProductsService {
       where: { id },
       include: {
         category: true,
-        GoodsTransfer: true,
-        ActivePrice: true,
-        PriceHistory: true,
-        ProductInventory: true,
-        SaleTransaction: true,
+        activePrice: true,
+        priceHistory: true,
+        saleTransaction: true,
+        goods: true,
+        retailShopStock: true,
+        warehouseStock: true,
       },
     });
   }

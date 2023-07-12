@@ -35,5 +35,5 @@ export class User extends BaseModel {
   password: string;
 
   @Field(() => UserProfile, { nullable: true })
-  userProfile?: UserProfile | null;
+  userProfile?: UserProfile;
 }

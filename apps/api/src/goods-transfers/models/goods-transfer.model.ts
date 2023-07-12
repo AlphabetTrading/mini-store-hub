@@ -1,11 +1,26 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
+import { StockItem } from './stock-item.model';
+import { TransferType } from '@prisma/client';
 
+registerEnumType(TransferType, {
+  name: 'TransferType',
+  description: 'TransferType',
+});
 @ObjectType()
 export class GoodsTransfer extends BaseModel {
-  @Field()
-  name: string;
+  @Field(() => String, { nullable: true })
+  retailShopId?: string;
 
   @Field(() => String, { nullable: true })
-  description?: string;
+  sourceWarehouseId: string;
+
+  @Field(() => String, { nullable: true })
+  destinationWarehouseId?: string;
+
+  @Field(() => [StockItem], { nullable: true })
+  goods?: string;
+
+  @Field(() => TransferType)
+  transferType?: TransferType;
 }

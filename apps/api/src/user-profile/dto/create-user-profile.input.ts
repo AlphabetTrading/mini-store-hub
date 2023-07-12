@@ -4,4 +4,10 @@ import { InputType, Field } from '@nestjs/graphql';
 export class CreateUserProfileInput {
   @Field({ nullable: true })
   photoUrl?: string;
+
+  @Field(() => String, { nullable: true })
+  addressId?: string;
+
+  @Field(() => String, { nullable: true })
+  userId?: string;
 }

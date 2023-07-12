@@ -13,7 +13,7 @@ import { UseGuards } from '@nestjs/common';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 
-@Resolver()
+@Resolver(() => Category)
 export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
@@ -23,12 +23,12 @@ export class CategoriesResolver {
     return this.categoriesService.findAll();
   }
 
-  // @ResolveField('subcategories', () => [Category])
-  // subcategories(@Parent() category: Category) {
-  //   return this.categoriesService
-  //     .findOne(category.id)
-  //     .then((c) => c.subcategories);
-  // }
+  @ResolveField('subcategories', () => [Category])
+  subcategories(@Parent() category: Category) {
+    return this.categoriesService
+      .findOne(category.id)
+      .then((c) => c.subcategories);
+  }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Category)

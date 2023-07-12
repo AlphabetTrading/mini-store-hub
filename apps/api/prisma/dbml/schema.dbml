@@ -1,0 +1,283 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  firstName String [not null]
+  lastName String [not null]
+  username String [unique, not null]
+  phone String [unique, not null]
+  password String [not null]
+  role UserRole [not null, default: 'USER']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userProfile UserProfile
+  retailShop RetailShop [not null]
+  warehouse Warehouse [not null]
+}
+
+Table UserProfile {
+  id String [pk]
+  userId String [unique, not null]
+  photoUrl String
+  idUrl String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User
+  addressId String [unique]
+  address Address
+}
+
+Table Category {
+  id String [pk]
+  name String [unique, not null]
+  description String [not null]
+  parentId String
+  parent Category
+  subcategories Category [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  products Product [not null]
+}
+
+Table Product {
+  id String [pk]
+  serialNumber String [not null]
+  name String [not null]
+  description String [not null]
+  categoryId String [not null]
+  category Category [not null]
+  unit UnitType [not null]
+  images String[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  activePrice PriceHistory
+  priceHistory PriceHistory [not null]
+  saleTransaction SaleTransaction [not null]
+  retailShopStock RetailShopStock [not null]
+  warehouseStock WarehouseStock [not null]
+  goods StockItem [not null]
+
+  indexes {
+    (id, createdAt) [unique]
+  }
+}
+
+Table PriceHistory {
+  id String [pk]
+  productId String [not null]
+  productCreatedAt DateTime [not null]
+  price Float [not null]
+  purchasedPrice Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  activeProduct Product [not null]
+  product Product [not null]
+
+  indexes {
+    (productId, productCreatedAt) [unique]
+  }
+}
+
+Table Address {
+  id String [pk]
+  street String
+  city String
+  lng Float
+  lat Float
+  formattedAddress String
+  retailShop RetailShop
+  warehouse Warehouse
+  userProfile UserProfile
+}
+
+Table RetailShop {
+  id String [pk]
+  name String [not null]
+  addressId String [unique]
+  address Address
+  retailShopManagerId String
+  retailShopManager User
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  saleTransaction SaleTransaction [not null]
+  retailShopStock RetailShopStock [not null]
+  goodsTransfersAsDestination GoodsTransfer [not null]
+  dailyTransaction DailyTransaction [not null]
+  monthlyTransaction MonthlyTransaction [not null]
+  annualTransaction AnnualTransaction [not null]
+}
+
+Table Warehouse {
+  id String [pk]
+  name String [not null]
+  addressId String [unique]
+  address Address
+  warehouseManagerId String
+  warehouseManager User
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  goodsTransfersAsSource GoodsTransfer [not null]
+  warehouseStock WarehouseStock [not null]
+  retailShopStock RetailShopStock [not null]
+  goodsTransfersAsDestination GoodsTransfer [not null]
+}
+
+Table GoodsTransfer {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShopId String
+  retailShop RetailShop
+  sourceWarehouseId String [not null]
+  sourceWarehouse Warehouse [not null]
+  destinationWarehouseId String
+  destinationWarehouse Warehouse
+  transferType TransferType [not null, default: 'WarehouseToWarehouse']
+  goods StockItem [not null]
+}
+
+Table StockItem {
+  id String [pk]
+  goodsTransferId String [not null]
+  productId String [not null]
+  product Product
+  quantity Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  goodsTransfer GoodsTransfer [not null]
+}
+
+Table SaleTransaction {
+  id String [pk]
+  productId String [not null]
+  product Product [not null]
+  quantity Float [not null]
+  price Float [not null]
+  retailShopId String [not null]
+  retailShop RetailShop [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table RetailShopStock {
+  id String [pk]
+  productId String [not null]
+  product Product [not null]
+  warehouseId String [not null]
+  warehouse Warehouse [not null]
+  quantity Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShop RetailShop
+  retailShopId String
+}
+
+Table WarehouseStock {
+  id String [pk]
+  productId String [not null]
+  warehouseId String [not null]
+  quantity Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  warehouse Warehouse [not null]
+  product Product [not null]
+}
+
+Table DailyTransaction {
+  id String [pk]
+  retailShopId String [not null]
+  date DateTime [not null]
+  totalSales Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShop RetailShop [not null]
+}
+
+Table MonthlyTransaction {
+  id String [pk]
+  retailShopId String [not null]
+  month String [not null]
+  totalSales Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShop RetailShop [not null]
+}
+
+Table AnnualTransaction {
+  id String [pk]
+  retailShopId String [not null]
+  year String [not null]
+  totalSales Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShop RetailShop [not null]
+}
+
+Enum UserRole {
+  USER
+  ADMIN
+  WAREHOUSE_MANAGER
+  RETAIL_SHOP_MANAGER
+}
+
+Enum UnitType {
+  PIECES
+  WEIGHT
+}
+
+Enum TransferType {
+  WarehouseToWarehouse
+  WarehouseToRetailShop
+}
+
+Ref: UserProfile.userId - User.id
+
+Ref: UserProfile.addressId - Address.id
+
+Ref: Category.parentId - Category.id
+
+Ref: Product.categoryId > Category.id
+
+Ref: PriceHistory.(productId, productCreatedAt) - Product.(id, createdAt)
+
+Ref: PriceHistory.productId - Product.id
+
+Ref: RetailShop.addressId - Address.id
+
+Ref: RetailShop.retailShopManagerId > User.id
+
+Ref: Warehouse.addressId - Address.id
+
+Ref: Warehouse.warehouseManagerId > User.id
+
+Ref: GoodsTransfer.retailShopId > RetailShop.id
+
+Ref: GoodsTransfer.sourceWarehouseId > Warehouse.id
+
+Ref: GoodsTransfer.destinationWarehouseId > Warehouse.id
+
+Ref: StockItem.productId > Product.id
+
+Ref: StockItem.goodsTransferId > GoodsTransfer.id
+
+Ref: SaleTransaction.productId > Product.id
+
+Ref: SaleTransaction.retailShopId > RetailShop.id
+
+Ref: RetailShopStock.productId > Product.id
+
+Ref: RetailShopStock.warehouseId > Warehouse.id
+
+Ref: RetailShopStock.retailShopId > RetailShop.id
+
+Ref: WarehouseStock.warehouseId > Warehouse.id
+
+Ref: WarehouseStock.productId > Product.id
+
+Ref: DailyTransaction.retailShopId > RetailShop.id
+
+Ref: MonthlyTransaction.retailShopId > RetailShop.id
+
+Ref: AnnualTransaction.retailShopId > RetailShop.id
