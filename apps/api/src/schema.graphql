@@ -64,6 +64,13 @@ input CreateCategoryInput {
   name: String!
 }
 
+input CreateGoodsTransferInput {
+  destinationWarehouseId: String
+  retailShopId: String
+  sourceWarehouseId: String
+  transferType: TransferType
+}
+
 input CreatePriceHistoryInput {
   price: Float!
   productId: String!
@@ -91,6 +98,13 @@ input CreateRetailShopStockInput {
   productId: String!
   quantity: Float!
   warehouseId: String!
+}
+
+input CreateSaleTransactionInput {
+  price: Float!
+  productId: String!
+  quantity: Float!
+  retailShopId: String!
 }
 
 input CreateUserProfileInput {
@@ -182,6 +196,7 @@ type MonthlyTransaction {
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
   createCategory(data: CreateCategoryInput!): Category!
+  createGoodsTransfer(data: CreateGoodsTransferInput!): GoodsTransfer!
 
   """Create a new price history"""
   createPriceHistory(priceHistory: CreatePriceHistoryInput!): PriceHistory!
@@ -189,15 +204,18 @@ type Mutation {
   createRetailManager(data: SignupInput!): User!
   createRetailShop(data: CreateRetailShopInput!): RetailShop!
   createRetailShopStock(data: CreateRetailShopStockInput!): RetailShopStock!
+  createSaleTransaction(data: CreateSaleTransactionInput!): SaleTransaction!
   createUserProfile(createUserProfileInput: CreateUserProfileInput!): UserProfile!
   createWarehouse(data: CreateWarehouseInput!): Warehouse!
   createWarehouseManager(data: SignupInput!): User!
   createWarehouseStock(data: CreateWarehouseStockInput!): WarehouseStock!
   deleteCategory(id: String!): Category!
+  deleteGoodsTransfer(id: String!): GoodsTransfer!
   deletePriceHistory(id: String!): PriceHistory!
   deleteProduct(id: String!): Product!
   deleteRetailShop(id: String!): RetailShop!
   deleteRetailShopStock(id: String!): RetailShopStock!
+  deleteSaleTransaction(id: String!): SaleTransaction!
   deleteUserProfile(id: String!): UserProfile!
   deleteWarehouse(id: String!): Warehouse!
   deleteWarehouseStock(id: String!): WarehouseStock!
@@ -205,9 +223,11 @@ type Mutation {
   refreshToken(token: JWT!): Token!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
+  updateGoodsTransfer(data: UpdateGoodsTransferInput!, id: String!): GoodsTransfer!
   updateProduct(data: CreateProductInput!, id: String!): Product!
   updateRetailShop(data: UpdateRetailShopInput!, id: String!): RetailShop!
   updateRetailShopStock(data: UpdateRetailShopStockInput!, id: String!): RetailShopStock!
+  updateSaleTransaction(data: UpdateSaleTransactionInput!, id: String!): SaleTransaction!
   updateUser(data: UpdateUserInput!): User!
   updateUserProfile(id: String!, updateProfileInput: UpdateUserProfileInput!): UserProfile!
   updateWarehouse(data: UpdateWarehouseInput!, id: String!): Warehouse!
@@ -266,6 +286,9 @@ type Product {
 
 type Query {
   categories: [Category!]!
+  goodsTransfer(id: String!): GoodsTransfer!
+  goodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
+  goodsTransfers: [GoodsTransfer!]!
   me: User!
   priceHistories: [PriceHistory!]!
   priceHistory: PriceHistory!
@@ -279,9 +302,12 @@ type Query {
   retailShopStockByProductId(productId: String!): [RetailShopStock!]!
   retailShopStockByProductIdAndWarehouseId(productId: String!, warehouseId: String!): [RetailShopStock!]!
   retailShopStockByWarehouseId(warehouseId: String!): [RetailShopStock!]!
-  retailShopStockService: [RetailShopStock!]!
+  retailShopStocks: [RetailShopStock!]!
   retailShops: [RetailShop!]!
   retailShopsByAddress(address: String!): [RetailShop!]!
+  saleTransaction: SaleTransaction!
+  saleTransactions: [SaleTransaction!]!
+  saleTransactionsByRetailShop: [SaleTransaction!]!
   sayHello: String!
   searchProduct(search: String!): [Product!]!
   user(id: String!): User!
@@ -290,7 +316,7 @@ type Query {
   warehouseManagers: [User!]!
   warehouseStock(id: String!): WarehouseStock!
   warehouseStockByWarehouseId(warehouseId: String!): [WarehouseStock!]!
-  warehouseStockByWarehouseIdAndWarehouseId(warehouseId: String!): [WarehouseStock!]!
+  warehouseStocks: [WarehouseStock!]!
   warehouses: [Warehouse!]!
   warehousesByAddress(address: String!): [Warehouse!]!
 }
@@ -393,6 +419,13 @@ input UpdateCategoryInput {
   name: String
 }
 
+input UpdateGoodsTransferInput {
+  destinationWarehouseId: String
+  retailShopId: String
+  sourceWarehouseId: String
+  transferType: TransferType
+}
+
 input UpdateRetailShopInput {
   addressId: String
   name: String!
@@ -403,6 +436,13 @@ input UpdateRetailShopStockInput {
   productId: String
   quantity: Float
   warehouseId: String
+}
+
+input UpdateSaleTransactionInput {
+  price: Float
+  productId: String
+  quantity: Float
+  retailShopId: String
 }
 
 input UpdateUserInput {
@@ -497,6 +537,7 @@ type WarehouseStock {
   createdAt: DateTime!
   goodsTransfers: [GoodsTransfer!]
   id: ID!
+  product: Product
   productId: String!
   quantity: Float!
 

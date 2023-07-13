@@ -8,11 +8,14 @@ async function main() {
   await prisma.userProfile.deleteMany();
   await prisma.user.deleteMany();
   await prisma.priceHistory.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
+  await prisma.saleTransaction.deleteMany();
+  await prisma.goodsTransfer.deleteMany();
+  await prisma.warehouseStock.deleteMany();
+  await prisma.retailShopStock.deleteMany();
   await prisma.warehouse.deleteMany();
   await prisma.retailShop.deleteMany();
-  await prisma.warehouseStock.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.category.deleteMany();
   console.log('Seeding...');
   await seedUserModels();
   await seedUserProfile();
@@ -21,6 +24,10 @@ async function main() {
   await seedPriceHistory();
   await seedWarehouses();
   await seedRetailShops();
+  await seedWarehouseStocks();
+  await seedRetailshopStocks();
+  await seedGoodsTransfers();
+  await seedSaleTransactions();
 }
 
 async function seedUserModels() {
@@ -275,8 +282,11 @@ async function seedWarehouses() {
   }
 }
 
-async function seedInventory(products: Product[], warehouses: Warehouse[]) {
+async function seedWarehouseStocks() {
   try {
+    const products = await prisma.product.findMany();
+    const warehouses = await prisma.warehouse.findMany();
+
     await prisma.warehouseStock.createMany({
       data: [
         {
@@ -285,40 +295,77 @@ async function seedInventory(products: Product[], warehouses: Warehouse[]) {
           quantity: 10,
         },
         {
-          productId: products[0].id,
-          warehouseId: warehouses[1].id,
+          productId: products[1].id,
+          warehouseId: warehouses[0].id,
           quantity: 20,
         },
         {
-          productId: products[1].id,
+          productId: products[2].id,
           warehouseId: warehouses[0].id,
           quantity: 30,
         },
       ],
     });
-    console.log('Inventory seeded successfully');
+    console.log('Warehouses stock is seeded successfully');
   } catch (error) {
-    console.error('Error seeding inventory:', error);
+    console.error('Error seeding warehouses stock:', error);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-async function seedGoodsTransfer(
-  products: Product[],
-  warehouses: Warehouse[],
-  retailShops: RetailShop[],
-) {
+async function seedRetailshopStocks() {
   try {
+    const products = await prisma.product.findMany();
+    const retailshops = await prisma.retailShop.findMany();
+    const warehouses = await prisma.warehouse.findMany();
+
+    await prisma.retailShopStock.createMany({
+      data: [
+        {
+          productId: products[0].id,
+          retailShopId: retailshops[0].id,
+          quantity: 10,
+          warehouseId: warehouses[0].id,
+        },
+        {
+          productId: products[1].id,
+          retailShopId: retailshops[0].id,
+          quantity: 20,
+          warehouseId: warehouses[0].id,
+        },
+        {
+          productId: products[2].id,
+          retailShopId: retailshops[0].id,
+          quantity: 30,
+          warehouseId: warehouses[0].id,
+        },
+      ],
+    });
+    console.log('Retailshops stock is seeded successfully');
+  } catch (error) {
+    console.error('Error seeding retailshops stock:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function seedGoodsTransfers() {
+  try {
+    const warehouses = await prisma.warehouse.findMany();
+    const retailShops = await prisma.retailShop.findMany();
+
     await prisma.goodsTransfer.createMany({
       data: [
         {
           sourceWarehouseId: warehouses[0].id,
           retailShopId: retailShops[0].id,
+          transferType: 'WarehouseToRetailShop',
         },
         {
           sourceWarehouseId: warehouses[1].id,
           retailShopId: retailShops[1].id,
+          transferType: 'WarehouseToRetailShop',
         },
       ],
     });
@@ -330,23 +377,22 @@ async function seedGoodsTransfer(
   }
 }
 
-async function seedSaleTransaction(
-  products: Product[],
-  warehouses: Warehouse[],
-  retailShops: RetailShop[],
-) {
+async function seedSaleTransactions() {
   try {
+    const products = await prisma.product.findMany();
+    const retailShops = await prisma.retailShop.findMany();
+
     await prisma.saleTransaction.createMany({
       data: [
         {
           productId: products[0].id,
-          price: 210,
+          price: 100,
           quantity: 2,
           retailShopId: retailShops[0].id,
         },
         {
           productId: products[0].id,
-          price: 220,
+          price: 200,
           quantity: 3,
           retailShopId: retailShops[1].id,
         },

@@ -7,6 +7,7 @@ registerEnumType(TransferType, {
   name: 'TransferType',
   description: 'TransferType',
 });
+
 @ObjectType()
 export class GoodsTransfer extends BaseModel {
   @Field(() => String, { nullable: true })
@@ -19,7 +20,7 @@ export class GoodsTransfer extends BaseModel {
   destinationWarehouseId?: string;
 
   @Field(() => [StockItem], { nullable: true })
-  goods?: string;
+  goods?: [StockItem];
 
   @Field(() => TransferType)
   transferType?: TransferType;

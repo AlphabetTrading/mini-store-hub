@@ -10,8 +10,8 @@ export class RetailShopStockResolver {
     private readonly retailShopStockService: RetailShopStockService,
   ) {}
 
-  @Query(() => [RetailShopStock], { name: 'retailShopStockService' })
-  async productStock() {
+  @Query(() => [RetailShopStock], { name: 'retailShopStocks' })
+  async productStocks() {
     return this.retailShopStockService.findAll();
   }
 

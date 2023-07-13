@@ -29,14 +29,36 @@ model User {
   phone     String   @unique
   password  String
   role      UserRole @default(USER)
+  isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userProfile UserProfile?
-  retailShop  RetailShop[] @relation("RetailShopManager")
-  warehouse   Warehouse[]  @relation("WarehouseManager")
+  userProfile       UserProfile?
+  retailShop        RetailShop[]       @relation("RetailShopManager")
+  warehouse         Warehouse[]        @relation("WarehouseManager")
+  notifications     Notification[]
+  notificationToken NotificationToken?
 
   @@index([username, phone])
+}
+
+model Notification {
+  id                  String  @id @default(cuid())
+  title               String
+  body                String
+  notifications_token String
+  status              Boolean @default(false)
+  createdById         String
+  createdBy           User    @relation(fields: [createdById], references: [id])
+}
+
+model NotificationToken {
+  id                  String  @id @default(cuid())
+  device_type         String
+  notifications_token String
+  status              Boolean @default(false)
+  userId              String  @unique
+  user                User    @relation(fields: [userId], references: [id])
 }
 
 model UserProfile {

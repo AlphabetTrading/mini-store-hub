@@ -12,52 +12,52 @@ export class SaleTransactionsResolver {
     private readonly saleTransactionsService: SaleTransactionsService, // private readonly RetailShopStockService: RetailShopStock,
   ) {}
 
-  // @Query(() => [SaleTransaction], { name: 'saleTransactions' })
-  // async findAll(): Promise<SaleTransaction[]> {
-  //   return this.saleTransactionsService.findAll();
-  // }
+  @Query(() => [SaleTransaction], { name: 'saleTransactions' })
+  async findAll(): Promise<SaleTransaction[]> {
+    return this.saleTransactionsService.findAll();
+  }
 
-  // @Query(() => SaleTransaction, { name: 'saleTransaction' })
-  // async findOne(id: string): Promise<SaleTransaction> {
-  //   return this.saleTransactionsService.findOne(id);
-  // }
+  @Query(() => SaleTransaction, { name: 'saleTransaction' })
+  async findOne(id: string): Promise<SaleTransaction> {
+    return this.saleTransactionsService.findOne(id);
+  }
 
-  // @Query(() => [SaleTransaction], { name: 'saleTransactionsByRetailShop' })
-  // async findAllByRetailShop(id: string): Promise<SaleTransaction[]> {
-  //   return this.saleTransactionsService.findAllByRetailShop(id);
-  // }
+  @Query(() => [SaleTransaction], { name: 'saleTransactionsByRetailShop' })
+  async findAllByRetailShop(id: string): Promise<SaleTransaction[]> {
+    return this.saleTransactionsService.findAllByRetailShop(id);
+  }
 
-  // @Mutation(() => SaleTransaction)
-  // async createSaleTransaction(
-  //   @Args('data') data: CreateSaleTransactionInput,
-  // ): Promise<SaleTransaction> {
-  //   const sales = await this.saleTransactionsService.create(data);
+  @Mutation(() => SaleTransaction)
+  async createSaleTransaction(
+    @Args('data') data: CreateSaleTransactionInput,
+  ): Promise<SaleTransaction> {
+    const sales = await this.saleTransactionsService.create(data);
 
-  //   // check retailShop inventory and update it, and if there is low level of stock notify the retail shop manager and warehouse manager
-  //   // this is done by subscribing to the inventoryUpdated event
-  //   //
-  //   // const inventoryUpdated = await this.RetailShopStockService;
-  //   // console.log(inventoryUpdated);
-  //   //
+    // check retailShop inventory and update it, and if there is low level of stock notify the retail shop manager and warehouse manager
+    // this is done by subscribing to the inventoryUpdated event
+    //
+    // const inventoryUpdated = await this.RetailShopStockService;
+    // console.log(inventoryUpdated);
+    //
 
-  //   pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
-  //   return sales;
-  // }
+    pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
+    return sales;
+  }
 
-  // @Mutation(() => SaleTransaction)
-  // async updateSaleTransaction(
-  //   @Args('id') id: string,
-  //   @Args('data') data: UpdateSaleTransactionInput,
-  // ) {
-  //   return this.saleTransactionsService.update(id, data);
-  // }
+  @Mutation(() => SaleTransaction)
+  async updateSaleTransaction(
+    @Args('id') id: string,
+    @Args('data') data: UpdateSaleTransactionInput,
+  ) {
+    return this.saleTransactionsService.update(id, data);
+  }
 
-  // @Mutation(() => SaleTransaction)
-  // async deleteSaleTransaction(@Args('id') id: string) {
-  //   return this.saleTransactionsService.remove(id);
-  // }
+  @Mutation(() => SaleTransaction)
+  async deleteSaleTransaction(@Args('id') id: string) {
+    return this.saleTransactionsService.remove(id);
+  }
 
-  // @Subscription('inventoryUpdated')
+  // @Subscription('inventoryUpdated', () => null)
   // inventoryUpdated() {
   //   return pubSub.asyncIterator('inventoryUpdated');
   // }

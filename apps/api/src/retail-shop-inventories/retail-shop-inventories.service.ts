@@ -8,31 +8,44 @@ export class RetailShopStockService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.retailShopStock.findMany();
+    return this.prisma.retailShopStock.findMany({
+      include: {
+        product: true,
+        retailShop: true,
+        warehouse: true,
+      },
+    });
   }
 
   async findOne(id: string) {
-    return this.prisma.retailShopStock.findUnique({ where: { id } });
+    return this.prisma.retailShopStock.findUnique({
+      where: { id },
+      include: {
+        product: true,
+        retailShop: true,
+        warehouse: true,
+      },
+    });
   }
 
   async findByProductId(productId: string) {
     return this.prisma.retailShopStock.findMany({
       where: { productId },
-      include: { product: true, warehouse: true },
+      include: { product: true, warehouse: true, retailShop: true },
     });
   }
 
   async findByWarehouseId(warehouseId: string) {
     return this.prisma.retailShopStock.findMany({
       where: { warehouseId },
-      include: { product: true, warehouse: true },
+      include: { product: true, warehouse: true, retailShop: true },
     });
   }
 
   async findByProductIdAndWarehouseId(productId: string, warehouseId: string) {
     return this.prisma.retailShopStock.findMany({
       where: { productId, warehouseId },
-      include: { product: true, warehouse: true },
+      include: { product: true, warehouse: true, retailShop: true },
     });
   }
 

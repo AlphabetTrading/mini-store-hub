@@ -25,6 +25,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WarehouseStockModule } from './warehouse-inventories/warehouse-inventories.module';
 import { RetailShopStocksModule } from './retail-shop-inventories/retail-shop-inventories.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -50,8 +51,9 @@ import { RetailShopStocksModule } from './retail-shop-inventories/retail-shop-in
     RetailShopsModule,
     WarehouseStockModule,
     RetailShopStocksModule,
-    // GoodsTransfersModule,
-    // SaleTransactionsModule,
+    GoodsTransfersModule,
+    SaleTransactionsModule,
+    // NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppResolver, AppService],

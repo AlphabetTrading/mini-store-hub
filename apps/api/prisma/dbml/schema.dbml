@@ -10,11 +10,33 @@ Table User {
   phone String [unique, not null]
   password String [not null]
   role UserRole [not null, default: 'USER']
+  isActive Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   userProfile UserProfile
   retailShop RetailShop [not null]
   warehouse Warehouse [not null]
+  notifications Notification [not null]
+  notificationToken NotificationToken
+}
+
+Table Notification {
+  id String [pk]
+  title String [not null]
+  body String [not null]
+  notifications_token String [not null]
+  status Boolean [not null, default: false]
+  createdById String [not null]
+  createdBy User [not null]
+}
+
+Table NotificationToken {
+  id String [pk]
+  device_type String [not null]
+  notifications_token String [not null]
+  status Boolean [not null, default: false]
+  userId String [unique, not null]
+  user User [not null]
 }
 
 Table UserProfile {
@@ -231,6 +253,10 @@ Enum TransferType {
   WarehouseToWarehouse
   WarehouseToRetailShop
 }
+
+Ref: Notification.createdById > User.id
+
+Ref: NotificationToken.userId - User.id
 
 Ref: UserProfile.userId - User.id
 

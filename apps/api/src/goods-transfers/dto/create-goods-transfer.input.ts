@@ -13,9 +13,6 @@ export class CreateGoodsTransferInput {
   @Field(() => String, { nullable: true })
   destinationWarehouseId?: string;
 
-  @Field(() => [StockItem], { nullable: true })
-  goods?: string;
-
   @Field(() => TransferType, { nullable: true })
   transferType?: TransferType;
 }

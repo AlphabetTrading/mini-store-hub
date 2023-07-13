@@ -8,8 +8,8 @@ import { UpdateWarehouseStockInput } from './dto/update-warehouse-inventory.inpu
 export class WarehouseStockResolver {
   constructor(private readonly warehouseStockService: WarehouseStockService) {}
 
-  @Query(() => [WarehouseStock], { name: 'warehouseStock' })
-  async warehouseStock() {
+  @Query(() => [WarehouseStock], { name: 'warehouseStocks' })
+  async warehouseStocks() {
     return this.warehouseStockService.findAll();
   }
 
@@ -22,15 +22,6 @@ export class WarehouseStockResolver {
     name: 'warehouseStockByWarehouseId',
   })
   async WarehouseStockByWarehouseId(@Args('warehouseId') warehouseId: string) {
-    return this.warehouseStockService.findByWarehouseId(warehouseId);
-  }
-
-  @Query(() => [WarehouseStock], {
-    name: 'warehouseStockByWarehouseIdAndWarehouseId',
-  })
-  async WarehouseStockByWarehouseIdAndWarehouseId(
-    @Args('warehouseId') warehouseId: string,
-  ) {
     return this.warehouseStockService.findByWarehouseId(warehouseId);
   }
 

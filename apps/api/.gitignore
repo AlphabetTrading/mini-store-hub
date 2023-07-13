@@ -40,3 +40,7 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+
+mini-store-hub-firebase-adminsdk.json
+note.txt
