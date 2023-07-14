@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import * as firebase from 'firebase-admin';
-import * as path from 'path';
 import { User } from 'src/users/models/user.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
 
+const firebase_private_key_b64 = Buffer.from(
+  process.env.FIREBASE_PRIVATE_KEY_BASE64,
+  'base64',
+);
+const firebase_private_key = firebase_private_key_b64.toString('utf8');
+console.log(firebase_private_key, ' firebasekey');
 firebase.initializeApp({
   credential: firebase.credential.cert(
-    path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'mini-store-hub-firebase-adminsdk.json',
-    ),
+    {
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: firebase_private_key,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+    },
+    // path.join(__dirname, '..', '..', 'mini-store-hub-firebase-adminsdk.json'),
   ),
 });
 

@@ -7,17 +7,18 @@ services:
       dockerfile: Dockerfile
     ports:
       - '5000:5000'
-    depends_on:
-      - postgres
     env_file:
       - .env
+    depends_on:
+      - postgres
+   
 
   postgres:
     image: postgres:latest
     container_name: postgres
     restart: always
     ports:
-      - '6543:5432'
+      - '5432:5432'
     env_file:
       - .env
     volumes:

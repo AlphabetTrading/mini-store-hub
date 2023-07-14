@@ -28,7 +28,7 @@ async function bootstrap() {
 
   // enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);
-  await prismaService.enableShutdownHooks(app);
+  // await prismaService.enableShutdownHooks(app);
 
   // // Prisma Client Exception Filter for unhandled exceptions
   // const { httpAdapter } = app.get(HttpAdapterHost);
