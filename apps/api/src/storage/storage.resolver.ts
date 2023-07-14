@@ -1,11 +1,11 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { StorageService } from './storage.service';
 import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import * as FileUpload from 'graphql-upload/Upload.js';
 import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
+import { StorageService } from './storage.service';
 
 @Resolver()
 export class StorageResolver {

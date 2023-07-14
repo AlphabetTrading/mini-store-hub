@@ -219,6 +219,7 @@ type Mutation {
   deleteUserProfile(id: String!): UserProfile!
   deleteWarehouse(id: String!): Warehouse!
   deleteWarehouseStock(id: String!): WarehouseStock!
+  disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
   signup(data: SignupInput!): Auth!
@@ -233,6 +234,21 @@ type Mutation {
   updateWarehouse(data: UpdateWarehouseInput!, id: String!): Warehouse!
   updateWarehouseStock(data: UpdateWarehouseStockInput!, id: String!): WarehouseStock!
   uploadFile(file: Upload!): String!
+}
+
+type Notification {
+  body: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  createdBy: User!
+  id: ID!
+  notification_token: String!
+  status: String!
+  title: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
 }
 
 """
@@ -285,17 +301,20 @@ type Product {
 }
 
 type Query {
+  allUsersNotifications(userId: String!): [Notification!]!
   categories: [Category!]!
   goodsTransfer(id: String!): GoodsTransfer!
   goodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
   goodsTransfers: [GoodsTransfer!]!
   me: User!
+  notifications: [Notification!]!
   priceHistories: [PriceHistory!]!
   priceHistory: PriceHistory!
   priceHistoryByProduct: [PriceHistory!]!
   product: Product!
   products: [Product!]!
   productsByCategory: [Product!]!
+  readNotifications(userId: String!): [Notification!]!
   retailManagers: [User!]!
   retailShop(id: String!): RetailShop!
   retailShopStock(id: String!): RetailShopStock!
@@ -310,6 +329,7 @@ type Query {
   saleTransactionsByRetailShop: [SaleTransaction!]!
   sayHello: String!
   searchProduct(search: String!): [Product!]!
+  unreadNotifications(userId: String!): [Notification!]!
   user(id: String!): User!
   users(orderBy: UserOrder): [User!]!
   warehouse(id: String!): Warehouse!
@@ -424,6 +444,13 @@ input UpdateGoodsTransferInput {
   retailShopId: String
   sourceWarehouseId: String
   transferType: TransferType
+}
+
+input UpdateNotificationTokenInput {
+  device_type: String
+  notification_token: String
+  status: Boolean
+  userId: String
 }
 
 input UpdateRetailShopInput {

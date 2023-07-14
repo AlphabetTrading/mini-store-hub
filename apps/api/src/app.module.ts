@@ -1,6 +1,5 @@
 import { GraphQLModule } from '@nestjs/graphql';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -34,9 +33,6 @@ import { NotificationModule } from './notification/notification.module';
       driver: ApolloDriver,
       useClass: GqlConfigService,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../../', 'client', 'dist'),
-    }),
     PrismaModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
@@ -53,7 +49,7 @@ import { NotificationModule } from './notification/notification.module';
     RetailShopStocksModule,
     GoodsTransfersModule,
     SaleTransactionsModule,
-    // NotificationModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppResolver, AppService],
