@@ -9,11 +9,10 @@ import type {
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
 import { PrismaService } from './prisma/prisma.service';
-// import { PrismaService } from './prisma/prisma.service';
 
 import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { AllExceptionsFilter } from './middlewares/error.middleware';
-import { PrismaClientExceptionFilter } from './middlewares/prisma-client-exception.filter';
+// import { PrismaClientExceptionFilter } from './middlewares/prisma-client-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
