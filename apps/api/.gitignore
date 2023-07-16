@@ -44,3 +44,4 @@ lerna-debug.log*
 
 mini-store-hub-firebase-adminsdk.json
 note.txt
+.vercel

@@ -40,19 +40,19 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const nestConfig = configService.get<NestConfig>('nest');
   const corsConfig = configService.get<CorsConfig>('cors');
-  const swaggerConfig = configService.get<SwaggerConfig>('swagger');
+  // const swaggerConfig = configService.get<SwaggerConfig>('swagger');
 
   // Swagger Api
-  if (swaggerConfig.enabled) {
-    const options = new DocumentBuilder()
-      .setTitle(swaggerConfig.title || 'Mini Store Hub')
-      .setDescription(swaggerConfig.description || 'The nestjs API description')
-      .setVersion(swaggerConfig.version || '1.0')
-      .build();
-    const document = SwaggerModule.createDocument(app, options);
+  // if (swaggerConfig.enabled) {
+  //   const options = new DocumentBuilder()
+  //     .setTitle(swaggerConfig.title || 'Mini Store Hub')
+  //     .setDescription(swaggerConfig.description || 'The nestjs API description')
+  //     .setVersion(swaggerConfig.version || '1.0')
+  //     .build();
+  //   const document = SwaggerModule.createDocument(app, options);
 
-    SwaggerModule.setup(swaggerConfig.path || 'api', app, document);
-  }
+  //   SwaggerModule.setup(swaggerConfig.path || 'api', app, document);
+  // }
 
   // Cors
   if (corsConfig.enabled) {
