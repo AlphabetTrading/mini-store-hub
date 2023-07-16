@@ -7,7 +7,6 @@ import { PasswordService } from 'src/auth/password.service';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserIdArgs } from 'src/categories/args/user-ids.args';
 import { PaginationArgs } from 'src/common/pagination/paginations.args';
 import { Prisma } from '@prisma/client';
 import { SignupInput } from 'src/auth/dto/signup.input';

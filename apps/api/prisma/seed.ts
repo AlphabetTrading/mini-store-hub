@@ -260,9 +260,19 @@ async function seedWarehouses() {
       data: [{ name: 'Warehouse A' }, { name: 'Warehouse B' }],
     });
 
+    const user = await prisma.user.findFirst({
+      where: {
+        role: 'WAREHOUSE_MANAGER',
+      },
+    });
     await prisma.warehouse.create({
       data: {
         name: 'Warehouse C',
+        warehouseManager: {
+          connect: {
+            id: user?.id,
+          },
+        },
         address: {
           create: {
             street: 'St 128, Main Street',
@@ -369,6 +379,23 @@ async function seedGoodsTransfers() {
         },
       ],
     });
+
+    await prisma.goodsTransfer.create({
+      data: {
+        sourceWarehouse: {
+          connect: {
+            id: warehouses[0].id,
+          },
+        },
+        retailShop: {
+          connect: {
+            id: retailShops[0].id,
+          },
+        },
+        transferType: 'WarehouseToRetailShop',
+      },
+    });
+
     console.log('Goods transfers seeded successfully');
   } catch (error) {
     console.error('Error seeding goods transfers:', error);

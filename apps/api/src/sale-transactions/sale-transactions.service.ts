@@ -7,14 +7,53 @@ import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input'
 export class SaleTransactionsService {
   constructor(private readonly prisma: PrismaService) {}
   async findAll() {
-    return this.prisma.saleTransaction.findMany();
+    return this.prisma.saleTransaction.findMany({
+      include: {
+        retailShop: true,
+        product: {
+          include: {
+            activePrice: true,
+            priceHistory: true,
+            retailShopStock: true,
+            warehouseStock: true,
+            category: true,
+          },
+        },
+      },
+    });
   }
   async findOne(id: string) {
-    return this.prisma.saleTransaction.findUnique({ where: { id } });
+    return this.prisma.saleTransaction.findUnique({
+      where: { id },
+      include: {
+        retailShop: true,
+        product: {
+          include: {
+            activePrice: true,
+            priceHistory: true,
+            retailShopStock: true,
+            warehouseStock: true,
+            category: true,
+          },
+        },
+      },
+    });
   }
   async findAllByRetailShop(id: string) {
     return this.prisma.saleTransaction.findMany({
       where: { retailShopId: id },
+      include: {
+        retailShop: true,
+        product: {
+          include: {
+            activePrice: true,
+            priceHistory: true,
+            retailShopStock: true,
+            warehouseStock: true,
+            category: true,
+          },
+        },
+      },
     });
   }
   async create(data: CreateSaleTransactionInput) {

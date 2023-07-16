@@ -12,7 +12,11 @@ export class WarehousesService {
       include: {
         warehouseManager: true,
         address: true,
-        warehouseStock: true,
+        warehouseStock: {
+          include: {
+            product: true,
+          },
+        },
         goodsTransfersAsDestination: true,
         goodsTransfersAsSource: true,
       },

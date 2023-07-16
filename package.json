@@ -7,9 +7,5 @@
     "build": "turbo run build",
     "start": "node apps/api/dist/src/main"
   },
-  "workspaces": [
-    "apps/*",
-    "mobile/*"
-  ],
   "dependencies": {}
 }

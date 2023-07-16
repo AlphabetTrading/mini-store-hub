@@ -17,7 +17,13 @@ export class RetailShopsService {
         annualTransaction: true,
         goodsTransfersAsDestination: true,
         retailShopManager: true,
-        retailShopStock: true,
+        retailShopStock: {
+          include: {
+            product: true,
+            retailShop: true,
+            warehouse: true,
+          },
+        },
         saleTransaction: true,
       },
     });

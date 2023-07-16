@@ -1,5 +1,6 @@
-import { GraphQLModule } from '@nestjs/graphql';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { APP_FILTER } from '@nestjs/core';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -7,7 +8,6 @@ import { AppResolver } from './app.resolver';
 import config from 'src/common/configs/config';
 import { GqlConfigService } from './gql-config.service';
 import { AppService } from './app.service';
-import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
@@ -25,6 +25,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WarehouseStockModule } from './warehouse-inventories/warehouse-inventories.module';
 import { RetailShopStocksModule } from './retail-shop-inventories/retail-shop-inventories.module';
 import { NotificationModule } from './notification/notification.module';
+import { AllExceptionsFilter } from './middlewares/error.middleware';
 
 @Module({
   imports: [
@@ -52,7 +53,14 @@ import { NotificationModule } from './notification/notification.module';
     NotificationModule,
   ],
   controllers: [AppController],
-  providers: [AppResolver, AppService],
+  providers: [
+    AppResolver,
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {}

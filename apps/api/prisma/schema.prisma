@@ -216,16 +216,18 @@ model SaleTransaction {
 }
 
 model RetailShopStock {
-  id           String      @id @default(cuid())
+  id           String     @id @default(cuid())
   productId    String
-  product      Product     @relation(fields: [productId], references: [id])
+  product      Product    @relation(fields: [productId], references: [id])
   warehouseId  String
-  warehouse    Warehouse   @relation(fields: [warehouseId], references: [id])
+  warehouse    Warehouse  @relation(fields: [warehouseId], references: [id])
   quantity     Float
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  retailShop   RetailShop? @relation(fields: [retailShopId], references: [id])
-  retailShopId String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  retailShop   RetailShop @relation(fields: [retailShopId], references: [id])
+  retailShopId String
+
+  @@unique([productId, retailShopId])
 }
 
 model WarehouseStock {
@@ -237,6 +239,8 @@ model WarehouseStock {
   updatedAt   DateTime  @updatedAt
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
   product     Product   @relation(fields: [productId], references: [id])
+
+  @@unique([productId, warehouseId])
 }
 
 model DailyTransaction {

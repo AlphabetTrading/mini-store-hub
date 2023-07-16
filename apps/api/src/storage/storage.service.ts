@@ -1,6 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { createWriteStream } from 'fs';
-import { join } from 'path';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   DeleteObjectCommand,
   PutObjectCommand,
@@ -33,7 +31,6 @@ export class StorageService {
         Key: key,
       };
 
-      console.log(params);
       const response = await this.s3.send(
         new PutObjectCommand({
           Bucket: params.Bucket,

@@ -3,6 +3,8 @@ import { GoodsTransfersService } from './goods-transfers.service';
 import { GoodsTransfer } from './models/goods-transfer.model';
 import { CreateGoodsTransferInput } from './dto/create-goods-transfer.input';
 import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
+import { TransferType } from '@prisma/client';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Resolver()
 export class GoodsTransfersResolver {
@@ -14,7 +16,7 @@ export class GoodsTransfersResolver {
   }
 
   @Query(() => GoodsTransfer, { name: 'goodsTransfer' })
-  async GoodsTransfer(@Args('id') id: string) {
+  async goodsTransfer(@Args('id') id: string) {
     return this.goodsTransfersService.findOne(id);
   }
 
@@ -25,9 +27,22 @@ export class GoodsTransfersResolver {
     return this.goodsTransfersService.findByWarehouseId(warehouseId);
   }
 
-  @Mutation(() => GoodsTransfer)
+  @Mutation(() => GoodsTransfer, { name: 'createGoodsTransfer' })
   async createGoodsTransfer(@Args('data') data: CreateGoodsTransferInput) {
-    return this.goodsTransfersService.create(data);
+    if (!data.goods || data.goods.length < 1) {
+      throw new Error('Goods cannot be empty');
+    }
+    if (data.transferType === TransferType.WarehouseToRetailShop) {
+      if (!data.sourceWarehouseId) {
+        throw new Error('Warehouse Id cannot be empty');
+      }
+      return this.goodsTransfersService.transferToRetailShop(data);
+    } else {
+      if (!data.destinationWarehouseId) {
+        throw new Error('Warehouse Id cannot be empty');
+      }
+      return this.goodsTransfersService.transferToWarehouse(data);
+    }
   }
 
   @Mutation(() => GoodsTransfer)
@@ -35,7 +50,21 @@ export class GoodsTransfersResolver {
     @Args('id') id: string,
     @Args('data') data: UpdateGoodsTransferInput,
   ) {
-    return this.goodsTransfersService.update(id, data);
+    if (!data.transferType) {
+      throw new Error('Transfer Type cannot be empty');
+    }
+
+    if (data.transferType === TransferType.WarehouseToRetailShop) {
+      if (!data.sourceWarehouseId) {
+        throw new Error('Warehouse Id cannot be empty');
+      }
+      return this.goodsTransfersService.updateTransferToRetailShop(id, data);
+    } else {
+      if (!data.destinationWarehouseId) {
+        throw new Error('Warehouse Id cannot be empty');
+      }
+      return this.goodsTransfersService.updateTransferToWarehouse(id, data);
+    }
   }
 
   @Mutation(() => GoodsTransfer)

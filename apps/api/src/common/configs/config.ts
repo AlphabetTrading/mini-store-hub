@@ -12,7 +12,7 @@ const config: Config = {
     title: 'Mini Store Hub',
     description: 'Mini Store Hub API',
     version: '1.5',
-    path: 'apii',
+    path: 'api',
   },
   graphql: {
     playgroundEnabled: false,

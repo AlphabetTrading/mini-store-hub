@@ -10,4 +10,7 @@ export class CreateRetailShopStockInput {
 
   @Field(() => Float)
   quantity: number;
+
+  @Field(() => String)
+  retailShopId: string;
 }

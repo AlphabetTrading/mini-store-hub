@@ -66,6 +66,7 @@ input CreateCategoryInput {
 
 input CreateGoodsTransferInput {
   destinationWarehouseId: String
+  goods: [CreateStockItemInput!]
   retailShopId: String
   sourceWarehouseId: String
   transferType: TransferType
@@ -97,6 +98,7 @@ input CreateRetailShopInput {
 input CreateRetailShopStockInput {
   productId: String!
   quantity: Float!
+  retailShopId: String!
   warehouseId: String!
 }
 
@@ -105,6 +107,12 @@ input CreateSaleTransactionInput {
   productId: String!
   quantity: Float!
   retailShopId: String!
+}
+
+input CreateStockItemInput {
+  goodsTransferId: String
+  productId: String!
+  quantity: Float!
 }
 
 input CreateUserProfileInput {
@@ -159,10 +167,13 @@ type Goods {
 type GoodsTransfer {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
+  destinationWarehouse: Warehouse
   destinationWarehouseId: String
   goods: [StockItem!]
   id: ID!
+  retailShop: RetailShop
   retailShopId: String
+  sourceWarehouse: Warehouse
   sourceWarehouseId: String
   transferType: TransferType!
 
@@ -441,6 +452,7 @@ input UpdateCategoryInput {
 
 input UpdateGoodsTransferInput {
   destinationWarehouseId: String
+  goods: [UpdateStockItemInput!]
   retailShopId: String
   sourceWarehouseId: String
   transferType: TransferType
@@ -462,6 +474,7 @@ input UpdateRetailShopInput {
 input UpdateRetailShopStockInput {
   productId: String
   quantity: Float
+  retailShopId: String
   warehouseId: String
 }
 
@@ -470,6 +483,12 @@ input UpdateSaleTransactionInput {
   productId: String
   quantity: Float
   retailShopId: String
+}
+
+input UpdateStockItemInput {
+  goodsTransferId: String
+  productId: String
+  quantity: Float
 }
 
 input UpdateUserInput {
