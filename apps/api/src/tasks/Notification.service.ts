@@ -5,11 +5,17 @@ import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 export class NotificationService {
   constructor(private schedulerRegistry: SchedulerRegistry) {}
 
-  @Cron('* * 0 * * *', {
+  @Cron(CronExpression.EVERY_10_MINUTES, {
     name: 'notifications',
     timeZone: 'Europe/Paris',
   })
   triggerNotifications() {
     console.log('Triggering notifications...');
+  }
+
+  @Cron('0 0 0 1 * *')
+  handleMonthlyJob() {
+    // This method will run on the first day of every month
+    // Add your logic here
   }
 }

@@ -414,6 +414,7 @@ async function seedSaleTransactions() {
         {
           productId: products[0].id,
           price: 100,
+          purchasedPrice: 23,
           quantity: 2,
           retailShopId: retailShops[0].id,
         },
@@ -421,6 +422,7 @@ async function seedSaleTransactions() {
           productId: products[0].id,
           price: 200,
           quantity: 3,
+          purchasedPrice: 23,
           retailShopId: retailShops[1].id,
         },
       ],

@@ -1,12 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import type {
   CorsConfig,
   NestConfig,
-  SwaggerConfig,
 } from 'src/common/configs/config.interface';
 import { PrismaService } from './prisma/prisma.service';
 

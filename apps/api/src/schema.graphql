@@ -96,6 +96,7 @@ input CreateRetailShopInput {
 }
 
 input CreateRetailShopStockInput {
+  maxQuantity: Float
   productId: String!
   quantity: Float!
   retailShopId: String!
@@ -105,6 +106,7 @@ input CreateRetailShopStockInput {
 input CreateSaleTransactionInput {
   price: Float!
   productId: String!
+  purchasedPrice: Float!
   quantity: Float!
   retailShopId: String!
 }
@@ -233,6 +235,8 @@ type Mutation {
   disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
+  sendPushNotification(data: sendPushNotificationInput!): Notification!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
   updateGoodsTransfer(data: UpdateGoodsTransferInput!, id: String!): GoodsTransfer!
@@ -254,7 +258,6 @@ type Notification {
   createdAt: DateTime!
   createdBy: User!
   id: ID!
-  notification_token: String!
   status: String!
   title: String!
 
@@ -340,6 +343,12 @@ type Query {
   saleTransactionsByRetailShop: [SaleTransaction!]!
   sayHello: String!
   searchProduct(search: String!): [Product!]!
+  totalSales: Float!
+  totalSalesByDate: Float!
+  totalSalesByDateAndProduct: Float!
+  totalSalesByDateAndRetailShop: Float!
+  totalSalesByProduct: Float!
+  totalSalesByRetailShop: Float!
   unreadNotifications(userId: String!): [Notification!]!
   user(id: String!): User!
   users(orderBy: UserOrder): [User!]!
@@ -378,6 +387,7 @@ type RetailShopStock {
   createdAt: DateTime!
   goodsTransfers: [GoodsTransfer!]
   id: ID!
+  maxQuantity: Float!
   product: Product
   productId: String!
   quantity: Float!
@@ -472,6 +482,7 @@ input UpdateRetailShopInput {
 }
 
 input UpdateRetailShopStockInput {
+  maxQuantity: Float
   productId: String
   quantity: Float
   retailShopId: String
@@ -481,6 +492,7 @@ input UpdateRetailShopStockInput {
 input UpdateSaleTransactionInput {
   price: Float
   productId: String
+  purchasedPrice: Float
   quantity: Float
   retailShopId: String
 }
@@ -591,4 +603,16 @@ type WarehouseStock {
   updatedAt: DateTime!
   warehouse: Warehouse
   warehouseId: String!
+}
+
+input sendBulkPushNotificationInput {
+  body: String!
+  title: String!
+  userIds: String!
+}
+
+input sendPushNotificationInput {
+  body: String!
+  title: String!
+  userId: String!
 }

@@ -11,6 +11,9 @@ export class CreateSaleTransactionInput {
   @Field(() => Float)
   price: number;
 
+  @Field(() => Float)
+  purchasedPrice: number;
+
   @Field(() => String)
   retailShopId: string;
 }

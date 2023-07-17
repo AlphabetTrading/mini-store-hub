@@ -15,6 +15,9 @@ export class RetailShopStock extends BaseModel {
   @Field(() => Float)
   quantity: number;
 
+  @Field(() => Float)
+  maxQuantity: number;
+
   @Field(() => Product, { nullable: true })
   product?: Product;
 

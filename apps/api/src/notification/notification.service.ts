@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
+import { NotificationEvent } from './events/notification.event';
 
 const firebase_private_key_b64 = Buffer.from(
   process.env.FIREBASE_PRIVATE_KEY_BASE64,
@@ -25,6 +26,60 @@ firebase.initializeApp({
 @Injectable()
 export class NotificationService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async sendBulkPush(payload: NotificationEvent) {
+    try {
+      // send bulk push notification
+      const notification_title = payload.notification_title;
+      const notification_body = payload.notification_body;
+
+      const users = await this.prisma.user.findMany({
+        where: {
+          id: {
+            in: payload.userIds,
+          },
+        },
+        include: {
+          notificationToken: true,
+        },
+      });
+
+      const notification_tokens = users.map(
+        (user) => user.notificationToken.notifications_token,
+      );
+
+      // send notification
+      await firebase.messaging().sendEachForMulticast({
+        tokens: notification_tokens,
+        data: {
+          notification_title: notification_title,
+          notification_body: notification_body,
+        },
+        notification: {
+          title: notification_title,
+          body: notification_body,
+        },
+      });
+
+      // save notification on each users
+      users.map(async (user) => {
+        await this.prisma.notification.create({
+          data: {
+            createdBy: {
+              connect: {
+                id: user.id,
+              },
+            },
+            body: notification_body,
+            title: notification_title,
+            status: true,
+          },
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async getUnreadNotifications() {
     const notifications = await this.prisma.notification.findMany({
@@ -125,7 +180,6 @@ export class NotificationService {
       if (notification) {
         await this.prisma.notification.create({
           data: {
-            notifications_token: notification.notifications_token,
             title,
             body,
             status: true,

@@ -11,9 +11,6 @@ export class Notification extends BaseModel {
   body: string;
 
   @Field(() => String)
-  notification_token: string;
-
-  @Field(() => String)
   status: string;
 
   @Field(() => User)

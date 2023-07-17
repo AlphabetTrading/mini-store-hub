@@ -1,4 +1,11 @@
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import {
+  Args,
+  Float,
+  Mutation,
+  Query,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
 import { SaleTransactionsService } from './sale-transactions.service';
 import { SaleTransaction } from './models/sale-transaction.model';
 import { CreateSaleTransactionInput } from './dto/create-sale-transaction.input';
@@ -27,6 +34,53 @@ export class SaleTransactionsResolver {
     return this.saleTransactionsService.findAllByRetailShop(id);
   }
 
+  @Query(() => Float)
+  async totalSalesByRetailShop(id: string): Promise<number> {
+    return this.saleTransactionsService.totalSalesByRetailShop(id);
+  }
+
+  @Query(() => Float)
+  async totalSalesByProduct(id: string): Promise<number> {
+    return this.saleTransactionsService.totalSalesByProduct(id);
+  }
+
+  // calculate totalSales
+  @Query(() => Float)
+  async totalSales(): Promise<number> {
+    return this.saleTransactionsService.totalSales();
+  }
+
+  @Query(() => Float)
+  async totalSalesByDate(startDate: string, endDate: string): Promise<number> {
+    return this.saleTransactionsService.totalSalesByDate(startDate, endDate);
+  }
+
+  @Query(() => Float)
+  async totalSalesByDateAndRetailShop(
+    id: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    return this.saleTransactionsService.totalSalesByRetailShopByDate(
+      id,
+      startDate,
+      endDate,
+    );
+  }
+
+  @Query(() => Float)
+  async totalSalesByDateAndProduct(
+    productId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    return this.saleTransactionsService.totalSalesByProductByDate(
+      productId,
+      startDate,
+      endDate,
+    );
+  }
+
   @Mutation(() => SaleTransaction)
   async createSaleTransaction(
     @Args('data') data: CreateSaleTransactionInput,
@@ -40,7 +94,7 @@ export class SaleTransactionsResolver {
     // console.log(inventoryUpdated);
     //
 
-    pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
+    // pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
     return sales;
   }
 

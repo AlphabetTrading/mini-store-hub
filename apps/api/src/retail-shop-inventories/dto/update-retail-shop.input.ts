@@ -11,6 +11,12 @@ export class UpdateRetailShopStockInput extends PartialType(
   @Field(() => String, { nullable: true })
   warehouseId: string;
 
+  @Field(() => String, { nullable: true })
+  retailShopId: string;
+
   @Field(() => Float, { nullable: true })
   quantity: number;
+
+  @Field(() => Float, { nullable: true })
+  maxQuantity?: number;
 }
