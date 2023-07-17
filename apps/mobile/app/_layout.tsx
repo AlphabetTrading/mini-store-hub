@@ -1,3 +1,4 @@
+import Colors from "../constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -16,7 +17,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: "(tabs)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -24,15 +25,15 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    InterThin: require('../assets/fonts/Inter-Thin.ttf'),
-    InterExtraLight: require('../assets/fonts/Inter-ExtraLight.ttf'),
-    InterLight: require('../assets/fonts/Inter-Light.ttf'),
-    InterRegular: require('../assets/fonts/Inter-Regular.ttf'),
-    InterMedium: require('../assets/fonts/Inter-Medium.ttf'),
-    InterSemiBold: require('../assets/fonts/Inter-SemiBold.ttf'),
-    InterBold: require('../assets/fonts/Inter-Bold.ttf'),
-    InterExtraBold: require('../assets/fonts/Inter-ExtraBold.ttf'),
-    InterBlack: require('../assets/fonts/Inter-Black.ttf'),
+    InterThin: require("../assets/fonts/Inter-Thin.ttf"),
+    InterExtraLight: require("../assets/fonts/Inter-ExtraLight.ttf"),
+    InterLight: require("../assets/fonts/Inter-Light.ttf"),
+    InterRegular: require("../assets/fonts/Inter-Regular.ttf"),
+    InterMedium: require("../assets/fonts/Inter-Medium.ttf"),
+    InterSemiBold: require("../assets/fonts/Inter-SemiBold.ttf"),
+    InterBold: require("../assets/fonts/Inter-Bold.ttf"),
+    InterExtraBold: require("../assets/fonts/Inter-ExtraBold.ttf"),
+    InterBlack: require("../assets/fonts/Inter-Black.ttf"),
     ...FontAwesome.font,
   });
 
@@ -58,10 +59,10 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'light' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
+        <Stack.Screen name="categoryDetail" />
       </Stack>
     </ThemeProvider>
   );
