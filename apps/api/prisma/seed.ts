@@ -337,20 +337,45 @@ async function seedRetailshopStocks() {
           retailShopId: retailshops[0].id,
           quantity: 10,
           warehouseId: warehouses[0].id,
+          maxQuantity: 50,
         },
         {
           productId: products[1].id,
           retailShopId: retailshops[0].id,
           quantity: 20,
           warehouseId: warehouses[0].id,
+          maxQuantity: 50,
         },
         {
           productId: products[2].id,
           retailShopId: retailshops[0].id,
           quantity: 30,
           warehouseId: warehouses[0].id,
+          maxQuantity: 50,
         },
       ],
+    });
+
+    await prisma.retailShopStock.create({
+      data: {
+        retailShop: {
+          connect: {
+            id: retailshops[2].id,
+          },
+        },
+        product: {
+          connect: {
+            id: products[2].id,
+          },
+        },
+        maxQuantity: 25,
+        quantity: 22,
+        warehouse: {
+          connect: {
+            id: warehouses[0].id,
+          },
+        },
+      },
     });
     console.log('Retailshops stock is seeded successfully');
   } catch (error) {

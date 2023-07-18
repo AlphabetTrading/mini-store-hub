@@ -28,12 +28,12 @@ async function bootstrap() {
   const prismaService: PrismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
+  // const { httpAdapter } = app.get(HttpAdapterHost);
 
   // Prisma Client Exception Filter for unhandled exceptions
   // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  app.useGlobalFilters(new AllExceptionsFilter({ httpAdapter }));
+  // app.useGlobalFilters(new AllExceptionsFilter({ httpAdapter }));
 
   const configService = app.get(ConfigService);
   const nestConfig = configService.get<NestConfig>('nest');

@@ -1,11 +1,56 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSaleTransactionInput } from './dto/create-sale-transaction.input';
 import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input';
 
 @Injectable()
 export class SaleTransactionsService {
+  private readonly logger = new Logger(SaleTransactionsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
+
+  async totalProfitByProductByDate(
+    productId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const response = await this.prisma.saleTransaction.aggregate({
+      where: {
+        productId,
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      _sum: {
+        price: true,
+        quantity: true,
+      },
+    });
+    const total = response._sum.price;
+    return total;
+  }
+  async totalProfitByRetailShopByDate(
+    id: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const response = await this.prisma.saleTransaction.aggregate({
+      where: {
+        retailShopId: id,
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      _sum: {
+        price: true,
+        quantity: true,
+      },
+    });
+    const total = response._sum.price;
+    return total;
+  }
 
   async totalSales() {
     const response = await this.prisma.saleTransaction.aggregate({
@@ -163,20 +208,26 @@ export class SaleTransactionsService {
   }
 
   async findAll() {
-    return this.prisma.saleTransaction.findMany({
-      include: {
-        retailShop: true,
-        product: {
-          include: {
-            activePrice: true,
-            priceHistory: true,
-            retailShopStock: true,
-            warehouseStock: true,
-            category: true,
+    try {
+      console.log('test');
+      this.logger.error('test');
+      return this.prisma.saleTransaction.findMany({
+        include: {
+          retailShop: true,
+          product: {
+            include: {
+              activePrice: true,
+              priceHistory: true,
+              retailShopStock: true,
+              warehouseStock: true,
+              category: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
   async findOne(id: string) {
     return this.prisma.saleTransaction.findUnique({

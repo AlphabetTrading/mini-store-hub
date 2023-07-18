@@ -61,7 +61,7 @@ export class UsersResolver {
   }
 
   @Query(() => [User])
-  async retailManagers(@Parent() user: User) {
+  async retailShopManagers(@Parent() user: User) {
     return this.usersService.getRetailManagers();
   }
 
@@ -71,7 +71,7 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  async createRetailManager(@Args('data') data: SignupInput) {
+  async createRetailShopManager(@Args('data') data: SignupInput) {
     return this.usersService.createRetailShopManager(data);
   }
 

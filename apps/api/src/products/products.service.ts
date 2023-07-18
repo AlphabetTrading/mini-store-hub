@@ -3,33 +3,72 @@ import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+import { Product } from './models/product.model';
+import { Prisma } from '@prisma/client';
+
+export const ProductsIncludeObject = {
+  category: true,
+  activePrice: true,
+  priceHistory: true,
+};
+
+export const ProductIncludeObject = {
+  category: true,
+  activePrice: true,
+  priceHistory: true,
+  saleTransaction: true,
+  goods: true,
+  retailShopStock: true,
+  warehouseStock: true,
+};
+
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
     return this.prisma.product.findMany({
-      include: {
-        category: true,
-        activePrice: true,
-        priceHistory: true,
-      },
+      skip,
+      take,
+      where,
+      orderBy,
+      include: ProductIncludeObject,
+    });
+  }
+
+  async count(where?: Prisma.ProductWhereInput): Promise<number> {
+    return this.prisma.product.count({ where });
+  }
+
+  async countByCategory(category: string) {
+    return this.prisma.product.count({
+      where: { category: { name: category } },
     });
   }
 
   async findOne(id: string) {
-    return this.prisma.product.findUnique({
+    // check if product with this Id exists and if it doesn't return
+    // "product with this Id doesn't" exists error
+
+    const product = await this.prisma.product.findUnique({
       where: { id },
-      include: {
-        category: true,
-        activePrice: true,
-        priceHistory: true,
-        saleTransaction: true,
-        goods: true,
-        retailShopStock: true,
-        warehouseStock: true,
-      },
+      include: ProductIncludeObject,
     });
+    if (!product) {
+      throw new Error("Product with this Id doesn't exists");
+    }
+
+    return product;
   }
 
   async findByCategory(categoryId: string) {
@@ -59,6 +98,34 @@ export class ProductsService {
             },
           },
         ],
+      },
+    });
+  }
+
+  async searchProductByCategory(search: string, categoryId: string) {
+    return this.prisma.product.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            serialNumber: {
+              equals: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            description: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        ],
+        categoryId,
       },
     });
   }

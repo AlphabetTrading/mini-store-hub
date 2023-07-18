@@ -56,10 +56,10 @@ import { AllExceptionsFilter } from './middlewares/error.middleware';
   providers: [
     AppResolver,
     AppService,
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: AllExceptionsFilter,
+    // },
   ],
 })
 export class AppModule implements NestModule {

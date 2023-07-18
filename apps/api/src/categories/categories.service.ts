@@ -8,7 +8,12 @@ export class CategoriesService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.category.findMany();
+    try {
+      const categories = await this.prisma.category.findMany();
+      return categories;
+    } catch (e) {
+      return e;
+    }
   }
 
   async findOne(id: string) {

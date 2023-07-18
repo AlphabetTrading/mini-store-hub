@@ -62,7 +62,8 @@ export class NotificationService {
       });
 
       // save notification on each users
-      users.map(async (user) => {
+
+      users.forEach(async (user) => {
         await this.prisma.notification.create({
           data: {
             createdBy: {

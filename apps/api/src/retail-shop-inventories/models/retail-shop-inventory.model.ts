@@ -2,7 +2,7 @@ import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
 import { GoodsTransfer } from 'src/goods-transfers/models/goods-transfer.model';
 import { Product } from 'src/products/models/product.model';
-import { Warehouse } from 'src/warehouses/models/warehouse.model';
+import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 
 @ObjectType()
 export class RetailShopStock extends BaseModel {
@@ -10,7 +10,7 @@ export class RetailShopStock extends BaseModel {
   productId: string;
 
   @Field(() => String)
-  warehouseId: string;
+  retailShopId: string;
 
   @Field(() => Float)
   quantity: number;
@@ -21,8 +21,8 @@ export class RetailShopStock extends BaseModel {
   @Field(() => Product, { nullable: true })
   product?: Product;
 
-  @Field(() => Warehouse, { nullable: true })
-  warehouse?: Warehouse;
+  @Field(() => RetailShop, { nullable: true })
+  retailShop?: RetailShop;
 
   @Field(() => [GoodsTransfer], { nullable: true })
   goodsTransfers?: GoodsTransfer[];

@@ -43,9 +43,6 @@ export class Product extends BaseModel {
   images?: string[];
 
   @Field(() => [PriceHistory], { nullable: true })
-  priceHistories?: PriceHistory[];
-
-  @Field(() => [PriceHistory], { nullable: true })
   priceHistory?: PriceHistory[];
 
   @Field(() => [SaleTransaction], { nullable: true })

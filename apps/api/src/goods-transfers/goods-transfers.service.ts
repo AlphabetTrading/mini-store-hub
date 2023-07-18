@@ -182,6 +182,7 @@ export class GoodsTransfersService {
                 productId: good.productId,
                 retailShopId: retailShopId,
                 warehouseId: sourceWarehouseId,
+                maxQuantity: good.quantity,
               },
               update: {
                 quantity: {
@@ -494,9 +495,13 @@ export class GoodsTransfersService {
               productId: good.productId,
               retailShopId: retailShopId,
               warehouseId: sourceWarehouseId,
+              maxQuantity: good.quantity,
             },
             update: {
               quantity: {
+                increment: good.quantity,
+              },
+              maxQuantity: {
                 increment: good.quantity,
               },
             },

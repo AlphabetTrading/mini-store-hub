@@ -96,7 +96,6 @@ input CreateRetailShopInput {
 }
 
 input CreateRetailShopStockInput {
-  maxQuantity: Float
   productId: String!
   quantity: Float!
   retailShopId: String!
@@ -152,6 +151,30 @@ type DailyTransaction {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  lt: DateTime
+  lte: DateTime
+}
+
+input FilterProductInput {
+  category: StringFilter
+  createdAt: DateTimeFilter
+  description: StringFilter
+  id: String
+  name: StringFilter
+  serialNumber: StringFilter
+}
+
+input FilterRetailShopStockInput {
+  createdAt: DateTimeFilter
+  id: String
+  product: FilterProductInput
+  retailShopId: String
+}
 
 type Goods {
   """Identifies the date and time when the object was created."""
@@ -214,8 +237,8 @@ type Mutation {
   """Create a new price history"""
   createPriceHistory(priceHistory: CreatePriceHistoryInput!): PriceHistory!
   createProduct(data: CreateProductInput!): Product!
-  createRetailManager(data: SignupInput!): User!
   createRetailShop(data: CreateRetailShopInput!): RetailShop!
+  createRetailShopManager(data: SignupInput!): User!
   createRetailShopStock(data: CreateRetailShopStockInput!): RetailShopStock!
   createSaleTransaction(data: CreateSaleTransactionInput!): SaleTransaction!
   createUserProfile(createUserProfileInput: CreateUserProfileInput!): UserProfile!
@@ -273,6 +296,27 @@ enum OrderDirection {
   desc
 }
 
+type PaginationInfo {
+  count: Int
+  limit: Int
+  page: Int
+}
+
+input PaginationInput {
+  skip: Int
+  take: Int
+}
+
+type PaginationProducts {
+  items: [Product!]!
+  meta: PaginationInfo
+}
+
+type PaginationRetailShopStocks {
+  items: [RetailShopStock!]!
+  meta: PaginationInfo
+}
+
 type PriceHistory {
   activeProduct: Product
 
@@ -303,7 +347,6 @@ type Product {
   id: ID!
   images: [String!]
   name: String!
-  priceHistories: [PriceHistory!]
   priceHistory: [PriceHistory!]
   saleTransaction: [SaleTransaction!]
   serialNumber: String!
@@ -312,6 +355,21 @@ type Product {
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   warehouseStock: [WarehouseStock!]
+}
+
+input ProductOrder {
+  direction: OrderDirection!
+  field: ProductOrderField!
+}
+
+"""Properties by which product connections can be ordered."""
+enum ProductOrderField {
+  category
+  createdAt
+  id
+  name
+  serialNumber
+  updatedAt
 }
 
 type Query {
@@ -326,14 +384,16 @@ type Query {
   priceHistory: PriceHistory!
   priceHistoryByProduct: [PriceHistory!]!
   product: Product!
-  products: [Product!]!
+  products(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   productsByCategory: [Product!]!
   readNotifications(userId: String!): [Notification!]!
-  retailManagers: [User!]!
   retailShop(id: String!): RetailShop!
+  retailShopManagers: [User!]!
   retailShopStock(id: String!): RetailShopStock!
   retailShopStockByProductId(productId: String!): [RetailShopStock!]!
+  retailShopStockByProductIdAndByRetailShopId(productId: String!, retailShopId: String!): RetailShopStock!
   retailShopStockByProductIdAndWarehouseId(productId: String!, warehouseId: String!): [RetailShopStock!]!
+  retailShopStockByRetailShopId(filterRetailShopStockInput: FilterRetailShopStockInput, orderBy: RetailShopStockOrder, paginationInput: PaginationInput): PaginationRetailShopStocks!
   retailShopStockByWarehouseId(warehouseId: String!): [RetailShopStock!]!
   retailShopStocks: [RetailShopStock!]!
   retailShops: [RetailShop!]!
@@ -341,8 +401,16 @@ type Query {
   saleTransaction: SaleTransaction!
   saleTransactions: [SaleTransaction!]!
   saleTransactionsByRetailShop: [SaleTransaction!]!
-  sayHello: String!
   searchProduct(search: String!): [Product!]!
+  searchProducts(search: String!): [Product!]!
+  searchProductsByCategory(category: String!, search: String!): [Product!]!
+  totalProducts: Int!
+  totalProductsByCategory: Int!
+  totalProfit: Float!
+  totalProfitByDate: Float!
+  totalProfitByDateAndProduct(endDate: String!, productId: String!, startDate: String!): Float!
+  totalProfitByDateAndRetailShop(endDate: String!, id: String!, startDate: String!): Float!
+  totalProfitByRetailShop: Float!
   totalSales: Float!
   totalSalesByDate: Float!
   totalSalesByDateAndProduct: Float!
@@ -391,11 +459,26 @@ type RetailShopStock {
   product: Product
   productId: String!
   quantity: Float!
+  retailShop: RetailShop
+  retailShopId: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-  warehouse: Warehouse
-  warehouseId: String!
+}
+
+input RetailShopStockOrder {
+  direction: OrderDirection!
+  field: RetailShopStockOrderField!
+}
+
+"""Properties by which retailShopStock connections can be ordered."""
+enum RetailShopStockOrderField {
+  category
+  createdAt
+  id
+  name
+  serialNumber
+  updatedAt
 }
 
 type SaleTransaction {
@@ -433,6 +516,15 @@ type StockItem {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  mode: String = "insensitive"
+  not: String
+  startsWith: String
 }
 
 type Token {

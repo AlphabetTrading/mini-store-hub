@@ -79,6 +79,8 @@ User Management:
 Manage user accounts and access levels within the system.
 Create and update user profiles for warehouse managers, retail shop managers, and other relevant stakeholders.
 Set permissions and roles for different user types to control their access and functionality.
+
+
 Inventory Management:
 
 Monitor overall inventory levels across warehouses and retail shops.
