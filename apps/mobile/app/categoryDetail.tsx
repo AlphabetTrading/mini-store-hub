@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { Stack, router } from "expo-router";
 import Colors from "../constants/Colors";
+import SearchBar from "../components/common/SearchBar";
 
 type Props = {};
 
@@ -90,6 +91,7 @@ const categoryDetail = (props: Props) => {
             width: "100%",
           }}
         >
+          <SearchBar />
           <FlatList
             data={DATA}
             renderItem={({ item, index }) => (
