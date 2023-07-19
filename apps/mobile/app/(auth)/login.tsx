@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Stack } from "expo-router";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { useAppContext } from "../../context/auth";
@@ -27,6 +27,8 @@ const loginSchema = Yup.object().shape({
 
 const login = (props: Props) => {
   const { user, setUser } = useAppContext();
+  const [viewPassword, setViewPassword] = useState(false);
+
   const INITIAL_VALUES: FormValues = {
     userName: "",
     password: "",
@@ -83,9 +85,27 @@ const login = (props: Props) => {
                   placeholderTextColor="#6C6C6C66"
                   placeholder="Enter Password"
                   value={values.password}
-                  secureTextEntry={true}
+                  secureTextEntry={!viewPassword}
+                  keyboardType={!viewPassword ? "default" : "visible-password"}
                   onChangeText={handleChange("password")}
                 />
+                {viewPassword ? (
+                  <Entypo
+                    name="eye-with-line"
+                    onPress={() => setViewPassword(!viewPassword)}
+                    style={{ alignSelf: "flex-end" }}
+                    size={20}
+                    color="#5684E0"
+                  />
+                ) : (
+                  <Entypo
+                    name="eye"
+                    onPress={() => setViewPassword(!viewPassword)}
+                    style={{ alignSelf: "flex-end" }}
+                    size={20}
+                    color="#5684E0"
+                  />
+                )}
               </View>
               {errors.password && (
                 <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
