@@ -66,7 +66,16 @@ const inventory = (props: Props) => {
         }}
       />
       <View style={styles.container}>
-        <Text style={{ marginLeft: 8, color: "#000" }}>Categories</Text>
+        <Text
+          style={{
+            marginLeft: 8,
+            color: "#828282",
+            fontFamily: "InterBold",
+            textTransform: "uppercase",
+          }}
+        >
+          Categories
+        </Text>
         <View
           style={{
             backgroundColor: Colors.light.background,
@@ -86,7 +95,9 @@ const inventory = (props: Props) => {
                   margin: 8,
                   gap: 4,
                 }}
-                onPress={() => {router.push('/categoryDetail')}}
+                onPress={() => {
+                  router.push("/categoryDetail");
+                }}
               >
                 <View style={styles.categoryItem} key={index}>
                   <Image style={styles.categoryImage} source={item.imageSrc} />
