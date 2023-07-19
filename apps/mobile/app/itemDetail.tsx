@@ -44,7 +44,16 @@ const itemDetail = (props: Props) => {
         }}
       />
       <View style={styles.container}>
-        <Text style={{ marginLeft: 8, color: "#000" }}>Detail</Text>
+        <Text
+          style={{
+            marginLeft: 8,
+            color: "#828282",
+            fontFamily: "InterBold",
+            textTransform: "uppercase",
+          }}
+        >
+          Detail
+        </Text>
         <View
           style={{
             backgroundColor: "#FFF",
@@ -54,6 +63,7 @@ const itemDetail = (props: Props) => {
             padding: 20,
             gap: 10,
             borderRadius: 6,
+            marginBottom: 20,
           }}
         >
           <Text
@@ -87,7 +97,14 @@ const itemDetail = (props: Props) => {
             Quantity: 100
           </Text>
         </View>
-        <Text style={{ marginLeft: 8, marginTop: 24, color: "#000" }}>
+        <Text
+          style={{
+            marginLeft: 8,
+            color: "#828282",
+            fontFamily: "InterBold",
+            textTransform: "uppercase",
+          }}
+        >
           Price History
         </Text>
         <View

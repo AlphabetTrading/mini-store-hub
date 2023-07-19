@@ -25,6 +25,15 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerTintColor: "#fff",
+        headerRight: () => (
+          <AntDesign
+            style={{ marginHorizontal: 20 }}
+            name="setting"
+            color="#FFF"
+            size={24}
+            onPress={() => {}}
+          />
+        ),
         tabBarLabelStyle: {
           fontFamily: "InterRegular",
           fontSize: 10,
@@ -47,6 +56,148 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Colors.light.tint,
       }}
     >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarItemStyle: {
+            borderWidth: 0.5,
+            borderColor: "#D3D3D3",
+          },
+          tabBarIcon: ({ focused, color }) => (
+            <TabItem
+              color={color}
+              focused={focused}
+              name="Home"
+              svg={
+                <Svg width="24" height="24" viewBox="0 0 15 15" fill="none">
+                  <Path
+                    d="M13.75 13.75H1.25"
+                    stroke={color}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d="M1.25 6.87504L6.32869 2.81211C7.0135 2.26429 7.9865 2.26429 8.67131 2.81211L13.75 6.87504"
+                    stroke={color}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d="M9.6875 3.4375V2.1875C9.6875 2.01491 9.82744 1.875 10 1.875H11.5625C11.7351 1.875 11.875 2.01491 11.875 2.1875V5.3125"
+                    stroke={color}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d="M2.5 13.75V5.9375"
+                    stroke={color}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d="M12.5 13.75V5.9375"
+                    stroke={color}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d="M9.375 13.75V10.625C9.375 9.74113 9.375 9.29919 9.10044 9.02456C8.82581 8.75 8.38387 8.75 7.5 8.75C6.61613 8.75 6.17417 8.75 5.89959 9.02456C5.625 9.29919 5.625 9.74113 5.625 10.625V13.75"
+                    stroke={color}
+                  />
+                  <Path
+                    d="M8.75 5.9375C8.75 6.62787 8.19037 7.1875 7.5 7.1875C6.80963 7.1875 6.25 6.62787 6.25 5.9375C6.25 5.24714 6.80963 4.6875 7.5 4.6875C8.19037 4.6875 8.75 5.24714 8.75 5.9375Z"
+                    stroke={color}
+                  />
+                </Svg>
+              }
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inventory"
+        options={{
+          title: "Inventory",
+          tabBarLabelStyle: {
+            borderWidth: 1,
+          },
+          tabBarIcon: ({ color, focused }) => (
+            <TabItem
+              color={color}
+              focused={focused}
+              name="Inventory"
+              svg={
+                <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <Path
+                    d="M19.202 14.3685V16.1427L18.4495 15.6459L17.6971 16.1427V14.3685H19.202ZM16.9446 18.9105V20.6492L16.1564 20.1524L15.4039 20.6492V18.9105H16.9446ZM21.4951 18.9105V20.6492L20.7427 20.1524L19.9544 20.6492V18.9105H21.4951Z"
+                    stroke={color}
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <Path
+                    d="M12.251 1.41699V5.49764C12.251 6.20732 12.8243 6.81054 13.5767 6.81054H17.9122L13.6125 2.19764L12.251 1.41699Z"
+                    stroke={color}
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <Path
+                    d="M12.4658 23.417H2.2899C1.57329 23.417 1 22.8493 1 22.1396V2.7299C1 2.02022 1.57329 1.41699 2.32573 1.41699H12.2866C12.645 1.41699 12.9674 1.55893 13.2182 1.80731L17.5538 6.10086C17.8046 6.34925 17.9479 6.6686 17.9479 7.02344V12.9847M12.4658 20.5073H7.91531M12.4658 18.9105H7.91531M14.7231 15.8944H7.91531M12.9674 14.2976H7.91531M14.9381 11.2815H7.91531M12.9674 9.68473H7.91531M3.93811 6.63312H9.63518M9.63518 4.32667H3.93811"
+                    stroke={color}
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <Path
+                    d="M3.93811 10.3944L4.54723 10.9621L5.40717 10.1105L6.2671 9.25891M3.93811 13.5879H6.2671V15.8944H3.93811V13.5879ZM3.93811 18.2008H6.2671V20.5073H3.93811V18.2008Z"
+                    stroke={color}
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <Path
+                    d="M18.4495 18.9105H23V23.4169H18.4495M18.4495 18.9105V23.4169M18.4495 18.9105H13.899V23.4169H18.4495M16.1564 14.3685H20.7069V18.875H16.1564V14.3685Z"
+                    stroke={color}
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </Svg>
+              }
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="new_transaction"
+        options={{
+          title: "",
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              style={{
+                position: "absolute",
+                bottom: 10, // space from bottombar
+                height: 80,
+                width: 80,
+                borderRadius: 60,
+                backgroundColor: "#5a95ff",
+                justifyContent: "center",
+                alignItems: "center",
+                elevation: 5,
+              }}
+            >
+              <Pressable
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <AntDesign name="plus" size={45} color="white" />
+              </Pressable>
+            </View>
+          ),
+        }}
+      />
       <Tabs.Screen
         name="sales"
         options={{
@@ -183,148 +334,6 @@ export default function TabLayout() {
                 </Svg>
               }
             />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarItemStyle: {
-            borderWidth: 0.5,
-            borderColor: "#D3D3D3",
-          },
-          tabBarIcon: ({ focused, color }) => (
-            <TabItem
-              color={color}
-              focused={focused}
-              name="Home"
-              svg={
-                <Svg width="24" height="24" viewBox="0 0 15 15" fill="none">
-                  <Path
-                    d="M13.75 13.75H1.25"
-                    stroke={color}
-                    strokeLinecap="round"
-                  />
-                  <Path
-                    d="M1.25 6.87504L6.32869 2.81211C7.0135 2.26429 7.9865 2.26429 8.67131 2.81211L13.75 6.87504"
-                    stroke={color}
-                    strokeLinecap="round"
-                  />
-                  <Path
-                    d="M9.6875 3.4375V2.1875C9.6875 2.01491 9.82744 1.875 10 1.875H11.5625C11.7351 1.875 11.875 2.01491 11.875 2.1875V5.3125"
-                    stroke={color}
-                    strokeLinecap="round"
-                  />
-                  <Path
-                    d="M2.5 13.75V5.9375"
-                    stroke={color}
-                    strokeLinecap="round"
-                  />
-                  <Path
-                    d="M12.5 13.75V5.9375"
-                    stroke={color}
-                    strokeLinecap="round"
-                  />
-                  <Path
-                    d="M9.375 13.75V10.625C9.375 9.74113 9.375 9.29919 9.10044 9.02456C8.82581 8.75 8.38387 8.75 7.5 8.75C6.61613 8.75 6.17417 8.75 5.89959 9.02456C5.625 9.29919 5.625 9.74113 5.625 10.625V13.75"
-                    stroke={color}
-                  />
-                  <Path
-                    d="M8.75 5.9375C8.75 6.62787 8.19037 7.1875 7.5 7.1875C6.80963 7.1875 6.25 6.62787 6.25 5.9375C6.25 5.24714 6.80963 4.6875 7.5 4.6875C8.19037 4.6875 8.75 5.24714 8.75 5.9375Z"
-                    stroke={color}
-                  />
-                </Svg>
-              }
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="inventory"
-        options={{
-          title: "Inventory",
-          tabBarLabelStyle: {
-            borderWidth: 1,
-          },
-          tabBarIcon: ({ color, focused }) => (
-            <TabItem
-              color={color}
-              focused={focused}
-              name="Inventory"
-              svg={
-                <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <Path
-                    d="M19.202 14.3685V16.1427L18.4495 15.6459L17.6971 16.1427V14.3685H19.202ZM16.9446 18.9105V20.6492L16.1564 20.1524L15.4039 20.6492V18.9105H16.9446ZM21.4951 18.9105V20.6492L20.7427 20.1524L19.9544 20.6492V18.9105H21.4951Z"
-                    stroke={color}
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <Path
-                    d="M12.251 1.41699V5.49764C12.251 6.20732 12.8243 6.81054 13.5767 6.81054H17.9122L13.6125 2.19764L12.251 1.41699Z"
-                    stroke={color}
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <Path
-                    d="M12.4658 23.417H2.2899C1.57329 23.417 1 22.8493 1 22.1396V2.7299C1 2.02022 1.57329 1.41699 2.32573 1.41699H12.2866C12.645 1.41699 12.9674 1.55893 13.2182 1.80731L17.5538 6.10086C17.8046 6.34925 17.9479 6.6686 17.9479 7.02344V12.9847M12.4658 20.5073H7.91531M12.4658 18.9105H7.91531M14.7231 15.8944H7.91531M12.9674 14.2976H7.91531M14.9381 11.2815H7.91531M12.9674 9.68473H7.91531M3.93811 6.63312H9.63518M9.63518 4.32667H3.93811"
-                    stroke={color}
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <Path
-                    d="M3.93811 10.3944L4.54723 10.9621L5.40717 10.1105L6.2671 9.25891M3.93811 13.5879H6.2671V15.8944H3.93811V13.5879ZM3.93811 18.2008H6.2671V20.5073H3.93811V18.2008Z"
-                    stroke={color}
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <Path
-                    d="M18.4495 18.9105H23V23.4169H18.4495M18.4495 18.9105V23.4169M18.4495 18.9105H13.899V23.4169H18.4495M16.1564 14.3685H20.7069V18.875H16.1564V14.3685Z"
-                    stroke={color}
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </Svg>
-              }
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="new_transaction"
-        options={{
-          title: "",
-          tabBarIcon: ({ color, focused }) => (
-            <View
-              style={{
-                position: "absolute",
-                bottom: 20, // space from bottombar
-                height: 80,
-                width: 80,
-                borderRadius: 60,
-                backgroundColor: "#5a95ff",
-                justifyContent: "center",
-                alignItems: "center",
-                elevation: 5,
-              }}
-            >
-              <Pressable
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <AntDesign name="plus" size={45} color="white" />
-              </Pressable>
-            </View>
           ),
         }}
       />

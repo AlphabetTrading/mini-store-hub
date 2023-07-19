@@ -1,3 +1,4 @@
+import { RootProvider, useAppContext } from "../context/auth";
 import Colors from "../constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -6,9 +7,9 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { Slot, SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { useColorScheme, Text } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,20 +50,27 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded) {
-    return null;
+    return <Slot />;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <RootProvider>
+      <RootLayoutNav />
+    </RootProvider>
+  );
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const { user } = useAppContext();
 
+  if (!user) {
+    return <Slot />;
+  }
   return (
     <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="categoryDetail" />
       </Stack>
     </ThemeProvider>
   );
