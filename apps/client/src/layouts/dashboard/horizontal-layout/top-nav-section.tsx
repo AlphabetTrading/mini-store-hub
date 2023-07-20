@@ -1,13 +1,11 @@
 import { Stack } from "@mui/material";
-import React from "react";
 import TopNavItem, { TopNavProps } from "./top-nav-item";
-import {NavItems} from "./nav-items";
+import { NavItems } from "../nav-items";
 
-type Props = {
-};
+type Props = {};
 
 const TopNavSection = (props: Props) => {
-    const items = NavItems;
+  const items = NavItems;
   return (
     <Stack
       component="ul"
@@ -15,22 +13,17 @@ const TopNavSection = (props: Props) => {
       spacing={1}
       sx={{ listStyle: "none", m: 0, p: 0 }}
     >
-    {
-        items.map((item:TopNavProps)=>(
-            <TopNavItem
-            active={false}
-            disabled={item.disabled}
-            icon={item.icon}
-            // items={item.items}
-            key={item.title}
-            label={item.label}
-            title={item.title}
-          />
-        ))
-    }
-
-
-
+      {items.map((item: TopNavProps) => (
+        <TopNavItem
+          active={false}
+          disabled={item.disabled}
+          icon={item.icon}
+          // items={item.items}
+          key={item.title}
+          label={item.label}
+          title={item.title}
+        />
+      ))}
     </Stack>
   );
 };

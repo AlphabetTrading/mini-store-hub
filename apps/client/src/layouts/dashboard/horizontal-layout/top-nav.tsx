@@ -9,9 +9,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import TopNavSection from "./top-nav-section";
-import { Scrollbar } from "../../../components/Scrollbar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import { useMobileNav } from "./use-mobile-nav";
+import { useRouter } from "next/router";
 
 type Props = {
   onMobileNav:()=>void
@@ -19,7 +18,7 @@ type Props = {
 
 export const TopNav = (props: Props) => {
   // const { color = 'evident', onMobileNav, sections = [] } = props;
-  // const pathname = usePathname();
+  const {pathname} = useRouter();
   const theme = useTheme();
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
   // const cssVars = useCssVars(color);

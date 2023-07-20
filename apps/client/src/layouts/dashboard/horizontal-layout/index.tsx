@@ -2,6 +2,7 @@ import { Box, Theme, styled, useMediaQuery } from "@mui/material";
 import React from "react";
 import { TopNav } from "./top-nav";
 import { useMobileNav } from "./use-mobile-nav";
+import { MobileNav } from "../mobile-nav";
 
 type Props = {
   children: React.ReactNode;
@@ -31,7 +32,7 @@ const HorizontalLayout = ({ children }: Props) => {
         onMobileNav={mobileNav.handleOpen}
         // sections={sections}
       />
-      {!lgUp && <Box></Box>}
+      {!lgUp && <MobileNav onClose={mobileNav.handleClose} open={mobileNav.open}/>}
       <HorizontalLayoutRoot>
         <HorizontalLayoutContainer>{children}</HorizontalLayoutContainer>
       </HorizontalLayoutRoot>
