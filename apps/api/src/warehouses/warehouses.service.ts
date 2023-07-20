@@ -2,24 +2,42 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWarehouseInput } from './dto/create-warehouse.input';
 import { UpdateWarehouseInput } from './dto/update-warehouse.input';
+import { Prisma } from '@prisma/client';
+import { Warehouse } from './models/warehouse.model';
+
+const warehouseInclude = {
+  warehouseManager: true,
+  address: true,
+  warehouseStock: {
+    include: {
+      product: true,
+    },
+  },
+  goodsTransfersAsDestination: true,
+  goodsTransfersAsSource: true,
+};
 
 @Injectable()
 export class WarehousesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.WarehouseWhereInput;
+    orderBy?: Prisma.WarehouseOrderByWithRelationInput;
+  }): Promise<Warehouse[]> {
     return await this.prisma.warehouse.findMany({
-      include: {
-        warehouseManager: true,
-        address: true,
-        warehouseStock: {
-          include: {
-            product: true,
-          },
-        },
-        goodsTransfersAsDestination: true,
-        goodsTransfersAsSource: true,
-      },
+      skip,
+      take,
+      where,
+      orderBy,
+      include: warehouseInclude,
     });
   }
 
@@ -34,6 +52,10 @@ export class WarehousesService {
         goodsTransfersAsSource: true,
       },
     });
+  }
+
+  async count(where?: Prisma.WarehouseWhereInput): Promise<number> {
+    return this.prisma.warehouse.count({ where });
   }
 
   async findByWarehouseManager(id: string) {

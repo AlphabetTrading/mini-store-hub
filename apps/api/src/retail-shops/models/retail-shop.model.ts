@@ -26,21 +26,21 @@ export class RetailShop extends BaseModel {
   @Field(() => User, { nullable: true })
   retailShopManager?: User;
 
-  @Field(() => [SaleTransaction])
+  @Field(() => [SaleTransaction], { nullable: true })
   saleTransaction?: SaleTransaction[];
 
-  @Field(() => [RetailShopStock])
+  @Field(() => [RetailShopStock], { nullable: true })
   retailShopStock?: RetailShopStock[];
 
-  @Field(() => [GoodsTransfer])
+  @Field(() => [GoodsTransfer], { nullable: true })
   goodsTransfersAsDestination?: GoodsTransfer[];
 
-  @Field(() => [DailyTransaction])
+  @Field(() => [DailyTransaction], { nullable: true })
   dailyTransaction?: DailyTransaction[];
 
-  @Field(() => [MonthlyTransaction])
+  @Field(() => [MonthlyTransaction], { nullable: true })
   monthlyTransaction?: MonthlyTransaction[];
 
-  @Field(() => [AnnualTransaction])
+  @Field(() => [AnnualTransaction], { nullable: true })
   annualTransaction?: AnnualTransaction[];
 }

@@ -160,6 +160,12 @@ input DateTimeFilter {
   lte: DateTime
 }
 
+input FilterPriceHistoryInput {
+  createdAt: DateTimeFilter
+  id: String
+  product: FilterProductInput
+}
+
 input FilterProductInput {
   category: StringFilter
   createdAt: DateTimeFilter
@@ -169,11 +175,39 @@ input FilterProductInput {
   serialNumber: StringFilter
 }
 
+input FilterRetailShopInput {
+  address: StringFilter
+  createdAt: DateTimeFilter
+  id: String
+  name: StringFilter
+}
+
 input FilterRetailShopStockInput {
   createdAt: DateTimeFilter
   id: String
   product: FilterProductInput
   retailShopId: String
+}
+
+input FilterUserInput {
+  createdAt: DateTimeFilter
+  firstName: StringFilter
+  id: String
+  lastName: StringFilter
+  phone: StringFilter
+}
+
+input FilterWarehouseInput {
+  createdAt: DateTimeFilter
+  id: String
+  name: StringFilter
+}
+
+input FilterWarehouseStockInput {
+  createdAt: DateTimeFilter
+  id: String
+  product: FilterProductInput
+  warehouse: FilterWarehouseInput
 }
 
 type Goods {
@@ -194,7 +228,7 @@ type GoodsTransfer {
   createdAt: DateTime!
   destinationWarehouse: Warehouse
   destinationWarehouseId: String
-  goods: [StockItem!]
+  goodsTransfersAsDestination: [StockItem!]
   id: ID!
   retailShop: RetailShop
   retailShopId: String
@@ -307,6 +341,11 @@ input PaginationInput {
   take: Int
 }
 
+type PaginationPriceHistories {
+  items: [PriceHistory!]!
+  meta: PaginationInfo
+}
+
 type PaginationProducts {
   items: [Product!]!
   meta: PaginationInfo
@@ -331,6 +370,19 @@ type PriceHistory {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+}
+
+input PriceHistoryOrder {
+  direction: OrderDirection!
+  field: PriceHistoryOrderField!
+}
+
+"""Properties by which priceHistory connections can be ordered."""
+enum PriceHistoryOrderField {
+  createdAt
+  id
+  name
+  updatedAt
 }
 
 type Product {
@@ -375,6 +427,8 @@ enum ProductOrderField {
 type Query {
   allUsersNotifications(userId: String!): [Notification!]!
   categories: [Category!]!
+  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopSelling(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   goodsTransfer(id: String!): GoodsTransfer!
   goodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
   goodsTransfers: [GoodsTransfer!]!
@@ -382,7 +436,7 @@ type Query {
   notifications: [Notification!]!
   priceHistories: [PriceHistory!]!
   priceHistory: PriceHistory!
-  priceHistoryByProduct: [PriceHistory!]!
+  priceHistoryByProduct(filterPriceHistoryInput: FilterPriceHistoryInput, orderBy: PriceHistoryOrder, paginationInput: PaginationInput): PaginationPriceHistories!
   product: Product!
   products(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   productsByCategory: [Product!]!
@@ -396,7 +450,7 @@ type Query {
   retailShopStockByRetailShopId(filterRetailShopStockInput: FilterRetailShopStockInput, orderBy: RetailShopStockOrder, paginationInput: PaginationInput): PaginationRetailShopStocks!
   retailShopStockByWarehouseId(warehouseId: String!): [RetailShopStock!]!
   retailShopStocks: [RetailShopStock!]!
-  retailShops: [RetailShop!]!
+  retailShops(filterRetailShopInput: FilterRetailShopInput, orderBy: RetailShopOrder, paginationInput: PaginationInput): [RetailShop!]!
   retailShopsByAddress(address: String!): [RetailShop!]!
   saleTransaction: SaleTransaction!
   saleTransactions: [SaleTransaction!]!
@@ -419,35 +473,48 @@ type Query {
   totalSalesByRetailShop: Float!
   unreadNotifications(userId: String!): [Notification!]!
   user(id: String!): User!
-  users(orderBy: UserOrder): [User!]!
+  users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): [User!]!
   warehouse(id: String!): Warehouse!
   warehouseManagers: [User!]!
   warehouseStock(id: String!): WarehouseStock!
   warehouseStockByWarehouseId(warehouseId: String!): [WarehouseStock!]!
-  warehouseStocks: [WarehouseStock!]!
-  warehouses: [Warehouse!]!
+  warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: WarehouseStockOrder, paginationInput: PaginationInput): [WarehouseStock!]!
+  warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: WarehouseOrder, paginationInput: PaginationInput): [Warehouse!]!
   warehousesByAddress(address: String!): [Warehouse!]!
 }
 
 type RetailShop {
   address: Address
   addressId: String
-  annualTransaction: [AnnualTransaction!]!
+  annualTransaction: [AnnualTransaction!]
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
-  dailyTransaction: [DailyTransaction!]!
-  goodsTransfersAsDestination: [GoodsTransfer!]!
+  dailyTransaction: [DailyTransaction!]
+  goodsTransfersAsDestination: [GoodsTransfer!]
   id: ID!
-  monthlyTransaction: [MonthlyTransaction!]!
+  monthlyTransaction: [MonthlyTransaction!]
   name: String!
   retailShopManager: User
   retailShopManagerId: String
-  retailShopStock: [RetailShopStock!]!
-  saleTransaction: [SaleTransaction!]!
+  retailShopStock: [RetailShopStock!]
+  saleTransaction: [SaleTransaction!]
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+}
+
+input RetailShopOrder {
+  direction: OrderDirection!
+  field: RetailShopOrderField!
+}
+
+"""Properties by which retailShop connections can be ordered."""
+enum RetailShopOrderField {
+  createdAt
+  id
+  name
+  updatedAt
 }
 
 type RetailShopStock {
@@ -473,11 +540,9 @@ input RetailShopStockOrder {
 
 """Properties by which retailShopStock connections can be ordered."""
 enum RetailShopStockOrderField {
-  category
   createdAt
   id
   name
-  serialNumber
   updatedAt
 }
 
@@ -671,15 +736,30 @@ type Warehouse {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
-  goodsTransfer: [GoodsTransfer!]
+  goodsTransferAsDestination: [GoodsTransfer!]
+  goodsTransferAsSource: [GoodsTransfer!]
   id: ID!
   name: String!
+  retailShopStock: [RetailShopStock!]
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   warehouseManager: User
   warehouseManagerId: String
   warehouseStock: [WarehouseStock!]
+}
+
+input WarehouseOrder {
+  direction: OrderDirection!
+  field: WarehouseOrderField!
+}
+
+"""Properties by which warehouse connections can be ordered."""
+enum WarehouseOrderField {
+  createdAt
+  id
+  name
+  updatedAt
 }
 
 type WarehouseStock {
@@ -695,6 +775,19 @@ type WarehouseStock {
   updatedAt: DateTime!
   warehouse: Warehouse
   warehouseId: String!
+}
+
+input WarehouseStockOrder {
+  direction: OrderDirection!
+  field: WarehouseStockOrderField!
+}
+
+"""Properties by which warehouseStock connections can be ordered."""
+enum WarehouseStockOrderField {
+  createdAt
+  id
+  name
+  updatedAt
 }
 
 input sendBulkPushNotificationInput {

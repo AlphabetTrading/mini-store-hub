@@ -5,10 +5,9 @@ export enum UserOrderField {
   id = 'id',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
-  password = 'XXXXXXXX',
-  firstName = 'XXXXXXXXX',
-  lastName = 'XXXXXXXXX',
-  phone = 'XXXXXXXXX',
+  firstName = 'firstName',
+  lastName = 'lastName',
+  phone = 'phone',
 }
 
 registerEnumType(UserOrderField, {

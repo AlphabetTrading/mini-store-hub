@@ -11,7 +11,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationRetailShopStocks } from 'src/common/pagination/pagination-info';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 
-@Resolver()
+@Resolver(() => RetailShopStock)
 @UseGuards(GqlAuthGuard)
 export class RetailShopStockResolver {
   constructor(
@@ -58,7 +58,6 @@ export class RetailShopStockResolver {
     try {
       const products = await this.retailShopStockService.findByRetailShopId({
         where,
-        // orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
         orderBy: {
           [orderBy?.field]: orderBy?.direction,
         },

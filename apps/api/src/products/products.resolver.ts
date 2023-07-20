@@ -78,6 +78,83 @@ export class ProductsResolver {
     }
   }
 
+  @Query(() => PaginationProducts, { name: 'findProductsByTopProfit' })
+  async findProductsByTopProfit(
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
+    @Args('orderBy', {
+      type: () => ProductOrder,
+      nullable: true,
+    })
+    orderBy?: ProductOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationProducts> {
+    try {
+      const products = await this.productsService.findProductsByTopProfit({
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+
+      const count = await this.productsService.count();
+      return {
+        items: products,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
+  }
+
+  @Query(() => PaginationProducts, { name: 'findProductsByTopSelling' })
+  async findProductsByTopSelling(
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
+    @Args('orderBy', {
+      type: () => ProductOrder,
+      // type: () => OrderByProductInput,
+      nullable: true,
+    })
+    orderBy?: ProductOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationProducts> {
+    try {
+      const products = await this.productsService.findProductsByTopSale({
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+
+      const count = await this.productsService.count();
+      return {
+        items: products,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
+  }
+
   // search product
   @Query(() => [Product], { name: 'searchProducts' })
   async searchProducts(@Args('search') term: string): Promise<any> {

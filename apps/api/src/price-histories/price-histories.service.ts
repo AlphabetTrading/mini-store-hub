@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePriceHistoryInput } from './dto/create-product.input';
 import { UpdatePriceHistoryInput } from './dto/update-product.input';
+import { Prisma } from '@prisma/client';
+import { PriceHistory } from './models/price-history.model';
+
+const priceHistoryIncludeObject: Prisma.PriceHistoryInclude = {
+  product: true,
+};
 
 @Injectable()
 export class PriceHistoriesService {
@@ -14,15 +20,41 @@ export class PriceHistoriesService {
   }
 
   async findAll() {
-    return this.prisma.priceHistory.findMany();
+    return this.prisma.priceHistory.findMany({
+      include: priceHistoryIncludeObject,
+    });
   }
 
   async findOne(id: string) {
     return this.prisma.priceHistory.findUnique({ where: { id } });
   }
 
-  async findByProductId(productId: string) {
-    return this.prisma.priceHistory.findMany({ where: { productId } });
+  async count(where?: Prisma.PriceHistoryWhereInput): Promise<number> {
+    return this.prisma.priceHistory.count({ where });
+  }
+
+  async findByProductId({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.PriceHistoryWhereInput;
+    orderBy?: Prisma.PriceHistoryOrderByWithRelationInput;
+  }): Promise<PriceHistory[]> {
+    console.log('args ', skip, where, take, orderBy);
+
+    const result = await this.prisma.priceHistory.findMany({
+      where,
+      skip,
+      take,
+      orderBy,
+      include: priceHistoryIncludeObject,
+    });
+
+    return result;
   }
 
   async update(id: string, data: UpdatePriceHistoryInput) {

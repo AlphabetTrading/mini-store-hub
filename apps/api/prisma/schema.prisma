@@ -43,21 +43,25 @@ model User {
 }
 
 model Notification {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   body        String
-  status      Boolean @default(false)
+  status      Boolean  @default(false)
   createdById String
-  createdBy   User    @relation(fields: [createdById], references: [id])
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model NotificationToken {
-  id                  String  @id @default(cuid())
+  id                  String   @id @default(cuid())
   device_type         String
-  notifications_token String  @unique
-  status              Boolean @default(false)
-  userId              String  @unique
-  user                User    @relation(fields: [userId], references: [id])
+  notifications_token String   @unique
+  status              Boolean  @default(false)
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model UserProfile {
@@ -132,6 +136,8 @@ model Address {
   lng              Float?
   lat              Float?
   formattedAddress String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
   retailShop       RetailShop?  @relation("RetailShop Address")
   warehouse        Warehouse?   @relation("Warehouse Address")
   userProfile      UserProfile? @relation("User Address")
@@ -144,9 +150,9 @@ model RetailShop {
   address             Address? @relation("RetailShop Address", fields: [addressId], references: [id])
   retailShopManagerId String?
   retailShopManager   User?    @relation("RetailShopManager", fields: [retailShopManagerId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  createdAt                   DateTime             @default(now())
-  updatedAt                   DateTime             @updatedAt
   saleTransaction             SaleTransaction[]
   retailShopStock             RetailShopStock[]
   goodsTransfersAsDestination GoodsTransfer[]      @relation("DestinationShop")
@@ -156,16 +162,15 @@ model RetailShop {
 }
 
 model Warehouse {
-  id        String   @id @default(cuid())
-  name      String
-  addressId String?  @unique
-  address   Address? @relation("Warehouse Address", fields: [addressId], references: [id])
-
+  id                 String   @id @default(cuid())
+  name               String
+  addressId          String?  @unique
   warehouseManagerId String?
-  warehouseManager   User?   @relation("WarehouseManager", fields: [warehouseManagerId], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  createdAt                   DateTime          @default(now())
-  updatedAt                   DateTime          @updatedAt
+  address                     Address?          @relation("Warehouse Address", fields: [addressId], references: [id])
+  warehouseManager            User?             @relation("WarehouseManager", fields: [warehouseManagerId], references: [id])
   goodsTransfersAsSource      GoodsTransfer[]   @relation("SourceWarehouse")
   warehouseStock              WarehouseStock[]
   retailShopStock             RetailShopStock[]

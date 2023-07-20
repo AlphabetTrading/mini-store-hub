@@ -6,8 +6,6 @@ export enum RetailShopStockOrderField {
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
   name = 'name',
-  serialNumber = 'serialNumber',
-  category = 'name',
 }
 
 registerEnumType(RetailShopStockOrderField, {

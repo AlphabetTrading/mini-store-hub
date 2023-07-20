@@ -4,9 +4,14 @@ import { PriceHistory } from './models/price-history.model';
 import { CreatePriceHistoryInput } from './dto/create-product.input';
 import { UpdatePriceHistoryInput } from './dto/update-product.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
+import { FilterPriceHistoryInput } from './dto/filter-price-history.input';
+import { PriceHistoryOrder } from './dto/price-history-order.input';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { PaginationPriceHistories } from 'src/common/pagination/pagination-info';
+import { Prisma } from '@prisma/client';
 
-@Resolver()
+@Resolver(() => PriceHistory)
 @UseGuards(GqlAuthGuard)
 export class PriceHistoriesResolver {
   constructor(private readonly priceHistoriesService: PriceHistoriesService) {}
@@ -21,9 +26,52 @@ export class PriceHistoriesResolver {
     return this.priceHistoriesService.findOne(id);
   }
 
-  @Query(() => [PriceHistory], { name: 'priceHistoryByProduct' })
-  async priceHistoryByProduct(productId: string): Promise<PriceHistory[]> {
-    return this.priceHistoriesService.findByProductId(productId);
+  @Query(() => PaginationPriceHistories, { name: 'priceHistoryByProduct' })
+  async priceHistoryByProduct(
+    @Args('filterPriceHistoryInput', {
+      type: () => FilterPriceHistoryInput,
+      nullable: true,
+    })
+    filterPriceHistoryInput?: FilterPriceHistoryInput,
+    @Args('orderBy', {
+      type: () => PriceHistoryOrder,
+      nullable: true,
+    })
+    orderBy?: PriceHistoryOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationPriceHistories> {
+    const where: Prisma.PriceHistoryWhereInput = {
+      id: filterPriceHistoryInput?.id,
+      createdAt: filterPriceHistoryInput?.createdAt,
+      product: {
+        id: filterPriceHistoryInput?.id,
+        name: filterPriceHistoryInput?.product?.name,
+        serialNumber: filterPriceHistoryInput?.product?.serialNumber,
+      },
+    };
+
+    try {
+      const priceHistories = await this.priceHistoriesService.findByProductId({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+      const count = await this.priceHistoriesService.count(where);
+      return {
+        items: priceHistories,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
   }
 
   @Mutation(() => PriceHistory, {

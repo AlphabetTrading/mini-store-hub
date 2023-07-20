@@ -6,6 +6,7 @@ import {
 } from '@nestjs/graphql';
 
 import { UserRole } from '@prisma/client';
+import { Address } from 'src/common/models/address.model';
 import { BaseModel } from 'src/common/models/base.model';
 import { UserProfile } from 'src/user-profile/models/userProfile.model';
 

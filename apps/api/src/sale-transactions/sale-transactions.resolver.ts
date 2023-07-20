@@ -11,9 +11,12 @@ import { SaleTransaction } from './models/sale-transaction.model';
 import { CreateSaleTransactionInput } from './dto/create-sale-transaction.input';
 import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input';
 import { PubSub } from 'graphql-subscriptions';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 
 const pubSub = new PubSub();
-@Resolver()
+@Resolver(() => SaleTransaction)
+@UseGuards(GqlAuthGuard)
 export class SaleTransactionsResolver {
   constructor(
     private readonly saleTransactionsService: SaleTransactionsService, // private readonly RetailShopStockService: RetailShopStock,

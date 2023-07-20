@@ -3,14 +3,66 @@ import { WarehouseStockService } from './warehouse-inventories.service';
 import { WarehouseStock } from './models/warehouse-inventory.model';
 import { CreateWarehouseStockInput } from './dto/create-warehouse-inventory.input';
 import { UpdateWarehouseStockInput } from './dto/update-warehouse-inventory.input';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { BadRequestException, UseGuards } from '@nestjs/common';
+import { FilterWarehouseStockInput } from './dto/filter-warehouse-stock.input';
+import { WarehouseStockOrder } from './dto/warehouse-stock-order.input';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { PaginationWarehouseStocks } from 'src/common/pagination/pagination-info';
+import { Prisma } from '@prisma/client';
 
-@Resolver()
+@Resolver(() => WarehouseStock)
+@UseGuards(GqlAuthGuard)
 export class WarehouseStockResolver {
   constructor(private readonly warehouseStockService: WarehouseStockService) {}
 
   @Query(() => [WarehouseStock], { name: 'warehouseStocks' })
-  async warehouseStocks() {
-    return this.warehouseStockService.findAll();
+  async warehouseStocks(
+    @Args('filterWarehouseStockInput', {
+      type: () => FilterWarehouseStockInput,
+      nullable: true,
+    })
+    filterWarehouseStockInput?: FilterWarehouseStockInput,
+    @Args('orderBy', {
+      type: () => WarehouseStockOrder,
+      nullable: true,
+    })
+    orderBy?: WarehouseStockOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationWarehouseStocks> {
+    const where: Prisma.WarehouseStockWhereInput = {
+      id: filterWarehouseStockInput?.id,
+      warehouse: filterWarehouseStockInput?.warehouse,
+      product: {
+        id: filterWarehouseStockInput?.product?.id,
+        name: filterWarehouseStockInput?.product?.name,
+        description: filterWarehouseStockInput?.product?.description,
+        serialNumber: filterWarehouseStockInput?.product?.serialNumber,
+      },
+      createdAt: filterWarehouseStockInput?.createdAt,
+    };
+    try {
+      const warehouseStocks = await this.warehouseStockService.findAll({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+      const count = await this.warehouseStockService.count(where);
+      return {
+        items: warehouseStocks,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
   }
 
   @Query(() => WarehouseStock, { name: 'warehouseStock' })

@@ -1,5 +1,5 @@
 import { Resolver, Query, Parent, Mutation, Args } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { User } from './models/user.model';
 import { ChangePasswordInput } from './dto/change-password.input';
@@ -9,6 +9,10 @@ import { UsersService } from './users.service';
 import { PaginationArgs } from 'src/common/pagination/paginations.args';
 import { UserOrder } from './dto/user-order.input';
 import { SignupInput } from 'src/auth/dto/signup.input';
+import { PaginationUser } from 'src/common/pagination/pagination-info';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { FilterUserInput } from './dto/filter-user.input';
+import { Prisma } from '@prisma/client';
 
 @Resolver(() => User)
 @UseGuards(GqlAuthGuard)
@@ -48,16 +52,47 @@ export class UsersResolver {
 
   @Query(() => [User])
   async users(
-    @Args() paginationArgs: PaginationArgs,
-
-    @Args({
-      name: 'orderBy',
+    @Args('filterUserInput', {
+      type: () => FilterUserInput,
+      nullable: true,
+    })
+    filterUserInput?: FilterUserInput,
+    @Args('orderBy', {
       type: () => UserOrder,
       nullable: true,
     })
-    orderBy: UserOrder,
-  ) {
-    return this.usersService.getUsers(paginationArgs);
+    orderBy?: UserOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationUser> {
+    const where: Prisma.UserWhereInput = {
+      id: filterUserInput?.id,
+      firstName: filterUserInput?.firstName,
+      lastName: filterUserInput?.lastName,
+      phone: filterUserInput?.phone,
+      createdAt: filterUserInput?.createdAt,
+    };
+    try {
+      const users = await this.usersService.getUsers({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+      const count = await this.usersService.count(where);
+      return {
+        items: users,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
   }
 
   @Query(() => [User])

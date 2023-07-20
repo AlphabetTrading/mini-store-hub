@@ -22,7 +22,7 @@ export class GoodsTransfer extends BaseModel {
   destinationWarehouseId?: string;
 
   @Field(() => [StockItem], { nullable: true })
-  goods: [StockItem];
+  goodsTransfersAsDestination?: [StockItem];
 
   @Field(() => Warehouse, { nullable: true })
   sourceWarehouse?: Warehouse;

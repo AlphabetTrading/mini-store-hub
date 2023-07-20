@@ -46,6 +46,78 @@ export class ProductsService {
     });
   }
 
+  async findProductsByTopSale({
+    skip,
+    take,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy,
+      include: {
+        saleTransaction: true,
+      },
+    });
+
+    products.sort((a, b) => {
+      const totalSalesA = a.saleTransaction.reduce(
+        (acc, t) => acc + t.quantity,
+        0,
+      );
+      const totalSalesB = b.saleTransaction.reduce(
+        (acc, t) => acc + t.quantity,
+        0,
+      );
+
+      return totalSalesB - totalSalesA;
+    });
+
+    if (skip && take) {
+      return products.splice(skip, take);
+    }
+    return products;
+  }
+
+  async findProductsByTopProfit({
+    skip,
+    take,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy,
+      include: {
+        saleTransaction: true,
+      },
+    });
+
+    products.sort((a, b) => {
+      const totalProfitA = a.saleTransaction.reduce(
+        (acc, t) => acc + (t.price - t.purchasedPrice) * t.quantity,
+        0,
+      );
+      const totalProfitB = b.saleTransaction.reduce(
+        (acc, t) => acc + (t.price - t.purchasedPrice) * t.quantity,
+        0,
+      );
+
+      return totalProfitB - totalProfitA;
+    });
+    console.log(products, 'products');
+    if (skip && take) {
+      return products.splice(skip, take);
+    }
+    return products;
+  }
+
   async count(where?: Prisma.ProductWhereInput): Promise<number> {
     return this.prisma.product.count({ where });
   }

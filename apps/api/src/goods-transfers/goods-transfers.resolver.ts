@@ -4,9 +4,11 @@ import { GoodsTransfer } from './models/goods-transfer.model';
 import { CreateGoodsTransferInput } from './dto/create-goods-transfer.input';
 import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { TransferType } from '@prisma/client';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 
-@Resolver()
+@Resolver(() => GoodsTransfer)
+@UseGuards(GqlAuthGuard)
 export class GoodsTransfersResolver {
   constructor(private readonly goodsTransfersService: GoodsTransfersService) {}
 

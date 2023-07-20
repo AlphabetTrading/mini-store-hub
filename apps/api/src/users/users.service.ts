@@ -10,6 +10,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationArgs } from 'src/common/pagination/paginations.args';
 import { Prisma } from '@prisma/client';
 import { SignupInput } from 'src/auth/dto/signup.input';
+import { User } from './models/user.model';
+
+const userIncludeObject: Prisma.UserInclude = {
+  userProfile: { include: { address: true } },
+};
 
 @Injectable()
 export class UsersService {
@@ -25,6 +30,10 @@ export class UsersService {
         id: userId,
       },
     });
+  }
+
+  async count(where?: Prisma.UserWhereInput): Promise<number> {
+    return this.prisma.user.count({ where });
   }
 
   async createWarehouseManager(payload: SignupInput) {
@@ -113,24 +122,34 @@ export class UsersService {
     });
   }
 
-  async getUsers({ first, last, after, before, skip }: PaginationArgs) {
+  async getUsers({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.UserWhereInput;
+    orderBy?: Prisma.UserOrderByWithRelationInput;
+  }): Promise<User[]> {
     return this.prisma.user.findMany({
       skip,
-      include: { userProfile: { include: { address: true } } },
+      include: userIncludeObject,
     });
   }
 
   async getUser(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
-      include: { userProfile: { include: { address: true } } },
+      include: userIncludeObject,
     });
   }
 
   async getUserByEmail(username: string) {
     return this.prisma.user.findUnique({
       where: { username },
-      include: { userProfile: { include: { address: true } } },
+      include: userIncludeObject,
     });
   }
 
