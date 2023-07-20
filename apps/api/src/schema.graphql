@@ -210,6 +210,17 @@ input FilterWarehouseStockInput {
   warehouse: FilterWarehouseInput
 }
 
+type ForgotPasswordResponse {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """Email sent"""
+  message: String!
+
+  """Password Reset"""
+  success: Boolean!
+}
+
 type Goods {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -290,8 +301,10 @@ type Mutation {
   deleteWarehouse(id: String!): Warehouse!
   deleteWarehouseStock(id: String!): WarehouseStock!
   disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
+  forgotPassword(phone: String!): ForgotPasswordResponse!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
   sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
   signup(data: SignupInput!): Auth!
@@ -481,6 +494,17 @@ type Query {
   warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: WarehouseStockOrder, paginationInput: PaginationInput): [WarehouseStock!]!
   warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: WarehouseOrder, paginationInput: PaginationInput): [Warehouse!]!
   warehousesByAddress(address: String!): [Warehouse!]!
+}
+
+type ResetPasswordResponse {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """Password Reset message"""
+  message: String!
+
+  """Password Reset"""
+  success: Boolean!
 }
 
 type RetailShop {

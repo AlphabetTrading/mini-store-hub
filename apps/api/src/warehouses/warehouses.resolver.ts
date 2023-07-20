@@ -9,7 +9,9 @@ import { FilterWarehouseInput } from './dto/filter-warehouse.input';
 import { WarehouseOrder } from './dto/warehouse-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationWarehouses } from 'src/common/pagination/pagination-info';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
+import { HasRoles } from 'src/common/decorators';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Resolver(() => Warehouse)
 @UseGuards(GqlAuthGuard)
@@ -68,12 +70,15 @@ export class WarehousesResolver {
   async warehouseByAddress(@Args('address') address: string) {
     return this.warehousesService.findByAddress(address);
   }
-
+  @HasRoles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Mutation(() => Warehouse)
   async createWarehouse(@Args('data') data: CreateWarehouseInput) {
     return this.warehousesService.create(data);
   }
 
+  @HasRoles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Mutation(() => Warehouse)
   async updateWarehouse(
     @Args('id') id: string,
@@ -82,6 +87,8 @@ export class WarehousesResolver {
     return this.warehousesService.update(id, data);
   }
 
+  @HasRoles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Mutation(() => Warehouse)
   async deleteWarehouse(@Args('id') id: string) {
     return this.warehousesService.remove(id);

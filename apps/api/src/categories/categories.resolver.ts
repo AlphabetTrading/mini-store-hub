@@ -12,13 +12,15 @@ import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { HasRoles } from 'src/common/decorators';
+import { UserRole } from '@prisma/client';
 
 @Resolver(() => Category)
 @UseGuards(GqlAuthGuard)
 export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @UseGuards(GqlAuthGuard)
   @Query(() => [Category])
   async categories(): Promise<Category[]> {
     return this.categoriesService.findAll();
@@ -31,13 +33,15 @@ export class CategoriesResolver {
       .then((c) => c.subcategories);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @HasRoles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Mutation(() => Category)
   async createCategory(@Args('data') data: CreateCategoryInput) {
     return this.categoriesService.create(data);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @HasRoles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Mutation(() => Category)
   async updateCategory(
     @Args('id') id: string,
@@ -46,7 +50,8 @@ export class CategoriesResolver {
     return this.categoriesService.update(id, data);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @HasRoles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Mutation(() => Category)
   async deleteCategory(@Args('id') id: string) {
     return this.categoriesService.remove(id);
