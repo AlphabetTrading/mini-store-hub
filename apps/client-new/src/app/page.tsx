@@ -1,11 +1,10 @@
-import styles from "./page.module.css";
-import ListUsers from "@/components/listusers";
+"use client"
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <ListUsers />
+    <main>
+      <div >
+       user is logged in 
       </div>
     </main>
   );
