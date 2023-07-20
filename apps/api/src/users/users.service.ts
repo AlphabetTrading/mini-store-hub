@@ -7,7 +7,6 @@ import { PasswordService } from 'src/auth/password.service';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PaginationArgs } from 'src/common/pagination/paginations.args';
 import { Prisma } from '@prisma/client';
 import { SignupInput } from 'src/auth/dto/signup.input';
 import { User } from './models/user.model';
@@ -135,6 +134,9 @@ export class UsersService {
   }): Promise<User[]> {
     return this.prisma.user.findMany({
       skip,
+      take,
+      where,
+      orderBy,
       include: userIncludeObject,
     });
   }
@@ -159,6 +161,7 @@ export class UsersService {
 
   async getRetailManagers() {
     return this.prisma.user.findMany({
+      include: userIncludeObject,
       where: {
         role: 'RETAIL_SHOP_MANAGER',
       },
@@ -166,6 +169,7 @@ export class UsersService {
   }
   async getWarehouseManagers() {
     return this.prisma.user.findMany({
+      include: userIncludeObject,
       where: {
         role: 'WAREHOUSE_MANAGER',
       },

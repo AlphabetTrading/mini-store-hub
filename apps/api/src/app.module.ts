@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GraphQLModule } from '@nestjs/graphql';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -26,6 +26,7 @@ import { WarehouseStockModule } from './warehouse-inventories/warehouse-inventor
 import { RetailShopStocksModule } from './retail-shop-inventories/retail-shop-inventories.module';
 import { NotificationModule } from './notification/notification.module';
 import { AllExceptionsFilter } from './middlewares/error.middleware';
+import { RolesGuard } from './auth/roles.guard';
 
 @Module({
   imports: [
@@ -59,6 +60,10 @@ import { AllExceptionsFilter } from './middlewares/error.middleware';
     // {
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
     // },
   ],
 })

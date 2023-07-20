@@ -175,4 +175,57 @@ export class AuthService {
       throw new UnauthorizedException();
     }
   }
+
+  async forgotPassword(phone: string) {
+    try {
+      const user = await this.prisma.user.findUnique({ where: { phone } });
+
+      if (!user) {
+        throw new NotFoundException(`No user found for phone: ${phone}`);
+      }
+
+      const securityConfig = this.configService.get<SecurityConfig>('security');
+
+      const payload = { phone };
+      const accessToken = this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_RESET_PASSWORD_SECRET'),
+        expiresIn: securityConfig.expiresIn,
+      });
+
+      return {
+        success: true,
+        message: 'Reset password link sent to your phone',
+        accessToken,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async resetPassword(phone: string, accessToken: string, password: string) {
+    try {
+      const { phone: tokenPhone } = this.jwtService.verify(accessToken, {
+        secret: this.configService.get('JWT_RESET_PASSWORD_SECRET'),
+      });
+
+      if (tokenPhone !== phone) {
+        throw new BadRequestException('Invalid code');
+      }
+
+      const hashedPassword = await this.passwordService.hashPassword(password);
+
+      await this.prisma.user.update({
+        where: { phone },
+        data: { password: hashedPassword },
+      });
+
+      return {
+        success: true,
+        message: 'Password reset successfully',
+        accessToken,
+      };
+    } catch (e) {
+      throw new NotFoundException(`No user found for token: ${accessToken}`);
+    }
+  }
 }
