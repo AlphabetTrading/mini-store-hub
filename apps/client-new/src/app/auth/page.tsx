@@ -66,7 +66,6 @@ const Login = (props: Props) => {
   const [login, { data, error, loading }] = useMutation(LOG_IN);
 
   return (
-    //   <AuthLayout>
     <div>
       <Card elevation={16}>
         <CardHeader
@@ -144,7 +143,6 @@ const Login = (props: Props) => {
         {/* <AuthIssuer issuer={issuer} /> */}
       </Stack>
     </div>
-    //   </AuthLayout>
   );
 };
 
