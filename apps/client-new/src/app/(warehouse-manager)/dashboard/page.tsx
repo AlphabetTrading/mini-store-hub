@@ -1,11 +1,10 @@
-import React from 'react'
+"use client";
+import React from "react";
 
-type Props = {}
+type Props = {};
 
 const page = (props: Props) => {
-  return (
-    <div>dashboard</div>
-  )
-}
+  return <div>dashboard</div>;
+};
 
-export default page
+export default page;

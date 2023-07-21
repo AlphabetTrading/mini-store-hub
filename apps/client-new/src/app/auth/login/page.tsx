@@ -1,9 +1,6 @@
 "use client";
-import authenticatedVar from "@/constants/authenticated";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/tokens";
-import { LOG_IN } from "@/graphql/mutations/auth";
-import { useMutation } from "@apollo/client";
 import {
+  Alert,
   Button,
   Card,
   CardContent,
@@ -15,9 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useSearchParams, useRouter, redirect } from "next/navigation";
+import React from "react";
+import { useState } from "react";
 import * as Yup from "yup";
-//   import { Layout as AuthLayout } from "../../layouts/auth";
 
 type Props = {};
 interface Values {
@@ -32,38 +31,34 @@ const initialValues: Values = {
   phoneNumber: "",
   password: "",
 };
+
 const Login = (props: Props) => {
-    const router = useRouter();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+  const [error, setError] = useState("");
+
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-        console.log("submitting")
-      await login({
-        variables: {
-          data: {
-            password: values.password,
-            username: values.phoneNumber,
-          },
-        },
-        refetchQueries: "active",
-        notifyOnNetworkStatusChange: true,
-        onCompleted:(data) => {
-            const {accessToken,refreshToken} = data.login;
-            localStorage.setItem(ACCESS_TOKEN,accessToken);
-            localStorage.setItem(REFRESH_TOKEN,refreshToken);
-            authenticatedVar(true);
-            router.push("/");
-        },
-        onError: (error) => {
-            console.log(error)
-        },
-    
+      helpers.setSubmitting(true);
+      const res = await signIn("credentials", {
+        redirect: false,
+        username: values.phoneNumber,
+        password: values.password,
+        callbackUrl,
       });
+
+      // console.log(res);
+      if (!res?.error) {
+        redirect(callbackUrl);
+      } else {
+        setError("invalid email or password");
+      }
+      helpers.setSubmitting(false);
     },
   });
-
-  const [login, { data, error, loading }] = useMutation(LOG_IN);
 
   return (
     <div>
@@ -73,7 +68,6 @@ const Login = (props: Props) => {
             <Typography color="text.secondary" variant="body2">
               Don&apos;t have an account? &nbsp;
               <Link
-                // component={RouterLink}
                 // href={paths.auth.jwt.register}
                 underline="hover"
                 variant="subtitle2"
@@ -117,10 +111,10 @@ const Login = (props: Props) => {
               />
             </Stack>
             {formik.errors && (
-                  <FormHelperText error sx={{ mt: 3 }}>
-                    {/* {formik.errors} */}
-                  </FormHelperText>
-                )}
+              <FormHelperText error sx={{ mt: 3 }}>
+                {/* {formik.errors} */}
+              </FormHelperText>
+            )}
             <Button
               disabled={formik.isSubmitting}
               fullWidth
@@ -129,19 +123,22 @@ const Login = (props: Props) => {
               type="submit"
               variant="contained"
             >
-              Log In
+              {formik.isSubmitting ? "Loading..." : "Log In"}
             </Button>
           </form>
         </CardContent>
       </Card>
-      <Stack spacing={3} sx={{ mt: 3 }}>
-        {/* <Alert severity="error">
-              <div>
-                You can use <b>demo@devias.io</b> and password <b>Password123!</b>
-              </div>
-            </Alert> */}
-        {/* <AuthIssuer issuer={issuer} /> */}
-      </Stack>
+      {error && (
+        <Stack spacing={3} sx={{ mt: 3 }}>
+          <Alert severity="error">
+            <div>
+              <Typography color="inherit" variant="subtitle2">
+                {error}
+              </Typography>
+            </div>
+          </Alert>
+        </Stack>
+      )}
     </div>
   );
 };

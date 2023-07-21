@@ -1,6 +1,10 @@
 "use client";
 
-import { createTheme, inputLabelClasses, tableCellClasses } from '@mui/material';
+import {
+  createTheme,
+  inputLabelClasses,
+  tableCellClasses,
+} from "@mui/material";
 
 // Used only to create transitions
 const muiTheme = createTheme();
@@ -12,67 +16,67 @@ export const createComponents = () => {
         root: {
           fontSize: 14,
           fontWeight: 600,
-          letterSpacing: 0
-        }
-      }
+          letterSpacing: 0,
+        },
+      },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '12px',
-          textTransform: 'none'
+          borderRadius: "12px",
+          textTransform: "none",
         },
         sizeSmall: {
-          padding: '6px 16px'
+          padding: "6px 16px",
         },
         sizeMedium: {
-          padding: '8px 20px'
+          padding: "8px 20px",
         },
         sizeLarge: {
-          padding: '11px 24px'
+          padding: "11px 24px",
         },
         textSizeSmall: {
-          padding: '7px 12px'
+          padding: "7px 12px",
         },
         textSizeMedium: {
-          padding: '9px 16px'
+          padding: "9px 16px",
         },
         textSizeLarge: {
-          padding: '12px 16px'
-        }
-      }
+          padding: "12px 16px",
+        },
+      },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 20
-        }
-      }
+          borderRadius: 20,
+        },
+      },
     },
     MuiCardContent: {
       styleOverrides: {
         root: {
-          padding: '32px 24px',
-          '&:last-child': {
-            paddingBottom: '32px'
-          }
-        }
-      }
+          padding: "32px 24px",
+          "&:last-child": {
+            paddingBottom: "32px",
+          },
+        },
+      },
     },
     MuiCardHeader: {
       defaultProps: {
         titleTypographyProps: {
-          variant: 'h6'
+          variant: "h6",
         },
         subheaderTypographyProps: {
-          variant: 'body2'
-        }
+          variant: "body2",
+        },
       },
       styleOverrides: {
         root: {
-          padding: '32px 24px 16px'
-        }
-      }
+          padding: "32px 24px 16px",
+        },
+      },
     },
     MuiCheckbox: {
       defaultProps: {
@@ -92,7 +96,7 @@ export const createComponents = () => {
             />
           </svg>
         ),
-        color: 'primary',
+        color: "primary",
         icon: (
           <svg
             fill="none"
@@ -127,121 +131,121 @@ export const createComponents = () => {
               fillRule="evenodd"
             />
           </svg>
-        )
-      }
+        ),
+      },
     },
     MuiChip: {
       styleOverrides: {
         root: {
-          fontWeight: 500
-        }
-      }
+          fontWeight: 500,
+        },
+      },
     },
     MuiCssBaseline: {
       styleOverrides: {
-        '*': {
-          boxSizing: 'border-box'
+        "*": {
+          boxSizing: "border-box",
         },
         html: {
-          MozOsxFontSmoothing: 'grayscale',
-          WebkitFontSmoothing: 'antialiased',
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100%',
-          width: '100%'
+          MozOsxFontSmoothing: "grayscale",
+          WebkitFontSmoothing: "antialiased",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100%",
+          width: "100%",
         },
         body: {
-          display: 'flex',
-          flex: '1 1 auto',
-          flexDirection: 'column',
-          minHeight: '100%',
-          width: '100%'
+          display: "flex",
+          flex: "1 1 auto",
+          flexDirection: "column",
+          minHeight: "100%",
+          width: "100%",
         },
-        '#root, #__next': {
-          display: 'flex',
-          flex: '1 1 auto',
-          flexDirection: 'column',
-          height: '100%',
-          width: '100%'
+        "#root, #__next": {
+          display: "flex",
+          flex: "1 1 auto",
+          flexDirection: "column",
+          height: "100%",
+          width: "100%",
         },
-        '#nprogress': {
-          pointerEvents: 'none'
+        "#nprogress": {
+          pointerEvents: "none",
         },
-        '#nprogress .bar': {
+        "#nprogress .bar": {
           height: 3,
           left: 0,
-          position: 'fixed',
+          position: "fixed",
           top: 0,
-          width: '100%',
-          zIndex: 2000
-        }
-      }
+          width: "100%",
+          zIndex: 2000,
+        },
+      },
     },
     MuiIconButton: {
       styleOverrides: {
         sizeSmall: {
-          padding: 4
-        }
-      }
+          padding: 4,
+        },
+      },
     },
     MuiInputBase: {
       styleOverrides: {
         input: {
-          '&::placeholder': {
-            opacity: 1
-          }
-        }
-      }
+          "&::placeholder": {
+            opacity: 1,
+          },
+        },
+      },
     },
     MuiInput: {
       styleOverrides: {
         input: {
           fontSize: 14,
           fontWeight: 500,
-          lineHeight: '24px'
-        }
-      }
+          lineHeight: "24px",
+        },
+      },
     },
     MuiFilledInput: {
       styleOverrides: {
         root: {
-          backgroundColor: 'transparent',
+          backgroundColor: "transparent",
           borderRadius: 8,
-          borderStyle: 'solid',
+          borderStyle: "solid",
           borderWidth: 1,
-          overflow: 'hidden',
+          overflow: "hidden",
           transition: muiTheme.transitions.create([
-            'border-color',
-            'box-shadow'
+            "border-color",
+            "box-shadow",
           ]),
-          '&:before': {
-            display: 'none'
+          "&:before": {
+            display: "none",
           },
-          '&:after': {
-            display: 'none'
-          }
+          "&:after": {
+            display: "none",
+          },
         },
         input: {
           fontSize: 14,
           fontWeight: 500,
-          lineHeight: '24px'
-        }
-      }
+          lineHeight: "24px",
+        },
+      },
     },
     MuiOutlinedInput: {
       styleOverrides: {
         input: {
           fontSize: 14,
           fontWeight: 500,
-          lineHeight: '24px'
+          lineHeight: "24px",
         },
         notchedOutline: {
           transition: muiTheme.transitions.create([
-            'border-color',
-            'box-shadow'
-          ])
-        }
-      }
+            "border-color",
+            "box-shadow",
+          ]),
+        },
+      },
     },
     MuiFormLabel: {
       styleOverrides: {
@@ -249,64 +253,64 @@ export const createComponents = () => {
           fontSize: 14,
           fontWeight: 500,
           [`&.${inputLabelClasses.filled}`]: {
-            transform: 'translate(12px, 18px) scale(1)'
+            transform: "translate(12px, 18px) scale(1)",
           },
           [`&.${inputLabelClasses.shrink}`]: {
             [`&.${inputLabelClasses.standard}`]: {
-              transform: 'translate(0, -1.5px) scale(0.85)'
+              transform: "translate(0, -1.5px) scale(0.85)",
             },
             [`&.${inputLabelClasses.filled}`]: {
-              transform: 'translate(12px, 6px) scale(0.85)'
+              transform: "translate(12px, 6px) scale(0.85)",
             },
             [`&.${inputLabelClasses.outlined}`]: {
-              transform: 'translate(14px, -9px) scale(0.85)'
-            }
-          }
-        }
-      }
+              transform: "translate(14px, -9px) scale(0.85)",
+            },
+          },
+        },
+      },
     },
     MuiLinearProgress: {
       styleOverrides: {
         root: {
           borderRadius: 3,
-          overflow: 'hidden'
-        }
-      }
+          overflow: "hidden",
+        },
+      },
     },
     MuiLink: {
       defaultProps: {
-        underline: 'hover'
-      }
+        underline: "hover",
+      },
     },
     MuiListItemIcon: {
       styleOverrides: {
         root: {
-          marginRight: '16px',
-          minWidth: 'unset'
-        }
-      }
+          marginRight: "16px",
+          minWidth: "unset",
+        },
+      },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundImage: 'none'
-        }
-      }
+          backgroundImage: "none",
+        },
+      },
     },
     MuiPopover: {
       defaultProps: {
-        elevation: 16
-      }
+        elevation: 16,
+      },
     },
     MuiRadio: {
       defaultProps: {
-        color: 'primary'
-      }
+        color: "primary",
+      },
     },
     MuiSwitch: {
       defaultProps: {
-        color: 'primary'
-      }
+        color: "primary",
+      },
     },
     MuiTab: {
       styleOverrides: {
@@ -314,46 +318,46 @@ export const createComponents = () => {
           fontSize: 14,
           fontWeight: 500,
           lineHeight: 1.71,
-          minWidth: 'auto',
+          minWidth: "auto",
           paddingLeft: 0,
           paddingRight: 0,
-          textTransform: 'none',
-          '& + &': {
-            marginLeft: 24
-          }
-        }
-      }
+          textTransform: "none",
+          "& + &": {
+            marginLeft: 24,
+          },
+        },
+      },
     },
     MuiTableCell: {
       styleOverrides: {
         root: {
-          padding: '15px 16px'
-        }
-      }
+          padding: "15px 16px",
+        },
+      },
     },
     MuiTableHead: {
       styleOverrides: {
         root: {
-          borderBottom: 'none',
+          borderBottom: "none",
           [`& .${tableCellClasses.root}`]: {
-            borderBottom: 'none',
+            borderBottom: "none",
             fontSize: 12,
             fontWeight: 600,
             lineHeight: 1,
             letterSpacing: 0.5,
-            textTransform: 'uppercase'
+            textTransform: "uppercase",
           },
           [`& .${tableCellClasses.paddingCheckbox}`]: {
             paddingTop: 4,
-            paddingBottom: 4
-          }
-        }
-      }
+            paddingBottom: 4,
+          },
+        },
+      },
     },
     MuiTextField: {
       defaultProps: {
-        variant: 'filled'
-      }
-    }
+        variant: "filled",
+      },
+    },
   };
 };

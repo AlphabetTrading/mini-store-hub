@@ -72,7 +72,6 @@ export const TopNav = (props: Props) => {
           )}
 
           <Box
-            //   component={RouterLink}
             //   href={paths.index}
 
             sx={{
@@ -91,9 +90,7 @@ export const TopNav = (props: Props) => {
             <StorefrontIcon color={"primary"} fontSize="large" />
             {/* <Logo /> */}
           </Box>
-          <Typography fontWeight={200}>
-            Mini Store HUB
-          </Typography>
+          <Typography fontWeight={200}>Mini Store HUB</Typography>
           {/* <TenantSwitch /> */}
         </Stack>
         <Stack alignItems="center" direction="row" spacing={2}>

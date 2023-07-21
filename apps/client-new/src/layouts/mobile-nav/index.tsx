@@ -4,7 +4,6 @@ import MobileNavItem from "./mobile-nav-item";
 import MobileNavSection from "./mobile-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 
-
 const MOBILE_NAV_WIDTH = 280;
 type Props = {
   onClose: () => void;
@@ -12,7 +11,7 @@ type Props = {
 };
 export const MobileNav = (props: Props) => {
   const theme = useTheme();
- 
+
   return (
     <Drawer
       anchor="left"
@@ -52,38 +51,37 @@ export const MobileNav = (props: Props) => {
           },
         }}
       > */}
-        <Stack sx={{ height: "100%" }}>
-          <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
-            <Box
-              //   component={RouterLink}
-              //   href={paths.index}
-              sx={{
-                borderColor: "var(--nav-logo-border)",
-                borderRadius: 1,
-                borderStyle: "solid",
-                borderWidth: 1,
-                display: "flex",
-                height: 40,
-                p: "4px",
-                width: 40,
-              }}
-            >
-            <StorefrontIcon color={"primary"} fontSize="large" />
-
-              {/* <Logo /> */}
-            </Box>
-          </Stack>
-          <Stack
-            component="nav"
-            spacing={2}
+      <Stack sx={{ height: "100%" }}>
+        <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
+          <Box
+            //   href={paths.index}
             sx={{
-              flexGrow: 1,
-              px: 2,
+              borderColor: "var(--nav-logo-border)",
+              borderRadius: 1,
+              borderStyle: "solid",
+              borderWidth: 1,
+              display: "flex",
+              height: 40,
+              p: "4px",
+              width: 40,
             }}
           >
-           <MobileNavSection/>
-          </Stack>
+            <StorefrontIcon color={"primary"} fontSize="large" />
+
+            {/* <Logo /> */}
+          </Box>
         </Stack>
+        <Stack
+          component="nav"
+          spacing={2}
+          sx={{
+            flexGrow: 1,
+            px: 2,
+          }}
+        >
+          <MobileNavSection />
+        </Stack>
+      </Stack>
       {/* </Scrollbar> */}
     </Drawer>
   );

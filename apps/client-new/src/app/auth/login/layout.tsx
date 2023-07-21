@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Box, Container, Stack, styled } from "@mui/material";
 import React from "react";
 
@@ -37,10 +37,8 @@ const Layout = ({ children }: Props) => {
           <Stack direction="row" spacing={2} sx={{ height: TOP_NAV_HEIGHT }}>
             <Stack
               alignItems="center"
-              //   component={RouterLink}
               direction="row"
               display="inline-flex"
-              //   href={paths.index}
               spacing={1}
               sx={{ textDecoration: "none" }}
             >

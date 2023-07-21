@@ -1,1 +1,1 @@
-export const API_URL = "https://mini-store-hub-api.onrender.com";
+export const API_URL = process.env.NEXTAPP_GRAPHQL_ENDPOINT;

@@ -1,8 +1,8 @@
-import { createComponents } from './create-components';
-import { createPalette } from './create-palette';
-import { createShadows } from './create-shadows';
+import { createComponents } from "./create-components";
+import { createPalette } from "./create-palette";
+import { createShadows } from "./create-shadows";
 
-export const createOptions = ({ colorPreset, contrast }:any) => {
+export const createOptions = ({ colorPreset, contrast }: any) => {
   const palette = createPalette({ colorPreset, contrast });
   const components = createComponents({ palette });
   const shadows = createShadows();
@@ -10,6 +10,6 @@ export const createOptions = ({ colorPreset, contrast }:any) => {
   return {
     components,
     palette,
-    shadows
+    shadows,
   };
 };

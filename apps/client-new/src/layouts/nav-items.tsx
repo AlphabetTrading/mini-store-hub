@@ -1,3 +1,5 @@
+"use client";
+
 import { SvgIcon } from "@mui/material";
 import AddHomeOutlinedIcon from "@mui/icons-material/AddHomeOutlined";
 import { TopNavProps } from "./horizontal-layout/top-nav-item";
@@ -5,7 +7,7 @@ import { TopNavProps } from "./horizontal-layout/top-nav-item";
 export const NAV_DATA: TopNavProps[] = [
   {
     title: "Overview",
-    path:"/dashboard",
+    path: "/dashboard",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />
@@ -23,7 +25,7 @@ export const NAV_DATA: TopNavProps[] = [
   },
   {
     title: "Items",
-    path:"/items",
+    path: "/items",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />
