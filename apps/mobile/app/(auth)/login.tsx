@@ -9,9 +9,9 @@ import {
 import React, { useState } from "react";
 import { Stack } from "expo-router";
 import { AntDesign, Entypo } from "@expo/vector-icons";
-import { useAppContext } from "../../context/auth";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useAppContext } from "context/auth";
 
 type Props = {};
 
@@ -50,7 +50,7 @@ const login = (props: Props) => {
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={loginSchema}
-        onSubmit={(values) => setUser(values.userName)}
+        onSubmit={(values) => setUser({ user: values.userName })}
       >
         {({ handleChange, handleSubmit, values, errors }) => (
           <View>

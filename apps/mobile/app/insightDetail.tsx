@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 import React from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
-import Colors from "../constants/Colors";
+import Colors from "constants/Colors";
 
 type Props = {};
 
@@ -10,18 +10,18 @@ const insightDetail = (props: Props) => {
     title: string;
     data: string;
   }>();
-  const { title, data } = params;
+  // const { title, data } = params;
 
-  const insightData = JSON.parse(data || "") as {
-    id: string;
-    name: string;
-    imageSrc: string;
-  }[];
+  // const insightData = JSON.parse(data || "") as {
+  //   id: string;
+  //   name: string;
+  //   imageSrc: string;
+  // }[];
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: title,
+          // title: title,
           headerTintColor: "#FFF",
           headerStyle: {
             backgroundColor: Colors.light.tint,
@@ -30,7 +30,7 @@ const insightDetail = (props: Props) => {
       />
       <ScrollView>
         <View style={styles.container}>
-          {insightData.map((item: any, index: number) => {
+          {/* {insightData.map((item: any, index: number) => {
             return (
               <View
                 key={index}
@@ -52,7 +52,7 @@ const insightDetail = (props: Props) => {
                 </Text>
               </View>
             );
-          })}
+          })} */}
         </View>
       </ScrollView>
     </SafeAreaView>

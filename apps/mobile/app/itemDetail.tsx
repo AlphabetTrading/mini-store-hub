@@ -1,15 +1,8 @@
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Stack, router } from "expo-router";
-import Colors from "../constants/Colors";
 import { Path, Svg } from "react-native-svg";
+import Colors from "constants/Colors";
 
 type Props = {};
 
@@ -17,17 +10,17 @@ const DATA = [
   {
     id: "1",
     name: "Egg",
-    imageSrc: require("../assets/icons/categories/egg.png"),
+    imageSrc: require("assets/icons/categories/egg.png"),
   },
   {
     id: "2",
     name: "Milk",
-    imageSrc: require("../assets/icons/categories/milk.png"),
+    imageSrc: require("assets/icons/categories/milk.png"),
   },
   {
     id: "3",
     name: "Biscuit",
-    imageSrc: require("../assets/icons/categories/biscuit.png"),
+    imageSrc: require("assets/icons/categories/biscuit.png"),
   },
 ];
 

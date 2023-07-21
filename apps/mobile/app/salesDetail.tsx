@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
-import Colors from "../constants/Colors";
+import Colors from "constants/Colors";
 
 type Props = {};
 
@@ -9,42 +9,42 @@ const DATA = [
   {
     id: "1",
     name: "Egg",
-    imageSrc: require("../assets/icons/categories/egg.png"),
+    imageSrc: require("assets/icons/categories/egg.png"),
   },
   {
     id: "2",
     name: "Milk",
-    imageSrc: require("../assets/icons/categories/milk.png"),
+    imageSrc: require("assets/icons/categories/milk.png"),
   },
   {
     id: "3",
     name: "Biscuit",
-    imageSrc: require("../assets/icons/categories/biscuit.png"),
+    imageSrc: require("assets/icons/categories/biscuit.png"),
   },
   {
     id: "4",
     name: "Oil",
-    imageSrc: require("../assets/icons/categories/oil.png"),
+    imageSrc: require("assets/icons/categories/oil.png"),
   },
   {
     id: "5",
     name: "Soft",
-    imageSrc: require("../assets/icons/categories/soft.png"),
+    imageSrc: require("assets/icons/categories/soft.png"),
   },
   {
     id: "6",
     name: "Water",
-    imageSrc: require("../assets/icons/categories/water.png"),
+    imageSrc: require("assets/icons/categories/water.png"),
   },
   {
     id: "7",
     name: "Soft Drink",
-    imageSrc: require("../assets/icons/categories/soft_drink.png"),
+    imageSrc: require("assets/icons/categories/soft_drink.png"),
   },
   {
     id: "8",
     name: "Milk",
-    imageSrc: require("../assets/icons/categories/milk.png"),
+    imageSrc: require("assets/icons/categories/milk.png"),
   },
 ];
 
@@ -139,9 +139,7 @@ const salesDetail = (props: Props) => {
                   <Text style={{ fontSize: 18, fontFamily: "InterSemiBold" }}>
                     Abu Walad
                   </Text>
-                  <Text
-                    style={{ fontFamily: "InterLight", color: "#80848A" }}
-                  >
+                  <Text style={{ fontFamily: "InterLight", color: "#80848A" }}>
                     Quantity: 199
                   </Text>
                 </View>

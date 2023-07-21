@@ -33,11 +33,13 @@ function useProtectedRoute(user: any) {
 }
 
 export function RootProvider(props: any) {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState({ user: "nati" });
   const [currentTheme, setCurrentTheme] = React.useState("light");
 
   useProtectedRoute(user);
   useCurrentTheme();
+
+  console.log(user);
 
   return (
     <RootContext.Provider
