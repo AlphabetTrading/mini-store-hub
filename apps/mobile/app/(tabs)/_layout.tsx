@@ -1,12 +1,11 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { Link, Stack, Tabs } from "expo-router";
-import { Pressable, useColorScheme, Dimensions } from "react-native";
+import { Link, Stack, Tabs, router } from "expo-router";
+import { useColorScheme, TouchableOpacity, View } from "react-native";
 
-import Colors from "../../constants/Colors";
 import Svg, { Path, Mask, G, Rect, ClipPath, Defs } from "react-native-svg";
-import { View, Text } from "../../components/Themed";
-import TabItem from "../../components/TabItem";
 import React from "react";
+import TabItem from "components/TabItem";
+import Colors from "constants/Colors";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -17,6 +16,31 @@ function TabBarIcon(props: {
 }) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
+
+const CustomTabBarButton = ({ children, onPress }: any) => {
+  return (
+    <TouchableOpacity
+      style={{
+        top: -35,
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 10,
+      }}
+      onPress={onPress}
+    >
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#5684E0",
+          borderWidth: 0.5,
+        }}
+      >
+        {children}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -48,22 +72,23 @@ export default function TabLayout() {
         tabBarStyle: {
           height: 60,
         },
+        tabBarItemStyle: {
+          borderWidth: 0.5,
+          borderColor: "#D3D3D3",
+        },
         tabBarIconStyle: {
           paddingVertical: 0,
         },
         tabBarActiveBackgroundColor: Colors.light.tint,
         tabBarActiveTintColor: "#FFFFFF",
         tabBarInactiveTintColor: Colors.light.tint,
+        // tabBarInactiveTintColor: "#828282",
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarItemStyle: {
-            borderWidth: 0.5,
-            borderColor: "#D3D3D3",
-          },
           tabBarIcon: ({ focused, color }) => (
             <TabItem
               color={color}
@@ -168,33 +193,59 @@ export default function TabLayout() {
       <Tabs.Screen
         name="new_transaction"
         options={{
-          title: "",
+          tabBarStyle: {
+            zIndex: 100,
+          },
+          title: "New Transaction",
+          headerStyle: {},
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
             <View
               style={{
-                position: "absolute",
-                bottom: 10, // space from bottombar
-                height: 80,
                 width: 80,
-                borderRadius: 60,
-                backgroundColor: "#5a95ff",
+                height: 80,
+                borderRadius: 40,
+                backgroundColor: "#5684E0",
                 justifyContent: "center",
                 alignItems: "center",
-                elevation: 5,
+                elevation: 4,
               }}
             >
-              <Pressable
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <AntDesign name="plus" size={45} color="white" />
-              </Pressable>
+              <TabItem
+                color={color}
+                focused={focused}
+                svg={
+                  <Svg width="40" height="40" viewBox="0 0 20 20" fill="none">
+                    <G clip-path="url(#clip0_224_2459)">
+                      <Path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M19.4499 9.10009V10.9001H10.9449V19.0001H9.05498V10.9001H0.549995V9.10009H9.05498V1.00012H10.9449V9.10009H19.4499Z"
+                        fill="white"
+                      />
+                    </G>
+                    <Defs>
+                      <ClipPath id="clip0_224_2459">
+                        <Rect
+                          width="18.8999"
+                          height="19.9999"
+                          fill="white"
+                          transform="translate(0.550034 6.10352e-05)"
+                        />
+                      </ClipPath>
+                    </Defs>
+                  </Svg>
+                }
+              />
             </View>
+          ),
+          tabBarButton: (props) => (
+            <CustomTabBarButton
+              {...props}
+              onPress={() => {
+                router.push("/checkout");
+              }}
+            />
           ),
         }}
       />

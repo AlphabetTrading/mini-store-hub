@@ -1,14 +1,15 @@
 import {
-  SafeAreaView,
-  Image,
-  StyleSheet,
   FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
+  Image,
 } from "react-native";
 import React from "react";
 import { Stack, router } from "expo-router";
+import { SearchBar } from "react-native-screens";
 import Colors from "constants/Colors";
 
 type Props = {};
@@ -54,62 +55,71 @@ const DATA = [
     name: "Milk",
     imageSrc: require("assets/icons/categories/milk.png"),
   },
+  {
+    id: "9",
+    name: "Water",
+    imageSrc: require("assets/icons/categories/water.png"),
+  },
+  {
+    id: "10",
+    name: "Soft Drink",
+    imageSrc: require("assets/icons/categories/soft_drink.png"),
+  },
+  {
+    id: "11",
+    name: "Milk",
+    imageSrc: require("assets/icons/categories/milk.png"),
+  },
 ];
 
-const inventory = (props: Props) => {
+const selectCategory = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
+          title: "Select Category",
           headerStyle: {
             backgroundColor: Colors.light.tint,
           },
+          headerTintColor: "#FFF",
         }}
       />
-      <View style={styles.container}>
-        <Text
-          style={{
-            marginLeft: 8,
-            color: "#828282",
-            fontFamily: "InterBold",
-            textTransform: "uppercase",
-          }}
-        >
-          Categories
-        </Text>
-        <View
-          style={{
-            backgroundColor: Colors.light.background,
-            width: "100%",
-          }}
-        >
-          <FlatList
-            data={DATA}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.light.background,
-                  width: "100%",
-                  height: "100%",
-                  flex: 1,
-                  alignItems: "center",
-                  margin: 8,
-                  gap: 4,
-                }}
-                onPress={() => {
-                  router.push("/categoryDetail");
-                }}
-              >
-                <View style={styles.categoryItem} key={index}>
-                  <Image style={styles.categoryImage} source={item.imageSrc} />
-                </View>
-                <Text style={styles.categoryText}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={4}
-          />
-          {/* {DATA.map((item: any, index: number) => {
+      <View
+        style={{
+          backgroundColor: Colors.light.background,
+          width: "100%",
+        }}
+      >
+        <FlatList
+          data={DATA}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              style={{
+                backgroundColor: Colors.light.background,
+                width: "100%",
+                height: "100%",
+                flex: 1,
+                alignItems: "center",
+                margin: 8,
+                gap: 4,
+              }}
+              onPress={() => {
+                router.push({
+                  pathname: "/selectItem",
+                  params: { id: item.id },
+                });
+              }}
+            >
+              <View style={styles.categoryItem} key={index}>
+                <Image style={styles.categoryImage} source={item.imageSrc} />
+              </View>
+              <Text style={styles.categoryText}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={4}
+        />
+        {/* {DATA.map((item: any, index: number) => {
             return (
               <View style={styles.categoryItem} key={index}>
                 <Image
@@ -120,18 +130,17 @@ const inventory = (props: Props) => {
               </View>
             );
           })} */}
-        </View>
       </View>
     </SafeAreaView>
   );
 };
 
-export default inventory;
+export default selectCategory;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    // padding: 15,
     backgroundColor: Colors.light.background,
   },
   categoryItem: {

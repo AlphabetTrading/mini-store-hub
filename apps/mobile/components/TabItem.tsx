@@ -7,7 +7,7 @@ type Props = {
   svg: any;
   color: string;
   focused: boolean;
-  name: string;
+  name?: string;
 };
 
 const TabItem = ({ color, focused, name, svg }: Props) => {
@@ -22,16 +22,18 @@ const TabItem = ({ color, focused, name, svg }: Props) => {
       }}
     >
       {svg}
-      <Text
-        style={{
-          width: "90%",
-          textAlign: "center",
-          fontSize: 12,
-          color: color,
-        }}
-      >
-        {name}
-      </Text>
+      {name && (
+        <Text
+          style={{
+            width: "90%",
+            textAlign: "center",
+            fontSize: 12,
+            color: color,
+          }}
+        >
+          {name}
+        </Text>
+      )}
     </View>
   );
 };
