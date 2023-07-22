@@ -49,6 +49,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerTintColor: "#fff",
+        headerShown: false,
         headerRight: () => (
           <View style={{ flexDirection: "row" }}>
             <View>
@@ -116,6 +117,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Hello, User",
+          headerShown: true,
           tabBarIcon: ({ focused, color }) => (
             <TabItem
               color={color}
@@ -169,6 +171,7 @@ export default function TabLayout() {
           tabBarLabelStyle: {
             borderWidth: 1,
           },
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabItem
               color={color}
