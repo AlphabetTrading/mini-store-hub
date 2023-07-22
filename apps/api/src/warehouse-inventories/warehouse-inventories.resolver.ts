@@ -16,7 +16,7 @@ import { Prisma } from '@prisma/client';
 export class WarehouseStockResolver {
   constructor(private readonly warehouseStockService: WarehouseStockService) {}
 
-  @Query(() => [WarehouseStock], { name: 'warehouseStocks' })
+  @Query(() => PaginationWarehouseStocks, { name: 'warehouseStocks' })
   async warehouseStocks(
     @Args('filterWarehouseStockInput', {
       type: () => FilterWarehouseStockInput,

@@ -369,6 +369,26 @@ type PaginationRetailShopStocks {
   meta: PaginationInfo
 }
 
+type PaginationRetailShops {
+  items: [RetailShop!]!
+  meta: PaginationInfo
+}
+
+type PaginationUser {
+  items: [User!]!
+  meta: PaginationInfo
+}
+
+type PaginationWarehouseStocks {
+  items: [WarehouseStock!]!
+  meta: PaginationInfo
+}
+
+type PaginationWarehouses {
+  items: [Warehouse!]!
+  meta: PaginationInfo
+}
+
 type PriceHistory {
   activeProduct: Product
 
@@ -463,7 +483,7 @@ type Query {
   retailShopStockByRetailShopId(filterRetailShopStockInput: FilterRetailShopStockInput, orderBy: RetailShopStockOrder, paginationInput: PaginationInput): PaginationRetailShopStocks!
   retailShopStockByWarehouseId(warehouseId: String!): [RetailShopStock!]!
   retailShopStocks: [RetailShopStock!]!
-  retailShops(filterRetailShopInput: FilterRetailShopInput, orderBy: RetailShopOrder, paginationInput: PaginationInput): [RetailShop!]!
+  retailShops(filterRetailShopInput: FilterRetailShopInput, orderBy: RetailShopOrder, paginationInput: PaginationInput): PaginationRetailShops!
   retailShopsByAddress(address: String!): [RetailShop!]!
   saleTransaction: SaleTransaction!
   saleTransactions: [SaleTransaction!]!
@@ -486,13 +506,13 @@ type Query {
   totalSalesByRetailShop: Float!
   unreadNotifications(userId: String!): [Notification!]!
   user(id: String!): User!
-  users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): [User!]!
+  users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): PaginationUser!
   warehouse(id: String!): Warehouse!
   warehouseManagers: [User!]!
   warehouseStock(id: String!): WarehouseStock!
   warehouseStockByWarehouseId(warehouseId: String!): [WarehouseStock!]!
-  warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: WarehouseStockOrder, paginationInput: PaginationInput): [WarehouseStock!]!
-  warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: WarehouseOrder, paginationInput: PaginationInput): [Warehouse!]!
+  warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: WarehouseStockOrder, paginationInput: PaginationInput): PaginationWarehouseStocks!
+  warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: WarehouseOrder, paginationInput: PaginationInput): PaginationWarehouses!
   warehousesByAddress(address: String!): [Warehouse!]!
 }
 

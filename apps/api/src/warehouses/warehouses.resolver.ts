@@ -18,7 +18,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 export class WarehousesResolver {
   constructor(private readonly warehousesService: WarehousesService) {}
 
-  @Query(() => [Warehouse], { name: 'warehouses' })
+  @Query(() => PaginationWarehouses, { name: 'warehouses' })
   async warehouses(
     @Args('filterWarehouseInput', {
       type: () => FilterWarehouseInput,
@@ -57,6 +57,7 @@ export class WarehousesResolver {
         },
       };
     } catch (e) {
+      console.log(e, 'error ');
       throw new BadRequestException('Error loading products!');
     }
   }

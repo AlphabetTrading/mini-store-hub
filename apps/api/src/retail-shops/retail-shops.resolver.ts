@@ -16,7 +16,7 @@ import { Prisma } from '@prisma/client';
 export class RetailShopsResolver {
   constructor(private readonly retailShopsService: RetailShopsService) {}
 
-  @Query(() => [RetailShop], { name: 'retailShops' })
+  @Query(() => PaginationRetailShops, { name: 'retailShops' })
   async retailShops(
     @Args('filterRetailShopInput', {
       type: () => FilterRetailShopInput,

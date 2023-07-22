@@ -50,7 +50,7 @@ export class UsersResolver {
     return this.usersService.getUser(id);
   }
 
-  @Query(() => [User])
+  @Query(() => PaginationUser)
   async users(
     @Args('filterUserInput', {
       type: () => FilterUserInput,
