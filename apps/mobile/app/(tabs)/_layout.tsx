@@ -88,7 +88,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Hello, User",
           tabBarIcon: ({ focused, color }) => (
             <TabItem
               color={color}
