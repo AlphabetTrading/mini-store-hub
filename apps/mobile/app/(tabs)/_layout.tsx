@@ -1,6 +1,6 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Link, Stack, Tabs, router } from "expo-router";
-import { useColorScheme, TouchableOpacity, View } from "react-native";
+import { useColorScheme, TouchableOpacity, View, Text } from "react-native";
 
 import Svg, { Path, Mask, G, Rect, ClipPath, Defs } from "react-native-svg";
 import React from "react";
@@ -50,13 +50,40 @@ export default function TabLayout() {
       screenOptions={{
         headerTintColor: "#fff",
         headerRight: () => (
-          <AntDesign
-            style={{ marginHorizontal: 20 }}
-            name="setting"
-            color="#FFF"
-            size={24}
-            onPress={() => {}}
-          />
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <AntDesign
+                name="bells"
+                color="#FFF"
+                size={24}
+                onPress={() => {
+                  router.push("/notification");
+                }}
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: -5,
+                  right: -5,
+                  backgroundColor: "#FF0000",
+                  width: 16,
+                  height: 16,
+                  borderRadius: 12,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 8 }}>12</Text>
+              </View>
+            </View>
+            <AntDesign
+              style={{ marginRight: 20, marginLeft: 10 }}
+              name="setting"
+              color="#FFF"
+              size={24}
+              onPress={() => {}}
+            />
+          </View>
         ),
         tabBarLabelStyle: {
           fontFamily: "InterRegular",
