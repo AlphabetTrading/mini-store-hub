@@ -1,11 +1,12 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Redirect } from "expo-router";
 
 type Props = {};
 
 const new_transaction = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}></SafeAreaView>
+    <Redirect href="/checkout" />
     // <SafeAreaView style={{ flex: 1 }}>
     //   <Stack.Screen
     //     options={{

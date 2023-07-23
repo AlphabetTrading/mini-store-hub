@@ -1,9 +1,19 @@
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { Link, Stack, Tabs, router } from "expo-router";
-import { useColorScheme, TouchableOpacity, View, Text } from "react-native";
-
+import {
+  useColorScheme,
+  TouchableOpacity,
+  View,
+  Text,
+  Modal,
+  SafeAreaView,
+} from "react-native";
 import Svg, { Path, Mask, G, Rect, ClipPath, Defs } from "react-native-svg";
-import React from "react";
+import React, { useState } from "react";
 import TabItem from "components/TabItem";
 import Colors from "constants/Colors";
 
@@ -16,6 +26,8 @@ function TabBarIcon(props: {
 }) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
+
+const options = [{ id: 1, title: "Logout", icon: "logout", action: () => {} }];
 
 const CustomTabBarButton = ({ children, onPress }: any) => {
   return (
@@ -44,6 +56,7 @@ const CustomTabBarButton = ({ children, onPress }: any) => {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [openMenu, setOpenMenu] = useState(false);
 
   return (
     <Tabs
@@ -77,13 +90,62 @@ export default function TabLayout() {
                 <Text style={{ color: "white", fontSize: 8 }}>12</Text>
               </View>
             </View>
-            <AntDesign
-              style={{ marginRight: 20, marginLeft: 10 }}
-              name="setting"
-              color="#FFF"
-              size={24}
-              onPress={() => {}}
-            />
+            <View>
+              <AntDesign
+                style={{ marginRight: 20, marginLeft: 10 }}
+                name="setting"
+                color="#FFF"
+                size={24}
+                onPress={() => {
+                  setOpenMenu(true);
+                }}
+              />
+              <Modal transparent visible={openMenu}>
+                <SafeAreaView
+                  style={{ flex: 1 }}
+                  onTouchStart={() => {
+                    setOpenMenu(false);
+                  }}
+                >
+                  <View
+                    style={{
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      paddingLeft: 10,
+                      paddingRight: 30,
+                      borderColor: "#333",
+                      backgroundColor: "#FFF",
+                      position: "absolute",
+                      top: 50,
+                      right: 20,
+                    }}
+                  >
+                    {options.map((option, index) => {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          style={{
+                            flexDirection: "row",
+                            paddingVertical: 10,
+                            gap: 5,
+                          }}
+                          onPress={option.action}
+                        >
+                          <MaterialCommunityIcons
+                            name={
+                              option.icon as keyof typeof MaterialCommunityIcons.glyphMap
+                            }
+                            color="#FF0000"
+                            size={24}
+                          />
+                          <Text style={{ color: "red" }}>{option.title}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </SafeAreaView>
+              </Modal>
+            </View>
           </View>
         ),
         tabBarLabelStyle: {
