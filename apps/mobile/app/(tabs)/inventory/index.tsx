@@ -8,7 +8,7 @@ import {
   Text,
 } from "react-native";
 import React from "react";
-import { Stack, router } from "expo-router";
+import { Link, Stack, router } from "expo-router";
 import Colors from "constants/Colors";
 
 type Props = {};
@@ -97,7 +97,10 @@ const inventory = (props: Props) => {
                   gap: 4,
                 }}
                 onPress={() => {
-                  router.push("/categoryDetail");
+                  router.push({
+                    pathname: "/inventory/[id]",
+                    params: { id: item.id },
+                  });
                 }}
               >
                 <View style={styles.categoryItem} key={index}>
@@ -109,17 +112,6 @@ const inventory = (props: Props) => {
             keyExtractor={(item) => item.id}
             numColumns={4}
           />
-          {/* {DATA.map((item: any, index: number) => {
-            return (
-              <View style={styles.categoryItem} key={index}>
-                <Image
-                  style={styles.categoryImage}
-                  source={require("../../assets/icons/Group.jpg")}
-                />
-                <Text style={styles.categoryText}>{item.title}</Text>
-              </View>
-            );
-          })} */}
         </View>
       </View>
     </SafeAreaView>

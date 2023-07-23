@@ -1,6 +1,13 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Stack, router } from "expo-router";
+import {
+  Stack,
+  router,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+  useSearchParams,
+} from "expo-router";
 import { Path, Svg } from "react-native-svg";
 import Colors from "constants/Colors";
 

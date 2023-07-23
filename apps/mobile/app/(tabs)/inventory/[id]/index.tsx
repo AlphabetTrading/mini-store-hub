@@ -8,9 +8,16 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { Stack, router } from "expo-router";
+import {
+  Stack,
+  router,
+  useLocalSearchParams,
+  useNavigation,
+  useSearchParams,
+} from "expo-router";
 import Colors from "constants/Colors";
 import SearchBar from "components/common/SearchBar";
+import { useGlobalSearchParams } from "expo-router";
 
 type Props = {};
 
@@ -18,57 +25,57 @@ const DATA = [
   {
     id: "1",
     name: "Egg",
-    imageSrc: require("../assets/icons/categories/egg.png"),
+    imageSrc: require("assets/icons/categories/egg.png"),
   },
   {
     id: "2",
     name: "Milk",
-    imageSrc: require("../assets/icons/categories/milk.png"),
+    imageSrc: require("assets/icons/categories/milk.png"),
   },
   {
     id: "3",
     name: "Biscuit",
-    imageSrc: require("../assets/icons/categories/biscuit.png"),
+    imageSrc: require("assets/icons/categories/biscuit.png"),
   },
   {
     id: "4",
     name: "Oil",
-    imageSrc: require("../assets/icons/categories/oil.png"),
+    imageSrc: require("assets/icons/categories/oil.png"),
   },
   {
     id: "5",
     name: "Soft",
-    imageSrc: require("../assets/icons/categories/soft.png"),
+    imageSrc: require("assets/icons/categories/soft.png"),
   },
   {
     id: "6",
     name: "Water",
-    imageSrc: require("../assets/icons/categories/water.png"),
+    imageSrc: require("assets/icons/categories/water.png"),
   },
   {
     id: "7",
     name: "Soft Drink",
-    imageSrc: require("../assets/icons/categories/soft_drink.png"),
+    imageSrc: require("assets/icons/categories/soft_drink.png"),
   },
   {
     id: "8",
     name: "Milk",
-    imageSrc: require("../assets/icons/categories/milk.png"),
+    imageSrc: require("assets/icons/categories/milk.png"),
   },
   {
     id: "9",
     name: "Water",
-    imageSrc: require("../assets/icons/categories/water.png"),
+    imageSrc: require("assets/icons/categories/water.png"),
   },
   {
     id: "10",
     name: "Soft Drink",
-    imageSrc: require("../assets/icons/categories/soft_drink.png"),
+    imageSrc: require("assets/icons/categories/soft_drink.png"),
   },
   {
     id: "11",
     name: "Milk",
-    imageSrc: require("../assets/icons/categories/milk.png"),
+    imageSrc: require("assets/icons/categories/milk.png"),
   },
 ];
 
@@ -101,7 +108,10 @@ const categoryDetail = (props: Props) => {
                   marginVertical: 4,
                 }}
                 onPress={() => {
-                  router.push("/itemDetail");
+                  router.push({
+                    pathname: "/inventory/[id]/[itemId]",
+                    params: { id: "1", itemId: "1" },
+                  });
                 }}
               >
                 <View

@@ -6,10 +6,10 @@ import Colors from "constants/Colors";
 type Props = {};
 
 const insightDetail = (props: Props) => {
-  const params = useLocalSearchParams<{
-    title: string;
-    data: string;
-  }>();
+  // const params = useLocalSearchParams<{
+  //   title: string;
+  //   data: string;
+  // }>();
   // const { title, data } = params;
 
   // const insightData = JSON.parse(data || "") as {
