@@ -66,11 +66,33 @@ export class UsersResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationUser> {
     const where: Prisma.UserWhereInput = {
-      id: filterUserInput?.id,
-      firstName: filterUserInput?.firstName,
-      lastName: filterUserInput?.lastName,
-      phone: filterUserInput?.phone,
-      createdAt: filterUserInput?.createdAt,
+      AND: [
+        {
+          id: filterUserInput?.id,
+        },
+        {
+          OR: [
+            {
+              firstName: filterUserInput?.firstName,
+            },
+            {
+              amharicFirstName: filterUserInput?.firstName,
+            },
+            {
+              lastName: filterUserInput?.lastName,
+            },
+            {
+              amharicLastName: filterUserInput?.lastName,
+            },
+          ],
+        },
+        {
+          phone: filterUserInput?.phone,
+        },
+        {
+          createdAt: filterUserInput?.createdAt,
+        },
+      ],
     };
     try {
       const users = await this.usersService.getUsers({

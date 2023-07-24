@@ -22,12 +22,15 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  firstName String
-  lastName  String
-  username  String   @unique
-  phone     String   @unique
-  password  String
+  id               String  @id @default(cuid())
+  firstName        String
+  lastName         String
+  username         String  @unique
+  phone            String  @unique
+  password         String
+  amharicFirstName String? @map("የ መጀመሪያ ስም") @db.Text
+  amharicLastName  String? @map("የ አባት ስም") @db.Text
+
   role      UserRole @default(USER)
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -43,14 +46,16 @@ model User {
 }
 
 model Notification {
-  id          String   @id @default(cuid())
-  title       String
-  body        String
-  status      Boolean  @default(false)
-  createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  title        String
+  amharicTitle String?  @map("የ ርዕስ ስም") @db.Text
+  body         String
+  amharicBody  String?  @map("መልእክት") @db.Text
+  status       Boolean  @default(false)
+  createdById  String
+  createdBy    User     @relation(fields: [createdById], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model NotificationToken {
@@ -77,15 +82,17 @@ model UserProfile {
 }
 
 model Category {
-  id            String     @id @default(cuid())
-  name          String     @unique
-  description   String
-  parentId      String?
-  parent        Category?  @relation("Subcategory", fields: [parentId], references: [id])
-  subcategories Category[] @relation("Subcategory")
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  products      Product[]
+  id                 String     @id @default(cuid())
+  name               String     @unique
+  amharicName        String?    @map("የ እቃ ክፍል ስም") @db.Text
+  description        String
+  amharicDescription String?    @map("መግለጫ") @db.Text
+  parentId           String?
+  parent             Category?  @relation("Subcategory", fields: [parentId], references: [id])
+  subcategories      Category[] @relation("Subcategory")
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  products           Product[]
 }
 
 enum UnitType {
@@ -94,16 +101,20 @@ enum UnitType {
 }
 
 model Product {
-  id           String   @id @default(cuid())
-  serialNumber String
-  name         String
-  description  String
-  categoryId   String
-  category     Category @relation(fields: [categoryId], references: [id])
-  unit         UnitType
-  images       String[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                String   @id @default(cuid())
+  serialNumber      String
+  name              String
+  // amharicName field contains the title of the product in amharic character
+  amharicName       String?  @map("የ እቃ ስም") @db.Text
+  description       String
+  // amharicDescription field contains the description of the product in amharic character
+  amharicDecription String?  @map("መግለጫ") @db.Text
+  categoryId        String
+  category          Category @relation(fields: [categoryId], references: [id])
+  unit              UnitType
+  images            String[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   activePrice     PriceHistory?     @relation("ActivePrice")
   priceHistory    PriceHistory[]    @relation("ProductPriceHistory")
@@ -130,22 +141,24 @@ model PriceHistory {
 }
 
 model Address {
-  id               String       @id @default(cuid())
-  street           String?
-  city             String?
-  lng              Float?
-  lat              Float?
-  formattedAddress String?
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  retailShop       RetailShop?  @relation("RetailShop Address")
-  warehouse        Warehouse?   @relation("Warehouse Address")
-  userProfile      UserProfile? @relation("User Address")
+  id                      String       @id @default(cuid())
+  street                  String?
+  city                    String?
+  lng                     Float?
+  lat                     Float?
+  formattedAddress        String?
+  amharicFormattedAddress String?      @map("ሙሉ አድራሻ") @db.Text
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  retailShop              RetailShop?  @relation("RetailShop Address")
+  warehouse               Warehouse?   @relation("Warehouse Address")
+  userProfile             UserProfile? @relation("User Address")
 }
 
 model RetailShop {
   id                  String   @id @default(cuid())
   name                String
+  amharicName         String?  @map("የስራ ቦታ ስም") @db.Text
   addressId           String?  @unique
   address             Address? @relation("RetailShop Address", fields: [addressId], references: [id])
   retailShopManagerId String?
@@ -164,6 +177,7 @@ model RetailShop {
 model Warehouse {
   id                 String   @id @default(cuid())
   name               String
+  amharicName        String?  @map("የስራ ቦታ ስም") @db.Text
   addressId          String?  @unique
   warehouseManagerId String?
   createdAt          DateTime @default(now())

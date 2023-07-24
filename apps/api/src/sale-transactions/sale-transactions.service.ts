@@ -2,6 +2,8 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSaleTransactionInput } from './dto/create-sale-transaction.input';
 import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input';
+import { Prisma } from '@prisma/client';
+import { SaleTransaction } from './models/sale-transaction.model';
 
 @Injectable()
 export class SaleTransactionsService {
@@ -207,11 +209,24 @@ export class SaleTransactionsService {
     return overallProfit;
   }
 
-  async findAll() {
+  async findAll({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.SaleTransactionWhereInput;
+    orderBy?: Prisma.SaleTransactionOrderByWithRelationInput;
+  }): Promise<SaleTransaction[]> {
     try {
-      console.log('test');
       this.logger.error('test');
       return this.prisma.saleTransaction.findMany({
+        skip,
+        take,
+        where,
+        orderBy,
         include: {
           retailShop: true,
           product: {
@@ -246,6 +261,10 @@ export class SaleTransactionsService {
       },
     });
   }
+  async count(where?: Prisma.SaleTransactionWhereInput): Promise<number> {
+    return this.prisma.saleTransaction.count({ where });
+  }
+
   async findAllByRetailShop(id: string) {
     return this.prisma.saleTransaction.findMany({
       where: { retailShopId: id },

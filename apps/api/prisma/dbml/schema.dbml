@@ -9,6 +9,8 @@ Table User {
   username String [unique, not null]
   phone String [unique, not null]
   password String [not null]
+  amharicFirstName String
+  amharicLastName String
   role UserRole [not null, default: 'USER']
   isActive Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
@@ -23,7 +25,9 @@ Table User {
 Table Notification {
   id String [pk]
   title String [not null]
+  amharicTitle String
   body String [not null]
+  amharicBody String
   status Boolean [not null, default: false]
   createdById String [not null]
   createdBy User [not null]
@@ -57,7 +61,9 @@ Table UserProfile {
 Table Category {
   id String [pk]
   name String [unique, not null]
+  amharicName String
   description String [not null]
+  amharicDescription String
   parentId String
   parent Category
   subcategories Category [not null]
@@ -70,7 +76,9 @@ Table Product {
   id String [pk]
   serialNumber String [not null]
   name String [not null]
+  amharicName String
   description String [not null]
+  amharicDecription String
   categoryId String [not null]
   category Category [not null]
   unit UnitType [not null]
@@ -112,6 +120,7 @@ Table Address {
   lng Float
   lat Float
   formattedAddress String
+  amharicFormattedAddress String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   retailShop RetailShop
@@ -122,6 +131,7 @@ Table Address {
 Table RetailShop {
   id String [pk]
   name String [not null]
+  amharicName String
   addressId String [unique]
   address Address
   retailShopManagerId String
@@ -139,6 +149,7 @@ Table RetailShop {
 Table Warehouse {
   id String [pk]
   name String [not null]
+  amharicName String
   addressId String [unique]
   warehouseManagerId String
   createdAt DateTime [default: `now()`, not null]

@@ -33,26 +33,52 @@ export class ProductsResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
     const where: Prisma.ProductWhereInput = {
-      id: filterProductInput?.id,
-      name: filterProductInput?.name,
-      serialNumber: filterProductInput?.serialNumber,
-      description: filterProductInput?.description,
-      category: {
-        name: {
-          contains: filterProductInput?.category?.contains,
-          mode: Prisma.QueryMode.insensitive,
+      AND: [
+        {
+          id: filterProductInput?.id,
         },
-        subcategories: {
-          every: {
-            name: {
-              contains: filterProductInput?.category?.contains,
-              mode: Prisma.QueryMode.insensitive,
+        {
+          OR: [
+            {
+              name: filterProductInput?.name,
             },
+            {
+              amharicName: filterProductInput?.name,
+            },
+          ],
+        },
+        {
+          serialNumber: filterProductInput?.serialNumber,
+        },
+        {
+          description: filterProductInput?.description,
+        },
+        {
+          category: {
+            OR: [
+              {
+                name: filterProductInput?.category,
+              },
+              {
+                amharicName: filterProductInput?.category,
+              },
+              {
+                subcategories: {
+                  every: {
+                    name: {
+                      contains: filterProductInput?.category?.contains,
+                      mode: Prisma.QueryMode.insensitive,
+                    },
+                  },
+                },
+              },
+            ],
           },
         },
-      },
-
-      createdAt: filterProductInput?.createdAt,
+        {
+          createdAt: filterProductInput?.createdAt,
+        },
+      ],
     };
     try {
       const products = await this.productsService.findAll({
@@ -171,8 +197,8 @@ export class ProductsResolver {
   }
 
   @Query(() => Product, { name: 'product' })
-  async product(id: string): Promise<Product> {
-    return this.productsService.findOne(id);
+  async product(@Args('productId') productId: string): Promise<Product> {
+    return this.productsService.findOne(productId);
   }
 
   @Query(() => [Product], { name: 'productsByCategory' })

@@ -32,9 +32,24 @@ export class RetailShopsResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationRetailShops> {
     const where: Prisma.RetailShopWhereInput = {
-      id: filterRetailShopInput?.id,
-      name: filterRetailShopInput?.name,
-      createdAt: filterRetailShopInput?.createdAt,
+      AND: [
+        {
+          id: filterRetailShopInput?.id,
+        },
+        {
+          OR: [
+            {
+              name: filterRetailShopInput?.name,
+            },
+            {
+              amharicName: filterRetailShopInput?.name,
+            },
+          ],
+        },
+        {
+          createdAt: filterRetailShopInput?.createdAt,
+        },
+      ],
     };
     try {
       const retailShops = await this.retailShopsService.findAll({

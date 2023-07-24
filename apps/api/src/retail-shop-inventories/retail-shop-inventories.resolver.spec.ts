@@ -1,18 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductInventoriesResolver } from './retail-shop-inventories.resolver';
-import { ProductInventoriesService } from './retail-shop-inventories.service';
+import { RetailShopStockResolver } from './retail-shop-inventories.resolver';
+import { RetailShopStockService } from './retail-shop-inventories.service';
 
-describe('ProductInventoriesResolver', () => {
-  let resolver: ProductInventoriesResolver;
+describe('retailShopStockResolver', () => {
+  let resolver: RetailShopStockResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductInventoriesResolver, ProductInventoriesService],
+      providers: [RetailShopStockResolver, RetailShopStockService],
     }).compile();
 
-    resolver = module.get<ProductInventoriesResolver>(
-      ProductInventoriesResolver,
-    );
+    resolver = module.get<RetailShopStockResolver>(RetailShopStockResolver);
   });
 
   it('should be defined', () => {

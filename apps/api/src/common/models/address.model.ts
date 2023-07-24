@@ -12,6 +12,9 @@ export class Address extends BaseModel {
   @Field(() => String, { nullable: true })
   formattedAddress?: string;
 
+  @Field(() => String, { nullable: true })
+  amharicFormattedAddress?: string;
+
   @Field(() => Float, { nullable: true })
   lat?: number;
 

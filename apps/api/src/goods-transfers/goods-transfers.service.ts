@@ -2,13 +2,30 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateGoodsTransferInput } from './dto/create-goods-transfer.input';
 import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { GoodsTransfer } from './models/goods-transfer.model';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class GoodsTransfersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.GoodsTransferWhereInput;
+    orderBy?: Prisma.GoodsTransferOrderByWithRelationInput;
+  }): Promise<GoodsTransfer[]> {
     return this.prisma.goodsTransfer.findMany({
+      skip,
+      take,
+      where,
+      orderBy,
+
       include: {
         destinationWarehouse: true,
         goods: true,
@@ -28,6 +45,10 @@ export class GoodsTransfersService {
         sourceWarehouse: true,
       },
     });
+  }
+
+  async count(where?: Prisma.GoodsTransferWhereInput): Promise<number> {
+    return this.prisma.goodsTransfer.count({ where });
   }
 
   async findByWarehouseId(warehouseId: string) {

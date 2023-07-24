@@ -10,12 +10,6 @@ export const ProductsIncludeObject = {
   category: true,
   activePrice: true,
   priceHistory: true,
-};
-
-export const ProductIncludeObject = {
-  category: true,
-  activePrice: true,
-  priceHistory: true,
   saleTransaction: true,
   goods: true,
   retailShopStock: true,
@@ -42,7 +36,7 @@ export class ProductsService {
       take,
       where,
       orderBy,
-      include: ProductIncludeObject,
+      include: ProductsIncludeObject,
     });
   }
 
@@ -134,7 +128,7 @@ export class ProductsService {
 
     const product = await this.prisma.product.findUnique({
       where: { id },
-      include: ProductIncludeObject,
+      include: ProductsIncludeObject,
     });
     if (!product) {
       throw new Error("Product with this Id doesn't exists");

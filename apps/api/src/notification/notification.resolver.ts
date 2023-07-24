@@ -6,6 +6,11 @@ import { Notification } from './models/notification.model';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NotificationEvent } from './events/notification.event';
 import { sendBulkPushNotificationInput } from './dto/sendBulkPushNotification.dto';
+import { PaginationNotifications } from 'src/common/pagination/pagination-info';
+import { FilterNotificationInput } from './dto/filter-notifications.input';
+import { NotificationOrder } from './dto/notifications-order.input';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { Prisma } from '@prisma/client';
 
 @Resolver()
 export class NotificationResolver {
@@ -19,9 +24,74 @@ export class NotificationResolver {
     return this.notificationService.getNotifications();
   }
 
-  @Query(() => [Notification])
-  async allUsersNotifications(@Args('userId') userId: string) {
-    return this.notificationService.getNotificationsByUserId(userId);
+  @Query(() => PaginationNotifications)
+  async allUsersNotifications(
+    @Args('filterNotificationInput', {
+      type: () => FilterNotificationInput,
+      nullable: true,
+    })
+    filterNotificationInput?: FilterNotificationInput,
+    @Args('orderBy', {
+      type: () => NotificationOrder,
+      nullable: true,
+    })
+    orderBy?: NotificationOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationNotifications> {
+    const where: Prisma.NotificationWhereInput = {
+      AND: [
+        {
+          id: filterNotificationInput?.id,
+        },
+        {
+          OR: [
+            {
+              title: filterNotificationInput?.title,
+            },
+            {
+              amharicTitle: filterNotificationInput?.title,
+            },
+          ],
+        },
+        {
+          OR: [
+            {
+              body: filterNotificationInput?.body,
+            },
+            {
+              amharicBody: filterNotificationInput?.body,
+            },
+          ],
+        },
+      ],
+    };
+
+    const count = await this.notificationService.count();
+    const notifications =
+      await this.notificationService.getNotificationsByUserId({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+
+    return {
+      items: notifications,
+      meta: {
+        count,
+        limit: paginationInput.take,
+        page: paginationInput.skip,
+      },
+    };
+  }
+
+  // get a single notification
+  @Query(() => Notification)
+  async notificationById(@Args('id') notificationId: string) {
+    return this.notificationService.findOne(notificationId);
   }
 
   @Query(() => [Notification])

@@ -44,16 +44,37 @@ export class RetailShopStockResolver {
     paginationInput?: PaginationInput,
   ) {
     const where: Prisma.RetailShopStockWhereInput = {
-      id: filterRetailShopStockInput?.id,
-      retailShopId: filterRetailShopStockInput.retailShopId,
-      product: {
-        name: {
-          contains: filterRetailShopStockInput?.product?.name?.contains,
-          mode: Prisma.QueryMode.insensitive,
+      AND: [
+        {
+          id: filterRetailShopStockInput?.id,
         },
-        createdAt: filterRetailShopStockInput.product?.createdAt,
-      },
-      createdAt: filterRetailShopStockInput?.createdAt,
+        {
+          retailShopId: filterRetailShopStockInput?.retailShopId,
+        },
+        {
+          product: {
+            AND: [
+              {
+                id: filterRetailShopStockInput?.product?.id,
+              },
+              {
+                OR: [
+                  {
+                    name: filterRetailShopStockInput?.product?.name,
+                  },
+                  {
+                    amharicName: filterRetailShopStockInput?.product?.name,
+                  },
+                ],
+              },
+            ],
+            createdAt: filterRetailShopStockInput?.product?.createdAt,
+          },
+        },
+        {
+          createdAt: filterRetailShopStockInput?.createdAt,
+        },
+      ],
     };
     try {
       const products = await this.retailShopStockService.findByRetailShopId({
@@ -114,6 +135,12 @@ export class RetailShopStockResolver {
       productId,
       warehouseId,
     );
+  }
+
+  // get single RetailShopStock
+  @Query(() => RetailShopStock)
+  async retailShopStockById(@Args('id') retailShopStockId: string) {
+    return this.retailShopStockService.findOne(retailShopStockId);
   }
 
   @Mutation(() => RetailShopStock)

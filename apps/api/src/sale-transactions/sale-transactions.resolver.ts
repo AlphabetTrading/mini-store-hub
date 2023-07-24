@@ -13,6 +13,11 @@ import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input'
 import { PubSub } from 'graphql-subscriptions';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { FilterSaleTransactionInput } from './dto/filter-sale-transactions-input';
+import { SaleTransactionOrder } from './dto/sale-transaction-order.input';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { PaginationSaleTransactions } from 'src/common/pagination/pagination-info';
+import { Prisma } from '@prisma/client';
 
 const pubSub = new PubSub();
 @Resolver(() => SaleTransaction)
@@ -23,16 +28,78 @@ export class SaleTransactionsResolver {
   ) {}
 
   @Query(() => [SaleTransaction], { name: 'saleTransactions' })
-  async findAll(): Promise<SaleTransaction[]> {
+  async findAll(
+    @Args('filterSaleTransactionInput', {
+      type: () => FilterSaleTransactionInput,
+      nullable: true,
+    })
+    filterSaleTransactionInput?: FilterSaleTransactionInput,
+    @Args('orderBy', {
+      type: () => SaleTransactionOrder,
+      nullable: true,
+    })
+    orderBy?: SaleTransactionOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationSaleTransactions> {
     try {
-      return this.saleTransactionsService.findAll();
+      const where: Prisma.SaleTransactionWhereInput = {
+        AND: [
+          {
+            id: filterSaleTransactionInput?.id,
+          },
+          {
+            product: {
+              AND: [
+                {
+                  id: filterSaleTransactionInput?.product?.id,
+                },
+                {
+                  OR: [
+                    {
+                      name: filterSaleTransactionInput?.product?.name,
+                    },
+                    {
+                      amharicName: filterSaleTransactionInput?.product?.name,
+                    },
+                  ],
+                },
+                {
+                  description: filterSaleTransactionInput?.product?.description,
+                },
+              ],
+            },
+          },
+          {
+            createdAt: filterSaleTransactionInput?.createdAt,
+          },
+        ],
+      };
+
+      const salesTransactions = await this.saleTransactionsService.findAll({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+      const count = await this.saleTransactionsService.count(where);
+      return {
+        items: salesTransactions,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
     } catch (error) {
       console.log(error);
     }
   }
 
   @Query(() => SaleTransaction, { name: 'saleTransaction' })
-  async findOne(id: string): Promise<SaleTransaction> {
+  async findOne(@Args('id') id: string): Promise<SaleTransaction> {
     return this.saleTransactionsService.findOne(id);
   }
 

@@ -24,7 +24,13 @@ export class User extends BaseModel {
   firstName?: string;
 
   @Field(() => String, { nullable: true })
+  amharicFirstName?: string;
+
+  @Field(() => String, { nullable: true })
   lastName?: string;
+
+  @Field(() => String, { nullable: true })
+  amharicLastName?: string;
 
   @Field(() => String, { nullable: true })
   phone?: string;

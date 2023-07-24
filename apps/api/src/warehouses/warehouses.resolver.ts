@@ -34,9 +34,24 @@ export class WarehousesResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationWarehouses> {
     const where: Prisma.WarehouseWhereInput = {
-      id: filterWarehouseInput?.id,
-      name: filterWarehouseInput?.name,
-      createdAt: filterWarehouseInput?.createdAt,
+      AND: [
+        {
+          id: filterWarehouseInput?.id,
+        },
+        {
+          OR: [
+            {
+              name: filterWarehouseInput?.name,
+            },
+            {
+              amharicName: filterWarehouseInput?.name,
+            },
+          ],
+        },
+        {
+          createdAt: filterWarehouseInput?.createdAt,
+        },
+      ],
     };
     try {
       const warehouses = await this.warehousesService.findAll({

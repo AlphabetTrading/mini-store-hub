@@ -21,11 +21,6 @@ export class PriceHistoriesResolver {
     return this.priceHistoriesService.findAll();
   }
 
-  @Query(() => PriceHistory)
-  async priceHistory(id: string): Promise<PriceHistory> {
-    return this.priceHistoriesService.findOne(id);
-  }
-
   @Query(() => PaginationPriceHistories, { name: 'priceHistoryByProduct' })
   async priceHistoryByProduct(
     @Args('filterPriceHistoryInput', {
@@ -42,13 +37,37 @@ export class PriceHistoriesResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationPriceHistories> {
     const where: Prisma.PriceHistoryWhereInput = {
-      id: filterPriceHistoryInput?.id,
-      createdAt: filterPriceHistoryInput?.createdAt,
-      product: {
-        id: filterPriceHistoryInput?.id,
-        name: filterPriceHistoryInput?.product?.name,
-        serialNumber: filterPriceHistoryInput?.product?.serialNumber,
-      },
+      AND: [
+        {
+          id: filterPriceHistoryInput?.id,
+        },
+        {
+          createdAt: filterPriceHistoryInput?.createdAt,
+        },
+        {
+          product: {
+            AND: [
+              {
+                id: filterPriceHistoryInput?.id,
+              },
+
+              {
+                OR: [
+                  {
+                    name: filterPriceHistoryInput?.product?.name,
+                  },
+                  {
+                    amharicName: filterPriceHistoryInput?.product?.name,
+                  },
+                ],
+              },
+              {
+                serialNumber: filterPriceHistoryInput?.product?.serialNumber,
+              },
+            ],
+          },
+        },
+      ],
     };
 
     try {
@@ -72,6 +91,12 @@ export class PriceHistoriesResolver {
     } catch (e) {
       throw new BadRequestException('Error loading products!');
     }
+  }
+
+  // get single price history by id
+  @Query(() => PriceHistory, { name: 'priceHistoryById' })
+  async priceHistoryById(@Args('id') id: string): Promise<PriceHistory> {
+    return this.priceHistoriesService.findOne(id);
   }
 
   @Mutation(() => PriceHistory, {

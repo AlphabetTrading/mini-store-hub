@@ -12,6 +12,9 @@ export class Warehouse extends BaseModel {
   name: string;
 
   @Field(() => String, { nullable: true })
+  amharicName?: string;
+
+  @Field(() => String, { nullable: true })
   addressId?: string;
 
   @Field(() => String, { nullable: true })

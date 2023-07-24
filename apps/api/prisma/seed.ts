@@ -154,6 +154,7 @@ async function seedProducts() {
     const data = [
       {
         name: 'Shirt',
+        amharicName: 'ሸሚዝ',
         categoryId: categories[0].id,
         unit: UnitType.PIECES,
         description: 'Shirt',
@@ -161,6 +162,7 @@ async function seedProducts() {
       },
       {
         name: 'Jeans',
+        amharicName: 'ጅንስ',
         categoryId: categories[1].id,
         unit: UnitType.PIECES,
         description: 'Jeans',
@@ -168,6 +170,7 @@ async function seedProducts() {
       },
       {
         name: 'Shoes',
+        amharicName: 'አልባሳት',
         categoryId: categories[0].id,
         unit: UnitType.PIECES,
         description: 'Shoes',

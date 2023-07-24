@@ -32,15 +32,38 @@ export class WarehouseStockResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationWarehouseStocks> {
     const where: Prisma.WarehouseStockWhereInput = {
-      id: filterWarehouseStockInput?.id,
-      warehouse: filterWarehouseStockInput?.warehouse,
-      product: {
-        id: filterWarehouseStockInput?.product?.id,
-        name: filterWarehouseStockInput?.product?.name,
-        description: filterWarehouseStockInput?.product?.description,
-        serialNumber: filterWarehouseStockInput?.product?.serialNumber,
-      },
-      createdAt: filterWarehouseStockInput?.createdAt,
+      AND: [
+        {
+          id: filterWarehouseStockInput?.id,
+        },
+        {
+          warehouse: filterWarehouseStockInput?.warehouse,
+        },
+        {
+          product: {
+            id: filterWarehouseStockInput?.product?.id,
+            OR: [
+              {
+                name: filterWarehouseStockInput?.product?.name,
+              },
+              {
+                amharicName: filterWarehouseStockInput?.product?.name,
+              },
+              {
+                description: filterWarehouseStockInput?.product?.description,
+              },
+              {
+                amharicDecription:
+                  filterWarehouseStockInput?.product?.description,
+              },
+            ],
+            serialNumber: filterWarehouseStockInput?.product?.serialNumber,
+          },
+        },
+        {
+          createdAt: filterWarehouseStockInput?.createdAt,
+        },
+      ],
     };
     try {
       const warehouseStocks = await this.warehouseStockService.findAll({

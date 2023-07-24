@@ -7,11 +7,17 @@ export class Notification extends BaseModel {
   @Field(() => String)
   title: string;
 
+  @Field(() => String, { nullable: true })
+  amharicTitle?: string;
+
   @Field(() => String)
   body: string;
 
-  @Field(() => String)
-  status: string;
+  @Field(() => String, { nullable: true })
+  amharicBody?: string;
+
+  @Field(() => Boolean)
+  status: boolean;
 
   @Field(() => User)
   createdBy?: User;

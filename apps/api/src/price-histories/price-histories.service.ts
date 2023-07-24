@@ -26,7 +26,10 @@ export class PriceHistoriesService {
   }
 
   async findOne(id: string) {
-    return this.prisma.priceHistory.findUnique({ where: { id } });
+    return this.prisma.priceHistory.findUnique({
+      where: { id },
+      include: priceHistoryIncludeObject,
+    });
   }
 
   async count(where?: Prisma.PriceHistoryWhereInput): Promise<number> {
@@ -44,8 +47,6 @@ export class PriceHistoriesService {
     where?: Prisma.PriceHistoryWhereInput;
     orderBy?: Prisma.PriceHistoryOrderByWithRelationInput;
   }): Promise<PriceHistory[]> {
-    console.log('args ', skip, where, take, orderBy);
-
     const result = await this.prisma.priceHistory.findMany({
       where,
       skip,

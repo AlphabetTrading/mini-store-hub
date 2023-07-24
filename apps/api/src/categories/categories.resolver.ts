@@ -14,16 +14,85 @@ import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { HasRoles } from 'src/common/decorators';
-import { UserRole } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
+import {
+  PaginationCategories,
+  PaginationUser,
+} from 'src/common/pagination/pagination-info';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { FilterCategoryInput } from './dto/filter-category.input';
+import { CategoryOrder } from './dto/category-order.input';
 
 @Resolver(() => Category)
 @UseGuards(GqlAuthGuard)
 export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Query(() => [Category])
-  async categories(): Promise<Category[]> {
-    return this.categoriesService.findAll();
+  @Query(() => PaginationCategories)
+  async categories(
+    @Args('filterCategoryInput', {
+      type: () => FilterCategoryInput,
+      nullable: true,
+    })
+    filterCategoryInput?: FilterCategoryInput,
+    @Args('orderBy', {
+      type: () => CategoryOrder,
+      nullable: true,
+    })
+    orderBy?: CategoryOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationCategories> {
+    const where: Prisma.CategoryWhereInput = {
+      AND: [
+        {
+          id: filterCategoryInput?.id,
+        },
+        {
+          OR: [
+            {
+              name: filterCategoryInput?.name,
+            },
+            {
+              amharicName: filterCategoryInput?.name,
+            },
+          ],
+        },
+        {
+          description: filterCategoryInput?.description,
+        },
+        {
+          createdAt: filterCategoryInput?.createdAt,
+        },
+      ],
+    };
+
+    const categories = await this.categoriesService.findAll({
+      where,
+      orderBy: {
+        [orderBy?.field]: orderBy?.direction,
+      },
+      skip: paginationInput?.skip,
+      take: paginationInput?.take,
+    });
+
+    const totalCategories = await this.categoriesService.count(where);
+
+    return {
+      items: categories,
+      meta: {
+        count: totalCategories,
+        limit: paginationInput?.take,
+        page: paginationInput?.skip
+          ? Math.floor(paginationInput?.skip / paginationInput?.take) + 1
+          : 1,
+      },
+    };
+  }
+
+  @Query(() => Category, { name: 'category' })
+  async category(@Args('id') id: string) {
+    return this.categoriesService.findOne(id);
   }
 
   @ResolveField('subcategories', () => [Category])

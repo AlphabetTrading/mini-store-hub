@@ -21,8 +21,14 @@ export class Product extends BaseModel {
   @Field()
   name: string;
 
+  @Field({ nullable: true })
+  amharicName?: string;
+
   @Field()
   description: string;
+
+  @Field({ nullable: true })
+  amharicDescription?: string;
 
   @Field(() => UnitType)
   unit: UnitType;

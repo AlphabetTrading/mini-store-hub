@@ -6,6 +6,8 @@ import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto'
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
 import { NotificationEvent } from './events/notification.event';
+import { Prisma } from '@prisma/client';
+import { Notification } from './models/notification.model';
 
 const firebase_private_key_b64 = Buffer.from(
   process.env.FIREBASE_PRIVATE_KEY_BASE64,
@@ -89,15 +91,36 @@ export class NotificationService {
     return notifications;
   }
 
-  async getNotificationsByUserId(user_id: string) {
-    const notifications = await this.prisma.notification.findMany({
-      where: {
-        createdBy: {
-          id: user_id,
-        },
+  async getNotificationsByUserId({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.NotificationWhereInput;
+    orderBy?: Prisma.NotificationOrderByWithRelationInput;
+  }): Promise<Notification[]> {
+    return this.prisma.notification.findMany({
+      where,
+      orderBy,
+      skip,
+      take,
+      include: {
+        createdBy: true,
       },
     });
-    return notifications;
+  }
+
+  async count(where?: Prisma.NotificationWhereInput): Promise<number> {
+    return this.prisma.notification.count({ where });
+  }
+
+  async findOne(notificationId: string) {
+    return this.prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
   }
 
   async getNotificationsByUserIdAndStatus(user_id: string, status: boolean) {
