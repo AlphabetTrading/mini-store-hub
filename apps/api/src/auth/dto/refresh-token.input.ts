@@ -7,5 +7,5 @@ export class RefreshTokenInput {
   @IsNotEmpty()
   @IsJWT()
   @Field(() => GraphQLJWT)
-  token: string;
+  refreshToken: string;
 }

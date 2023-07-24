@@ -97,7 +97,8 @@ model Category {
 
 enum UnitType {
   PIECES
-  WEIGHT
+  KG
+  LITER
 }
 
 model Product {

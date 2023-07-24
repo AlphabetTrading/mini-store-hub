@@ -109,30 +109,101 @@ async function seedCategories() {
   try {
     const categories = await prisma.category.createMany({
       data: [
-        { name: 'Clothing', description: 'All the latest clothing products' },
+        {
+          name: 'Clothing',
+          amharicName: 'አልባሳት',
+          description: 'All the latest clothing products',
+          amharicDescription: 'ሁሉም የአልባሳት እቃዎች',
+        },
         {
           name: 'Home & Kitchen',
+          amharicName: 'ቤት እና የቤት መድብሎች',
           description: 'All the latest home & kitchen products',
         },
         {
           name: 'Sports',
+          amharicName: 'ስፖርት',
           description: 'All the latest sports products',
+          amharicDescription: 'ሁሉም የስፖርት እቃዎች',
+        },
+
+        // grocery shop item category
+        {
+          name: 'Beverages',
+          amharicName: 'መጠጥ የሚያስገባ',
+          description: 'All the latest beverages products',
+          amharicDescription: 'ሁሉም የመጠጥ እቃዎች',
+        },
+        {
+          name: 'Bread & Bakery',
+          amharicName: 'ዳቦ እና ቤኪሊ',
+          description: 'All the latest bread & bakery products',
+          amharicDescription: 'ሁሉም የዳቦ እና ቤኪሊ እቃዎች',
+        },
+        // super market item category
+        {
+          name: 'Fruits & Vegetables',
+          amharicName: 'ተክል እና በረከት',
+          description: 'All the latest fruits & vegetables products',
+          amharicDescription: 'ሁሉም የተክል እና በረከት እቃዎች',
+        },
+        {
+          name: 'Meat & Fish',
+          amharicName: 'ፈረንጅ፣ ዓሣ እና አስተናጋጅ',
+          description: 'All the latest meat & fish products',
+          amharicDescription: 'ሁሉም የፈረንጅ፣ ዓሣ እና አስተናጋጅ እቃዎች',
+        },
+        {
+          name: 'Dairy & Eggs',
+          amharicName: 'የተወለደ የብርሃን እና የዝንባቡ እጥረት',
+          description: 'All the latest dairy & eggs products',
+          amharicDescription: 'ሁሉም የተወለደ የብርሃን እና የዝንባቡ እጥረት እቃዎች',
+        },
+        {
+          name: 'Biscuits, Snacks & Chocolates',
+          amharicName: 'ቢስክት፣ ስናክስ እና ቸኮሌት',
+          description: 'All the latest biscuits, snacks & chocolates products',
+          amharicDescription: 'ሁሉም የቢስክት፣ ስናክስ እና ቸኮሌት እቃዎች',
+        },
+        {
+          name: 'Cooking Oil & Ghee',
+          amharicName: 'የምግብ ዘይት እና ጉድ',
+          description: 'All the latest cooking oil & ghee products',
+          amharicDescription: 'ሁሉም የምግብ ዘይት እና ጉድ እቃዎች',
+        },
+        {
+          name: 'Breakfast Cereals',
+          amharicName: 'የማዳን ዝንባቡ እና የማዳን ዘይት',
+          description: 'All the latest breakfast cereals products',
+          amharicDescription: 'ሁሉም የማዳን ዝንባቡ እና የማዳን ዘይት እቃዎች',
+        },
+        {
+          name: 'Rice, Pasta & Noodles',
+          amharicName: 'ሩዝ፣ ፓስታ እና ኖድልስ',
+          description: 'All the latest rice, pasta & noodles products',
+          amharicDescription: 'ሁሉም የሩዝ፣ ፓስታ እና ኖድልስ እቃዎች',
         },
       ],
     });
     await prisma.category.create({
       data: {
         name: 'Electronics',
+        amharicName: 'ኤሌክትሮኒክስ',
         description: 'All the latest electronics products',
+        amharicDescription: 'ሁሉም የኤሌክትሮኒክስ እቃዎች',
         subcategories: {
           create: [
             {
               name: 'Laptops',
+              amharicName: 'ላፕቶፕቶች',
               description: 'Laptops',
+              amharicDescription: 'ላፕቶፕቶች',
             },
             {
               name: 'Mobile Phones',
+              amharicName: 'ሞባይል ፎንሎች',
               description: 'Mobile Phones',
+              amharicDescription: 'ሞባይል ፎንሎች',
             },
           ],
         },
@@ -149,6 +220,17 @@ async function seedCategories() {
 }
 
 async function seedProducts() {
+  // Pad the currentSerialNumber with leading zeros to ensure it's 4 digits
+  let currentSerialNumber = 1;
+  function generateSerialNumber(): string {
+    // Pad the currentSerialNumber with leading zeros to ensure it's 4 digits
+    const paddedSerialNumber = currentSerialNumber.toString().padStart(4, '0');
+
+    // Increment the currentSerialNumber for the next call
+    currentSerialNumber++;
+
+    return paddedSerialNumber;
+  }
   try {
     const categories = await prisma.category.findMany();
     const data = [
@@ -158,7 +240,7 @@ async function seedProducts() {
         categoryId: categories[0].id,
         unit: UnitType.PIECES,
         description: 'Shirt',
-        serialNumber: 'SN-001',
+        serialNumber: generateSerialNumber(),
       },
       {
         name: 'Jeans',
@@ -166,22 +248,31 @@ async function seedProducts() {
         categoryId: categories[1].id,
         unit: UnitType.PIECES,
         description: 'Jeans',
-        serialNumber: 'SN-002',
+        serialNumber: generateSerialNumber(),
       },
       {
         name: 'Shoes',
-        amharicName: 'አልባሳት',
+        amharicName: 'አልባሳት ጫማ',
         categoryId: categories[0].id,
         unit: UnitType.PIECES,
         description: 'Shoes',
-        serialNumber: 'SN-003',
+        serialNumber: generateSerialNumber(),
       },
       {
         name: 'T-Shirt',
+        amharicName: 'ቲ-ሸሚዝ',
         categoryId: categories[0].id,
         unit: UnitType.PIECES,
         description: 'T-Shirt',
-        serialNumber: 'SN-004',
+        serialNumber: generateSerialNumber(),
+      },
+      {
+        name: 'Sweater',
+        amharicName: 'ስዊትር',
+        categoryId: categories[0].id,
+        unit: UnitType.PIECES,
+        description: 'Sweater',
+        serialNumber: generateSerialNumber(),
       },
     ];
     await prisma.product.createMany({

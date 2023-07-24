@@ -151,7 +151,12 @@ export class AuthService {
   }
 
   private generateAccessToken(payload: { userId: string }): string {
-    return this.jwtService.sign(payload);
+    const securityConfig = this.configService.get<SecurityConfig>('security');
+
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_ACCESS_SECRET'),
+      expiresIn: securityConfig.expiresIn,
+    });
   }
 
   private generateRefreshToken(payload: { userId: string }): string {

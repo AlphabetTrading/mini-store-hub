@@ -44,9 +44,9 @@ export class AuthResolver {
     };
   }
 
-  @Mutation(() => Token)
-  async refreshToken(@Args() { token }: RefreshTokenInput) {
-    return this.auth.refreshToken(token);
+  @Mutation(() => Auth)
+  async refreshToken(@Args() { refreshToken }: RefreshTokenInput) {
+    return this.auth.refreshToken(refreshToken);
   }
 
   @Mutation(() => ForgotPasswordResponse)

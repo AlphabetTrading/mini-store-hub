@@ -354,7 +354,7 @@ type Mutation {
   disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
   forgotPassword(phone: String!): ForgotPasswordResponse!
   login(data: LoginInput!): Auth!
-  refreshToken(token: JWT!): Token!
+  refreshToken(refreshToken: JWT!): Auth!
   resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
   sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
@@ -732,14 +732,6 @@ input StringFilter {
   mode: String = "insensitive"
   not: String
   startsWith: String
-}
-
-type Token {
-  """JWT access token"""
-  accessToken: JWT!
-
-  """JWT refresh token"""
-  refreshToken: JWT!
 }
 
 """TransferType"""
