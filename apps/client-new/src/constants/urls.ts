@@ -1,1 +1,1 @@
-export const API_URL = process.env.NEXTAPP_GRAPHQL_ENDPOINT;
+export const API_URL = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
