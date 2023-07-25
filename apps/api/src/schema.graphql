@@ -77,6 +77,17 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
+input CreateBulkRetailShopStockInput {
+  goods: [GoodsInput!]!
+  retailShopId: String!
+  warehouseId: String!
+}
+
+input CreateBulkWarehouseStockInput {
+  goods: [GoodsInput!]!
+  warehouseId: String!
+}
+
 input CreateCategoryInput {
   description: String!
   name: String!
@@ -273,6 +284,11 @@ type Goods {
   updatedAt: DateTime!
 }
 
+input GoodsInput {
+  productId: String!
+  quantity: Float!
+}
+
 type GoodsTransfer {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -327,6 +343,8 @@ type MonthlyTransaction {
 
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
+  createBulkRetailShopStock(data: CreateBulkRetailShopStockInput!): [RetailShopStock!]!
+  createBulkWarehouseStock(data: CreateBulkWarehouseStockInput!): [WarehouseStock!]!
   createCategory(data: CreateCategoryInput!): Category!
   createGoodsTransfer(data: CreateGoodsTransferInput!): GoodsTransfer!
 

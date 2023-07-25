@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateRetailShopStockInput } from './dto/create-retail-shop-inventory.input';
+import {
+  CreateBulkRetailShopStockInput,
+  CreateRetailShopStockInput,
+} from './dto/create-retail-shop-inventory.input';
 import { UpdateRetailShopStockInput } from './dto/update-retail-shop.input';
 import { Prisma, RetailShopStock } from '@prisma/client';
 
@@ -93,6 +96,36 @@ export class RetailShopStockService {
         ...data,
       },
     });
+  }
+
+  async createMany(data: CreateBulkRetailShopStockInput) {
+    // implement using promise all
+    const promises = data.goods.map(async (good) => {
+      return await this.prisma.retailShopStock.upsert({
+        where: {
+          productId_retailShopId: {
+            productId: good.productId,
+            retailShopId: data.retailShopId,
+          },
+        },
+        create: {
+          maxQuantity: good.quantity,
+          quantity: good.quantity,
+          productId: good.productId,
+          retailShopId: data.retailShopId,
+          warehouseId: data.warehouseId,
+        },
+        update: {
+          maxQuantity: {
+            increment: good.quantity,
+          },
+          quantity: {
+            increment: good.quantity,
+          },
+        },
+      });
+    });
+    return Promise.all(promises);
   }
 
   async update(id: string, data: UpdateRetailShopStockInput) {

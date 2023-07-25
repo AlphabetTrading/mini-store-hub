@@ -1,7 +1,10 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { RetailShopStockService } from './retail-shop-inventories.service';
 import { RetailShopStock } from './models/retail-shop-inventory.model';
-import { CreateRetailShopStockInput } from './dto/create-retail-shop-inventory.input';
+import {
+  CreateBulkRetailShopStockInput,
+  CreateRetailShopStockInput,
+} from './dto/create-retail-shop-inventory.input';
 import { UpdateRetailShopStockInput } from './dto/update-retail-shop.input';
 import { FilterRetailShopStockInput } from './dto/filter-retail-shop-stock.input';
 import { RetailShopStockOrder } from './dto/retail-shop-stock-order.input';
@@ -147,6 +150,17 @@ export class RetailShopStockResolver {
   async createRetailShopStock(@Args('data') data: CreateRetailShopStockInput) {
     try {
       return this.retailShopStockService.create(data);
+    } catch (e) {
+      throw new Error(`Failed to create retail shop stock`);
+    }
+  }
+
+  @Mutation(() => [RetailShopStock])
+  async createBulkRetailShopStock(
+    @Args('data') data: CreateBulkRetailShopStockInput,
+  ) {
+    try {
+      return this.retailShopStockService.createMany(data);
     } catch (e) {
       throw new Error(`Failed to create retail shop stock`);
     }

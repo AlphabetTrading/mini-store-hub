@@ -1,7 +1,10 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { WarehouseStockService } from './warehouse-inventories.service';
 import { WarehouseStock } from './models/warehouse-inventory.model';
-import { CreateWarehouseStockInput } from './dto/create-warehouse-inventory.input';
+import {
+  CreateBulkWarehouseStockInput,
+  CreateWarehouseStockInput,
+} from './dto/create-warehouse-inventory.input';
 import { UpdateWarehouseStockInput } from './dto/update-warehouse-inventory.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { BadRequestException, UseGuards } from '@nestjs/common';
@@ -103,6 +106,13 @@ export class WarehouseStockResolver {
   @Mutation(() => WarehouseStock)
   async createWarehouseStock(@Args('data') data: CreateWarehouseStockInput) {
     return this.warehouseStockService.create(data);
+  }
+
+  @Mutation(() => [WarehouseStock])
+  async createBulkWarehouseStock(
+    @Args('data') data: CreateBulkWarehouseStockInput,
+  ) {
+    return this.warehouseStockService.createMany(data);
   }
 
   @Mutation(() => WarehouseStock)

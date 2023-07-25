@@ -11,3 +11,21 @@ export class CreateWarehouseStockInput {
   @Field(() => Float)
   quantity: number;
 }
+
+@InputType()
+export class CreateBulkWarehouseStockInput {
+  @Field(() => String)
+  warehouseId: string;
+
+  @Field(() => [GoodsInput])
+  goods: GoodsInput[];
+}
+
+@InputType()
+export class GoodsInput {
+  @Field(() => String)
+  productId: string;
+
+  @Field(() => Float)
+  quantity: number;
+}

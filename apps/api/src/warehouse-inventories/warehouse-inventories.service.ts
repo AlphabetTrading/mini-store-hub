@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateWarehouseStockInput } from './dto/update-warehouse-inventory.input';
-import { CreateWarehouseStockInput } from './dto/create-warehouse-inventory.input';
+import {
+  CreateBulkWarehouseStockInput,
+  CreateWarehouseStockInput,
+} from './dto/create-warehouse-inventory.input';
 import { Prisma } from '@prisma/client';
 import { WarehouseStock } from './models/warehouse-inventory.model';
 
@@ -96,6 +99,33 @@ export class WarehouseStockService {
 
   async create(data: CreateWarehouseStockInput) {
     return this.prisma.warehouseStock.create({ data });
+  }
+
+  async createMany(data: CreateBulkWarehouseStockInput) {
+    // create, if exists update all the goods
+    const promosis = data.goods.map(async (good) => {
+      return this.prisma.warehouseStock.upsert({
+        where: {
+          productId_warehouseId: {
+            productId: good.productId,
+            warehouseId: data.warehouseId,
+          },
+        },
+        update: {
+          quantity: {
+            increment: good.quantity,
+          },
+        },
+        create: {
+          productId: good.productId,
+          warehouseId: data.warehouseId,
+          quantity: good.quantity,
+        },
+      });
+    });
+
+    const res = await Promise.all(promosis);
+    return res;
   }
 
   async update(id: string, data: UpdateWarehouseStockInput) {
