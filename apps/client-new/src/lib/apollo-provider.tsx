@@ -13,7 +13,7 @@ import { ACCESS_TOKEN } from "@/constants/tokens";
 
 function makeClient() {
   const httpLink = new HttpLink({
-    uri: `${API_URL}/graphql`,
+    uri: API_URL,
   });
 
   const authMiddleware = setContext(async (operation, { headers }) => {

@@ -13,30 +13,19 @@ import {
 import React from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import AddIcon from "@mui/icons-material/Add";
-import ItemListTable from "@/components/items/item-list-table";
-import {
-  WAREHOUSE_ITEMS,
-  WarehouseItemsData,
-  WarehouseItemsVars,
-} from "@/graphql/items/queries";
 // import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import ItemListSearch from "@/components/items/item-list-search";
 // import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import ManagersListSearch from "@/components/retail-shop-managers/managers-list-search";
+import ManagersListTable from "@/components/retail-shop-managers/managers-list-table";
+import { RETAIL_SHOPS, RetailShopsData } from "@/graphql/retail-shops/queries";
+import RetailShopsListSearch from "@/components/retail-shops/retail-shops-list-search";
+import RetailShopsListTable from "@/components/retail-shops/retail-shops-list-table";
 
 type Props = {};
 
 const page = (props: Props) => {
-  const { data, loading, error,refetch } = useQuery<
-    WarehouseItemsData,
-    WarehouseItemsVars
-  >(WAREHOUSE_ITEMS, {
-    variables: {
-      warehouseId: "clki1bbrx000srlwgvx7jzw1i",
-    },
-  
-  });
+  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS)
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -48,27 +37,18 @@ const page = (props: Props) => {
             alignItems="center"
           >
             <Stack spacing={1}>
-              <Typography variant="h4">Items</Typography>
+              <Typography variant="h4">Retail Shops</Typography>
               <Breadcrumbs separator={<BreadcrumbsSeparator />}>
                 <Link component={NextLink} href={"/dashboard"}>
                   Dashboard
                 </Link>
-                <Link component={NextLink} href={"/dashboard"}>
-                  Items
+                <Link component={NextLink} href={"/retail-shops"}>
+                  Retail Shops
                 </Link>
                 <Typography>List</Typography>
               </Breadcrumbs>
             </Stack>
-            <Stack>
-              <Button
-                variant="contained"
-                component={NextLink}
-                href={"/items/add"}
-                startIcon={<AddIcon />}
-              >
-                Add Incoming Items
-              </Button>
-            </Stack>
+      
           </Stack>
           {loading ? (
             <CircularProgress />
@@ -78,8 +58,8 @@ const page = (props: Props) => {
             </Typography>
           ) : (
             <Card>
-              <ItemListSearch />
-              <ItemListTable warehouseItemsData={data} />
+              <RetailShopsListSearch />
+              <RetailShopsListTable retailShops={data.retailShops.items} />
             </Card>
           )}
           {/* <Card>

@@ -15,8 +15,8 @@ export const NAV_DATA: TopNavProps[] = [
     ),
   },
   {
-    title: "Retail Store Managers",
-    path: "/managers",
+    title: "Retail Shop Managers",
+    path: "/retail-shop-managers",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />
@@ -34,7 +34,7 @@ export const NAV_DATA: TopNavProps[] = [
   },
   {
     title: "Retail Shops",
-    path: "/shops",
+    path: "/retail-shops",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />
