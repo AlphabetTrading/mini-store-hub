@@ -43,31 +43,15 @@ export class WarehouseStockResolver {
           warehouse: filterWarehouseStockInput?.warehouse,
         },
         {
-          product: {
-            id: filterWarehouseStockInput?.product?.id,
-            OR: [
-              {
-                name: filterWarehouseStockInput?.product?.name,
-              },
-              {
-                amharicName: filterWarehouseStockInput?.product?.name,
-              },
-              {
-                description: filterWarehouseStockInput?.product?.description,
-              },
-              {
-                amharicDecription:
-                  filterWarehouseStockInput?.product?.description,
-              },
-            ],
-            serialNumber: filterWarehouseStockInput?.product?.serialNumber,
-          },
+          product: filterWarehouseStockInput?.product,
         },
         {
           createdAt: filterWarehouseStockInput?.createdAt,
         },
       ],
     };
+    console.log(where.product);
+
     try {
       const warehouseStocks = await this.warehouseStockService.findAll({
         where,

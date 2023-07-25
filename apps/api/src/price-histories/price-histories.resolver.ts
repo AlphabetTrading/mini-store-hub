@@ -45,27 +45,7 @@ export class PriceHistoriesResolver {
           createdAt: filterPriceHistoryInput?.createdAt,
         },
         {
-          product: {
-            AND: [
-              {
-                id: filterPriceHistoryInput?.id,
-              },
-
-              {
-                OR: [
-                  {
-                    name: filterPriceHistoryInput?.product?.name,
-                  },
-                  {
-                    amharicName: filterPriceHistoryInput?.product?.name,
-                  },
-                ],
-              },
-              {
-                serialNumber: filterPriceHistoryInput?.product?.serialNumber,
-              },
-            ],
-          },
+          product: filterPriceHistoryInput?.product,
         },
       ],
     };

@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
 import { DateTimeFilter } from 'src/common/filter/date-filter';
 import { FilterProductInput } from 'src/products/dto/filter-product.input';
 
@@ -11,5 +12,5 @@ export class FilterPriceHistoryInput {
   createdAt?: DateTimeFilter;
 
   @Field(() => FilterProductInput, { nullable: true })
-  product: FilterProductInput;
+  product: Prisma.ProductWhereInput;
 }

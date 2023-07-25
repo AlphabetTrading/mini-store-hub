@@ -351,7 +351,11 @@ async function seedRetailShops() {
 async function seedWarehouses() {
   try {
     await prisma.warehouse.createMany({
-      data: [{ name: 'Warehouse A' }, { name: 'Warehouse B' }],
+      data: [
+        { name: 'Warehouse A' },
+        { name: 'Warehouse B' },
+        { name: 'Warehouse D' },
+      ],
     });
 
     const user = await prisma.user.findFirst({

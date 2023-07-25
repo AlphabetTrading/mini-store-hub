@@ -55,24 +55,7 @@ export class RetailShopStockResolver {
           retailShopId: filterRetailShopStockInput?.retailShopId,
         },
         {
-          product: {
-            AND: [
-              {
-                id: filterRetailShopStockInput?.product?.id,
-              },
-              {
-                OR: [
-                  {
-                    name: filterRetailShopStockInput?.product?.name,
-                  },
-                  {
-                    amharicName: filterRetailShopStockInput?.product?.name,
-                  },
-                ],
-              },
-            ],
-            createdAt: filterRetailShopStockInput?.product?.createdAt,
-          },
+          product: filterRetailShopStockInput?.product,
         },
         {
           createdAt: filterRetailShopStockInput?.createdAt,

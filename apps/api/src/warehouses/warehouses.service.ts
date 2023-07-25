@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWarehouseInput } from './dto/create-warehouse.input';
 import { UpdateWarehouseInput } from './dto/update-warehouse.input';
 import { Prisma } from '@prisma/client';
 import { Warehouse } from './models/warehouse.model';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 const warehouseInclude = {
   warehouseManager: true,

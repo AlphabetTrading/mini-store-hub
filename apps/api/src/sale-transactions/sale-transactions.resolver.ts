@@ -49,26 +49,7 @@ export class SaleTransactionsResolver {
             id: filterSaleTransactionInput?.id,
           },
           {
-            product: {
-              AND: [
-                {
-                  id: filterSaleTransactionInput?.product?.id,
-                },
-                {
-                  OR: [
-                    {
-                      name: filterSaleTransactionInput?.product?.name,
-                    },
-                    {
-                      amharicName: filterSaleTransactionInput?.product?.name,
-                    },
-                  ],
-                },
-                {
-                  description: filterSaleTransactionInput?.product?.description,
-                },
-              ],
-            },
+            product: filterSaleTransactionInput?.product,
           },
           {
             createdAt: filterSaleTransactionInput?.createdAt,

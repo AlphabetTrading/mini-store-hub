@@ -78,7 +78,7 @@ export class WarehousesResolver {
   }
 
   @Query(() => Warehouse, { name: 'warehouse' })
-  async warehouse(@Args('id') id: string) {
+  async warehouse(@Args('id') id: string): Promise<Warehouse> {
     return this.warehousesService.findOne(id);
   }
 

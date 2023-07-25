@@ -189,6 +189,14 @@ input DateTimeFilter {
   lte: DateTime
 }
 
+input FilterAddressInput {
+  city: StringFilter
+  createdAt: DateTimeFilter
+  formattedAddress: StringFilter
+  id: String
+  street: StringFilter
+}
+
 input FilterCategoryInput {
   createdAt: DateTimeFilter
   description: StringFilter
@@ -220,7 +228,7 @@ input FilterProductInput {
 }
 
 input FilterRetailShopInput {
-  address: StringFilter
+  address: FilterAddressInput
   createdAt: DateTimeFilter
   id: String
   name: StringFilter
