@@ -6,6 +6,9 @@ export class CreateUserProfileInput {
   photoUrl?: string;
 
   @Field(() => String, { nullable: true })
+  idUrl: string;
+
+  @Field(() => String, { nullable: true })
   addressId?: string;
 
   @Field(() => String, { nullable: true })

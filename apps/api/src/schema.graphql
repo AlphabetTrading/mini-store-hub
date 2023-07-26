@@ -147,6 +147,7 @@ input CreateStockItemInput {
 
 input CreateUserProfileInput {
   addressId: String
+  idUrl: String
   photoUrl: String
   userId: String
 }
@@ -368,6 +369,7 @@ type Mutation {
   createWarehouseManager(data: SignupInput!): User!
   createWarehouseStock(data: CreateWarehouseStockInput!): WarehouseStock!
   deleteCategory(id: String!): Category!
+  deleteFile(url: String!): Boolean!
   deleteGoodsTransfer(id: String!): GoodsTransfer!
   deletePriceHistory(id: String!): PriceHistory!
   deleteProduct(id: String!): Product!
@@ -392,7 +394,7 @@ type Mutation {
   updateRetailShopStock(data: UpdateRetailShopStockInput!, id: String!): RetailShopStock!
   updateSaleTransaction(data: UpdateSaleTransactionInput!, id: String!): SaleTransaction!
   updateUser(data: UpdateUserInput!): User!
-  updateUserProfile(id: String!, updateProfileInput: UpdateUserProfileInput!): UserProfile!
+  updateUserProfile(updateProfileInput: UpdateUserProfileInput!, userId: String!): UserProfile!
   updateWarehouse(data: UpdateWarehouseInput!, id: String!): Warehouse!
   updateWarehouseStock(data: UpdateWarehouseStockInput!, id: String!): WarehouseStock!
   uploadFile(file: Upload!): String!
@@ -571,6 +573,7 @@ type Query {
   category(id: String!): Category!
   findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   findProductsByTopSelling(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
   goodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
   goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: GoodsTransferOrder, paginationInput: PaginationInput): PaginationGoodsTransfer!
@@ -831,6 +834,7 @@ input UpdateUserInput {
 
 input UpdateUserProfileInput {
   addressId: String
+  idUrl: String
   photoUrl: String
   userId: String
 }
@@ -860,12 +864,14 @@ type User {
   id: ID!
   lastName: String
   phone: String
+  retailShop: [RetailShop!]
   role: UserRole!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   userProfile: UserProfile
   username: String!
+  warehouse: [Warehouse!]
 }
 
 input UserOrder {
@@ -879,6 +885,7 @@ type UserProfile {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID!
+  idUrl: String
   photoUrl: String!
 
   """Identifies the date and time when the object was last updated."""

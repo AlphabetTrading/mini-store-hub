@@ -21,7 +21,7 @@ export class UserProfileResolver {
 
   @Mutation(() => UserProfile)
   updateUserProfile(
-    @Args('id') id: string,
+    @Args('userId') id: string,
     @Args('updateProfileInput')
     updateProfileInput: UpdateUserProfileInput,
   ) {

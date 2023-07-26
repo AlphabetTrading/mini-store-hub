@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Resolver, Query, Parent, Mutation, Args } from '@nestjs/graphql';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { UserEntity } from 'src/common/decorators/user.decorator';
@@ -6,13 +7,12 @@ import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { UsersService } from './users.service';
-import { PaginationArgs } from 'src/common/pagination/paginations.args';
 import { UserOrder } from './dto/user-order.input';
 import { SignupInput } from 'src/auth/dto/signup.input';
 import { PaginationUser } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterUserInput } from './dto/filter-user.input';
-import { Prisma } from '@prisma/client';
+import { Warehouse } from 'src/warehouses/models/warehouse.model';
 
 @Resolver(() => User)
 @UseGuards(GqlAuthGuard)
@@ -125,6 +125,12 @@ export class UsersResolver {
   @Query(() => [User])
   async warehouseManagers(@Parent() user: User) {
     return this.usersService.getRetailManagers();
+  }
+
+  // get warehouse from user that manages it
+  @Query(() => Warehouse)
+  async getWarehouseByManagerId(@Parent() user: User) {
+    return this.usersService.getWarehouseByUserId(user.id);
   }
 
   @Mutation(() => User)

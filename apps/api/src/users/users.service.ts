@@ -13,6 +13,8 @@ import { User } from './models/user.model';
 
 const userIncludeObject: Prisma.UserInclude = {
   userProfile: { include: { address: true } },
+  warehouse: true,
+  retailShop: true,
 };
 
 @Injectable()
@@ -21,6 +23,14 @@ export class UsersService {
     private prisma: PrismaService,
     private passwordService: PasswordService,
   ) {}
+
+  async getWarehouseByUserId(userId: string) {
+    return this.prisma.warehouse.findFirst({
+      where: {
+        warehouseManagerId: userId,
+      },
+    });
+  }
 
   updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({

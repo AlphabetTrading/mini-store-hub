@@ -56,4 +56,14 @@ export class StorageResolver {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  @Mutation(() => Boolean)
+  async deleteFile(@Args('url') url: string) {
+    try {
+      await this.storStorageService.deleteS3Object(url);
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 }

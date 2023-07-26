@@ -9,6 +9,9 @@ export class UpdateUserProfileInput extends PartialType(
   photoUrl?: string;
 
   @Field(() => String, { nullable: true })
+  idUrl: string;
+
+  @Field(() => String, { nullable: true })
   addressId?: string;
 
   @Field(() => String, { nullable: true })

@@ -8,6 +8,9 @@ export class UserProfile extends BaseModel {
   photoUrl: string;
 
   @Field(() => String, { nullable: true })
+  idUrl: string;
+
+  @Field(() => String, { nullable: true })
   addressId?: string;
 
   @Field(() => Address, { nullable: true })

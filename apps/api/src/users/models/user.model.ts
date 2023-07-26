@@ -8,7 +8,9 @@ import {
 import { UserRole } from '@prisma/client';
 import { Address } from 'src/common/models/address.model';
 import { BaseModel } from 'src/common/models/base.model';
+import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 import { UserProfile } from 'src/user-profile/models/userProfile.model';
+import { Warehouse } from 'src/warehouses/models/warehouse.model';
 
 registerEnumType(UserRole, {
   name: 'UserRole',
@@ -43,4 +45,10 @@ export class User extends BaseModel {
 
   @Field(() => UserProfile, { nullable: true })
   userProfile?: UserProfile;
+
+  @Field(() => [Warehouse], { nullable: true })
+  warehouse?: Warehouse[];
+
+  @Field(() => [RetailShop], { nullable: true })
+  retailShop?: RetailShop[];
 }
