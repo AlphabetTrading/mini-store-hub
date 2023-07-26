@@ -1,9 +1,10 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useFonts, loadAsync } from "expo-font";
+import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { AppWrapper } from "@/components/common/AppWrapper";
 import { View } from "react-native";
+import { AuthContextProvider } from "@/context/auth";
+import { StatusBar } from "expo-status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -12,7 +13,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: "/(tabs)/",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -42,14 +43,16 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  // console.log(fontsLoaded, error, "print");
   if (!fontsLoaded) {
-    return <Slot />;
+    return null;
   }
 
   return (
     <View style={{ flex: 1 }} onLayout={onRootLayout}>
-      <AppWrapper />
+      <StatusBar style="auto" />
+      <AuthContextProvider>
+        <AppWrapper />
+      </AuthContextProvider>
     </View>
   );
 }

@@ -1,24 +1,41 @@
-// React Native Popup Menu – Over Flow Menu
-// https://aboutreact.com/react-native-popup-menu/
-
+import { useAuth } from "@/context/auth";
 import { AntDesign, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
-//import react in our code.
 import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
-//import all the components we are going to use.
 import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
-//import menu and menu item
 
 type Props = {
   options: any[];
 };
 
-const CustomMaterialMenu = ({ options }: Props) => {
+const CustomMaterialMenu = ({}: Props) => {
+  const { signOut } = useAuth();
   const [visible, setVisible] = useState(false);
-
   const hideMenu = () => setVisible(false);
 
   const showMenu = () => setVisible(true);
+
+  const router = useRouter();
+
+  const options = [
+    {
+      id: 1,
+      title: "Settings",
+      icon: "key",
+      action: () => console.log("Bekele"),
+    },
+    {
+      id: 2,
+      title: "Logout",
+      icon: "logout",
+      action: async () => {
+        await signOut();
+        hideMenu();
+        router.replace("/login");
+      },
+    },
+  ];
 
   return (
     <View>
@@ -45,7 +62,6 @@ const CustomMaterialMenu = ({ options }: Props) => {
                 gap: 5,
               }}
               onPress={(e: any) => {
-                // e.stopPropagation();
                 option.action();
               }}
             >
