@@ -30,6 +30,33 @@ export class SaleTransactionsService {
       },
     });
     const total = response._sum.price;
+    const totalCost = await this.totalCostByProductByDate(
+      productId,
+      startDate,
+      endDate,
+    );
+
+    return total - totalCost;
+  }
+  async totalCostByProductByDate(
+    productId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const response = await this.prisma.saleTransaction.aggregate({
+      where: {
+        productId,
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      _sum: {
+        purchasedPrice: true,
+        quantity: true,
+      },
+    });
+    const total = response._sum.purchasedPrice;
     return total;
   }
   async totalProfitByRetailShopByDate(
@@ -51,6 +78,34 @@ export class SaleTransactionsService {
       },
     });
     const total = response._sum.price;
+    const totalCost = await this.totalCostByRetailShopByDate(
+      id,
+      startDate,
+      endDate,
+    );
+    const profit = total - totalCost;
+
+    return profit;
+  }
+  async totalCostByRetailShopByDate(
+    id: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const response = await this.prisma.saleTransaction.aggregate({
+      where: {
+        retailShopId: id,
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      _sum: {
+        purchasedPrice: true,
+        quantity: true,
+      },
+    });
+    const total = response._sum.purchasedPrice;
     return total;
   }
 
@@ -350,16 +405,7 @@ export class SaleTransactionsService {
       });
     });
   }
-  async getTotal() {
-    const response = await this.prisma.saleTransaction.aggregate({
-      _sum: {
-        price: true,
-        quantity: true,
-      },
-    });
-    const total = response._sum.price;
-    return total;
-  }
+
   async update(id: string, data: UpdateSaleTransactionInput) {
     return this.prisma.saleTransaction.update({ where: { id }, data });
   }
