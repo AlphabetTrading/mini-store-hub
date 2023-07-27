@@ -272,7 +272,14 @@ Enum UserRole {
 
 Enum UnitType {
   PIECES
-  WEIGHT
+  KG
+  LITER
+  METER
+  METER_SQUARE
+  BOX
+  BAG
+  BOTTLE
+  OTHER
 }
 
 Enum TransferType {

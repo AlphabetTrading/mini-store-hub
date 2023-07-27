@@ -191,7 +191,7 @@ export class GoodsTransfersService {
               );
             }
 
-            tx.retailShopStock.upsert({
+            await tx.retailShopStock.upsert({
               where: {
                 productId_retailShopId: {
                   retailShopId: retailShopId,
@@ -356,7 +356,7 @@ export class GoodsTransfersService {
             );
           }
 
-          tx.warehouseStock.update({
+          await tx.warehouseStock.update({
             where: {
               productId_warehouseId: {
                 productId: good.productId,
