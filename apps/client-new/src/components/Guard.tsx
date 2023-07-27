@@ -70,12 +70,18 @@ interface GuardProps {
 
 const Guard = ({ excludedRoutes, children }: GuardProps) => {
   const pathname = usePathname();
-  const { status } = useSession();
+  const { data, status } = useSession();
 
   if (status === "loading") return <h1>Loading</h1>;
 
   if (status === "authenticated" && excludedRoutes?.includes(pathname)) {
-    redirect("/");
+    if ((data?.user as any).role === "ADMIN") {
+      redirect("/admin/dashboard");
+    } else if ((data?.user as any).role === "WAREHOUSE_MANAGER") {
+      redirect("/dashboard");
+    } else {
+      redirect("/auth/login");
+    }
   }
 
   if (status === "unauthenticated") {

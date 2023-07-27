@@ -12,15 +12,13 @@ import {
 } from "@mui/material";
 import React from "react";
 import NextLink from "next/link";
-import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-// import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-// import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import ManagersListSearch from "@/components/retail-shop-managers/managers-list-search";
-import ManagersListTable from "@/components/retail-shop-managers/managers-list-table";
+
+import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import { RETAIL_SHOPS, RetailShopsData } from "@/graphql/retail-shops/queries";
 import RetailShopsListSearch from "@/components/retail-shops/retail-shops-list-search";
 import RetailShopsListTable from "@/components/retail-shops/retail-shops-list-table";
+
 
 type Props = {};
 

@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
                   phone
                   username
                   role
+                  warehouse:{id:string}
                 }
               }
             }

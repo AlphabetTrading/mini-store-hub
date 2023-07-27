@@ -42,8 +42,8 @@ export const NAV_DATA: TopNavProps[] = [
     ),
   },
   {
-    title: "Warehouse Checkout",
-    path: "/checkout",
+    title: "Transfer Items",
+    path: "/transfer-items",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />
@@ -52,7 +52,7 @@ export const NAV_DATA: TopNavProps[] = [
   },
   {
     title: "Transaction History",
-    path: "/history",
+    path: "/transaction-history",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />

@@ -24,10 +24,14 @@ import {
 import ItemListSearch from "@/components/items/item-list-search";
 // import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const page = (props: Props) => {
+  
+  const {data:sessionData} = useSession();
+
   const { data, loading, error,refetch } = useQuery<
     WarehouseItemsData,
     WarehouseItemsVars

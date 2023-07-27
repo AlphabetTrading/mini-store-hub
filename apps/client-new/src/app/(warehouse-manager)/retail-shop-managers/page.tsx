@@ -13,16 +13,6 @@ import {
 import React from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import AddIcon from "@mui/icons-material/Add";
-import ItemListTable from "@/components/items/item-list-table";
-import {
-  WAREHOUSE_ITEMS,
-  WarehouseItemsData,
-  WarehouseItemsVars,
-} from "@/graphql/items/queries";
-// import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import ItemListSearch from "@/components/items/item-list-search";
-// import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import ManagersListSearch from "@/components/retail-shop-managers/managers-list-search";
 import ManagersListTable from "@/components/retail-shop-managers/managers-list-table";

@@ -10,7 +10,7 @@ interface AdminGuardProps {
 const AdminGuard = ({ children }: AdminGuardProps) => {
   const { data } = useSession();
   if ((data?.user as any).role !== "ADMIN") {
-    redirect("/");
+    redirect("/dashboard");
   }
   return <div>{children}</div>;
 };
