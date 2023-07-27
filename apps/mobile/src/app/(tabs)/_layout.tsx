@@ -1,25 +1,10 @@
-import {
-  AntDesign,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import { Link, Stack, Tabs, router } from "expo-router";
-import {
-  useColorScheme,
-  TouchableOpacity,
-  View,
-  Text,
-  Modal,
-  SafeAreaView,
-  Button,
-  Pressable,
-} from "react-native";
-import Svg, { Path, Mask, G, Rect, ClipPath, Defs } from "react-native-svg";
-import React, { useState } from "react";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { Tabs, router } from "expo-router";
+import { TouchableOpacity, View, Text } from "react-native";
+import Svg, { Path, G, Rect, ClipPath, Defs } from "react-native-svg";
+import React from "react";
 import TabItem from "@/components/TabItem";
 import Colors from "@/constants/Colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import CustomMenu from "@/components/common/CustomMenu";
 import CustomMaterialMenu from "@/components/common/CustomMenu";
 
 /**
@@ -70,14 +55,10 @@ export default function TabLayout() {
       title: "Logout",
       icon: "logout",
       action: async () => {
-        await AsyncStorage.removeItem("login");
-        console.log(await AsyncStorage.getItem("login"), "After logout");
-        router.replace("/login");
+        router.replace("/auth/login");
       },
     },
   ];
-  const colorScheme = useColorScheme();
-  const [openMenu, setOpenMenu] = useState(false);
 
   return (
     <Tabs
@@ -111,98 +92,13 @@ export default function TabLayout() {
                 <Text style={{ color: "white", fontSize: 8 }}>12</Text>
               </View>
             </View>
-            {/* <View
-              style={{
-                borderRadius: 8,
-                borderWidth: 1,
-                paddingLeft: 10,
-                borderColor: "#333",
-                backgroundColor: "#FFF",
-                position: "absolute",
-                top: 10,
-                right: 20,
-              }}
-            > */}
             <CustomMaterialMenu options={options} />
-            {/* </View> */}
-            {/* <View>
-              <AntDesign
-                style={{ marginRight: 20, marginLeft: 10, borderWidth: 3 }}
-                name="setting"
-                color="#FFF"
-                size={24}
-                onPress={() => {
-                  setOpenMenu(true);
-                }}
-              />
-              <Modal visible={openMenu}>
-                <SafeAreaView
-                  style={{ flex: 1 }}
-                  onTouchStart={() => setOpenMenu(false)}
-                >
-                  <View
-                    style={{
-                      borderRadius: 8,
-                      borderWidth: 1,
-                      paddingLeft: 10,
-                      paddingRight: 30,
-                      borderColor: "#333",
-                      backgroundColor: "#FFF",
-                      position: "absolute",
-                      top: 50,
-                      right: 20,
-                    }}
-                  >
-                    {options.map((option, index) => {
-                      return (
-                        <Pressable
-                          key={index}
-                          style={{
-                            flexDirection: "row",
-                            paddingVertical: 10,
-                            gap: 5,
-                            borderWidth: 4,
-                          }}
-                          onPress={(e: any) => {
-                            // e.stopPropagation();
-                            console.log("Clicked this");
-                            option.action();
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name={
-                              option.icon as keyof typeof MaterialCommunityIcons.glyphMap
-                            }
-                            color="#FF0000"
-                            size={24}
-                          />
-                          <Text
-                            style={{
-                              color: "red",
-                              fontFamily: "Inter-Regular",
-                            }}
-                          >
-                            {option.title}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                </SafeAreaView>
-              </Modal>
-            </View> */}
           </View>
         ),
         tabBarLabelStyle: {
           fontFamily: "Inter-Regular",
           fontSize: 10,
-          // borderWidth: 2,
-          // borderColor: "#ff0000",
         },
-        // tabBarItemStyle: {
-        //   borderWidth: 0.5,
-        //   borderColor: "#D3D3D3",
-        // },
         tabBarShowLabel: false,
         tabBarStyle: {
           height: 60,
@@ -555,28 +451,3 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-
-// <TabBarIcon name="home" color={color} />,
-// headerRight: () => (
-//   // <Link href='/modal'>
-//   <Pressable>
-//     {({ pressed }) => (
-//       <FontAwesome
-//         name="info-circle"
-//         size={25}
-//         color={Colors[colorScheme ?? "light"].text}
-//         style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-//       />
-//     )}
-//   </Pressable>
-//   // </Link>
-// ),
-
-// <View
-//   style={{
-// backgroundColor: "transparent",
-// flexDirection: "column",
-// alignItems: "center",
-// justifyContent: "center",
-//   }}
-// >

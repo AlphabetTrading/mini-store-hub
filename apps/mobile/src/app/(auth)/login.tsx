@@ -7,14 +7,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { apolloClient } from "@/graphql/apolloClient";
-import { LOGIN_MUTATION } from "@/graphql/mutations/authMutations";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "@/context/auth";
 
 type Props = {};
 
@@ -28,19 +27,14 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().required("Required"),
 });
 
-const login = (props: Props) => {
+const Login = (props: Props) => {
   const [viewPassword, setViewPassword] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log(await AsyncStorage.getItem("login"), "Top login");
-    };
-    fetchData();
-  }, []);
 
   const INITIAL_VALUES: FormValues = {
     userName: "",
     password: "",
   };
+  const { signIn } = useAuth();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,22 +58,9 @@ const login = (props: Props) => {
           // if not, show error message
           // if error, show error message
           setSubmitting(true);
-          console.log(values);
-          const client = apolloClient(null);
           try {
-            const res = await client.mutate({
-              mutation: LOGIN_MUTATION,
-              variables: {
-                data: {
-                  username: values.userName,
-                  password: values.password,
-                },
-              },
-            });
-            await AsyncStorage.setItem("login", JSON.stringify(res.data.login));
-            console.log(await AsyncStorage.getItem("login"), "After login");
+            const res = await signIn(values.userName, values.password);
             router.replace("/");
-            console.log(res.data.login);
           } catch (e) {
             console.log(e);
           }
@@ -166,7 +147,7 @@ const login = (props: Props) => {
   );
 };
 
-export default login;
+export default Login;
 
 const styles = StyleSheet.create({
   container: {
