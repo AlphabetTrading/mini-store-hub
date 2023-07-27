@@ -98,7 +98,7 @@ input CreateGoodsTransferInput {
   goods: [CreateStockItemInput!]
   retailShopId: String
   sourceWarehouseId: String
-  transferType: TransferType
+  transferType: TransferType!
 }
 
 input CreatePriceHistoryInput {
@@ -601,23 +601,23 @@ type Query {
   retailShopsByAddress(address: String!): [RetailShop!]!
   saleTransaction(id: String!): SaleTransaction!
   saleTransactions(filterSaleTransactionInput: FilterSaleTransactionInput, orderBy: SaleTransactionOrder, paginationInput: PaginationInput): [SaleTransaction!]!
-  saleTransactionsByRetailShop: [SaleTransaction!]!
+  saleTransactionsByRetailShop(retailShopId: String!): [SaleTransaction!]!
   searchProduct(search: String!): [Product!]!
   searchProducts(search: String!): [Product!]!
   searchProductsByCategory(category: String!, search: String!): [Product!]!
   totalProducts: Int!
-  totalProductsByCategory: Int!
+  totalProductsByCategory(categoryName: String!): Int!
   totalProfit: Float!
-  totalProfitByDate: Float!
+  totalProfitByDate(endDate: String!, startDate: String!): Float!
   totalProfitByDateAndProduct(endDate: String!, productId: String!, startDate: String!): Float!
-  totalProfitByDateAndRetailShop(endDate: String!, id: String!, startDate: String!): Float!
-  totalProfitByRetailShop: Float!
+  totalProfitByDateAndRetailShop(endDate: String!, retailShopId: String!, startDate: String!): Float!
+  totalProfitByRetailShop(retailShopId: String!): Float!
   totalSales: Float!
-  totalSalesByDate: Float!
-  totalSalesByDateAndProduct: Float!
-  totalSalesByDateAndRetailShop: Float!
-  totalSalesByProduct: Float!
-  totalSalesByRetailShop: Float!
+  totalSalesByDate(endDate: String!, startDate: String!): Float!
+  totalSalesByDateAndProduct(endDate: String!, productId: String!, startDate: String!): Float!
+  totalSalesByDateAndRetailShop(endDate: String!, retailShopId: String!, startDate: String!): Float!
+  totalSalesByProduct(productId: String!): Float!
+  totalSalesByRetailShop(retailShopId: String!): Float!
   unreadNotifications(userId: String!): [Notification!]!
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): PaginationUser!

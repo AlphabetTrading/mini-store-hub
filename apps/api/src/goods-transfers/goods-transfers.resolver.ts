@@ -92,12 +92,12 @@ export class GoodsTransfersResolver {
     }
     if (data.transferType === TransferType.WarehouseToRetailShop) {
       if (!data.sourceWarehouseId) {
-        throw new Error('Warehouse Id cannot be empty');
+        throw new Error('sourceWarehouse Id cannot be empty');
       }
       return this.goodsTransfersService.transferToRetailShop(data);
     } else {
       if (!data.destinationWarehouseId) {
-        throw new Error('Warehouse Id cannot be empty');
+        throw new Error('destinationWarehouse Id cannot be empty');
       }
       return this.goodsTransfersService.transferToWarehouse(data);
     }

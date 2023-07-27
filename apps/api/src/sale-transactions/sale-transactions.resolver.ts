@@ -85,17 +85,21 @@ export class SaleTransactionsResolver {
   }
 
   @Query(() => [SaleTransaction], { name: 'saleTransactionsByRetailShop' })
-  async findAllByRetailShop(id: string): Promise<SaleTransaction[]> {
+  async findAllByRetailShop(
+    @Args('retailShopId') id: string,
+  ): Promise<SaleTransaction[]> {
     return this.saleTransactionsService.findAllByRetailShop(id);
   }
 
   @Query(() => Float)
-  async totalSalesByRetailShop(id: string): Promise<number> {
+  async totalSalesByRetailShop(
+    @Args('retailShopId') id: string,
+  ): Promise<number> {
     return this.saleTransactionsService.totalSalesByRetailShop(id);
   }
 
   @Query(() => Float)
-  async totalSalesByProduct(id: string): Promise<number> {
+  async totalSalesByProduct(@Args('productId') id: string): Promise<number> {
     return this.saleTransactionsService.totalSalesByProduct(id);
   }
 
@@ -106,14 +110,20 @@ export class SaleTransactionsResolver {
   }
 
   @Query(() => Float)
-  async totalSalesByDate(startDate: string, endDate: string): Promise<number> {
+  async totalSalesByDate(
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
     return this.saleTransactionsService.totalSalesByDate(startDate, endDate);
   }
 
   @Query(() => Float)
   async totalSalesByDateAndRetailShop(
+    @Args('retailShopId')
     id: string,
+    @Args('startDate')
     startDate: string,
+    @Args('endDate')
     endDate: string,
   ) {
     return this.saleTransactionsService.totalSalesByRetailShopByDate(
@@ -125,8 +135,11 @@ export class SaleTransactionsResolver {
 
   @Query(() => Float)
   async totalSalesByDateAndProduct(
+    @Args('productId')
     productId: string,
+    @Args('startDate')
     startDate: string,
+    @Args('endDate')
     endDate: string,
   ) {
     return this.saleTransactionsService.totalSalesByProductByDate(
@@ -142,13 +155,18 @@ export class SaleTransactionsResolver {
   }
 
   @Query(() => Float)
-  async totalProfitByDate(startDate: string, endDate: string): Promise<number> {
+  async totalProfitByDate(
+    @Args('startDate')
+    startDate: string,
+    @Args('endDate')
+    endDate: string,
+  ): Promise<number> {
     return this.saleTransactionsService.totalProfitByDate(startDate, endDate);
   }
 
   @Query(() => Float)
   async totalProfitByDateAndRetailShop(
-    @Args('id') id: string,
+    @Args('retailShopId') id: string,
     @Args('startDate') startDate: string,
     @Args('endDate') endDate: string,
   ) {
@@ -173,7 +191,9 @@ export class SaleTransactionsResolver {
   }
 
   @Query(() => Float)
-  async totalProfitByRetailShop(id: string): Promise<number> {
+  async totalProfitByRetailShop(
+    @Args('retailShopId') id: string,
+  ): Promise<number> {
     return this.saleTransactionsService.totalProfitByRetailShop(id);
   }
 

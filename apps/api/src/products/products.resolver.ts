@@ -218,7 +218,9 @@ export class ProductsResolver {
   }
 
   @Query(() => Number, { name: 'totalProductsByCategory' })
-  async totalProductsByCategory(category: string): Promise<number> {
+  async totalProductsByCategory(
+    @Args('categoryName') category: string,
+  ): Promise<number> {
     return this.productsService.countByCategory(category);
   }
 
