@@ -50,6 +50,12 @@ export class WarehousesService {
         warehouseStock: true,
         goodsTransfersAsDestination: true,
         goodsTransfersAsSource: true,
+        retailShopStock: {
+          include: {
+            product: true,
+            warehouse: true,
+          },
+        },
       },
     });
   }

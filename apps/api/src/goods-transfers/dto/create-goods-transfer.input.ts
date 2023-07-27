@@ -1,5 +1,4 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { StockItem } from '../models/stock-item.model';
 import { TransferType } from '@prisma/client';
 import { CreateStockItemInput } from './create-stock-item.input';
 
@@ -17,6 +16,6 @@ export class CreateGoodsTransferInput {
   @Field(() => [CreateStockItemInput], { nullable: true })
   goods: [CreateStockItemInput];
 
-  @Field(() => TransferType, { nullable: true })
+  @Field(() => TransferType)
   transferType: TransferType;
 }
