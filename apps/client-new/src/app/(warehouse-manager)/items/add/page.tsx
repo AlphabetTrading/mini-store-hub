@@ -25,7 +25,7 @@ import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { Scrollbar } from "@/components/scrollbar";
 import SearchIcon from "@mui/icons-material/Search";
-import { AddIncomingItemModal } from "@/components/modals/add-incoming-item";
+import { AddIncomingItemModal } from "@/components/modals/incoming-items-modal";
 import { useMutation, useQuery } from "@apollo/client";
 import { ITEMS, ItemsData, WAREHOUSE_ITEMS } from "@/graphql/items/queries";
 import {

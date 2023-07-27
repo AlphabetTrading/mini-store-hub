@@ -4,12 +4,16 @@ export const GET_ME = gql`
   query Me {
     me {
       id
+      firstName
       lastName
+      username
       phone
       role
       updatedAt
-      username
-      firstName
+      role
+      warehouse {
+        id
+      }
     }
   }
 `;

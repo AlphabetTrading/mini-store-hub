@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { Item, WarehouseStock } from "../../../types/item";
 
 export interface WarehouseItemsData {
   warehouseStockByWarehouseId: WarehouseStock[];
@@ -8,25 +9,8 @@ export interface WarehouseItemsVars {
   warehouseId:string;
 }
 
-export interface WarehouseStock {
-  quantity: number;
-  product: Item;
-}
 
-interface Item {
-  id: string;
-  serialNumber: string;
-  unit: string;
-  name: string;
-  category: { id: string; name: string };
-  activePrice: { id: string; purchasedPrice: number; price: number };
-  priceHisotry: {
-    id: string;
-    purchasedPrice: number;
-    price: number;
-    createdAt: Date;
-  }[];
-}
+
 
 export const WAREHOUSE_ITEMS = gql`
   query WarehouseStockByWarehouseId($warehouseId: String!) {
