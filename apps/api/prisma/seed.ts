@@ -350,6 +350,23 @@ async function seedRetailShops() {
 
 async function seedWarehouses() {
   try {
+    // Create main warehouse
+    await prisma.warehouse.create({
+      data: {
+        name: 'Main Warehouse',
+        isMain: true,
+        address: {
+          create: {
+            street: 'St 128, Main Street',
+            city: 'Kampala',
+            lat: 0,
+            lng: 0,
+            formattedAddress: 'St 128, Main Street, Kampala',
+          },
+        },
+      },
+    });
+
     await prisma.warehouse.createMany({
       data: [
         { name: 'Warehouse A' },

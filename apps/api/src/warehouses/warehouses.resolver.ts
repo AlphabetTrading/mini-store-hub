@@ -51,6 +51,9 @@ export class WarehousesResolver {
         {
           createdAt: filterWarehouseInput?.createdAt,
         },
+        {
+          isMain: false,
+        },
       ],
     };
     try {

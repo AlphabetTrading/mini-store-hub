@@ -93,6 +93,11 @@ input CreateCategoryInput {
   name: String!
 }
 
+input CreateGoodsTransferFromMainWarehouseInput {
+  destinationWarehouseId: String
+  goods: [CreateStockItemInput!]
+}
+
 input CreateGoodsTransferInput {
   destinationWarehouseId: String
   goods: [CreateStockItemInput!]
@@ -356,6 +361,7 @@ type Mutation {
   createBulkWarehouseStock(data: CreateBulkWarehouseStockInput!): [WarehouseStock!]!
   createCategory(data: CreateCategoryInput!): Category!
   createGoodsTransfer(data: CreateGoodsTransferInput!): GoodsTransfer!
+  createGoodsTransferFromMainWarehouseToWarehouse(data: CreateGoodsTransferFromMainWarehouseInput!): GoodsTransfer!
 
   """Create a new price history"""
   createPriceHistory(priceHistory: CreatePriceHistoryInput!): PriceHistory!
@@ -382,7 +388,7 @@ type Mutation {
   disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
   forgotPassword(phone: String!): ForgotPasswordResponse!
   login(data: LoginInput!): Auth!
-  refreshToken(refreshToken: JWT!): Auth!
+  refreshToken(refreshToken: JWT!): Token!
   resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
   sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
@@ -571,11 +577,12 @@ type Query {
   allUsersNotifications(filterNotificationInput: FilterNotificationInput, orderBy: NotificationOrder, paginationInput: PaginationInput): PaginationNotifications!
   categories(filterCategoryInput: FilterCategoryInput, orderBy: CategoryOrder, paginationInput: PaginationInput): PaginationCategories!
   category(id: String!): Category!
+  findIncomingGoodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
+  findOutgoingGoodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
   findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   findProductsByTopSelling(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
-  goodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
   goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: GoodsTransferOrder, paginationInput: PaginationInput): PaginationGoodsTransfer!
   me: User!
   notificationById(id: String!): Notification!
@@ -763,6 +770,14 @@ input StringFilter {
   startsWith: String
 }
 
+type Token {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+}
+
 """TransferType"""
 enum TransferType {
   WarehouseToRetailShop
@@ -771,8 +786,15 @@ enum TransferType {
 
 """UnitType role"""
 enum UnitType {
+  BAG
+  BOTTLE
+  BOX
+  KG
+  LITER
+  METER
+  METER_SQUARE
+  OTHER
   PIECES
-  WEIGHT
 }
 
 input UpdateCategoryInput {

@@ -19,11 +19,7 @@ export class RetailShopStockService {
 
   async findAll() {
     return this.prisma.retailShopStock.findMany({
-      include: {
-        product: true,
-        retailShop: true,
-        warehouse: true,
-      },
+      include: retailShopStockInclude,
     });
   }
 

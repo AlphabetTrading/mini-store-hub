@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { Warehouse } from './models/warehouse.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-const warehouseInclude = {
+const warehouseInclude: Prisma.WarehouseInclude = {
   warehouseManager: true,
   address: true,
   warehouseStock: {
@@ -44,19 +44,7 @@ export class WarehousesService {
   async findOne(id: string) {
     return await this.prisma.warehouse.findUnique({
       where: { id },
-      include: {
-        warehouseManager: true,
-        address: true,
-        warehouseStock: true,
-        goodsTransfersAsDestination: true,
-        goodsTransfersAsSource: true,
-        retailShopStock: {
-          include: {
-            product: true,
-            warehouse: true,
-          },
-        },
-      },
+      include: warehouseInclude,
     });
   }
 
@@ -67,13 +55,7 @@ export class WarehousesService {
   async findByWarehouseManager(id: string) {
     return await this.prisma.warehouse.findMany({
       where: { warehouseManagerId: id },
-      include: {
-        warehouseManager: true,
-        address: true,
-        warehouseStock: true,
-        goodsTransfersAsDestination: true,
-        goodsTransfersAsSource: true,
-      },
+      include: warehouseInclude,
     });
   }
 
@@ -83,14 +65,9 @@ export class WarehousesService {
         address: {
           street: address,
         },
+        isMain: false,
       },
-      include: {
-        warehouseManager: true,
-        address: true,
-        warehouseStock: true,
-        goodsTransfersAsDestination: true,
-        goodsTransfersAsSource: true,
-      },
+      include: warehouseInclude,
     });
   }
 
