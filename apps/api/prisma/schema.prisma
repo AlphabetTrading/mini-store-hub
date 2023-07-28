@@ -187,6 +187,7 @@ model Warehouse {
   amharicName        String?  @map("የስራ ቦታ ስም") @db.Text
   addressId          String?  @unique
   warehouseManagerId String?
+  isMain             Boolean  @default(false)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

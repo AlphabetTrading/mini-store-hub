@@ -11,6 +11,7 @@ import { FilterGoodsTransferInput } from './dto/filter-goods-transfer.input';
 import { GoodsTransferOrder } from './dto/goods-transfer-order.input';
 import { PaginationGoodsTransfer } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
+import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
 
 @Resolver(() => GoodsTransfer)
 @UseGuards(GqlAuthGuard)
@@ -79,10 +80,31 @@ export class GoodsTransfersResolver {
   }
 
   @Query(() => [GoodsTransfer], {
-    name: 'goodsTransferByWarehouseId',
+    name: 'findOutgoingGoodsTransferByWarehouseId',
   })
-  async GoodsTransferByWarehouseId(@Args('warehouseId') warehouseId: string) {
-    return this.goodsTransfersService.findByWarehouseId(warehouseId);
+  async findOutgoingGoodsTransferByWarehouseId(
+    @Args('warehouseId') warehouseId: string,
+  ) {
+    const goodsTransfers = await this.goodsTransfersService.findByWarehouseId(
+      warehouseId,
+    );
+
+    return {
+      items: goodsTransfers,
+      meta: {
+        count: goodsTransfers.length,
+        limit: goodsTransfers.length,
+      },
+    };
+  }
+
+  @Query(() => [GoodsTransfer], {
+    name: 'findIncomingGoodsTransferByWarehouseId',
+  })
+  async findIncomingGoodsTransferByWarehouseId(
+    @Args('warehouseId') warehouseId: string,
+  ) {
+    return this.goodsTransfersService.findIncomingByWarehouseId(warehouseId);
   }
 
   @Mutation(() => GoodsTransfer, { name: 'createGoodsTransfer' })
@@ -101,6 +123,21 @@ export class GoodsTransfersResolver {
       }
       return this.goodsTransfersService.transferToWarehouse(data);
     }
+  }
+
+  @Mutation(() => GoodsTransfer)
+  async createGoodsTransferFromMainWarehouseToWarehouse(
+    @Args('data') data: CreateGoodsTransferFromMainWarehouseInput,
+  ) {
+    if (!data.goods || data.goods.length < 1) {
+      throw new Error('Goods cannot be empty');
+    }
+    if (!data.destinationWarehouseId) {
+      throw new Error('destinationWarehouse Id cannot be empty');
+    }
+    return this.goodsTransfersService.transferToWarehouseFromMainWarehouse(
+      data,
+    );
   }
 
   @Mutation(() => GoodsTransfer)

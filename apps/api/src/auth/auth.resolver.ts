@@ -44,9 +44,16 @@ export class AuthResolver {
     };
   }
 
-  @Mutation(() => Auth)
-  async refreshToken(@Args() { refreshToken }: RefreshTokenInput) {
-    return this.auth.refreshToken(refreshToken);
+  @Mutation(() => Token)
+  async refreshToken(@Args() data: RefreshTokenInput) {
+    const { accessToken, refreshToken } = this.auth.refreshToken(
+      data.refreshToken,
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   @Mutation(() => ForgotPasswordResponse)

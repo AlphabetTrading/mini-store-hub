@@ -59,41 +59,14 @@ export class WarehouseStockService {
   async findOne(id: string) {
     return this.prisma.warehouseStock.findUnique({
       where: { id },
-      include: {
-        product: true,
-        warehouse: {
-          include: {
-            address: true,
-            goodsTransfersAsDestination: true,
-            goodsTransfersAsSource: true,
-          },
-        },
-      },
+      include: warehouseStockIncludeObject,
     });
   }
 
   async findByWarehouseId(warehouseId: string) {
     return this.prisma.warehouseStock.findMany({
       where: { warehouseId },
-      include: {
-        product: {
-          include: {
-            category: true,
-            goods: true,
-            activePrice: true,
-            priceHistory: true,
-            retailShopStock: true,
-            saleTransaction: true,
-          },
-        },
-        warehouse: {
-          include: {
-            address: true,
-            goodsTransfersAsDestination: true,
-            goodsTransfersAsSource: true,
-          },
-        },
-      },
+      include: warehouseStockIncludeObject,
     });
   }
 

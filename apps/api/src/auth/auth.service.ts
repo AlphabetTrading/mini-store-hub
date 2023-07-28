@@ -191,6 +191,7 @@ export class AuthService {
         userId,
       });
     } catch (e) {
+      console.log(e);
       throw new UnauthorizedException();
     }
   }

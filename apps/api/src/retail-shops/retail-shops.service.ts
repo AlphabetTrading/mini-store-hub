@@ -49,16 +49,7 @@ export class RetailShopsService {
   async findOne(id: string) {
     return this.prisma.retailShop.findUnique({
       where: { id },
-      include: {
-        address: true,
-        dailyTransaction: true,
-        monthlyTransaction: true,
-        annualTransaction: true,
-        goodsTransfersAsDestination: true,
-        retailShopManager: true,
-        retailShopStock: true,
-        saleTransaction: true,
-      },
+      include: retailShopInclude,
     });
   }
 
@@ -74,16 +65,7 @@ export class RetailShopsService {
           },
         },
       },
-      include: {
-        address: true,
-        dailyTransaction: true,
-        monthlyTransaction: true,
-        annualTransaction: true,
-        goodsTransfersAsDestination: true,
-        retailShopManager: true,
-        retailShopStock: true,
-        saleTransaction: true,
-      },
+      include: retailShopInclude,
     });
   }
 

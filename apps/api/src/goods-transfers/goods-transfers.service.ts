@@ -4,6 +4,14 @@ import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GoodsTransfer } from './models/goods-transfer.model';
 import { Prisma } from '@prisma/client';
+import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
+
+const goodsTransferInclude = {
+  destinationWarehouse: true,
+  goods: true,
+  retailShop: true,
+  sourceWarehouse: true,
+};
 
 @Injectable()
 export class GoodsTransfersService {
@@ -38,12 +46,7 @@ export class GoodsTransfersService {
   async findOne(id: string) {
     return this.prisma.goodsTransfer.findUnique({
       where: { id },
-      include: {
-        destinationWarehouse: true,
-        goods: true,
-        retailShop: true,
-        sourceWarehouse: true,
-      },
+      include: goodsTransferInclude,
     });
   }
 
@@ -54,12 +57,14 @@ export class GoodsTransfersService {
   async findByWarehouseId(warehouseId: string) {
     return this.prisma.goodsTransfer.findMany({
       where: { sourceWarehouseId: warehouseId },
-      include: {
-        destinationWarehouse: true,
-        goods: true,
-        retailShop: true,
-        sourceWarehouse: true,
-      },
+      include: goodsTransferInclude,
+    });
+  }
+
+  async findIncomingByWarehouseId(warehouseId: string) {
+    return this.prisma.goodsTransfer.findMany({
+      where: { destinationWarehouseId: warehouseId },
+      include: goodsTransferInclude,
     });
   }
 
@@ -356,14 +361,33 @@ export class GoodsTransfersService {
             );
           }
 
-          await tx.warehouseStock.update({
+          // await tx.warehouseStock.update({
+          //   where: {
+          //     productId_warehouseId: {
+          //       productId: good.productId,
+          //       warehouseId: sourceWarehouseId,
+          //     },
+          //   },
+          //   data: {
+          //     quantity: {
+          //       decrement: good.quantity,
+          //     },
+          //   },
+          // });
+
+          await tx.warehouseStock.upsert({
             where: {
               productId_warehouseId: {
                 productId: good.productId,
                 warehouseId: sourceWarehouseId,
               },
             },
-            data: {
+            create: {
+              quantity: good.quantity,
+              productId: good.productId,
+              warehouseId: sourceWarehouseId,
+            },
+            update: {
               quantity: {
                 decrement: good.quantity,
               },
@@ -405,6 +429,155 @@ export class GoodsTransfersService {
       );
     }
   }
+
+  // transfer goods from main warehouse to warehouse, and the main warehouse has an infinite amount of goods, so that the quantity of goods in the main warehouse is not reduced
+
+  async transferToWarehouseFromMainWarehouse(
+    data: CreateGoodsTransferFromMainWarehouseInput,
+  ): Promise<GoodsTransfer> {
+    const { goods, destinationWarehouseId } = data;
+    const sourceWarehouse = await this.prisma.warehouse.findFirst({
+      where: {
+        isMain: true,
+      },
+    });
+
+    if (!sourceWarehouse) {
+      throw new Error('Main warehouse not found');
+    }
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        for (const good of goods) {
+          await tx.warehouseStock.upsert({
+            where: {
+              productId_warehouseId: {
+                productId: good.productId,
+                warehouseId: destinationWarehouseId,
+              },
+            },
+            create: {
+              quantity: good.quantity,
+              productId: good.productId,
+              warehouseId: destinationWarehouseId,
+            },
+            update: {
+              quantity: {
+                increment: good.quantity,
+              },
+            },
+          });
+        }
+
+        // create goods transfer in main warehouse
+        return await tx.goodsTransfer.create({
+          data: {
+            goods: {
+              createMany: {
+                data: goods,
+                skipDuplicates: true,
+              },
+            },
+            sourceWarehouse: {
+              connect: {
+                id: sourceWarehouse.id,
+              },
+            },
+            destinationWarehouse: {
+              connect: {
+                id: destinationWarehouseId,
+              },
+            },
+          },
+        });
+      });
+    } catch (error) {
+      console.log(error);
+      this.prisma.$disconnect();
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'You are forbidden to access the endpoint',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  // try {
+  //   return await this.prisma.$transaction(async (tx) => {
+  //     for (const good of goods) {
+  //       const currentStock = await tx.warehouseStock.update({
+  //         where: {
+  //           productId_warehouseId: {
+  //             productId: good.productId,
+  //             warehouseId: destinationWarehouseId,
+  //           },
+  //         },
+  //         data: {
+  //           quantity: {
+  //             increment: good.quantity,
+  //           },
+  //         },
+  //       });
+
+  //       // 2. Verify that there's enough quantity.
+  //       if (currentStock.quantity < 0) {
+  //         throw new Error(
+  //           `Product with ${currentStock.productId} ID doesn't have enough quantity to transfer ${good.quantity}`,
+  //         );
+  //       }
+
+  //       await tx.warehouseStock.update({
+  //         where: {
+  //           productId_warehouseId: {
+  //             productId: good.productId,
+  //             warehouseId: sourceWarehouseId,
+  //           },
+  //         },
+  //         data: {
+  //           quantity: {
+  //             decrement: good.quantity,
+  //           },
+  //         },
+  //       });
+  //     }
+  //     return await this.prisma.goodsTransfer.create({
+  //       data: {
+  //         goods: {
+  //           createMany: {
+  //             data: goods,
+  //             skipDuplicates: true,
+  //           },
+  //         },
+  //         sourceWarehouse: {
+  //           connect: {
+  //             id: sourceWarehouseId,
+  //           },
+  //         },
+  //         destinationWarehouse: {
+  //           connect: {
+  //             id: destinationWarehouseId,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   });
+  // } catch (error) {
+  //   this.prisma.$disconnect();
+  //   throw new HttpException(
+  //     {
+  //       status: HttpStatus.FORBIDDEN,
+  //       error: 'You are forbidden to access the endpoint',
+  //     },
+  //     HttpStatus.FORBIDDEN,
+  //     {
+  //       cause: error,
+  //     },
+  //   );
+  // }
 
   async updateTransferToRetailShop(id: string, data: UpdateGoodsTransferInput) {
     const { goods, sourceWarehouseId, retailShopId } = data;

@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, HideField } from '@nestjs/graphql';
 import { Address } from 'src/common/models/address.model';
 import { BaseModel } from 'src/common/models/base.model';
 import { GoodsTransfer } from 'src/goods-transfers/models/goods-transfer.model';
@@ -13,6 +13,9 @@ export class Warehouse extends BaseModel {
 
   @Field(() => String, { nullable: true })
   amharicName?: string;
+
+  @HideField()
+  isMain: boolean;
 
   @Field(() => String, { nullable: true })
   addressId?: string;

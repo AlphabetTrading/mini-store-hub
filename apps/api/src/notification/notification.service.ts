@@ -57,6 +57,7 @@ export class NotificationService {
           notification_title: notification_title,
           notification_body: notification_body,
         },
+
         notification: {
           title: notification_title,
           body: notification_body,
