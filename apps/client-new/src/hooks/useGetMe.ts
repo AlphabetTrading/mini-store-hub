@@ -1,4 +1,3 @@
-
 import { GET_ME } from "@/graphql/users/queries";
 import {
   useSuspenseQuery,

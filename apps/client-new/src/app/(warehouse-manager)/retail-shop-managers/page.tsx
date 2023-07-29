@@ -16,12 +16,16 @@ import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import ManagersListSearch from "@/components/retail-shop-managers/managers-list-search";
 import ManagersListTable from "@/components/retail-shop-managers/managers-list-table";
-import { RETAIL_SHOP_MANAGERS, RetailShopManagersData } from "@/graphql/retail-shop-managers/queries";
+import {
+  RETAIL_SHOP_MANAGERS,
+  RetailShopManagersData,
+} from "@/graphql/retail-shop-managers/queries";
 
 type Props = {};
 
 const page = (props: Props) => {
-  const { data, loading, error } = useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS)
+  const { data, loading, error } =
+    useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS);
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -44,7 +48,6 @@ const page = (props: Props) => {
                 <Typography>List</Typography>
               </Breadcrumbs>
             </Stack>
-      
           </Stack>
           {loading ? (
             <CircularProgress />

@@ -4,7 +4,7 @@ export type User = {
   id: string;
   firstName: string;
   lastName: string;
-  userName:string;
+  userName: string;
   phone: string;
   role: Role;
   userProfile?: UserProfile;

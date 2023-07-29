@@ -214,11 +214,7 @@ const page = (props: Props) => {
               <Card>
                 <CardContent>
                   <Stack spacing={2} alignItems="flex-end">
-                    <Button
-                      startIcon={<AddIcon />}
-                      variant="contained"
-                      
-                    >
+                    <Button startIcon={<AddIcon />} variant="contained">
                       Add price
                     </Button>
                     <Grid container spacing={2}>
@@ -258,7 +254,11 @@ const page = (props: Props) => {
                                         )}
                                       </IconButton>
                                     </TableCell>
-                                    <TableCell>{dayjs(history.createdAt).format("DD/MM/YYYY")}</TableCell>
+                                    <TableCell>
+                                      {dayjs(history.createdAt).format(
+                                        "DD/MM/YYYY"
+                                      )}
+                                    </TableCell>
                                     <TableCell>
                                       {history.purchasedPrice}
                                     </TableCell>

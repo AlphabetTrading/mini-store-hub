@@ -6,11 +6,8 @@ export interface WarehouseItemsData {
 }
 
 export interface WarehouseItemsVars {
-  warehouseId:string;
+  warehouseId: string;
 }
-
-
-
 
 export const WAREHOUSE_ITEMS = gql`
   query WarehouseStockByWarehouseId($warehouseId: String!) {

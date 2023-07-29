@@ -1,7 +1,7 @@
 import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import SvgIcon from "@mui/icons-material/Search";
-import {Divider, Input, Stack} from "@mui/material";
+import { Divider, Input, Stack } from "@mui/material";
 
 type Props = {};
 

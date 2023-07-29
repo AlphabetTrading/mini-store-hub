@@ -29,17 +29,15 @@ import { useSession } from "next-auth/react";
 type Props = {};
 
 const page = (props: Props) => {
-  
-  const {data:sessionData} = useSession();
+  const { data: sessionData } = useSession();
 
-  const { data, loading, error,refetch } = useQuery<
+  const { data, loading, error, refetch } = useQuery<
     WarehouseItemsData,
     WarehouseItemsVars
   >(WAREHOUSE_ITEMS, {
     variables: {
       warehouseId: "clki1bbrx000srlwgvx7jzw1i",
     },
-  
   });
 
   return (

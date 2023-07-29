@@ -135,7 +135,7 @@ const page = (props: Props) => {
                 <Card>
                   <CardHeader title="Retail Shops" />
                   <RetailShopsList
-                  selectedRetailShop={selectedRetailShop}
+                    selectedRetailShop={selectedRetailShop}
                     setSelectedRetailShop={setSelectedRetailShop}
                   />
                 </Card>

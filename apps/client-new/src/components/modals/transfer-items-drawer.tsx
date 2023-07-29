@@ -173,14 +173,16 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
             type="number"
             name="quantity"
           />
-            {!!(formik.touched.itemId && formik.errors.itemId)&& <Alert severity="error">
-            <div>
-              <Typography color="inherit" variant="subtitle2">
-                {formik.touched.itemId && formik.errors.itemId}
-              </Typography>
-            </div>
-          </Alert>}
-           
+          {!!(formik.touched.itemId && formik.errors.itemId) && (
+            <Alert severity="error">
+              <div>
+                <Typography color="inherit" variant="subtitle2">
+                  {formik.touched.itemId && formik.errors.itemId}
+                </Typography>
+              </div>
+            </Alert>
+          )}
+
           <Button variant="contained" type="submit" fullWidth={false}>
             Add Item
           </Button>

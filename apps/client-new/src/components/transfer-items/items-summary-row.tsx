@@ -27,21 +27,38 @@ const ItemsSummaryRow = ({
   setSelectedItems,
   selectedItems,
 }: Props) => {
-  const handleItemQuantityChange = (selectedItem: SelectedWarehouseItem, val: number) => {
-      if(selectedItem.selectedQuantity + val <= 0){
-        setSelectedItems(selectedItems.filter((item)=>item.warehouseStock.product.id !== selectedItem.warehouseStock.product.id))
-      }else if(selectedItem.selectedQuantity + val > selectedItem.warehouseStock.quantity){
-        return;
-      }else{
-        selectedItem.selectedQuantity += val;
-        setSelectedItems((prev)=>prev.map((item)=>{
-            if(item.warehouseStock.product.id === selectedItem.warehouseStock.product.id){
-                return selectedItem;
-            }else{
-                return item;
-            }
-        }))
-      }
+  const handleItemQuantityChange = (
+    selectedItem: SelectedWarehouseItem,
+    val: number
+  ) => {
+    if (selectedItem.selectedQuantity + val <= 0) {
+      setSelectedItems(
+        selectedItems.filter(
+          (item) =>
+            item.warehouseStock.product.id !==
+            selectedItem.warehouseStock.product.id
+        )
+      );
+    } else if (
+      selectedItem.selectedQuantity + val >
+      selectedItem.warehouseStock.quantity
+    ) {
+      return;
+    } else {
+      selectedItem.selectedQuantity += val;
+      setSelectedItems((prev) =>
+        prev.map((item) => {
+          if (
+            item.warehouseStock.product.id ===
+            selectedItem.warehouseStock.product.id
+          ) {
+            return selectedItem;
+          } else {
+            return item;
+          }
+        })
+      );
+    }
   };
   const { warehouseStock, selectedQuantity } = selectedWarehouseItem;
 
@@ -55,9 +72,7 @@ const ItemsSummaryRow = ({
           <Stack>
             <IconButton
               sx={{ p: 0 }}
-              onClick={() =>
-                handleItemQuantityChange(selectedWarehouseItem, 1)
-              }
+              onClick={() => handleItemQuantityChange(selectedWarehouseItem, 1)}
             >
               <ArrowDropUpIcon />
             </IconButton>
@@ -76,7 +91,7 @@ const ItemsSummaryRow = ({
       <TableCell>
         {warehouseStock.product.activePrice?.price * warehouseStock.quantity}
       </TableCell>
-      <TableCell >
+      <TableCell>
         <IconButton onClick={() => handleRemoveItem(warehouseStock.product.id)}>
           <DeleteOutlineIcon color="error" />
         </IconButton>

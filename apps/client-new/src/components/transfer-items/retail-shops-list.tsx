@@ -19,10 +19,13 @@ import { RetailShopsData, RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
 
 type Props = {
   setSelectedRetailShop: React.Dispatch<React.SetStateAction<string | null>>;
-  selectedRetailShop:string|null;
+  selectedRetailShop: string | null;
 };
 
-const RetailShopsList = ({ setSelectedRetailShop ,selectedRetailShop}: Props) => {
+const RetailShopsList = ({
+  setSelectedRetailShop,
+  selectedRetailShop,
+}: Props) => {
   const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS);
   const retailShops = data?.retailShops.items;
   return loading ? (
@@ -51,7 +54,7 @@ const RetailShopsList = ({ setSelectedRetailShop ,selectedRetailShop}: Props) =>
             setSelectedRetailShop(event.currentTarget.value);
           }}
           spacing={3}
-          value={selectedRetailShop?.toString()||""}
+          value={selectedRetailShop?.toString() || ""}
         >
           {retailShops?.map((retailShop, idx) => (
             <Paper

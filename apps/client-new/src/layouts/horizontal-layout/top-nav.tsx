@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import TopNavSection from "./top-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 type Props = {
   onMobileNav: () => void;
@@ -94,10 +95,11 @@ export const TopNav = (props: Props) => {
           {/* <TenantSwitch /> */}
         </Stack>
         <Stack alignItems="center" direction="row" spacing={2}>
-          {/* <LanguageSwitch />
-            <NotificationsButton />
-            <ContactsButton />
-            <AccountButton /> */}
+          {/* <LanguageSwitch /> */}
+          {/* <NotificationsButton /> */}
+          {/* <ContactsButton /> */}
+          {/* <AccountButton /> */}
+          <IconButton onClick={() => signOut()}>Logout</IconButton>
         </Stack>
       </Stack>
       {mdUp && (

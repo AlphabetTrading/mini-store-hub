@@ -1,6 +1,6 @@
 "use client";
 
-import { ApolloClient, ApolloLink, HttpLink, from } from "@apollo/client";
+import { ApolloLink, HttpLink, from } from "@apollo/client";
 import {
   ApolloNextAppProvider,
   NextSSRApolloClient,
@@ -9,7 +9,6 @@ import {
 } from "@apollo/experimental-nextjs-app-support/ssr";
 import { setContext } from "@apollo/client/link/context";
 import { API_URL } from "@/constants/urls";
-import { ACCESS_TOKEN } from "@/constants/tokens";
 
 function makeClient() {
   const httpLink = new HttpLink({
