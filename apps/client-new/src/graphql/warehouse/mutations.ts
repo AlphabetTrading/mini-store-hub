@@ -13,7 +13,7 @@ export interface RegisterIncomingStockVars {
 }
 
 export interface RegisterIncomingStockData {
-    id:string;
+  id: string;
 }
 
 export const REGISTER_INCOMING_STOCK = gql`

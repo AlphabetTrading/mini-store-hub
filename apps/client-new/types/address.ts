@@ -1,7 +1,6 @@
 export type Address = {
-    city: string;
-    street: string;
-    lat: string;
-    lng: string;
-  };
-  
+  city: string;
+  street: string;
+  lat: string;
+  lng: string;
+};

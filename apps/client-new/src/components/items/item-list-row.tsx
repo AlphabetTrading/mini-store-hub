@@ -68,7 +68,9 @@ const ItemListRow = ({ warehouseStock, handleItemToggle, selected }: Props) => {
         <TableCell align="left">{product.category.name}</TableCell>
         <TableCell align="left">{quantity}</TableCell>
         <TableCell align="left">{product.unit}</TableCell>
-        <TableCell align="left">{product.activePrice?.purchasedPrice}</TableCell>
+        <TableCell align="left">
+          {product.activePrice?.purchasedPrice}
+        </TableCell>
         <TableCell align="left">{product.activePrice?.price}</TableCell>
       </TableRow>
       {selected && (
@@ -163,14 +165,13 @@ const ItemListRow = ({ warehouseStock, handleItemToggle, selected }: Props) => {
                       /> */}
                     </Grid>
                     <Grid item md={6} xs={12}>
-                    <Button
-                variant="contained"
-                component={NextLink}
-                href={`/items/edit/${product.id}`}
-              >
-                Edit Price History
-              </Button>
-                      
+                      <Button
+                        variant="contained"
+                        component={NextLink}
+                        href={`/items/edit/${product.id}`}
+                      >
+                        Edit Price History
+                      </Button>
                     </Grid>
                   </Grid>
                 </Grid>

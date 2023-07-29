@@ -19,11 +19,10 @@ import { RETAIL_SHOPS, RetailShopsData } from "@/graphql/retail-shops/queries";
 import RetailShopsListSearch from "@/components/retail-shops/retail-shops-list-search";
 import RetailShopsListTable from "@/components/retail-shops/retail-shops-list-table";
 
-
 type Props = {};
 
 const page = (props: Props) => {
-  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS)
+  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS);
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -46,7 +45,6 @@ const page = (props: Props) => {
                 <Typography>List</Typography>
               </Breadcrumbs>
             </Stack>
-      
           </Stack>
           {loading ? (
             <CircularProgress />

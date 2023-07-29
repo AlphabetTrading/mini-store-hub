@@ -55,7 +55,7 @@ const page = (props: Props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      console.log(values)
+      console.log(values);
     },
   });
   return (
@@ -120,7 +120,6 @@ const page = (props: Props) => {
                             </MenuItem>
                           ))}
                         </TextField>
-          
 
                         <TextField
                           error={

@@ -86,10 +86,7 @@ export const AddIncomingItemModal = (props: Props) => {
             maxHeight: 600,
             m: "auto",
           }}
-          
         >
-
-
           <Stack spacing={2} sx={{ p: 8 }}>
             <Card>
               <Stack
@@ -104,72 +101,68 @@ export const AddIncomingItemModal = (props: Props) => {
                 <Input disableUnderline placeholder="Search by product name" />
               </Stack>
               <Divider />
-              
-                  {loading ? (
-                    <CircularProgress />
-                  ) : error || !data ? (
-                    <Alert severity="error">
-                      <AlertTitle>Error</AlertTitle>
-                      This is an error alert — <strong>check it out!</strong>
-                    </Alert>
-                  ) : (
-                    <RadioGroup
-                      name="itemId"
-                      value={formik.values.itemId.toString()}
-                      onChange={(event) => {
-                        formik.setFieldValue(
-                          "itemId",
-                          event.currentTarget.value
-                        );
-                      }}
-                    >
-                      {[...data?.products.items].map((item, idx) => {
-                        const isDisabled = false;
-                        return (
-                          <Paper
-                            key={idx}
-                            sx={{
-                              alignItems: "flex-start",
-                              display: "flex",
-                              p: 2,
-                            }}
-                            variant="outlined"
-                          >
-                            <FormControlLabel
-                              control={<Radio />}
-                              disabled={isDisabled}
-                              label={
-                                <Box sx={{ ml: 2 }}>
-                                  <Typography
-                                    sx={{
-                                      color: isDisabled
-                                        ? "action.disabled"
-                                        : "text.primary",
-                                    }}
-                                    variant="subtitle2"
-                                  >
-                                    {item.name}
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      color: isDisabled
-                                        ? "action.disabled"
-                                        : "text.secondary",
-                                    }}
-                                    variant="body2"
-                                  >
-                                    {item.serialNumber}
-                                  </Typography>
-                                </Box>
-                              }
-                              value={item.id}
-                            />
-                          </Paper>
-                        );
-                      })}
-                    </RadioGroup>
-                  )}
-          
+
+              {loading ? (
+                <CircularProgress />
+              ) : error || !data ? (
+                <Alert severity="error">
+                  <AlertTitle>Error</AlertTitle>
+                  This is an error alert — <strong>check it out!</strong>
+                </Alert>
+              ) : (
+                <RadioGroup
+                  name="itemId"
+                  value={formik.values.itemId.toString()}
+                  onChange={(event) => {
+                    formik.setFieldValue("itemId", event.currentTarget.value);
+                  }}
+                >
+                  {[...data?.products.items].map((item, idx) => {
+                    const isDisabled = false;
+                    return (
+                      <Paper
+                        key={idx}
+                        sx={{
+                          alignItems: "flex-start",
+                          display: "flex",
+                          p: 2,
+                        }}
+                        variant="outlined"
+                      >
+                        <FormControlLabel
+                          control={<Radio />}
+                          disabled={isDisabled}
+                          label={
+                            <Box sx={{ ml: 2 }}>
+                              <Typography
+                                sx={{
+                                  color: isDisabled
+                                    ? "action.disabled"
+                                    : "text.primary",
+                                }}
+                                variant="subtitle2"
+                              >
+                                {item.name}
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  color: isDisabled
+                                    ? "action.disabled"
+                                    : "text.secondary",
+                                }}
+                                variant="body2"
+                              >
+                                {item.serialNumber}
+                              </Typography>
+                            </Box>
+                          }
+                          value={item.id}
+                        />
+                      </Paper>
+                    );
+                  })}
+                </RadioGroup>
+              )}
             </Card>
 
             <TextField
