@@ -15,10 +15,7 @@ import { UpdateCategoryInput } from './dto/update-category.input';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { HasRoles } from 'src/common/decorators';
 import { Prisma, UserRole } from '@prisma/client';
-import {
-  PaginationCategories,
-  PaginationUser,
-} from 'src/common/pagination/pagination-info';
+import { PaginationCategories } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterCategoryInput } from './dto/filter-category.input';
 import { CategoryOrder } from './dto/category-order.input';
@@ -57,6 +54,11 @@ export class CategoriesResolver {
               amharicName: filterCategoryInput?.name,
             },
           ],
+        },
+        {
+          subcategories: {
+            some: filterCategoryInput?.subcategories,
+          },
         },
         {
           description: filterCategoryInput?.description,

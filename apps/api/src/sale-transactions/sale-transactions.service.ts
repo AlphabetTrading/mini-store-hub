@@ -5,6 +5,19 @@ import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input'
 import { Prisma } from '@prisma/client';
 import { SaleTransaction } from './models/sale-transaction.model';
 
+const salesTransactionInclude = {
+  retailShop: true,
+  product: {
+    include: {
+      activePrice: true,
+      priceHistory: true,
+      retailShopStock: true,
+      warehouseStock: true,
+      category: true,
+    },
+  },
+};
+
 @Injectable()
 export class SaleTransactionsService {
   private readonly logger = new Logger(SaleTransactionsService.name);
@@ -282,18 +295,7 @@ export class SaleTransactionsService {
         take,
         where,
         orderBy,
-        include: {
-          retailShop: true,
-          product: {
-            include: {
-              activePrice: true,
-              priceHistory: true,
-              retailShopStock: true,
-              warehouseStock: true,
-              category: true,
-            },
-          },
-        },
+        include: salesTransactionInclude,
       });
     } catch (error) {
       console.log(error);
@@ -320,23 +322,6 @@ export class SaleTransactionsService {
     return this.prisma.saleTransaction.count({ where });
   }
 
-  async findAllByRetailShop(id: string) {
-    return this.prisma.saleTransaction.findMany({
-      where: { retailShopId: id },
-      include: {
-        retailShop: true,
-        product: {
-          include: {
-            activePrice: true,
-            priceHistory: true,
-            retailShopStock: true,
-            warehouseStock: true,
-            category: true,
-          },
-        },
-      },
-    });
-  }
   async create(data: CreateSaleTransactionInput) {
     const { productId, retailShopId, quantity } = data;
     const product = await this.prisma.product.findUnique({
@@ -404,6 +389,24 @@ export class SaleTransactionsService {
         },
       });
     });
+  }
+
+  async totalProfitByProduct(id: string) {
+    const salesTransactions = await this.prisma.saleTransaction.findMany({
+      where: {
+        productId: id,
+      },
+    });
+
+    let overallProfit = 0;
+
+    for (const salesTransaction of salesTransactions) {
+      const { price, purchasedPrice, quantity } = salesTransaction;
+      const profit = (price - purchasedPrice) * quantity;
+      overallProfit += profit;
+    }
+
+    return overallProfit;
   }
 
   async update(id: string, data: UpdateSaleTransactionInput) {

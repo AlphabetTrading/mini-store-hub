@@ -27,7 +27,7 @@ export class SaleTransactionsResolver {
     private readonly saleTransactionsService: SaleTransactionsService, // private readonly RetailShopStockService: RetailShopStock,
   ) {}
 
-  @Query(() => [SaleTransaction], { name: 'saleTransactions' })
+  @Query(() => PaginationSaleTransactions, { name: 'saleTransactions' })
   async findAll(
     @Args('filterSaleTransactionInput', {
       type: () => FilterSaleTransactionInput,
@@ -47,6 +47,9 @@ export class SaleTransactionsResolver {
         AND: [
           {
             id: filterSaleTransactionInput?.id,
+          },
+          {
+            retailShop: filterSaleTransactionInput?.retailShop,
           },
           {
             product: filterSaleTransactionInput?.product,
@@ -84,11 +87,44 @@ export class SaleTransactionsResolver {
     return this.saleTransactionsService.findOne(id);
   }
 
-  @Query(() => [SaleTransaction], { name: 'saleTransactionsByRetailShop' })
+  @Query(() => PaginationSaleTransactions, {
+    name: 'saleTransactionsByRetailShop',
+  })
   async findAllByRetailShop(
     @Args('retailShopId') id: string,
-  ): Promise<SaleTransaction[]> {
-    return this.saleTransactionsService.findAllByRetailShop(id);
+    @Args('orderBy', {
+      type: () => SaleTransactionOrder,
+      nullable: true,
+    })
+    orderBy?: SaleTransactionOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const where: Prisma.SaleTransactionWhereInput = {
+      retailShop: {
+        id,
+      },
+    };
+
+    const salesTransactions = await this.saleTransactionsService.findAll({
+      where,
+      orderBy: {
+        [orderBy?.field]: orderBy?.direction,
+      },
+      skip: paginationInput?.skip,
+      take: paginationInput?.take,
+    });
+
+    const count = await this.saleTransactionsService.count(where);
+
+    return {
+      items: salesTransactions,
+      meta: {
+        page: paginationInput?.skip,
+        limit: paginationInput?.take,
+        count,
+      },
+    };
   }
 
   @Query(() => Float)
@@ -195,6 +231,11 @@ export class SaleTransactionsResolver {
     @Args('retailShopId') id: string,
   ): Promise<number> {
     return this.saleTransactionsService.totalProfitByRetailShop(id);
+  }
+
+  @Query(() => Float)
+  async totalProfitByProduct(@Args('productId') id: string): Promise<number> {
+    return this.saleTransactionsService.totalProfitByProduct(id);
   }
 
   @Mutation(() => SaleTransaction)
