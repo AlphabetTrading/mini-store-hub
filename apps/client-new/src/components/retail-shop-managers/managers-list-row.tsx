@@ -1,25 +1,12 @@
 import {
-  Button,
-  CardContent,
-  Divider,
-  Grid,
   IconButton,
-  InputAdornment,
-  Link,
-  MenuItem,
-  Stack,
-  Switch,
   TableCell,
   TableRow,
-  TextField,
-  Typography,
 } from "@mui/material";
 import React from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import { WarehouseStock } from "@/graphql/items/queries";
-import NextLink from "next/link";
 import { User } from "../../../types/user";
 
 type Props = {

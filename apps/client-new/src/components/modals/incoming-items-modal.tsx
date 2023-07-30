@@ -24,11 +24,11 @@ import {
   Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { ITEMS, ItemsData } from "@/graphql/items/queries";
 import { useQuery } from "@apollo/client";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useState } from "react";
+import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
 
 type Props = {
   open: boolean;
@@ -52,7 +52,7 @@ const validationSchema = Yup.object({
 
 export const AddIncomingItemModal = (props: Props) => {
   const { open, handleClose, handleAddItem } = props;
-  const { data, loading, error } = useQuery<ItemsData>(ITEMS);
+  const { data, loading, error } = useQuery<ProductsData>(PRODUCTS);
 
   const formik = useFormik({
     initialValues,

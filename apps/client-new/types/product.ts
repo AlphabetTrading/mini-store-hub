@@ -1,4 +1,4 @@
-export interface Item {
+export interface Product {
   id: string;
   serialNumber: string;
   unit: string;
@@ -13,7 +13,8 @@ export interface Item {
   }[];
 }
 
-export interface WarehouseStock {
-  quantity: number;
-  product: Item;
-}
+  export interface WarehouseStock {
+    quantity: number;
+    product: Product;
+  }
+  

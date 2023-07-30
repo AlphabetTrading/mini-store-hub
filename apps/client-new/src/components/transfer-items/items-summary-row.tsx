@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { WarehouseStock } from "../../../types/item";
+import { WarehouseStock } from "../../../types/product";
 import {
   IconButton,
   Stack,

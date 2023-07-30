@@ -7,11 +7,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import {
-  WAREHOUSE_ITEMS,
-  WarehouseItemsData,
-  WarehouseStock,
-} from "@/graphql/items/queries";
 import ManagersListRow from "./managers-list-row";
 import { User } from "../../../types/user";
 

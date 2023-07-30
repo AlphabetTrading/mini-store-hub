@@ -1,15 +1,15 @@
 import { gql } from "@apollo/client";
-import { Item, WarehouseStock } from "../../../types/item";
+import { Product, WarehouseStock } from "../../../types/product";
 
-export interface WarehouseItemsData {
+export interface WarehouseStockData {
   warehouseStockByWarehouseId: WarehouseStock[];
 }
 
-export interface WarehouseItemsVars {
+export interface WarehouseStockVars {
   warehouseId: string;
 }
 
-export const WAREHOUSE_ITEMS = gql`
+export const WAREHOUSE_STOCK = gql`
   query WarehouseStockByWarehouseId($warehouseId: String!) {
     warehouseStockByWarehouseId(warehouseId: $warehouseId) {
       product {
@@ -37,17 +37,17 @@ export const WAREHOUSE_ITEMS = gql`
   }
 `;
 
-export interface ItemsData {
-  products: { items: Item[] };
+export interface ProductsData {
+  products: { items: Product[] };
 }
 
-export interface ItemsVars {
+export interface ProductsVars {
   filterProductInput: {
     id: string;
   };
 }
 
-export const ITEMS = gql`
+export const PRODUCTS = gql`
   query Product(
     $filterProductInput: FilterProductInput
     $paginationInput: PaginationInput

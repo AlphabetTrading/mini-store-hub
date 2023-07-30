@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
               },
             },
           });
-
+  
           return {
             id: login.user.id,
             user: {

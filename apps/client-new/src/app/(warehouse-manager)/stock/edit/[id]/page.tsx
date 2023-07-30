@@ -32,8 +32,8 @@ import * as Yup from "yup";
 import AddIcon from "@mui/icons-material/Add";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { ItemsData, ItemsVars } from "@/graphql/items/queries";
 import dayjs from "dayjs";
+import { ProductsData, ProductsVars } from "@/graphql/products/queries";
 
 type Props = {};
 interface Values {
@@ -59,7 +59,7 @@ const validationSchema = Yup.object({
   categoryId: Yup.string().required("Category is required"),
 });
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -70,7 +70,7 @@ const page = (props: Props) => {
     data: itemsData,
     loading: itemsLoading,
     error: itemsError,
-  } = useQuery<ItemsData, ItemsVars>(CATEGORIES);
+  } = useQuery<ProductsData, ProductsVars>(CATEGORIES);
 
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
 
@@ -238,7 +238,7 @@ const page = (props: Props) => {
                           </TableHead>
                           <TableBody>
                             {itemsData?.products.items[0].priceHisotry.map(
-                              (history, idx) => {
+                              (history:any, idx:number) => {
                                 return (
                                   <TableRow key={idx}>
                                     <TableCell>
@@ -294,4 +294,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

@@ -21,8 +21,8 @@ import RetailShopsListTable from "@/components/retail-shops/retail-shops-list-ta
 
 type Props = {};
 
-const page = (props: Props) => {
-  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS);
+const Page = (props: Props) => {
+  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS)
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -68,4 +68,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

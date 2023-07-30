@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@/theme";
 import type { Metadata } from "next";
+import { PaletteColor, PaletteColorOptions } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ declare module "@mui/material/styles" {
     neutral700: string;
     neutral800: string;
     neutral900: string;
+    neutral: string[];
   }
   interface PaletteOptions {
     neutral50: string;
@@ -37,23 +39,37 @@ declare module "@mui/material/styles" {
     neutral600: string;
     neutral700: string;
     neutral800: string;
+    neutral: string[];
+  }
+  interface PaletteColor {
+    alpha4: string;
+    alpha8: string;
+    alpha12: string;
+    alpha30: string;
+    alpha50: string;
+  }
+  interface PaletteColorOptions {
+    alpha4: string;
+    alpha8: string;
+    alpha12: string;
+    alpha30: string;
+    alpha50: string;
   }
 }
 
 declare module "@mui/material/Box" {
-  interface BoxPropsColorOverrides {
-    neutral50: true;
-    neutral100: true;
-    neutral200: true;
-    neutral300: true;
-    neutral400: true;
-    neutral500: true;
-    neutral600: true;
-    neutral700: true;
-    neutral800: true;
-
-    neutral900: true;
-  }
+  // interface BoxPropsColorOverrides {
+  //   neutral50: true;
+  //   neutral100: true;
+  //   neutral200: true;
+  //   neutral300: true;
+  //   neutral400: true;
+  //   neutral500: true;
+  //   neutral600: true;
+  //   neutral700: true;
+  //   neutral800: true;
+  //   neutral900: true;
+  // }
 }
 const theme = createTheme({
   colorPreset: "blue",
