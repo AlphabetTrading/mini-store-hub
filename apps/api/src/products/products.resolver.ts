@@ -8,8 +8,7 @@ import { PaginationProducts } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterProductInput } from './dto/filter-product.input';
 import { Prisma } from '@prisma/client';
-import { OrderByProductInput } from './dto/order-by-product.input';
-import { ProductOrder, ProductOrderField } from './dto/product-order.input';
+import { ProductOrder } from './dto/product-order.input';
 
 @Resolver(() => Product)
 @UseGuards(GqlAuthGuard)
@@ -54,26 +53,7 @@ export class ProductsResolver {
           description: filterProductInput?.description,
         },
         {
-          category: {
-            OR: [
-              {
-                name: filterProductInput?.category,
-              },
-              {
-                amharicName: filterProductInput?.category,
-              },
-              {
-                subcategories: {
-                  every: {
-                    name: {
-                      contains: filterProductInput?.category?.contains,
-                      mode: Prisma.QueryMode.insensitive,
-                    },
-                  },
-                },
-              },
-            ],
-          },
+          category: filterProductInput?.category,
         },
         {
           createdAt: filterProductInput?.createdAt,
@@ -120,7 +100,38 @@ export class ProductsResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
     try {
+      const where: Prisma.ProductWhereInput = {
+        AND: [
+          {
+            id: filterProductInput?.id,
+          },
+          {
+            OR: [
+              {
+                name: filterProductInput?.name,
+              },
+              {
+                amharicName: filterProductInput?.name,
+              },
+            ],
+          },
+          {
+            serialNumber: filterProductInput?.serialNumber,
+          },
+          {
+            description: filterProductInput?.description,
+          },
+          {
+            category: filterProductInput?.category,
+          },
+          {
+            createdAt: filterProductInput?.createdAt,
+          },
+        ],
+      };
+
       const products = await this.productsService.findProductsByTopProfit({
+        where,
         orderBy: {
           [orderBy?.field]: orderBy?.direction,
         },
@@ -159,7 +170,38 @@ export class ProductsResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
     try {
+      const where: Prisma.ProductWhereInput = {
+        AND: [
+          {
+            id: filterProductInput?.id,
+          },
+          {
+            OR: [
+              {
+                name: filterProductInput?.name,
+              },
+              {
+                amharicName: filterProductInput?.name,
+              },
+            ],
+          },
+          {
+            serialNumber: filterProductInput?.serialNumber,
+          },
+          {
+            description: filterProductInput?.description,
+          },
+          {
+            category: filterProductInput?.category,
+          },
+          {
+            createdAt: filterProductInput?.createdAt,
+          },
+        ],
+      };
+
       const products = await this.productsService.findProductsByTopSale({
+        where,
         orderBy: {
           [orderBy?.field]: orderBy?.direction,
         },
@@ -213,15 +255,51 @@ export class ProductsResolver {
 
   // total
   @Query(() => Number, { name: 'totalProducts' })
-  async totalProducts(): Promise<number> {
-    return this.productsService.count({});
-  }
-
-  @Query(() => Number, { name: 'totalProductsByCategory' })
-  async totalProductsByCategory(
-    @Args('categoryName') category: string,
+  async totalProducts(
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
   ): Promise<number> {
-    return this.productsService.countByCategory(category);
+    const where: Prisma.ProductWhereInput = {
+      AND: [
+        {
+          id: filterProductInput?.id,
+        },
+        {
+          OR: [
+            {
+              name: filterProductInput?.name,
+            },
+            {
+              amharicName: filterProductInput?.name,
+            },
+          ],
+        },
+        {
+          serialNumber: filterProductInput?.serialNumber,
+        },
+        {
+          description: filterProductInput?.description,
+        },
+        {
+          category: filterProductInput?.category,
+        },
+        {
+          createdAt: filterProductInput?.createdAt,
+        },
+        {
+          retailShopStock: {
+            some: {
+              retailShop: filterProductInput?.retailShop,
+            },
+          },
+        },
+      ],
+    };
+
+    return this.productsService.count(where);
   }
 
   @Mutation(() => Product, { name: 'createProduct' })

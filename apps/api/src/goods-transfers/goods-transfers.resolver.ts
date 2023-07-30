@@ -4,7 +4,7 @@ import { GoodsTransfer } from './models/goods-transfer.model';
 import { CreateGoodsTransferInput } from './dto/create-goods-transfer.input';
 import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { Prisma, TransferType } from '@prisma/client';
-import { HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { FilterCategoryInput } from 'src/categories/dto/filter-category.input';
 import { FilterGoodsTransferInput } from './dto/filter-goods-transfer.input';
@@ -79,32 +79,122 @@ export class GoodsTransfersResolver {
     return this.goodsTransfersService.findOne(id);
   }
 
-  @Query(() => [GoodsTransfer], {
-    name: 'findOutgoingGoodsTransferByWarehouseId',
+  @Query(() => PaginationGoodsTransfer, {
+    name: 'findGoodsTransferByWarehouseId',
   })
-  async findOutgoingGoodsTransferByWarehouseId(
+  async findAllGoodsTransferByWarehouseId(
     @Args('warehouseId') warehouseId: string,
+    @Args('orderBy', {
+      type: () => GoodsTransferOrder,
+      nullable: true,
+    })
+    orderBy?: GoodsTransferOrder,
+
+    // add pagination
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
   ) {
-    const goodsTransfers = await this.goodsTransfersService.findByWarehouseId(
-      warehouseId,
-    );
+    const where: Prisma.GoodsTransferWhereInput = {
+      OR: [
+        {
+          sourceWarehouseId: warehouseId,
+        },
+        {
+          destinationWarehouseId: warehouseId,
+        },
+      ],
+    };
+
+    const count = await this.goodsTransfersService.count(where);
+
+    const goodsTransfers = await this.goodsTransfersService.findByWarehouseId({
+      where,
+      orderBy: {
+        [orderBy?.field]: orderBy?.direction,
+      },
+      skip: paginationInput?.skip,
+      take: paginationInput?.take,
+    });
 
     return {
       items: goodsTransfers,
       meta: {
-        count: goodsTransfers.length,
-        limit: goodsTransfers.length,
+        count,
+        limit: paginationInput?.take,
+        page: paginationInput?.skip,
       },
     };
   }
 
-  @Query(() => [GoodsTransfer], {
+  @Query(() => PaginationGoodsTransfer, {
+    name: 'findOutgoingGoodsTransferByWarehouseId',
+  })
+  async findOutgoingGoodsTransferByWarehouseId(
+    @Args('warehouseId') warehouseId: string,
+    @Args('orderBy', { type: () => GoodsTransferOrder, nullable: true })
+    orderBy?: GoodsTransferOrder,
+
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const where: Prisma.GoodsTransferWhereInput = {
+      sourceWarehouseId: warehouseId,
+    };
+
+    const count = await this.goodsTransfersService.count(where);
+
+    const goodsTransfers = await this.goodsTransfersService.findByWarehouseId({
+      where,
+      orderBy: {
+        [orderBy?.field]: orderBy?.direction,
+      },
+      skip: paginationInput?.skip,
+      take: paginationInput?.take,
+    });
+
+    return {
+      items: goodsTransfers,
+      meta: {
+        count,
+        limit: paginationInput?.take,
+        page: paginationInput?.skip,
+      },
+    };
+  }
+
+  @Query(() => PaginationGoodsTransfer, {
     name: 'findIncomingGoodsTransferByWarehouseId',
   })
   async findIncomingGoodsTransferByWarehouseId(
     @Args('warehouseId') warehouseId: string,
+    @Args('orderBy', { type: () => GoodsTransferOrder, nullable: true })
+    orderBy?: GoodsTransferOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
   ) {
-    return this.goodsTransfersService.findIncomingByWarehouseId(warehouseId);
+    const where: Prisma.GoodsTransferWhereInput = {
+      destinationWarehouseId: warehouseId,
+    };
+
+    const count = await this.goodsTransfersService.count(where);
+
+    const goodsTransfers = this.goodsTransfersService.findByWarehouseId({
+      where,
+      orderBy: {
+        [orderBy?.field]: orderBy?.direction,
+      },
+      skip: paginationInput?.skip,
+      take: paginationInput?.take,
+    });
+
+    return {
+      items: goodsTransfers,
+      meta: {
+        count,
+        limit: paginationInput?.take,
+        page: paginationInput?.skip,
+      },
+    };
   }
 
   @Mutation(() => GoodsTransfer, { name: 'createGoodsTransfer' })

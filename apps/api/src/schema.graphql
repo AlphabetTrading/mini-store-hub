@@ -208,6 +208,7 @@ input FilterCategoryInput {
   description: StringFilter
   id: String
   name: StringFilter
+  subcategories: FilterCategoryInput
 }
 
 input FilterNotificationInput {
@@ -225,11 +226,12 @@ input FilterPriceHistoryInput {
 }
 
 input FilterProductInput {
-  category: StringFilter
+  category: FilterCategoryInput
   createdAt: DateTimeFilter
   description: StringFilter
   id: String
   name: StringFilter
+  retailShop: FilterRetailShopInput
   serialNumber: StringFilter
 }
 
@@ -251,6 +253,7 @@ input FilterSaleTransactionInput {
   createdAt: DateTimeFilter
   id: String
   product: FilterProductInput
+  retailShop: FilterRetailShopInput
 }
 
 input FilterUserInput {
@@ -488,6 +491,11 @@ type PaginationRetailShops {
   meta: PaginationInfo
 }
 
+type PaginationSaleTransactions {
+  items: [SaleTransaction!]!
+  meta: PaginationInfo
+}
+
 type PaginationUser {
   items: [User!]!
   meta: PaginationInfo
@@ -577,8 +585,9 @@ type Query {
   allUsersNotifications(filterNotificationInput: FilterNotificationInput, orderBy: NotificationOrder, paginationInput: PaginationInput): PaginationNotifications!
   categories(filterCategoryInput: FilterCategoryInput, orderBy: CategoryOrder, paginationInput: PaginationInput): PaginationCategories!
   category(id: String!): Category!
-  findIncomingGoodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
-  findOutgoingGoodsTransferByWarehouseId(warehouseId: String!): [GoodsTransfer!]!
+  findGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
+  findIncomingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
+  findOutgoingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   findProductsByTopSelling(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   getWarehouseByManagerId: Warehouse!
@@ -607,17 +616,17 @@ type Query {
   retailShops(filterRetailShopInput: FilterRetailShopInput, orderBy: RetailShopOrder, paginationInput: PaginationInput): PaginationRetailShops!
   retailShopsByAddress(address: String!): [RetailShop!]!
   saleTransaction(id: String!): SaleTransaction!
-  saleTransactions(filterSaleTransactionInput: FilterSaleTransactionInput, orderBy: SaleTransactionOrder, paginationInput: PaginationInput): [SaleTransaction!]!
-  saleTransactionsByRetailShop(retailShopId: String!): [SaleTransaction!]!
+  saleTransactions(filterSaleTransactionInput: FilterSaleTransactionInput, orderBy: SaleTransactionOrder, paginationInput: PaginationInput): PaginationSaleTransactions!
+  saleTransactionsByRetailShop(orderBy: SaleTransactionOrder, paginationInput: PaginationInput, retailShopId: String!): PaginationSaleTransactions!
   searchProduct(search: String!): [Product!]!
   searchProducts(search: String!): [Product!]!
   searchProductsByCategory(category: String!, search: String!): [Product!]!
-  totalProducts: Int!
-  totalProductsByCategory(categoryName: String!): Int!
+  totalProducts(filterProductInput: FilterProductInput): Int!
   totalProfit: Float!
   totalProfitByDate(endDate: String!, startDate: String!): Float!
   totalProfitByDateAndProduct(endDate: String!, productId: String!, startDate: String!): Float!
   totalProfitByDateAndRetailShop(endDate: String!, retailShopId: String!, startDate: String!): Float!
+  totalProfitByProduct(productId: String!): Float!
   totalProfitByRetailShop(retailShopId: String!): Float!
   totalSales: Float!
   totalSalesByDate(endDate: String!, startDate: String!): Float!

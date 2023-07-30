@@ -7,8 +7,16 @@ import {
 import { UpdateRetailShopStockInput } from './dto/update-retail-shop.input';
 import { Prisma, RetailShopStock } from '@prisma/client';
 
-const retailShopStockInclude = {
-  product: true,
+const retailShopStockInclude: Prisma.RetailShopStockInclude = {
+  product: {
+    include: {
+      category: true,
+      activePrice: true,
+      goods: true,
+      priceHistory: true,
+      saleTransaction: true,
+    },
+  },
   warehouse: true,
   retailShop: true,
 };

@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { GoodsTransfer } from './models/goods-transfer.model';
 import { Prisma } from '@prisma/client';
 import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
+import { PaginationInput } from 'src/common/pagination/pagination.input';
 
 const goodsTransferInclude = {
   destinationWarehouse: true,
@@ -54,16 +55,21 @@ export class GoodsTransfersService {
     return this.prisma.goodsTransfer.count({ where });
   }
 
-  async findByWarehouseId(warehouseId: string) {
+  async findByWarehouseId({
+    where,
+    orderBy,
+    skip,
+    take,
+  }: {
+    where: Prisma.GoodsTransferWhereInput;
+    orderBy?: Prisma.GoodsTransferOrderByWithRelationInput;
+    skip?: number;
+    take?: number;
+  }) {
     return this.prisma.goodsTransfer.findMany({
-      where: { sourceWarehouseId: warehouseId },
-      include: goodsTransferInclude,
-    });
-  }
-
-  async findIncomingByWarehouseId(warehouseId: string) {
-    return this.prisma.goodsTransfer.findMany({
-      where: { destinationWarehouseId: warehouseId },
+      where,
+      skip,
+      take,
       include: goodsTransferInclude,
     });
   }

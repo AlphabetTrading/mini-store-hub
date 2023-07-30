@@ -50,8 +50,6 @@ export class WarehouseStockResolver {
         },
       ],
     };
-    console.log(where.product);
-
     try {
       const warehouseStocks = await this.warehouseStockService.findAll({
         where,

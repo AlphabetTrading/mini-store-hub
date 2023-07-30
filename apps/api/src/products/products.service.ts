@@ -105,7 +105,6 @@ export class ProductsService {
 
       return totalProfitB - totalProfitA;
     });
-    console.log(products, 'products');
     if (skip && take) {
       return products.splice(skip, take);
     }
@@ -114,12 +113,6 @@ export class ProductsService {
 
   async count(where?: Prisma.ProductWhereInput): Promise<number> {
     return this.prisma.product.count({ where });
-  }
-
-  async countByCategory(category: string) {
-    return this.prisma.product.count({
-      where: { category: { name: category } },
-    });
   }
 
   async findOne(id: string) {
