@@ -27,7 +27,6 @@ import { Scrollbar } from "@/components/scrollbar";
 import SearchIcon from "@mui/icons-material/Search";
 import { AddIncomingItemModal } from "@/components/modals/incoming-items-modal";
 import { useMutation, useQuery } from "@apollo/client";
-import { ITEMS, ItemsData, WAREHOUSE_ITEMS } from "@/graphql/items/queries";
 import {
   REGISTER_INCOMING_STOCK,
   RegisterIncomingStockData,
@@ -35,10 +34,11 @@ import {
 } from "@/graphql/warehouse/mutations";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const { data: sessionData } = useSession();
   const [modalOpen, setModalOpen] = useState(false);
   const [items, setItems] = useState<any>([]);
@@ -79,7 +79,7 @@ const page = (props: Props) => {
       onError(error, clientOptions) {
         console.log(error);
       },
-      refetchQueries: [WAREHOUSE_ITEMS],
+      refetchQueries: [WAREHOUSE_STOCK],
     });
   };
 
@@ -147,8 +147,8 @@ const page = (props: Props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {items.map((item: any) => (
-                      <TableRow>
+                    {items.map((item: any,idx:number) => (
+                      <TableRow key={idx}>
                         <TableCell>{item.selectedItem.name}</TableCell>
                         <TableCell>{item.selectedItem.serialNumber}</TableCell>
                         <TableCell>{item.selectedItem.category.name}</TableCell>
@@ -174,4 +174,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

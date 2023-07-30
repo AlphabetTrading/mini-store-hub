@@ -48,7 +48,7 @@ const initialValues: Values = {
   category: "",
 };
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
 
   const formik = useFormik({
@@ -206,4 +206,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

@@ -1,10 +1,8 @@
 import {
-  ItemsData,
-  ITEMS,
-  WAREHOUSE_ITEMS,
-  WarehouseItemsData,
-  WarehouseItemsVars,
-} from "@/graphql/items/queries";
+  WAREHOUSE_STOCK,
+  WarehouseStockData,
+  WarehouseStockVars,
+} from "@/graphql/products/queries";
 import { useQuery } from "@apollo/client";
 import {
   Drawer,
@@ -23,8 +21,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import React from "react";
-import * as Yup from "yup";
-import { Item, WarehouseStock } from "../../../types/item";
+import { Product, WarehouseStock } from "../../../types/product";
 
 type Props = {
   open: boolean;
@@ -60,7 +57,7 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
     data: itemsData,
     loading: itemsLoading,
     error: itemsError,
-  } = useQuery<WarehouseItemsData, WarehouseItemsVars>(WAREHOUSE_ITEMS, {
+  } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
     variables: {
       warehouseId: "clki1bbrx000srlwgvx7jzw1i",
     },

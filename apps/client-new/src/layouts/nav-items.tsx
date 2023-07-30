@@ -24,8 +24,8 @@ export const NAV_DATA: TopNavProps[] = [
     ),
   },
   {
-    title: "Items",
-    path: "/items",
+    title: "Stock",
+    path: "/stock",
     icon: (
       <SvgIcon fontSize="small">
         <AddHomeOutlinedIcon />

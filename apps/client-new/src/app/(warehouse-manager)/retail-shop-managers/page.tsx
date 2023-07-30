@@ -23,9 +23,8 @@ import {
 
 type Props = {};
 
-const page = (props: Props) => {
-  const { data, loading, error } =
-    useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS);
+const Page = (props: Props) => {
+  const { data, loading, error } = useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS)
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -71,4 +70,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

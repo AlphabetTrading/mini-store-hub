@@ -21,12 +21,10 @@ import {
   RETAIL_SHOP_MANAGERS,
   RetailShopManagersData,
 } from "@/graphql/retail-shop-managers/queries";
-import { useMutation, useQuery } from "@apollo/client";
-import RetailShopManagersList from "@/components/transfer-items/retail-shops-list";
-import { ITEMS, ItemsData, WAREHOUSE_ITEMS } from "@/graphql/items/queries";
+import { useMutation,  } from "@apollo/client";
+import {  WAREHOUSE_STOCK } from "@/graphql/products/queries";
 import TransferItemsDrawer from "@/components/modals/transfer-items-drawer";
-import { Item, WarehouseStock } from "../../../../types/item";
-import { RETAIL_SHOPS, RetailShopsData } from "@/graphql/retail-shops/queries";
+import { Product, WarehouseStock } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
 import {
   TRANSFER_GOODS,
@@ -41,7 +39,7 @@ export interface SelectedWarehouseItem {
   selectedQuantity: number;
 }
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const [transferGoodsToRetailshop, { data, error, loading }] = useMutation<
     TransferGoodsData,
     TransferGoodsVars
@@ -66,7 +64,7 @@ const page = (props: Props) => {
           transferType: "WarehouseToRetailShop",
         },
       },
-      refetchQueries: [WAREHOUSE_ITEMS],
+      refetchQueries: [WAREHOUSE_STOCK],
       onCompleted: (data) => {
         setSelectedItems([]);
         setSelectedRetailShop(null);
@@ -122,7 +120,7 @@ const page = (props: Props) => {
                         Add
                       </Button>
                     }
-                    title="Items Summary"
+                    title="Products Summary"
                   />
                   <ItemsSummaryTable
                     handleRemoveItem={handleRemoveItem}
@@ -161,4 +159,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

@@ -21,7 +21,7 @@ const HorizontalLayoutRoot = styled("div")({
   maxWidth: "100%",
 });
 
-const layout = ({ children }: Props) => {
+const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
 
@@ -42,4 +42,4 @@ const layout = ({ children }: Props) => {
   );
 };
 
-export default layout;
+export default Layout;

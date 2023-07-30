@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-import { WarehouseStock } from "../../../types/item";
+import { WarehouseStock } from "../../../types/product";
 import ItemsSummaryRow from "./items-summary-row";
 import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
 
@@ -42,6 +42,7 @@ const ItemsSummaryTable = ({
       <TableBody>
         {selectedItems.map((item, idx) => (
           <ItemsSummaryRow
+            key={idx}
             selectedWarehouseItem={item}
             handleRemoveItem={handleRemoveItem}
             setSelectedItems={setSelectedItems}

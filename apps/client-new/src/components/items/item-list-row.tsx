@@ -19,7 +19,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import NextLink from "next/link";
-import { WarehouseStock } from "../../../types/item";
+import { WarehouseStock } from "../../../types/product";
 
 type Props = {
   warehouseStock: WarehouseStock;
