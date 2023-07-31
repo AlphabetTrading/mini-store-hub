@@ -3,12 +3,12 @@
 import { Stack } from "@mui/material";
 import React from "react";
 import MobileNavItem from "./mobile-nav-item";
-import { NAV_DATA } from "../nav-items";
 
-type Props = {};
+type Props = {
+  navigationItems:any
+};
 
-const MobileNavSection = (props: Props) => {
-  const items = NAV_DATA;
+const MobileNavSection = ({navigationItems}: Props) => {
   return (
     <Stack
       component="ul"
@@ -19,7 +19,7 @@ const MobileNavSection = (props: Props) => {
         p: 0,
       }}
     >
-      {items.map((item: any) => {
+      {navigationItems.map((item: any) => {
         return (
           <MobileNavItem
             active={false}

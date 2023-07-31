@@ -1,13 +1,14 @@
 import { Stack } from "@mui/material";
 import TopNavItem, { TopNavProps } from "./top-nav-item";
-import { NAV_DATA } from "../nav-items";
 import { usePathname } from "next/navigation";
+import { NavigationItem, useNavigationItems } from "../config";
 
-type Props = {};
+type Props = {
+  navigationItems: NavigationItem[];
+};
 
-const TopNavSection = (props: Props) => {
+const TopNavSection = ({navigationItems}: Props) => {
   const pathname = usePathname();
-  const items = NAV_DATA;
   return (
     <Stack
       component="ul"
@@ -15,7 +16,7 @@ const TopNavSection = (props: Props) => {
       spacing={1}
       sx={{ listStyle: "none", m: 0, p: 0 }}
     >
-      {items.map((item: TopNavProps) => (
+      {navigationItems.map((item: TopNavProps) => (
         <TopNavItem
           active={pathname.includes(item.path)}
           disabled={item.disabled}

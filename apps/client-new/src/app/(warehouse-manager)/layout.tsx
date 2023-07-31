@@ -1,10 +1,11 @@
 "use client";
 
 import { TopNav } from "@/layouts/horizontal-layout/top-nav";
-import { useMobileNav } from "@/layouts/horizontal-layout/use-mobile-nav";
+import { useMobileNav } from "@/layouts/use-mobile-nav";
 import { MobileNav } from "@/layouts/mobile-nav";
 import { Theme, styled, useMediaQuery } from "@mui/material";
 import React from "react";
+import { useNavigationItems } from "@/layouts/config";
 
 type Props = { children: React.ReactNode };
 const HorizontalLayoutContainer = styled("div")({
@@ -23,16 +24,17 @@ const HorizontalLayoutRoot = styled("div")({
 const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
-
+  const navigationData = useNavigationItems();
   return (
     <>
       <TopNav
         // color={navColor}
         onMobileNav={mobileNav.handleOpen}
+        navigationItems={navigationData.warehouseManager}
         // sections={sections}
       />
       {!lgUp && (
-        <MobileNav onClose={mobileNav.handleClose} open={mobileNav.open} />
+        <MobileNav   navigationItems={navigationData.warehouseManager} onClose={mobileNav.handleClose} open={mobileNav.open} />
       )}
       <HorizontalLayoutRoot>
         <HorizontalLayoutContainer>{children}</HorizontalLayoutContainer>

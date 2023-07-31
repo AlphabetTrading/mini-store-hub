@@ -2,43 +2,49 @@
 
 import AdminGuard from "@/components/AdminGuard";
 import { TopNav } from "@/layouts/horizontal-layout/top-nav";
-import { useMobileNav } from "@/layouts/horizontal-layout/use-mobile-nav";
+import { useMobileNav } from "@/layouts/use-mobile-nav";
 import { MobileNav } from "@/layouts/mobile-nav";
 import { Theme, styled, useMediaQuery } from "@mui/material";
 import React from "react";
-
+import SideNav from "@/layouts/vertical-layout/side-nav";
+import { useNavigationItems } from "@/layouts/config";
+const SIDE_NAV_WIDTH = 280;
 type Props = { children: React.ReactNode };
-const HorizontalLayoutContainer = styled("div")({
-  display: "flex",
-  flex: "1 1 auto",
-  width: "100%",
-  flexDirection: "column",
-});
+const VerticalLayoutRoot = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flex: '1 1 auto',
+  maxWidth: '100%',
+  [theme.breakpoints.up('lg')]: {
+    paddingLeft: SIDE_NAV_WIDTH
+  }
+}));
 
-const HorizontalLayoutRoot = styled("div")({
-  display: "flex",
-  flex: "1 1 auto",
-  maxWidth: "100%",
+const VerticalLayoutContainer = styled('div')({
+  display: 'flex',
+  flex: '1 1 auto',
+  flexDirection: 'column',
+  width: '100%'
 });
 
 const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
-
+  const navigationData = useNavigationItems();
   return (
-    <AdminGuard>
-      <TopNav
+    <>
+    <div>vgubhnj</div>
+      <SideNav
         // color={navColor}
-        onMobileNav={mobileNav.handleOpen}
         // sections={sections}
+        navigationItems={navigationData.admin}
       />
       {!lgUp && (
-        <MobileNav onClose={mobileNav.handleClose} open={mobileNav.open} />
+        <MobileNav navigationItems={navigationData.admin} onClose={mobileNav.handleClose} open={mobileNav.open} />
       )}
-      <HorizontalLayoutRoot>
-        <HorizontalLayoutContainer>{children}</HorizontalLayoutContainer>
-      </HorizontalLayoutRoot>
-    </AdminGuard>
+      <VerticalLayoutRoot>
+        <VerticalLayoutContainer>{children}</VerticalLayoutContainer>
+      </VerticalLayoutRoot>
+    </>
   );
 };
 

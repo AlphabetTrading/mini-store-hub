@@ -3,13 +3,15 @@ import { Box, Drawer, Stack, useTheme } from "@mui/material";
 import MobileNavItem from "./mobile-nav-item";
 import MobileNavSection from "./mobile-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
+import { NavigationItem } from "../config";
 
 const MOBILE_NAV_WIDTH = 280;
 type Props = {
   onClose: () => void;
   open: boolean;
+  navigationItems: NavigationItem[];
 };
-export const MobileNav = (props: Props) => {
+export const MobileNav = ({open,onClose,navigationItems}: Props) => {
   const theme = useTheme();
 
   return (
@@ -37,8 +39,8 @@ export const MobileNav = (props: Props) => {
         },
       }}
       variant="temporary"
-      onClose={props.onClose}
-      open={props.open}
+      onClose={onClose}
+      open={open}
     >
       {/* <Scrollbar
         sx={{
@@ -79,7 +81,7 @@ export const MobileNav = (props: Props) => {
             px: 2,
           }}
         >
-          <MobileNavSection />
+          <MobileNavSection navigationItems={navigationItems} />
         </Stack>
       </Stack>
       {/* </Scrollbar> */}
