@@ -1,0 +1,39 @@
+{
+    "project_info": {
+      "project_number": "44829028098",
+      "project_id": "mini-store-hub",
+      "storage_bucket": "mini-store-hub.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:44829028098:android:b78244544becbc09041c1b",
+          "android_client_info": {
+            "package_name": "com.kalmad99.mobile"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "44829028098-r5e7vj1cm09dfn95jo2jfcte8253sho5.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyAyhwEKKRp2iLbvNlYZ-TlLjM3ieKSKYqw"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "44829028098-r5e7vj1cm09dfn95jo2jfcte8253sho5.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 import Colors from "../../constants/Colors";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -42,7 +43,7 @@ const DATA: { id: string; name: string; imageSrc: string }[] = [
 
 const InsightsScreen = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
+    <BaseLayout>
       <ScrollView>
         <View style={styles.container}>
           <Text
@@ -134,7 +135,7 @@ const InsightsScreen = (props: Props) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 

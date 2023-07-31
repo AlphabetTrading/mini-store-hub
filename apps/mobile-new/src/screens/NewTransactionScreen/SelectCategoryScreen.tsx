@@ -8,8 +8,9 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { SearchBar } from "react-native-screens";
 import Colors from "../../constants/Colors";
+import { BaseLayout } from "../../components/BaseLayout";
+import SearchBar from "../../components/SearchBar";
 
 type Props = {};
 
@@ -71,9 +72,10 @@ const DATA = [
   },
 ];
 
-const selectCategory = ({ navigation }: any) => {
+const SelectCategory = ({ navigation }: any) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <BaseLayout style={{ padding: 10 }}>
+      <SearchBar />
       <View
         style={{
           backgroundColor: Colors.light.background,
@@ -88,7 +90,7 @@ const selectCategory = ({ navigation }: any) => {
                 backgroundColor: Colors.light.background,
                 width: "100%",
                 height: "100%",
-                flex: 1,
+                flex: 0.25,
                 alignItems: "center",
                 margin: 8,
                 gap: 4,
@@ -116,11 +118,11 @@ const selectCategory = ({ navigation }: any) => {
             );
           })} */}
       </View>
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 
-export default selectCategory;
+export default SelectCategory;
 
 const styles = StyleSheet.create({
   container: {

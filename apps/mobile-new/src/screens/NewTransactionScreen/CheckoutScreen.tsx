@@ -8,6 +8,7 @@ import {
 import React from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { Pressable } from "react-native";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -41,7 +42,7 @@ const CheckoutScreen = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F9FA" }}>
+    <BaseLayout>
       <View style={{ flex: 1 }}>
         {checkoutItems.length === 0 ? (
           <View
@@ -197,9 +198,9 @@ const CheckoutScreen = ({ navigation }: any) => {
           position: "absolute",
           bottom: 10,
           right: 10,
-          width: 50,
-          height: 50,
-          borderRadius: 25,
+          width: 60,
+          height: 60,
+          borderRadius: 30,
           backgroundColor: "#5684E0",
           justifyContent: "center",
           alignItems: "center",
@@ -208,9 +209,9 @@ const CheckoutScreen = ({ navigation }: any) => {
         }}
         onPress={() => navigation.navigate("SelectCategory")}
       >
-        <Entypo name="plus" style={{ padding: 20 }} size={36} color="white" />
+        <Entypo name="plus" style={{ padding: 5 }} size={36} color="white" />
       </TouchableOpacity>
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 

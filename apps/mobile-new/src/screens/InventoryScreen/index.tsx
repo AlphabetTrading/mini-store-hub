@@ -6,10 +6,14 @@ import {
   TouchableOpacity,
   View,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
+import { useQuery } from "@apollo/client";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -57,54 +61,84 @@ const DATA = [
 ];
 
 const InventoryScreen = ({ navigation }: any) => {
+  const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
-      <View style={styles.container}>
-        <Text
-          style={{
-            marginLeft: 8,
-            color: "#828282",
-            fontFamily: "InterBold",
-            textTransform: "uppercase",
-          }}
-        >
-          Categories
-        </Text>
+    <BaseLayout>
+      {loading ? (
         <View
-          style={{
-            backgroundColor: Colors.light.background,
-            width: "100%",
-          }}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <FlatList
-            data={DATA}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <Text
+            style={{
+              marginLeft: 8,
+              color: "#828282",
+              fontFamily: "InterBold",
+              textTransform: "uppercase",
+            }}
+          >
+            Categories
+          </Text>
+          <View
+            style={{
+              backgroundColor: Colors.light.background,
+              width: "100%",
+            }}
+          >
+            {data.categories.items.length > 0 ? (
+              <FlatList
+                data={data.categories.items}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: Colors.light.background,
+                      maxWidth: "100%",
+                      height: "100%",
+                      flex: 1 / 4,
+                      alignItems: "center",
+                      margin: 8,
+                      gap: 4,
+                    }}
+                    onPress={() => {
+                      navigation.navigate("CategoryDetail", {
+                        id: item.id,
+                        name: item.name,
+                      });
+                    }}
+                  >
+                    <View style={styles.categoryItem} key={index}>
+                      <Image
+                        style={styles.categoryImage}
+                        // source={item.imageSrc}
+                        source={require("../../../assets/icons/categories/egg.png")}
+                      />
+                    </View>
+                    <Text style={styles.categoryText}>{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.id}
+                numColumns={4}
+              />
+            ) : (
+              <View
                 style={{
-                  backgroundColor: Colors.light.background,
-                  width: "100%",
-                  height: "100%",
-                  flex: 1,
+                  marginVertical: 30,
+                  justifyContent: "center",
                   alignItems: "center",
-                  margin: 8,
-                  gap: 4,
-                }}
-                onPress={() => {
-                  navigation.navigate("CategoryDetail");
                 }}
               >
-                <View style={styles.categoryItem} key={index}>
-                  <Image style={styles.categoryImage} source={item.imageSrc} />
-                </View>
-                <Text style={styles.categoryText}>{item.name}</Text>
-              </TouchableOpacity>
+                <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+                  No Items Found
+                </Text>
+              </View>
             )}
-            keyExtractor={(item) => item.id}
-            numColumns={4}
-          />
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      )}
+    </BaseLayout>
   );
 };
 

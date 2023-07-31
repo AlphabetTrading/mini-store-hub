@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native";
 import { SearchBar } from "react-native-screens";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -71,7 +72,7 @@ const DATA = [
   },
 ];
 
-const selectItem = (props: Props) => {
+const SelectItem = (props: Props) => {
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
 
   const selectItem = (item: any) => {
@@ -83,7 +84,7 @@ const selectItem = (props: Props) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <BaseLayout>
       <View style={styles.container}>
         <View
           style={{
@@ -162,9 +163,9 @@ const selectItem = (props: Props) => {
             position: "absolute",
             bottom: 10,
             right: 10,
-            width: 50,
-            height: 50,
-            borderRadius: 25,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
             backgroundColor: "#5684E0",
             justifyContent: "center",
             alignItems: "center",
@@ -175,7 +176,7 @@ const selectItem = (props: Props) => {
         >
           <AntDesign
             name="check"
-            style={{ padding: 20 }}
+            style={{ padding: 5 }}
             size={36}
             color="white"
             onPress={() => {
@@ -187,11 +188,11 @@ const selectItem = (props: Props) => {
           />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 
-export default selectItem;
+export default SelectItem;
 
 const styles = StyleSheet.create({
   container: {

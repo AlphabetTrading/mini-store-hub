@@ -6,10 +6,13 @@ import {
   TouchableOpacity,
   View,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import { Link, Stack, router } from "expo-router";
 import Colors from "@/constants/Colors";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORIES } from "@/graphql/queries/categoryQueries";
 
 type Props = {};
 
@@ -57,6 +60,8 @@ const DATA = [
 ];
 
 const inventory = (props: Props) => {
+  const { data, error, loading, refetch } = useQuery(GET_CATEGORIES);
+  console.log(data, error, "Categories");
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
       <Stack.Screen
@@ -67,47 +72,61 @@ const inventory = (props: Props) => {
         }}
       />
       <View style={styles.container}>
-        <Text
-          style={{
-            marginLeft: 8,
-            color: "#828282",
-            fontFamily: "Inter-Bold",
-            textTransform: "uppercase",
-          }}
-        >
-          Categories
-        </Text>
-        <View
-          style={{
-            backgroundColor: Colors.light.background,
-            width: "100%",
-          }}
-        >
-          <FlatList
-            data={DATA}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.light.background,
-                  width: "100%",
-                  height: "100%",
-                  flex: 1,
-                  alignItems: "center",
-                  margin: 8,
-                  gap: 4,
-                }}
-                onPress={() => {}}
-              >
-                <View style={styles.categoryItem} key={index}>
-                  <Image style={styles.categoryImage} source={item.imageSrc} />
-                </View>
-                <Text style={styles.categoryText}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={4}
-          />
-        </View>
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <View>
+            <Text
+              style={{
+                marginLeft: 8,
+                color: "#828282",
+                fontFamily: "Inter-Bold",
+                textTransform: "uppercase",
+              }}
+            >
+              Categories
+            </Text>
+            <View
+              style={{
+                backgroundColor: Colors.light.background,
+                width: "100%",
+              }}
+            >
+              <FlatList
+                data={data.categories.items}
+                renderItem={({ item, index }) => (
+                  <Link
+                    style={{
+                      backgroundColor: Colors.light.background,
+                      width: "100%",
+                      height: "100%",
+                      flex: 1,
+                      alignItems: "center",
+                      margin: 8,
+                      gap: 4,
+                    }}
+                    href={{
+                      pathname: "/inventory/[id]",
+                      params: { id: item.id, name: item.name },
+                    }}
+                  >
+                    <View style={styles.categoryItem} key={index}>
+                      <Image
+                        style={styles.categoryImage}
+                        source={require("@/assets/icons/categories/milk.png")}
+                      />
+                    </View>
+                    <Text style={styles.categoryText}>{item.name}</Text>
+                  </Link>
+                )}
+                keyExtractor={(item) => item.id}
+                numColumns={4}
+              />
+            </View>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

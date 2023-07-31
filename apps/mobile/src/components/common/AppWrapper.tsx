@@ -14,7 +14,7 @@ export function AppWrapper(props: React.PropsWithChildren<{}>) {
   const colorScheme = useColorScheme();
   const { authState } = useAuth();
 
-  const client = apolloClient(authState);
+  const client = apolloClient(authState?.accessToken);
   return (
     <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
       <ApolloProvider client={client}>

@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "mobile-new",
+    "scheme": "mini-store-hub",
     "slug": "mobile-new",
     "version": "1.0.0",
     "orientation": "portrait",

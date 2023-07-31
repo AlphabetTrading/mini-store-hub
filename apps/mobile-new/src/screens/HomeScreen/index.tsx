@@ -9,6 +9,8 @@ import {
 import { Path, Svg } from "react-native-svg";
 import { useState } from "react";
 import Colors from "../../constants/Colors";
+import { useAuth } from "../../contexts/auth";
+import { BaseLayout } from "../../components/BaseLayout";
 
 export default function HomeScreen() {
   const filters = [
@@ -19,10 +21,8 @@ export default function HomeScreen() {
   const [selectedFilter, setSelectedFilter] = useState("daily");
 
   return (
-    <SafeAreaView
+    <BaseLayout
       style={{
-        flex: 1,
-        backgroundColor: Colors.light.background,
         position: "relative",
       }}
     >
@@ -245,7 +245,7 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </BaseLayout>
   );
 }
 

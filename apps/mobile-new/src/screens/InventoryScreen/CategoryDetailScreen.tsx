@@ -6,10 +6,16 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import Colors from "../../constants/Colors";
 import SearchBar from "../../components/SearchBar";
+import { useQuery } from "@apollo/client";
+import { GET_SINGLE_CATEGORY } from "../../graphql/queries/categoryQueries";
+import { GET_RETAIL_SHOP_PRODUCTS } from "../../graphql/queries/retailShopQuery";
+import { useAuth } from "../../contexts/auth";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -71,76 +77,123 @@ const DATA = [
   },
 ];
 
-const CategoryDetailScreen = ({ navigation }: any) => {
+const CategoryDetailScreen = ({ navigation, route }: any) => {
+  const { id, name } = route.params;
+  const { authState } = useAuth();
+  const { loading, data, error, refetch } = useQuery(GET_RETAIL_SHOP_PRODUCTS, {
+    variables: {
+      filterRetailShopStockInput: {
+        product: {
+          category: {
+            id: id,
+          },
+        },
+        retailShopId: authState?.user.retailShop[0].id,
+      },
+    },
+  });
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+    <BaseLayout>
+      {loading ? (
         <View
-          style={{
-            backgroundColor: Colors.light.background,
-            width: "100%",
-          }}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <SearchBar />
-          <FlatList
-            data={DATA}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.light.background,
-                  marginVertical: 4,
-                }}
-                onPress={() => navigation.navigate("ItemDetail")}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "#FFF",
-                    width: "100%",
-                    padding: 10,
-                    paddingVertical: 15,
-                    alignItems: "center",
-                    gap: 16,
-                  }}
-                >
-                  <View
-                    style={{
-                      borderRadius: 100,
-                      backgroundColor: "#F0F0F0",
-                      width: 60,
-                      height: 60,
-                    }}
-                  ></View>
-                  {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
-                      Abu Walad
-                    </Text>
-                    <Text
-                      style={{ fontFamily: "InterRegular", color: "#80848A" }}
-                    >
-                      Quantity: 199
-                    </Text>
-                  </View>
-                  <Text
-                    style={{
-                      width: 80,
-                      fontSize: 18,
-                      fontFamily: "InterMedium",
-                      alignSelf: "flex-end",
-                      color: "#626262",
-                    }}
-                  >
-                    ETB 35
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-          />
+          <ActivityIndicator size="large" />
         </View>
-      </View>
-    </SafeAreaView>
+      ) : (
+        <View style={styles.container}>
+          {data.retailShopStockByRetailShopId.items.length > 0 ? (
+            <View
+              style={{
+                backgroundColor: Colors.light.background,
+                width: "100%",
+              }}
+            >
+              <SearchBar />
+              <FlatList
+                data={data.retailShopStockByRetailShopId.items}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: Colors.light.background,
+                      marginVertical: 4,
+                    }}
+                    onPress={() =>
+                      navigation.navigate("ItemDetail", {
+                        id: item.product.id,
+                        name: item.product.name,
+                      })
+                    }
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "#FFF",
+                        width: "100%",
+                        padding: 10,
+                        paddingVertical: 15,
+                        alignItems: "center",
+                        gap: 16,
+                      }}
+                    >
+                      <View
+                        style={{
+                          borderRadius: 100,
+                          backgroundColor: "#F0F0F0",
+                          width: 60,
+                          height: 60,
+                        }}
+                      ></View>
+                      {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
+                      <View style={{ flex: 1, gap: 5 }}>
+                        <Text
+                          style={{ fontSize: 18, fontFamily: "InterMedium" }}
+                        >
+                          {item.product.name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "InterRegular",
+                            color: "#80848A",
+                          }}
+                        >
+                          Quantity: {item.quantity}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          width: 80,
+                          fontSize: 18,
+                          fontFamily: "InterMedium",
+                          alignSelf: "flex-end",
+                          color: "#626262",
+                        }}
+                      >
+                        ETB 35
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          ) : (
+            <View
+              style={{
+                marginVertical: 30,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+                No Items Found
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
+    </BaseLayout>
   );
 };
 

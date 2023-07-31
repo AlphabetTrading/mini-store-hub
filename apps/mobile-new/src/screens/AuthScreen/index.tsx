@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -10,6 +11,7 @@ import React, { useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../../contexts/auth";
 
 type Props = {};
 
@@ -23,8 +25,8 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().required("Required"),
 });
 
-const LoginScreen = (props: Props) => {
-  //   const { user, setUser } = useAppContext();
+const LoginScreen = ({ navigation }: any) => {
+  const { signIn } = useAuth();
   const [viewPassword, setViewPassword] = useState(false);
 
   const INITIAL_VALUES: FormValues = {
@@ -47,11 +49,23 @@ const LoginScreen = (props: Props) => {
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={loginSchema}
-        onSubmit={(values) => {
-          console.log(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          // create login mutation
+          // if successfull, set user
+          // if not, show error message
+          // if error, show error message
+          setSubmitting(true);
+          try {
+            const res = await signIn(values.userName, values.password);
+            console.log(res, "login");
+            navigation.replace("Home");
+          } catch (e) {
+            console.log(e);
+          }
+          setSubmitting(false);
         }}
       >
-        {({ handleChange, handleSubmit, values, errors }) => (
+        {({ handleChange, handleSubmit, isSubmitting, values, errors }) => (
           <View>
             <View style={{ marginTop: 30 }}>
               <Text style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}>
@@ -120,7 +134,9 @@ const LoginScreen = (props: Props) => {
               style={styles.loginButton}
               onPress={() => handleSubmit()}
             >
-              <Text style={styles.loginButtonText}>Sign in</Text>
+              <Text style={styles.loginButtonText}>
+                {isSubmitting ? <ActivityIndicator /> : "Sign In"}
+              </Text>
             </TouchableOpacity>
           </View>
         )}

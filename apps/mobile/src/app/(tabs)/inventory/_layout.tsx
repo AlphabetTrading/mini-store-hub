@@ -6,7 +6,10 @@ type Props = {};
 const _layout = (props: Props) => {
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ title: "Inventory" }} />
+      <Stack.Screen
+        name="index"
+        options={{ title: "Inventory", headerTintColor: "#FFF" }}
+      />
       <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
   );
