@@ -15,6 +15,8 @@ const userIncludeObject: Prisma.UserInclude = {
   userProfile: { include: { address: true } },
   warehouse: true,
   retailShop: true,
+  notifications: true,
+  notificationTokens: true,
 };
 
 @Injectable()

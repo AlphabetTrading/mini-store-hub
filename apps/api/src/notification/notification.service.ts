@@ -6,8 +6,9 @@ import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto'
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
 import { NotificationEvent } from './events/notification.event';
-import { Prisma } from '@prisma/client';
+import { Prisma, RecipientType, UserRole } from '@prisma/client';
 import { Notification } from './models/notification.model';
+import { CreateNotificationInput } from './dto/createNotification.dto';
 
 const firebase_private_key_b64 = Buffer.from(
   process.env.FIREBASE_PRIVATE_KEY_BASE64,
@@ -29,6 +30,114 @@ firebase.initializeApp({
 export class NotificationService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getAllNotifications(): Promise<Notification[]> {
+    const notifications = await this.prisma.notification.findMany();
+    return notifications;
+  }
+
+  async getAllNotificationsByUserId(userId: string): Promise<Notification[]> {
+    // identify recipient type from the user
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    let recipientType: RecipientType[] = ['USER'];
+    switch (user.role) {
+      case UserRole.ADMIN:
+        recipientType = ['ALL'];
+        break;
+      case UserRole.RETAIL_SHOP_MANAGER:
+        recipientType = ['RETAIL_SHOP', 'ALL'];
+        break;
+      case UserRole.WAREHOUSE_MANAGER:
+        recipientType = ['WAREHOUSE', 'ALL'];
+        break;
+      default:
+        break;
+    }
+
+    const readNotificationIds = await this.prisma.notificationRead.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        notificationId: true,
+      },
+    });
+
+    const notificationIds = readNotificationIds.map(
+      (readNotification) => readNotification.notificationId,
+    );
+
+    const readNotifications = await this.prisma.notification.findMany({
+      where: {
+        OR: [
+          {
+            recipientId: userId,
+            id: {
+              in: notificationIds,
+            },
+            recipientType: {
+              in: recipientType,
+            },
+          },
+        ],
+      },
+    });
+
+    return readNotifications;
+  }
+
+  async getAllReadNotifications(userId: string): Promise<Notification[]> {
+    const readNotificationIds = await this.prisma.notificationRead.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        notificationId: true,
+      },
+    });
+
+    const notificationIds = readNotificationIds.map(
+      (readNotification) => readNotification.notificationId,
+    );
+
+    const readNotifications = await this.prisma.notification.findMany({
+      where: {
+        id: {
+          in: notificationIds,
+        },
+      },
+    });
+
+    return readNotifications;
+  }
+
+  async getAllUnreadNotifications(userId: string): Promise<Notification[]> {
+    const readNotificationIds = await this.prisma.notificationRead.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        notificationId: true,
+      },
+    });
+
+    const notificationIds = readNotificationIds.map(
+      (readNotification) => readNotification.notificationId,
+    );
+
+    const unreadNotifications = await this.prisma.notification.findMany({
+      where: {
+        NOT: {
+          id: {
+            in: notificationIds,
+          },
+        },
+      },
+    });
+
+    return unreadNotifications;
+  }
+
   async sendBulkPush(payload: NotificationEvent) {
     try {
       // send bulk push notification
@@ -38,16 +147,16 @@ export class NotificationService {
       const users = await this.prisma.user.findMany({
         where: {
           id: {
-            in: payload.userIds,
+            in: payload.tokens,
           },
         },
         include: {
-          notificationToken: true,
+          notificationTokens: true,
         },
       });
 
       const notification_tokens = users.map(
-        (user) => user.notificationToken.notifications_token,
+        (user) => user.notificationTokens[0].token,
       );
 
       // send notification
@@ -69,7 +178,7 @@ export class NotificationService {
       users.forEach(async (user) => {
         await this.prisma.notification.create({
           data: {
-            createdBy: {
+            user: {
               connect: {
                 id: user.id,
               },
@@ -77,6 +186,7 @@ export class NotificationService {
             body: notification_body,
             title: notification_title,
             status: true,
+            isRead: false,
           },
         });
       });
@@ -109,7 +219,7 @@ export class NotificationService {
       skip,
       take,
       include: {
-        createdBy: true,
+        user: true,
       },
     });
   }
@@ -127,13 +237,13 @@ export class NotificationService {
   async getNotificationsByUserIdAndStatus(user_id: string, status: boolean) {
     const notifications = await this.prisma.notification.findMany({
       where: {
-        createdBy: {
+        user: {
           id: user_id,
         },
-        status,
+        isRead: status,
       },
       include: {
-        createdBy: true,
+        user: true,
       },
     });
     return notifications;
@@ -146,10 +256,11 @@ export class NotificationService {
     const notification_token = this.prisma.notificationToken.upsert({
       where: {
         userId: user.id,
+        token: notification_token_dto.token,
       },
       create: {
         device_type: notification_token_dto.device_type,
-        notifications_token: notification_token_dto.notification_token,
+        token: notification_token_dto.token,
         status: true,
         user: {
           connect: {
@@ -164,7 +275,7 @@ export class NotificationService {
           },
         },
         device_type: notification_token_dto.device_type,
-        notifications_token: notification_token_dto.notification_token,
+        token: notification_token_dto.token,
         status: true,
       },
     });
@@ -180,6 +291,7 @@ export class NotificationService {
       await this.prisma.notificationToken.update({
         where: {
           userId: userId,
+          token: update_dto.notification_token,
         },
         data: {
           ...update_dto,
@@ -197,20 +309,21 @@ export class NotificationService {
   }
 
   async sendPush(createNoficationInput: sendPushNotificationInput) {
-    const { title, body, userId } = createNoficationInput;
+    const { title, body, recipientType, recipientId } = createNoficationInput;
     try {
       const notification = await this.prisma.notificationToken.findFirst({
-        where: { user: { id: userId }, status: true },
+        where: { user: { id: recipientId }, status: true },
       });
       if (notification) {
         await this.prisma.notification.create({
           data: {
             title,
             body,
-            status: true,
-            createdBy: {
+            recipientType,
+            isRead: false,
+            user: {
               connect: {
-                id: userId,
+                id: recipientId,
               },
             },
           },
@@ -219,7 +332,7 @@ export class NotificationService {
           .messaging()
           .send({
             notification: { title, body },
-            token: notification.notifications_token,
+            token: notification.token,
             android: { priority: 'high' },
           })
           .catch((error: any) => {
@@ -229,5 +342,98 @@ export class NotificationService {
     } catch (error) {
       return error;
     }
+  }
+
+  async markNotificationAsRead(
+    notificationId: string,
+    userId: string,
+  ): Promise<Notification> {
+    const notification = await this.prisma.notification.update({
+      where: {
+        id: notificationId,
+      },
+      data: {
+        isRead: true,
+      },
+    });
+
+    await this.prisma.notificationRead.create({
+      data: {
+        notificationId,
+        userId,
+      },
+    });
+
+    return notification;
+  }
+
+  async sendBroadcastNotification({
+    title,
+    body,
+    recipientType,
+  }: sendPushNotificationInput): Promise<Notification> {
+    const notification = await this.prisma.notification.create({
+      data: {
+        title,
+        body,
+        recipientType,
+        isRead: false,
+      },
+    });
+
+    return notification;
+  }
+
+  async sendIndividualNotification({
+    title,
+    body,
+    recipientType,
+    recipientId,
+  }: sendPushNotificationInput): Promise<Notification> {
+    const notification = await this.prisma.notification.create({
+      data: {
+        title,
+        body,
+        recipientType,
+        recipientId,
+        isRead: false,
+      },
+    });
+
+    return notification;
+  }
+
+  async getNotificationTokens(recipientType: RecipientType) {
+    let roleWhere = {};
+    if (recipientType === 'ALL') {
+      roleWhere = {
+        NOT: {
+          role: UserRole.ADMIN,
+        },
+      };
+    } else if (recipientType === 'RETAIL_SHOP') {
+      roleWhere = {
+        role: UserRole.RETAIL_SHOP_MANAGER,
+      };
+    } else if (recipientType === 'WAREHOUSE') {
+      roleWhere = {
+        role: UserRole.WAREHOUSE_MANAGER,
+      };
+    } else {
+      roleWhere = {
+        role: UserRole.USER,
+      };
+    }
+
+    const notificationTokens = await this.prisma.notificationToken.findMany({
+      where: { user: { role: roleWhere }, status: true },
+      select: {
+        token: true,
+      },
+    });
+
+    return notificationTokens.map(
+      (notificationToken) => notificationToken.token,
+    );
   }
 }

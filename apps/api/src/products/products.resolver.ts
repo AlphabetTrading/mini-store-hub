@@ -84,74 +84,74 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, { name: 'findProductsByTopProfit' })
-  async findProductsByTopProfit(
-    @Args('filterProductInput', {
-      type: () => FilterProductInput,
-      nullable: true,
-    })
-    filterProductInput?: FilterProductInput,
-    @Args('orderBy', {
-      type: () => ProductOrder,
-      nullable: true,
-    })
-    orderBy?: ProductOrder,
-    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
-    paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
-    try {
-      const where: Prisma.ProductWhereInput = {
-        AND: [
-          {
-            id: filterProductInput?.id,
-          },
-          {
-            OR: [
-              {
-                name: filterProductInput?.name,
-              },
-              {
-                amharicName: filterProductInput?.name,
-              },
-            ],
-          },
-          {
-            serialNumber: filterProductInput?.serialNumber,
-          },
-          {
-            description: filterProductInput?.description,
-          },
-          {
-            category: filterProductInput?.category,
-          },
-          {
-            createdAt: filterProductInput?.createdAt,
-          },
-        ],
-      };
+  // @Query(() => PaginationProducts, { name: 'findProductsByTopProfit' })
+  // async findProductsByTopProfit(
+  //   @Args('filterProductInput', {
+  //     type: () => FilterProductInput,
+  //     nullable: true,
+  //   })
+  //   filterProductInput?: FilterProductInput,
+  //   @Args('orderBy', {
+  //     type: () => ProductOrder,
+  //     nullable: true,
+  //   })
+  //   orderBy?: ProductOrder,
+  //   @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+  //   paginationInput?: PaginationInput,
+  // ): Promise<PaginationProducts> {
+  //   try {
+  //     const where: Prisma.ProductWhereInput = {
+  //       AND: [
+  //         {
+  //           id: filterProductInput?.id,
+  //         },
+  //         {
+  //           OR: [
+  //             {
+  //               name: filterProductInput?.name,
+  //             },
+  //             {
+  //               amharicName: filterProductInput?.name,
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           serialNumber: filterProductInput?.serialNumber,
+  //         },
+  //         {
+  //           description: filterProductInput?.description,
+  //         },
+  //         {
+  //           category: filterProductInput?.category,
+  //         },
+  //         {
+  //           createdAt: filterProductInput?.createdAt,
+  //         },
+  //       ],
+  //     };
 
-      const products = await this.productsService.findProductsByTopProfit({
-        where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
-        skip: paginationInput?.skip,
-        take: paginationInput?.take,
-      });
+  //     const products = await this.productsService.findProductsByTopProfit({
+  //       where,
+  //       orderBy: {
+  //         [orderBy?.field]: orderBy?.direction,
+  //       },
+  //       skip: paginationInput?.skip,
+  //       take: paginationInput?.take,
+  //     });
 
-      const count = await this.productsService.count();
-      return {
-        items: products,
-        meta: {
-          page: paginationInput?.skip,
-          limit: paginationInput?.take,
-          count,
-        },
-      };
-    } catch (e) {
-      throw new BadRequestException('Error loading products!');
-    }
-  }
+  //     const count = await this.productsService.count();
+  //     return {
+  //       items: products,
+  //       meta: {
+  //         page: paginationInput?.skip,
+  //         limit: paginationInput?.take,
+  //         count,
+  //       },
+  //     };
+  //   } catch (e) {
+  //     throw new BadRequestException('Error loading products!');
+  //   }
+  // }
 
   @Query(() => PaginationProducts, { name: 'findProductsByTopSelling' })
   async findProductsByTopSelling(

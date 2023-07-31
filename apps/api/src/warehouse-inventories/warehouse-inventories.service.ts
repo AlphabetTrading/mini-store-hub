@@ -16,7 +16,7 @@ const warehouseStockIncludeObject: Prisma.WarehouseStockInclude = {
       goods: true,
       priceHistory: true,
       retailShopStock: true,
-      saleTransaction: true,
+      saleTransactionItem: true,
     },
   },
   warehouse: {

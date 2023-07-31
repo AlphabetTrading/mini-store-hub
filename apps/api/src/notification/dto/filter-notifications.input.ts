@@ -16,7 +16,4 @@ export class FilterNotificationInput {
 
   @Field(() => DateTimeFilter, { nullable: true })
   createdAt?: DateTimeFilter;
-
-  @Field(() => FilterUserInput, { nullable: true })
-  createdBy?: FilterUserInput;
 }

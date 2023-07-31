@@ -7,6 +7,7 @@ import { PriceHistory } from 'src/price-histories/models/price-history.model';
 import { Product } from 'src/products/models/product.model';
 import { RetailShopStock } from 'src/retail-shop-inventories/models/retail-shop-inventory.model';
 import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
+import { SaleTransactionItem } from 'src/sale-transactions/models/sale-transaction-item.model';
 import { SaleTransaction } from 'src/sale-transactions/models/sale-transaction.model';
 import { User } from 'src/users/models/user.model';
 import { WarehouseStock } from 'src/warehouse-inventories/models/warehouse-inventory.model';
@@ -132,10 +133,59 @@ export class PaginationNotifications {
   meta?: PaginationInfo;
 }
 
+// @ObjectType()
+// export class PaginationSaleTransactions {
+//   @Field(() => [any & { _count: { id: number; }; _sum: { price: number; }; }])
+//   items: SaleTransaction[];
+
+//   @Field(() => PaginationInfo, { nullable: true })
+//   meta?: PaginationInfo;
+// }
+
+@ObjectType()
+export class CountType {
+  @Field(() => Int)
+  id: number;
+}
+
+@ObjectType()
+export class SumType {
+  @Field(() => Int)
+  price: number;
+}
+
+@ObjectType()
+export class CustomType {
+  @Field(() => CountType)
+  _count: CountType;
+
+  @Field(() => SumType)
+  _sum: SumType;
+}
+
+@ObjectType()
+export class PaginationSaleTransactionItems {
+  @Field(() => [SaleTransactionItem])
+  items: SaleTransactionItem[];
+
+  @Field(() => PaginationInfo, { nullable: true })
+  meta?: PaginationInfo;
+}
+
+// create me object type for sales transaction group by createdAt type
 @ObjectType()
 export class PaginationSaleTransactions {
   @Field(() => [SaleTransaction])
   items: SaleTransaction[];
+
+  @Field(() => PaginationInfo, { nullable: true })
+  meta?: PaginationInfo;
+}
+
+@ObjectType()
+export class PaginationSaleItemTransactions {
+  @Field(() => [SaleTransactionItem])
+  items: SaleTransactionItem[];
 
   @Field(() => PaginationInfo, { nullable: true })
   meta?: PaginationInfo;

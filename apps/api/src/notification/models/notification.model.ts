@@ -1,6 +1,13 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
 import { User } from 'src/users/models/user.model';
+import { ReadNotification } from './read_notification.model';
+import { RecipientType } from '@prisma/client';
+
+registerEnumType(RecipientType, {
+  name: 'RecipientType',
+  description: 'RecipientType',
+});
 
 @ObjectType()
 export class Notification extends BaseModel {
@@ -16,9 +23,18 @@ export class Notification extends BaseModel {
   @Field(() => String, { nullable: true })
   amharicBody?: string;
 
+  @Field(() => RecipientType)
+  recipientType: RecipientType;
+
   @Field(() => Boolean)
-  status: boolean;
+  isRead: boolean;
+
+  @Field(() => String, { nullable: true })
+  recipientId?: string;
 
   @Field(() => User)
-  createdBy?: User;
+  user?: User;
+
+  @Field(() => [ReadNotification], { nullable: true })
+  notificationReads?: ReadNotification[];
 }

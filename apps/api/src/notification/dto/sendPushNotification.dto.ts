@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { RecipientType } from '@prisma/client';
 
 @InputType()
 export class sendPushNotificationInput {
@@ -8,6 +9,9 @@ export class sendPushNotificationInput {
   @Field(() => String)
   body: string;
 
-  @Field(() => String)
-  userId?: string;
+  @Field(() => RecipientType)
+  recipientType: RecipientType;
+
+  @Field(() => String, { nullable: true })
+  recipientId?: string;
 }

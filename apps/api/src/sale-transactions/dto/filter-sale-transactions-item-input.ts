@@ -1,16 +1,16 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 import { DateTimeFilter } from 'src/common/filter/date-filter';
+import { FilterProductInput } from 'src/products/dto/filter-product.input';
 import { FilterRetailShopInput } from 'src/retail-shops/dto/filter-retail-shop.input';
-import { FilterSaleTransactionItemInput } from './filter-sale-transactions-item-input';
 
 @InputType()
-export class FilterSaleTransactionInput {
+export class FilterSaleTransactionItemInput {
   @Field({ nullable: true })
   id?: string;
 
-  @Field(() => FilterSaleTransactionItemInput, { nullable: true })
-  saleTransactionsItems?: Prisma.SaleTransactionItemListRelationFilter;
+  @Field(() => FilterProductInput, { nullable: true })
+  product?: Prisma.ProductWhereInput;
 
   @Field(() => FilterRetailShopInput, { nullable: true })
   retailShop?: Prisma.RetailShopWhereInput;

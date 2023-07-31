@@ -9,5 +9,5 @@ export class sendBulkPushNotificationInput {
   body: string;
 
   @Field(() => String)
-  userIds?: string[];
+  tokens?: string[];
 }

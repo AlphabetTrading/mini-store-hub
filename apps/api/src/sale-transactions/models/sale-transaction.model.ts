@@ -1,21 +1,15 @@
 import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
-import { Product } from 'src/products/models/product.model';
 import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
+import { SaleTransactionItem } from './sale-transaction-item.model';
 
 @ObjectType()
 export class SaleTransaction extends BaseModel {
-  @Field(() => String)
-  productId: string;
-
-  @Field(() => Product, { nullable: true })
-  product?: Product;
+  @Field(() => [SaleTransactionItem])
+  saleTransactionItems?: SaleTransactionItem[];
 
   @Field(() => Float)
-  quantity: number;
-
-  @Field(() => Float)
-  price: number;
+  totalPrice: number;
 
   @Field(() => String)
   retailShopId: string;

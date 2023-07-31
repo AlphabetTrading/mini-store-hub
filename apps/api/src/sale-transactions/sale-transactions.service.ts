@@ -1,19 +1,27 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateSaleTransactionInput } from './dto/create-sale-transaction.input';
 import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input';
 import { Prisma } from '@prisma/client';
-import { SaleTransaction } from './models/sale-transaction.model';
+import { CreateBulkSaleTransactionInput } from './dto/create-bulk-sale-transaction.input';
 
-const salesTransactionInclude = {
+const salesTransactionInclude: Prisma.SaleTransactionInclude = {
   retailShop: true,
-  product: {
+  saleTransactionItems: {
     include: {
-      activePrice: true,
-      priceHistory: true,
-      retailShopStock: true,
-      warehouseStock: true,
-      category: true,
+      product: {
+        include: {
+          activePrice: true,
+          priceHistory: true,
+          retailShopStock: true,
+          warehouseStock: true,
+          category: true,
+        },
+      },
     },
   },
 };
@@ -29,125 +37,125 @@ export class SaleTransactionsService {
     startDate: string,
     endDate: string,
   ) {
-    const response = await this.prisma.saleTransaction.aggregate({
-      where: {
-        productId,
-        createdAt: {
-          gte: startDate,
-          lt: endDate,
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const salesTransactionsItems =
+      await this.prisma.saleTransactionItem.findMany({
+        where: {
+          product: {
+            id: productId,
+          },
+          createdAt: {
+            gte: formattedStartDate,
+            lt: formattedEndDate,
+          },
         },
-      },
-      _sum: {
-        price: true,
-        quantity: true,
-      },
-    });
-    const total = response._sum.price;
-    const totalCost = await this.totalCostByProductByDate(
-      productId,
-      startDate,
-      endDate,
-    );
+        include: {
+          product: {
+            include: {
+              activePrice: true,
+            },
+          },
+        },
+      });
 
-    return total - totalCost;
+    let overallProfit = 0;
+
+    for (const salesTransactionItem of salesTransactionsItems) {
+      const {
+        price,
+        quantity,
+        product: {
+          activePrice: { purchasedPrice },
+        },
+      } = salesTransactionItem;
+      const profit = price - purchasedPrice * quantity;
+      overallProfit += profit;
+    }
+
+    return overallProfit;
   }
-  async totalCostByProductByDate(
+  async totalSaleByProductByDate(
     productId: string,
     startDate: string,
     endDate: string,
   ) {
-    const response = await this.prisma.saleTransaction.aggregate({
-      where: {
-        productId,
-        createdAt: {
-          gte: startDate,
-          lt: endDate,
-        },
-      },
-      _sum: {
-        purchasedPrice: true,
-        quantity: true,
-      },
-    });
-    const total = response._sum.purchasedPrice;
-    return total;
+    // calculate totalSaleByProduct and date
   }
   async totalProfitByRetailShopByDate(
     id: string,
     startDate: string,
     endDate: string,
   ) {
-    const response = await this.prisma.saleTransaction.aggregate({
-      where: {
-        retailShopId: id,
-        createdAt: {
-          gte: startDate,
-          lt: endDate,
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const salesTransactionsItems =
+      await this.prisma.saleTransactionItem.findMany({
+        where: {
+          saleTransaction: {
+            retailShopId: id,
+          },
+          createdAt: {
+            gte: formattedStartDate,
+            lt: formattedEndDate,
+          },
         },
-      },
-      _sum: {
-        price: true,
-        quantity: true,
-      },
-    });
-    const total = response._sum.price;
-    const totalCost = await this.totalCostByRetailShopByDate(
-      id,
-      startDate,
-      endDate,
-    );
-    const profit = total - totalCost;
+        include: {
+          product: {
+            include: {
+              activePrice: true,
+            },
+          },
+        },
+      });
 
-    return profit;
-  }
-  async totalCostByRetailShopByDate(
-    id: string,
-    startDate: string,
-    endDate: string,
-  ) {
-    const response = await this.prisma.saleTransaction.aggregate({
-      where: {
-        retailShopId: id,
-        createdAt: {
-          gte: startDate,
-          lt: endDate,
+    let overallProfit = 0;
+
+    for (const salesTransactionItem of salesTransactionsItems) {
+      const {
+        price,
+        quantity,
+        product: {
+          activePrice: { purchasedPrice },
         },
-      },
-      _sum: {
-        purchasedPrice: true,
-        quantity: true,
-      },
-    });
-    const total = response._sum.purchasedPrice;
-    return total;
+      } = salesTransactionItem;
+      const profit = price - purchasedPrice * quantity;
+      overallProfit += profit;
+    }
+
+    return overallProfit;
   }
 
   async totalSales() {
     const response = await this.prisma.saleTransaction.aggregate({
       _sum: {
-        price: true,
-        quantity: true,
+        totalPrice: true,
       },
     });
-    const total = response._sum.price;
-    return total;
+    return response._sum.totalPrice;
   }
 
   async totalSalesByDate(startDate: string, endDate: string) {
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
     const response = await this.prisma.saleTransaction.aggregate({
       where: {
         createdAt: {
-          gte: startDate,
-          lt: endDate,
+          gte: formattedStartDate,
+          lt: formattedEndDate,
         },
       },
       _sum: {
-        price: true,
-        quantity: true,
+        totalPrice: true,
       },
     });
-    const total = response._sum.price;
-    return total;
+    return response._sum.totalPrice;
   }
 
   async totalSalesByRetailShop(id: string) {
@@ -156,12 +164,10 @@ export class SaleTransactionsService {
         retailShopId: id,
       },
       _sum: {
-        price: true,
-        quantity: true,
+        totalPrice: true,
       },
     });
-    const total = response._sum.price;
-    return total;
+    return response._sum.totalPrice;
   }
 
   async totalSalesByRetailShopByDate(
@@ -169,12 +175,18 @@ export class SaleTransactionsService {
     startDate: string,
     endDate: string,
   ) {
-    const response = await this.prisma.saleTransaction.aggregate({
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const response = await this.prisma.saleTransactionItem.aggregate({
       where: {
-        retailShopId: id,
+        saleTransaction: {
+          retailShopId: id,
+        },
         createdAt: {
-          gte: startDate,
-          lt: endDate,
+          gte: formattedStartDate,
+          lt: formattedEndDate,
         },
       },
       _sum: {
@@ -187,7 +199,7 @@ export class SaleTransactionsService {
   }
 
   async totalSalesByProduct(id: string) {
-    const response = await this.prisma.saleTransaction.aggregate({
+    const response = await this.prisma.saleTransactionItem.aggregate({
       where: {
         productId: id,
       },
@@ -205,12 +217,16 @@ export class SaleTransactionsService {
     startDate: string,
     endDate: string,
   ) {
-    const response = await this.prisma.saleTransaction.aggregate({
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const response = await this.prisma.saleTransactionItem.aggregate({
       where: {
         productId,
         createdAt: {
-          gte: startDate,
-          lt: endDate,
+          gte: formattedStartDate,
+          lt: formattedEndDate,
         },
       },
       _sum: {
@@ -223,32 +239,72 @@ export class SaleTransactionsService {
   }
 
   async totalProfit() {
-    const salesTransactions = await this.prisma.saleTransaction.findMany();
+    try {
+      const salesTransactionsItems =
+        await this.prisma.saleTransactionItem.findMany({
+          include: {
+            product: {
+              include: {
+                activePrice: true,
+              },
+            },
+          },
+        });
 
-    let overallProfit = 0;
+      let overallProfit = 0;
+      for (const salesTransactionItem of salesTransactionsItems) {
+        const {
+          price,
+          quantity,
+          product: {
+            activePrice: { purchasedPrice },
+          },
+        } = salesTransactionItem;
+        if (price === null || quantity === null || purchasedPrice === null) {
+          throw new BadRequestException(
+            'Invalid data, Purchase price is null, price is null or quantity is null',
+          );
+        }
+        const profit = price - purchasedPrice * quantity;
+        overallProfit += profit;
+      }
 
-    for (const salesTransaction of salesTransactions) {
-      const { price, purchasedPrice, quantity } = salesTransaction;
-      const profit = (price - purchasedPrice) * quantity;
-      overallProfit += profit;
+      return overallProfit;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Invalid operation');
     }
-
-    return overallProfit;
   }
 
   // calculate total profit by retail shop
   async totalProfitByRetailShop(id: string) {
-    const salesTransactions = await this.prisma.saleTransaction.findMany({
-      where: {
-        retailShopId: id,
-      },
-    });
+    const salesTransactionsItems =
+      await this.prisma.saleTransactionItem.findMany({
+        where: {
+          saleTransaction: {
+            retailShopId: id,
+          },
+        },
+        include: {
+          product: {
+            include: {
+              activePrice: true,
+            },
+          },
+        },
+      });
 
     let overallProfit = 0;
 
-    for (const salesTransaction of salesTransactions) {
-      const { price, purchasedPrice, quantity } = salesTransaction;
-      const profit = (price - purchasedPrice) * quantity;
+    for (const salesTransactionItem of salesTransactionsItems) {
+      const {
+        price,
+        quantity,
+        product: {
+          activePrice: { purchasedPrice },
+        },
+      } = salesTransactionItem;
+      const profit = price - purchasedPrice * quantity;
       overallProfit += profit;
     }
 
@@ -257,11 +313,267 @@ export class SaleTransactionsService {
 
   // calculate profit by date
   async totalProfitByDate(startDate: string, endDate: string) {
-    const salesTransactions = await this.prisma.saleTransaction.findMany({
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const salesTransactionsItems =
+      await this.prisma.saleTransactionItem.findMany({
+        where: {
+          createdAt: {
+            gte: formattedStartDate,
+            lt: formattedEndDate,
+          },
+        },
+        include: {
+          product: {
+            include: {
+              activePrice: true,
+            },
+          },
+        },
+      });
+
+    let overallProfit = 0;
+
+    for (const salesTransactionItem of salesTransactionsItems) {
+      const {
+        price,
+        quantity,
+        product: {
+          activePrice: { purchasedPrice },
+        },
+      } = salesTransactionItem;
+      const profit = price - purchasedPrice * quantity;
+      overallProfit += profit;
+    }
+
+    return overallProfit;
+  }
+
+  // async groupsfindAll({
+  //   skip,
+  //   take,
+  //   where,
+  //   orderBy,
+  // }: {
+  //   skip?: number;
+  //   take?: number;
+  //   where?: Prisma.SaleTransactionWhereInput;
+  //   orderBy?: Prisma.SaleTransactionOrderByWithRelationInput;
+  // }) {
+  //   try {
+  //     // return all sales transactions grouped by date, and return total price for the groups, and count the number of transactions
+  //     // the total price has to be calculated by multiplying the price and quantity of each transaction
+
+  //     const transactions = await this.prisma.saleTransaction.groupBy({
+  //       by: ['createdAt'],
+  //       where: {
+  //         ...where,
+  //       },
+  //       _sum: {
+  //         price: true,
+  //       },
+  //       _count: {
+  //         id: true,
+  //       },
+  //       skip,
+  //       take,
+  //       orderBy: {
+  //         createdAt: orderBy.createdAt,
+  //       },
+  //     });
+  //     return transactions;
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
+
+  async findOne(id: string) {
+    return this.prisma.saleTransaction.findUnique({
+      where: { id },
+      include: salesTransactionInclude,
+    });
+  }
+  async count(where?: Prisma.SaleTransactionWhereInput): Promise<number> {
+    return this.prisma.saleTransaction.count({ where });
+  }
+
+  // async create(data: CreateSaleTransactionInput) {
+  //   const { productId, retailShopId, quantity } = data;
+  //   const product = await this.prisma.product.findUnique({
+  //     where: { id: productId },
+  //     include: {
+  //       activePrice: true,
+  //     },
+  //   });
+  //   if (!product) {
+  //     throw new NotFoundException('Product not found');
+  //   }
+  //   const retailShop = await this.prisma.retailShop.findUnique({
+  //     where: { id: retailShopId },
+  //   });
+
+  //   if (!retailShop) {
+  //     throw new NotFoundException('Retail shop not found');
+  //   }
+
+  //   // check if retail shop has enough stock
+  //   const retailShopStock = await this.prisma.retailShopStock.findUnique({
+  //     where: {
+  //       productId_retailShopId: {
+  //         retailShopId: retailShopId,
+  //         productId: productId,
+  //       },
+  //     },
+  //   });
+
+  //   if (retailShopStock.quantity < quantity) {
+  //     throw new NotFoundException('Not enough stock');
+  //   }
+
+  //   // update retail shop stock, and create the transaction
+  //   return await this.prisma.$transaction(async (tx) => {
+  //     await tx.retailShopStock.update({
+  //       where: {
+  //         productId_retailShopId: {
+  //           retailShopId: retailShopId,
+  //           productId: productId,
+  //         },
+  //       },
+  //       data: {
+  //         quantity: {
+  //           decrement: quantity,
+  //         },
+  //       },
+  //     });
+
+  //     return await tx.saleTransaction.create({
+  //       data: {
+  //         price: product.activePrice.price,
+  //         purchasedPrice: product.activePrice.purchasedPrice,
+  //         quantity: quantity,
+  //         retailShop: {
+  //           connect: {
+  //             id: retailShopId,
+  //           },
+  //         },
+  //         product: {
+  //           connect: {
+  //             id: productId,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   });
+  // }
+
+  // async createBulk(data: CreateBulkSaleTransactionInput) {
+  //   const { goods, retailShopId } = data;
+  //   const retailShop = await this.prisma.retailShop.findUnique({
+  //     where: { id: retailShopId },
+  //   });
+
+  //   if (!retailShop) {
+  //     throw new NotFoundException('Retail shop not found');
+  //   }
+
+  //   // check if retail shop has enough stock
+  //   for (const good of goods) {
+  //     const { productId, quantity } = good;
+  //     const retailShopStock = await this.prisma.retailShopStock.findUnique({
+  //       where: {
+  //         productId_retailShopId: {
+  //           retailShopId: retailShopId,
+  //           productId: productId,
+  //         },
+  //       },
+  //     });
+
+  //     if (retailShopStock.quantity < quantity) {
+  //       throw new NotFoundException('Not enough stock');
+  //     }
+  //   }
+
+  //   const saleTransactionDate = new Date().toISOString().split('T')[0];
+
+  //   // update retail shop stock, and create the transaction
+  //   await this.prisma.$transaction(async (tx) => {
+  //     for (const good of goods) {
+  //       const { productId, quantity } = good;
+  //       const product = await tx.product.findUnique({
+  //         where: { id: productId },
+  //         include: {
+  //           activePrice: true,
+  //         },
+  //       });
+  //       if (!product) {
+  //         throw new NotFoundException('Product not found');
+  //       }
+  //       await tx.retailShopStock.update({
+  //         where: {
+  //           productId_retailShopId: {
+  //             retailShopId: retailShopId,
+  //             productId: productId,
+  //           },
+  //         },
+  //         data: {
+  //           quantity: {
+  //             decrement: quantity,
+  //           },
+  //         },
+  //       });
+
+  //       return await tx.saleTransaction.create({
+  //         data: {
+  //           createdAt: saleTransactionDate,
+  //           price: product.activePrice.price,
+  //           purchasedPrice: product.activePrice.purchasedPrice,
+  //           quantity: quantity,
+  //           retailShop: {
+  //             connect: {
+  //               id: retailShopId,
+  //             },
+  //           },
+  //           product: {
+  //             connect: {
+  //               id: productId,
+  //             },
+  //           },
+  //         },
+  //       });
+  //     }
+  //   });
+
+  //   // return transactions grouped by saleTransactionDate, and return total price for the groups, and count the number of transactions
+
+  //   const transactions = await this.prisma.saleTransaction.groupBy({
+  //     by: ['createdAt'],
+  //     where: {
+  //       retailShopId,
+  //       createdAt: saleTransactionDate,
+  //     },
+  //     _sum: {
+  //       price: true,
+  //     },
+  //     _count: {
+  //       id: true,
+  //     },
+  //   });
+  //   return transactions;
+  // }
+
+  async totalProfitByProduct(id: string) {
+    const salesTransactions = await this.prisma.saleTransactionItem.findMany({
       where: {
-        createdAt: {
-          gte: startDate,
-          lt: endDate,
+        productId: id,
+      },
+      include: {
+        product: {
+          include: {
+            activePrice: true,
+          },
         },
       },
     });
@@ -269,8 +581,14 @@ export class SaleTransactionsService {
     let overallProfit = 0;
 
     for (const salesTransaction of salesTransactions) {
-      const { price, purchasedPrice, quantity } = salesTransaction;
-      const profit = (price - purchasedPrice) * quantity;
+      const {
+        price,
+        product: {
+          activePrice: { purchasedPrice },
+        },
+        quantity,
+      } = salesTransaction;
+      const profit = price - purchasedPrice * quantity;
       overallProfit += profit;
     }
 
@@ -287,126 +605,83 @@ export class SaleTransactionsService {
     take?: number;
     where?: Prisma.SaleTransactionWhereInput;
     orderBy?: Prisma.SaleTransactionOrderByWithRelationInput;
-  }): Promise<SaleTransaction[]> {
-    try {
-      this.logger.error('test');
-      return this.prisma.saleTransaction.findMany({
-        skip,
-        take,
-        where,
-        orderBy,
-        include: salesTransactionInclude,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async findOne(id: string) {
-    return this.prisma.saleTransaction.findUnique({
-      where: { id },
-      include: {
-        retailShop: true,
-        product: {
-          include: {
-            activePrice: true,
-            priceHistory: true,
-            retailShopStock: true,
-            warehouseStock: true,
-            category: true,
-          },
-        },
-      },
+  }) {
+    return this.prisma.saleTransaction.findMany({
+      where,
+      include: salesTransactionInclude,
+      skip,
+      take,
+      orderBy,
     });
-  }
-  async count(where?: Prisma.SaleTransactionWhereInput): Promise<number> {
-    return this.prisma.saleTransaction.count({ where });
   }
 
-  async create(data: CreateSaleTransactionInput) {
-    const { productId, retailShopId, quantity } = data;
-    const product = await this.prisma.product.findUnique({
-      where: { id: productId },
-      include: {
-        activePrice: true,
-      },
-    });
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
+  async createSaleTransaction(data: CreateBulkSaleTransactionInput) {
+    const { goods, retailShopId } = data;
     const retailShop = await this.prisma.retailShop.findUnique({
       where: { id: retailShopId },
     });
-
     if (!retailShop) {
       throw new NotFoundException('Retail shop not found');
     }
 
+    // calculate total price
+    let totalPrice = goods.reduce(
+      (acc, good) => acc + good.quantity * good.price,
+      0,
+    );
+
     // check if retail shop has enough stock
-    const retailShopStock = await this.prisma.retailShopStock.findUnique({
-      where: {
-        productId_retailShopId: {
-          retailShopId: retailShopId,
-          productId: productId,
-        },
-      },
-    });
-
-    if (retailShopStock.quantity < quantity) {
-      throw new NotFoundException('Not enough stock');
-    }
-
-    // update retail shop stock, and create the transaction
-    return await this.prisma.$transaction(async (tx) => {
-      await tx.retailShopStock.update({
+    for (const good of goods) {
+      const { productId, quantity } = good;
+      const retailShopStock = await this.prisma.retailShopStock.findUnique({
         where: {
           productId_retailShopId: {
             retailShopId: retailShopId,
             productId: productId,
           },
         },
-        data: {
-          quantity: {
-            decrement: quantity,
-          },
-        },
-      });
-
-      return await tx.saleTransaction.create({
-        data: {
-          price: product.activePrice.price,
-          purchasedPrice: product.activePrice.purchasedPrice,
-          quantity: quantity,
-          retailShop: {
-            connect: {
-              id: retailShopId,
-            },
-          },
+        include: {
           product: {
-            connect: {
-              id: productId,
+            include: {
+              activePrice: true,
             },
           },
         },
       });
-    });
-  }
 
-  async totalProfitByProduct(id: string) {
-    const salesTransactions = await this.prisma.saleTransaction.findMany({
-      where: {
-        productId: id,
-      },
-    });
+      if (retailShopStock.quantity < quantity) {
+        throw new NotFoundException('Not enough stock');
+      }
 
-    let overallProfit = 0;
-
-    for (const salesTransaction of salesTransactions) {
-      const { price, purchasedPrice, quantity } = salesTransaction;
-      const profit = (price - purchasedPrice) * quantity;
-      overallProfit += profit;
+      if (!retailShopStock.product.activePrice) {
+        throw new NotFoundException('Product has no active price');
+      }
     }
 
-    return overallProfit;
+    // update retail shop stock, and create the transaction
+    return await this.prisma.saleTransaction.create({
+      data: {
+        totalPrice,
+        retailShop: {
+          connect: {
+            id: retailShopId,
+          },
+        },
+        saleTransactionItems: {
+          createMany: {
+            data: goods.map((good) => {
+              return {
+                ...good,
+                subTotal: good.price * good.quantity,
+              };
+            }),
+          },
+        },
+      },
+      include: {
+        saleTransactionItems: true,
+      },
+    });
   }
 
   async update(id: string, data: UpdateSaleTransactionInput) {
@@ -415,10 +690,31 @@ export class SaleTransactionsService {
   async remove(id: string) {
     return this.prisma.saleTransaction.delete({ where: { id } });
   }
+
   // generate daily sells of a retail shop
   async dailySells(id: string, startDate: string, endDate: string) {
     const startDateFormatted = new Date(startDate);
     const endDateFormatted = new Date(endDate);
-    //  const dateString = date.toISOString().split('T')[0];
+
+    // generate daily sells of a retail shop between two dates, group by the whole day transaction
+    const sells = await this.prisma.saleTransaction.groupBy({
+      by: ['createdAt'],
+      where: {
+        retailShopId: id,
+        createdAt: {
+          gte: startDateFormatted,
+          lt: endDateFormatted,
+        },
+      },
+      _sum: {
+        totalPrice: true,
+      },
+      _count: {
+        id: true,
+      },
+    });
+    return sells;
   }
 }
+
+// generate monthly sells of a retail shop

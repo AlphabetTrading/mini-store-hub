@@ -3,7 +3,7 @@ import { InputType, Field, Float } from '@nestjs/graphql';
 @InputType()
 export class CreateNotificationTokenInput {
   @Field(() => String)
-  notification_token: string;
+  token: string;
 
   @Field(() => String)
   device_type: string;

@@ -1,14 +1,6 @@
-import {
-  Args,
-  Float,
-  Mutation,
-  Query,
-  Resolver,
-  Subscription,
-} from '@nestjs/graphql';
+import { Args, Float, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { SaleTransactionsService } from './sale-transactions.service';
 import { SaleTransaction } from './models/sale-transaction.model';
-import { CreateSaleTransactionInput } from './dto/create-sale-transaction.input';
 import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input';
 import { PubSub } from 'graphql-subscriptions';
 import { UseGuards } from '@nestjs/common';
@@ -18,6 +10,7 @@ import { SaleTransactionOrder } from './dto/sale-transaction-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationSaleTransactions } from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
+import { CreateBulkSaleTransactionInput } from './dto/create-bulk-sale-transaction.input';
 
 const pubSub = new PubSub();
 @Resolver(() => SaleTransaction)
@@ -52,7 +45,8 @@ export class SaleTransactionsResolver {
             retailShop: filterSaleTransactionInput?.retailShop,
           },
           {
-            product: filterSaleTransactionInput?.product,
+            saleTransactionItems:
+              filterSaleTransactionInput?.saleTransactionsItems,
           },
           {
             createdAt: filterSaleTransactionInput?.createdAt,
@@ -68,6 +62,8 @@ export class SaleTransactionsResolver {
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
+
+      console.log(salesTransactions, 'salesTransactions');
       const count = await this.saleTransactionsService.count(where);
       return {
         items: salesTransactions,
@@ -238,21 +234,37 @@ export class SaleTransactionsResolver {
     return this.saleTransactionsService.totalProfitByProduct(id);
   }
 
+  // @Mutation(() => SaleTransaction)
+  // async createSaleTransaction(
+  //   @Args('data') data: CreateSaleTransactionInput,
+  // ): Promise<SaleTransaction> {
+  //   const sales = await this.saleTransactionsService.create(data);
+
+  //   // check retailShop inventory and update it, and if there is low level of stock notify the retail shop manager and warehouse manager
+  //   // this is done by subscribing to the inventoryUpdated event
+  //   //
+  //   // const inventoryUpdated = await this.RetailShopStockService;
+  //   // console.log(inventoryUpdated);
+  //   //
+
+  //   // pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
+  //   return sales;
+  // }
+
+  // @Mutation(() => SaleTransaction)
+  // async createBulkSaleTransaction(
+  //   @Args('data', { type: () => CreateBulkSaleTransactionInput })
+  //   data: CreateBulkSaleTransactionInput,
+  // ) {
+  //   const sales = await this.saleTransactionsService.createBulk(data);
+  //   return sales;
+  // }
+
   @Mutation(() => SaleTransaction)
   async createSaleTransaction(
-    @Args('data') data: CreateSaleTransactionInput,
+    @Args('data') data: CreateBulkSaleTransactionInput,
   ): Promise<SaleTransaction> {
-    const sales = await this.saleTransactionsService.create(data);
-
-    // check retailShop inventory and update it, and if there is low level of stock notify the retail shop manager and warehouse manager
-    // this is done by subscribing to the inventoryUpdated event
-    //
-    // const inventoryUpdated = await this.RetailShopStockService;
-    // console.log(inventoryUpdated);
-    //
-
-    // pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
-    return sales;
+    return this.saleTransactionsService.createSaleTransaction(data);
   }
 
   @Mutation(() => SaleTransaction)

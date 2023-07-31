@@ -14,7 +14,7 @@ const retailShopStockInclude: Prisma.RetailShopStockInclude = {
       activePrice: true,
       goods: true,
       priceHistory: true,
-      saleTransaction: true,
+      saleTransactionItem: true,
     },
   },
   warehouse: true,

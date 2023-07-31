@@ -18,8 +18,8 @@ Table User {
   userProfile UserProfile
   retailShop RetailShop [not null]
   warehouse Warehouse [not null]
+  notificationTokens NotificationToken [not null]
   notifications Notification [not null]
-  notificationToken NotificationToken
 }
 
 Table Notification {
@@ -29,18 +29,35 @@ Table Notification {
   body String [not null]
   amharicBody String
   status Boolean [not null, default: false]
-  createdById String [not null]
-  createdBy User [not null]
+  recipientType RecipientType [not null, default: 'USER']
+  recipientId String
+  isRead Boolean [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  notificationReads NotificationRead [not null]
+  user User
+  userId String
+}
+
+Table NotificationRead {
+  id String [pk]
+  notificationId String [not null]
+  userId String [not null]
+  notification Notification [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (notificationId, userId) [unique]
+  }
 }
 
 Table NotificationToken {
   id String [pk]
   device_type String [not null]
-  notifications_token String [unique, not null]
+  token String [unique, not null]
   status Boolean [not null, default: false]
-  userId String [unique, not null]
+  userId String [not null]
   user User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -85,12 +102,13 @@ Table Product {
   images String[] [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  activePriceId String [unique]
   activePrice PriceHistory
   priceHistory PriceHistory [not null]
-  saleTransaction SaleTransaction [not null]
   retailShopStock RetailShopStock [not null]
   warehouseStock WarehouseStock [not null]
   goods StockItem [not null]
+  saleTransactionItem SaleTransactionItem [not null]
 
   indexes {
     (id, createdAt) [unique]
@@ -100,17 +118,12 @@ Table Product {
 Table PriceHistory {
   id String [pk]
   productId String [not null]
-  productCreatedAt DateTime [not null]
   price Float [not null]
   purchasedPrice Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  activeProduct Product [not null]
+  activeProduct Product
   product Product [not null]
-
-  indexes {
-    (productId, productCreatedAt) [unique]
-  }
 }
 
 Table Address {
@@ -190,13 +203,23 @@ Table StockItem {
 
 Table SaleTransaction {
   id String [pk]
+  totalPrice Float [not null]
+  retailShopId String [not null]
+  retailShop RetailShop [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  saleTransactionItems SaleTransactionItem [not null]
+}
+
+Table SaleTransactionItem {
+  id String [pk]
   productId String [not null]
   product Product [not null]
   quantity Float [not null]
   price Float [not null]
-  purchasedPrice Float [not null]
-  retailShopId String [not null]
-  retailShop RetailShop [not null]
+  subTotal Float [not null]
+  saleTransactionId String [not null]
+  saleTransaction SaleTransaction [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -271,6 +294,13 @@ Enum UserRole {
   RETAIL_SHOP_MANAGER
 }
 
+Enum RecipientType {
+  USER
+  RETAIL_SHOP
+  WAREHOUSE
+  ALL
+}
+
 Enum UnitType {
   PIECES
   KG
@@ -288,9 +318,11 @@ Enum TransferType {
   WarehouseToRetailShop
 }
 
-Ref: Notification.createdById > User.id
+Ref: Notification.userId > User.id
 
-Ref: NotificationToken.userId - User.id
+Ref: NotificationRead.notificationId > Notification.id
+
+Ref: NotificationToken.userId > User.id
 
 Ref: UserProfile.userId - User.id
 
@@ -300,7 +332,7 @@ Ref: Category.parentId - Category.id
 
 Ref: Product.categoryId > Category.id
 
-Ref: PriceHistory.(productId, productCreatedAt) - Product.(id, createdAt)
+Ref: Product.activePriceId - PriceHistory.id
 
 Ref: PriceHistory.productId - Product.id
 
@@ -322,9 +354,11 @@ Ref: StockItem.productId > Product.id
 
 Ref: StockItem.goodsTransferId > GoodsTransfer.id
 
-Ref: SaleTransaction.productId > Product.id
-
 Ref: SaleTransaction.retailShopId > RetailShop.id
+
+Ref: SaleTransactionItem.productId > Product.id
+
+Ref: SaleTransactionItem.saleTransactionId > SaleTransaction.id
 
 Ref: RetailShopStock.productId > Product.id
 

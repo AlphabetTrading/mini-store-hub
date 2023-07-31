@@ -1,15 +1,15 @@
 export class NotificationEvent {
   notification_title: string;
   notification_body: string;
-  userIds: string[];
+  tokens: string[];
 
   constructor(data: {
     notification_title: string;
     notification_body: string;
-    userIds: string[];
+    tokens: string[];
   }) {
     this.notification_title = data.notification_title;
     this.notification_body = data.notification_body;
-    this.userIds = data.userIds;
+    this.tokens = data.tokens;
   }
 }

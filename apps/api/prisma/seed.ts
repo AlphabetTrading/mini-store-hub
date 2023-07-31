@@ -1,6 +1,6 @@
-import { PrismaClient, UnitType, Warehouse } from '@prisma/client';
-import { Product } from 'src/products/models/product.model';
-import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
+import { PrismaClient, UnitType } from '@prisma/client';
+import { randomInt } from 'crypto';
+import { Cuid, UUID } from 'graphql-scalars/typings/mocks';
 
 const prisma = new PrismaClient();
 
@@ -8,6 +8,7 @@ async function main() {
   await prisma.userProfile.deleteMany();
   await prisma.user.deleteMany();
   await prisma.priceHistory.deleteMany();
+  await prisma.saleTransactionItem.deleteMany();
   await prisma.saleTransaction.deleteMany();
   await prisma.goodsTransfer.deleteMany();
   await prisma.warehouseStock.deleteMany();
@@ -16,7 +17,10 @@ async function main() {
   await prisma.retailShop.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.notification.deleteMany();
+
   console.log('Seeding...');
+
   await seedUserModels();
   await seedUserProfile();
   await seedCategories();
@@ -28,6 +32,7 @@ async function main() {
   await seedRetailshopStocks();
   await seedGoodsTransfers();
   await seedSaleTransactions();
+  await seedNotifications();
 }
 
 async function seedUserModels() {
@@ -233,7 +238,7 @@ async function seedProducts() {
   }
   try {
     const categories = await prisma.category.findMany();
-    const data = [
+    const products = [
       {
         name: 'Shirt',
         amharicName: 'ሸሚዝ',
@@ -275,9 +280,61 @@ async function seedProducts() {
         serialNumber: generateSerialNumber(),
       },
     ];
-    await prisma.product.createMany({
-      data,
-    });
+
+    for (const product of products) {
+      const createdProduct = await prisma.product.create({
+        data: {
+          ...product,
+        },
+      });
+      await prisma.product.update({
+        where: {
+          id: createdProduct.id,
+        },
+        data: {
+          name: product.name,
+          serialNumber: product.serialNumber,
+          unit: product.unit,
+          amharicName: product.amharicName,
+          description: product.description,
+          category: {
+            connect: {
+              id: product.categoryId,
+            },
+          },
+          activePrice: {
+            create: {
+              product: {
+                connect: {
+                  id: createdProduct.id,
+                },
+              },
+              price: randomInt(10, 30),
+              purchasedPrice: randomInt(5, 20),
+            },
+          },
+          priceHistory: {
+            createMany: {
+              data: [
+                {
+                  price: randomInt(10, 30),
+                  purchasedPrice: randomInt(5, 20),
+                },
+                {
+                  price: randomInt(10, 30),
+                  purchasedPrice: randomInt(5, 20),
+                },
+              ],
+            },
+
+            // create: {
+            //   price: randomInt(10, 30),
+            //   purchasedPrice: randomInt(5, 20),
+            // },
+          },
+        },
+      });
+    }
 
     console.log('Products seeded successfully');
   } catch (error) {
@@ -296,10 +353,36 @@ async function seedPriceHistory() {
       },
       data: {
         priceHistory: {
-          create: {
-            price: 100,
-            purchasedPrice: 23,
-            productCreatedAt: product.createdAt,
+          createMany: {
+            data: [
+              {
+                price: 100,
+                purchasedPrice: 89,
+              },
+              {
+                price: 200,
+                purchasedPrice: 189,
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    const priceHistory = await prisma.priceHistory.findFirst({
+      where: {
+        productId: product?.id,
+      },
+    });
+    // update the product's active price
+    await prisma.product.update({
+      where: {
+        id: product?.id,
+      },
+      data: {
+        activePrice: {
+          connect: {
+            id: priceHistory.id,
           },
         },
       },
@@ -410,7 +493,11 @@ async function seedWarehouses() {
 async function seedWarehouseStocks() {
   try {
     const products = await prisma.product.findMany();
-    const warehouses = await prisma.warehouse.findMany();
+    const warehouses = await prisma.warehouse.findMany({
+      where: {
+        isMain: false,
+      },
+    });
 
     await prisma.warehouseStock.createMany({
       data: [
@@ -433,7 +520,7 @@ async function seedWarehouseStocks() {
     });
     console.log('Warehouses stock is seeded successfully');
   } catch (error) {
-    console.error('Error seeding warehouses stock:', error);
+    console.error('Error seeding warehouses stock', error);
   } finally {
     await prisma.$disconnect();
   }
@@ -549,27 +636,69 @@ async function seedSaleTransactions() {
     const products = await prisma.product.findMany();
     const retailShops = await prisma.retailShop.findMany();
 
-    await prisma.saleTransaction.createMany({
-      data: [
-        {
-          productId: products[0].id,
-          price: 100,
-          purchasedPrice: 23,
-          quantity: 2,
-          retailShopId: retailShops[0].id,
+    await prisma.saleTransaction.create({
+      data: {
+        retailShopId: retailShops[0].id,
+        saleTransactionItems: {
+          create: [
+            {
+              productId: products[0].id,
+              price: 100,
+              quantity: 2,
+              subTotal: 200,
+            },
+            {
+              productId: products[1].id,
+              price: 200,
+              quantity: 3,
+              subTotal: 600,
+            },
+          ],
         },
-        {
-          productId: products[0].id,
-          price: 200,
-          quantity: 3,
-          purchasedPrice: 23,
-          retailShopId: retailShops[1].id,
-        },
-      ],
+        totalPrice: 800,
+      },
     });
+
     console.log('Sale transactions seeded successfully');
   } catch (error) {
     console.error('Error seeding sale transactions:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function seedNotifications() {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        role: 'WAREHOUSE_MANAGER',
+      },
+    });
+
+    await prisma.notification.createMany({
+      data: [
+        {
+          title: 'Product is out of stock',
+          body: 'Product is out of stock',
+          amharicTitle: 'የእቃ አይነት የለም',
+          amharicBody: 'የእቃ አይነት የለም',
+          recipientType: 'USER',
+          isRead: false,
+          recipientId: user?.id,
+        },
+        {
+          title: 'Product is out of stock',
+          body: 'Product is out of stock',
+          amharicTitle: 'የእቃ አይነት የለም',
+          amharicBody: 'የእቃ አይነት የለም',
+          isRead: false,
+          recipientType: 'ALL',
+        },
+      ],
+    });
+    console.log('Notifications seeded successfully');
+  } catch (error) {
+    console.error('Error seeding notifications:', error);
   } finally {
     await prisma.$disconnect();
   }
