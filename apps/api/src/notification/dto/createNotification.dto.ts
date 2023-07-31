@@ -1,5 +1,6 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
 import { User } from 'src/users/models/user.model';
+import { NotificationToken } from '../models/notification_token.model';
 
 @InputType()
 export class CreateNotificationInput {
@@ -8,13 +9,4 @@ export class CreateNotificationInput {
 
   @Field(() => String)
   body: string;
-
-  @Field(() => String)
-  notification_token: string;
-
-  @Field(() => String)
-  status: string;
-
-  @Field(() => User)
-  createdBy?: User;
 }

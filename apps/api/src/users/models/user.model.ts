@@ -8,6 +8,8 @@ import {
 import { UserRole } from '@prisma/client';
 import { Address } from 'src/common/models/address.model';
 import { BaseModel } from 'src/common/models/base.model';
+import { Notification } from 'src/notification/models/notification.model';
+import { NotificationToken } from 'src/notification/models/notification_token.model';
 import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 import { UserProfile } from 'src/user-profile/models/userProfile.model';
 import { Warehouse } from 'src/warehouses/models/warehouse.model';
@@ -51,4 +53,10 @@ export class User extends BaseModel {
 
   @Field(() => [RetailShop], { nullable: true })
   retailShop?: RetailShop[];
+
+  @Field(() => [NotificationToken], { nullable: true })
+  notificationTokens?: NotificationToken[];
+
+  @Field(() => [Notification], { nullable: true })
+  notifications?: Notification[];
 }

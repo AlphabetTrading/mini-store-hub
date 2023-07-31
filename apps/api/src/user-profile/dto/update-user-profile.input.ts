@@ -1,3 +1,4 @@
+import { UpdateAddressInput } from 'src/common/dtos/address/update-address.input';
 import { CreateUserProfileInput } from './create-user-profile.input';
 import { InputType, Field, PartialType } from '@nestjs/graphql';
 
@@ -5,7 +6,7 @@ import { InputType, Field, PartialType } from '@nestjs/graphql';
 export class UpdateUserProfileInput extends PartialType(
   CreateUserProfileInput,
 ) {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   photoUrl?: string;
 
   @Field(() => String, { nullable: true })
@@ -13,6 +14,9 @@ export class UpdateUserProfileInput extends PartialType(
 
   @Field(() => String, { nullable: true })
   addressId?: string;
+
+  @Field(() => UpdateAddressInput, { nullable: true })
+  address?: UpdateAddressInput;
 
   @Field(() => String, { nullable: true })
   userId?: string;

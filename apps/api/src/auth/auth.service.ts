@@ -14,6 +14,14 @@ import { Token } from './models/token.model';
 import { SecurityConfig } from 'src/common/configs/config.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+const userIncludeObject: Prisma.UserInclude = {
+  userProfile: { include: { address: true } },
+  notificationTokens: true,
+  warehouse: true,
+  retailShop: true,
+  notifications: true,
+};
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -137,11 +145,7 @@ export class AuthService {
   validateUser(userId: string): Promise<User> {
     return this.prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        userProfile: { include: { address: true } },
-        warehouse: true,
-        retailShop: true,
-      },
+      include: userIncludeObject,
     });
   }
 
@@ -149,11 +153,7 @@ export class AuthService {
     const id = this.jwtService.decode(token)['userId'];
     return this.prisma.user.findUnique({
       where: { id },
-      include: {
-        userProfile: { include: { address: true } },
-        warehouse: true,
-        retailShop: true,
-      },
+      include: userIncludeObject,
     });
   }
 

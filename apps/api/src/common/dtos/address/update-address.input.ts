@@ -14,18 +14,12 @@ export class UpdateAddressInput {
   @Field(() => String, { nullable: true })
   formattedAddress?: string;
 
+  @Field(() => String, { nullable: true })
+  amharicFormattedAddress?: string;
+
   @Field(() => Float, { nullable: true })
   lat?: number;
 
   @Field(() => Float, { nullable: true })
   lng?: number;
-
-  @Field(() => RetailShop, { nullable: true })
-  retailShop?: RetailShop;
-
-  @Field(() => Warehouse, { nullable: true })
-  warehouse?: Warehouse;
-
-  @Field(() => UserProfile, { nullable: true })
-  userProfile?: UserProfile;
 }

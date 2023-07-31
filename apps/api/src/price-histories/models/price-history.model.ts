@@ -14,8 +14,8 @@ export class PriceHistory extends BaseModel {
   @Field(() => Float)
   purchasedPrice: number;
 
-  @Field({ name: 'product_created_at' })
-  productCreatedAt: Date;
+  // @Field({ name: 'product_created_at' })
+  // productCreatedAt: Date;
 
   @Field(() => Product, { nullable: true })
   product?: Product;

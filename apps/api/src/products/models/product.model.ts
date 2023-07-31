@@ -7,6 +7,7 @@ import { RetailShopStock } from 'src/retail-shop-inventories/models/retail-shop-
 import { SaleTransaction } from 'src/sale-transactions/models/sale-transaction.model';
 import { WarehouseStock } from 'src/warehouse-inventories/models/warehouse-inventory.model';
 import { Goods } from './goods.model';
+import { SaleTransactionItem } from 'src/sale-transactions/models/sale-transaction-item.model';
 
 registerEnumType(UnitType, {
   name: 'UnitType',
@@ -51,11 +52,11 @@ export class Product extends BaseModel {
   @Field(() => [PriceHistory], { nullable: true })
   priceHistory?: PriceHistory[];
 
-  @Field(() => [SaleTransaction], { nullable: true })
-  saleTransaction?: SaleTransaction[];
+  @Field(() => [SaleTransactionItem], { nullable: true })
+  saleTransactionItem?: SaleTransactionItem[];
 
   @Field(() => [RetailShopStock], { nullable: true })
-  RetailShopStock?: RetailShopStock[];
+  retailShopStock?: RetailShopStock[];
 
   @Field(() => [WarehouseStock], { nullable: true })
   warehouseStock?: WarehouseStock[];

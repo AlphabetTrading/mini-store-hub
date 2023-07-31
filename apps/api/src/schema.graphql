@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 type Address {
-  amharicFormattedAddress: String
   city: String
 
   """Identifies the date and time when the object was created."""
@@ -12,10 +11,13 @@ type Address {
   id: ID!
   lat: Float
   lng: Float
+  retailShop: RetailShop
   street: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+  userProfile: UserProfile
+  warehouse: Warehouse
 }
 
 type AnnualTransaction {
@@ -77,10 +79,29 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
+type CountType {
+  id: Int!
+}
+
+input CreateAddressInput {
+  amharicFormattedAddress: String
+  city: String
+  formattedAddress: String
+  lat: Float
+  lng: Float
+  street: String
+}
+
 input CreateBulkRetailShopStockInput {
   goods: [GoodsInput!]!
   retailShopId: String!
   warehouseId: String!
+}
+
+input CreateBulkSaleTransactionInput {
+  goods: [CreateStockItemInput!]
+  retailShopId: String!
+  totalPrice: Float!
 }
 
 input CreateBulkWarehouseStockInput {
@@ -136,21 +157,15 @@ input CreateRetailShopStockInput {
   warehouseId: String!
 }
 
-input CreateSaleTransactionInput {
-  price: Float!
-  productId: String!
-  purchasedPrice: Float!
-  quantity: Float!
-  retailShopId: String!
-}
-
 input CreateStockItemInput {
   goodsTransferId: String
+  price: Float!
   productId: String!
   quantity: Float!
 }
 
 input CreateUserProfileInput {
+  address: CreateAddressInput
   addressId: String
   idUrl: String
   photoUrl: String
@@ -211,14 +226,6 @@ input FilterCategoryInput {
   subcategories: FilterCategoryInput
 }
 
-input FilterNotificationInput {
-  body: StringFilter
-  createdAt: DateTimeFilter
-  createdBy: FilterUserInput
-  id: String
-  title: StringFilter
-}
-
 input FilterPriceHistoryInput {
   createdAt: DateTimeFilter
   id: String
@@ -250,6 +257,13 @@ input FilterRetailShopStockInput {
 }
 
 input FilterSaleTransactionInput {
+  createdAt: DateTimeFilter
+  id: String
+  retailShop: FilterRetailShopInput
+  saleTransactionsItems: FilterSaleTransactionItemInput
+}
+
+input FilterSaleTransactionItemInput {
   createdAt: DateTimeFilter
   id: String
   product: FilterProductInput
@@ -372,7 +386,7 @@ type Mutation {
   createRetailShop(data: CreateRetailShopInput!): RetailShop!
   createRetailShopManager(data: SignupInput!): User!
   createRetailShopStock(data: CreateRetailShopStockInput!): RetailShopStock!
-  createSaleTransaction(data: CreateSaleTransactionInput!): SaleTransaction!
+  createSaleTransaction(data: CreateBulkSaleTransactionInput!): SaleTransaction!
   createUserProfile(createUserProfileInput: CreateUserProfileInput!): UserProfile!
   createWarehouse(data: CreateWarehouseInput!): Warehouse!
   createWarehouseManager(data: SignupInput!): User!
@@ -393,7 +407,7 @@ type Mutation {
   login(data: LoginInput!): Auth!
   refreshToken(refreshToken: JWT!): Token!
   resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
-  sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
+  sendBulkNotification(notificationId: String!, userId: String!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
@@ -416,25 +430,28 @@ type Notification {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
-  createdBy: User!
   id: ID!
-  status: Boolean!
+  isRead: Boolean!
+  notificationReads: [ReadNotification!]
+  recipientId: String
+  recipientType: RecipientType!
   title: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+  user: User!
 }
 
-input NotificationOrder {
-  direction: OrderDirection!
-  field: NotificationOrderField!
-}
+type NotificationToken {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  device_type: String
+  id: ID!
+  token: String!
 
-"""Properties by which notification connections can be ordered."""
-enum NotificationOrderField {
-  createdAt
-  id
-  updatedAt
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  user: User
 }
 
 """
@@ -464,11 +481,6 @@ type PaginationInfo {
 input PaginationInput {
   skip: Int
   take: Int
-}
-
-type PaginationNotifications {
-  items: [Notification!]!
-  meta: PaginationInfo
 }
 
 type PaginationPriceHistories {
@@ -520,7 +532,6 @@ type PriceHistory {
   price: Float!
   product: Product
   productId: String!
-  product_created_at: DateTime!
   purchasedPrice: Float!
 
   """Identifies the date and time when the object was last updated."""
@@ -541,7 +552,6 @@ enum PriceHistoryOrderField {
 }
 
 type Product {
-  RetailShopStock: [RetailShopStock!]
   activePrice: PriceHistory
   activePriceId: String
   amharicDescription: String
@@ -557,7 +567,8 @@ type Product {
   images: [String!]
   name: String!
   priceHistory: [PriceHistory!]
-  saleTransaction: [SaleTransaction!]
+  retailShopStock: [RetailShopStock!]
+  saleTransactionItem: [SaleTransactionItem!]
   serialNumber: String!
   unit: UnitType!
 
@@ -582,27 +593,26 @@ enum ProductOrderField {
 }
 
 type Query {
-  allUsersNotifications(filterNotificationInput: FilterNotificationInput, orderBy: NotificationOrder, paginationInput: PaginationInput): PaginationNotifications!
+  allNotificationsByUserId(userId: String!): [Notification!]!
   categories(filterCategoryInput: FilterCategoryInput, orderBy: CategoryOrder, paginationInput: PaginationInput): PaginationCategories!
   category(id: String!): Category!
   findGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findIncomingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findOutgoingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
-  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   findProductsByTopSelling(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  getAllNotifications: [Notification!]!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
   goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: GoodsTransferOrder, paginationInput: PaginationInput): PaginationGoodsTransfer!
   me: User!
   notificationById(id: String!): Notification!
-  notifications: [Notification!]!
   priceHistories: [PriceHistory!]!
   priceHistoryById(id: String!): PriceHistory!
   priceHistoryByProduct(filterPriceHistoryInput: FilterPriceHistoryInput, orderBy: PriceHistoryOrder, paginationInput: PaginationInput): PaginationPriceHistories!
   product(productId: String!): Product!
   products(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   productsByCategory: [Product!]!
-  readNotifications(userId: String!): [Notification!]!
+  readNotificationsByUserId(userId: String!): [Notification!]!
   retailShop(id: String!): RetailShop!
   retailShopManagers: [User!]!
   retailShopStock(id: String!): RetailShopStock!
@@ -634,7 +644,7 @@ type Query {
   totalSalesByDateAndRetailShop(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSalesByProduct(productId: String!): Float!
   totalSalesByRetailShop(retailShopId: String!): Float!
-  unreadNotifications(userId: String!): [Notification!]!
+  unreadNotificationsByUserId(userId: String!): [Notification!]!
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): PaginationUser!
   warehouse(id: String!): Warehouse!
@@ -644,6 +654,27 @@ type Query {
   warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: WarehouseStockOrder, paginationInput: PaginationInput): PaginationWarehouseStocks!
   warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: WarehouseOrder, paginationInput: PaginationInput): PaginationWarehouses!
   warehousesByAddress(address: String!): [Warehouse!]!
+}
+
+type ReadNotification {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  notification: Notification
+  notificationId: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  user: User
+  userId: String
+}
+
+"""RecipientType"""
+enum RecipientType {
+  ALL
+  RETAIL_SHOP
+  USER
+  WAREHOUSE
 }
 
 type ResetPasswordResponse {
@@ -725,12 +756,25 @@ type SaleTransaction {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID!
+  retailShop: RetailShop!
+  retailShopId: String!
+  saleTransactionItems: [SaleTransactionItem!]!
+  totalPrice: Float!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type SaleTransactionItem {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
   price: Float!
   product: Product
   productId: String!
   quantity: Float!
-  retailShop: RetailShop!
-  retailShopId: String!
+  saleTransaction: SaleTransaction!
+  subTotal: Float!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -779,6 +823,10 @@ input StringFilter {
   startsWith: String
 }
 
+type SumType {
+  price: Int!
+}
+
 type Token {
   """JWT access token"""
   accessToken: JWT!
@@ -806,6 +854,15 @@ enum UnitType {
   PIECES
 }
 
+input UpdateAddressInput {
+  amharicFormattedAddress: String
+  city: String
+  formattedAddress: String
+  lat: Float
+  lng: Float
+  street: String
+}
+
 input UpdateCategoryInput {
   description: String
   name: String
@@ -813,7 +870,7 @@ input UpdateCategoryInput {
 
 input UpdateGoodsTransferInput {
   destinationWarehouseId: String
-  goods: [UpdateStockItemInput!]
+  goods: [CreateStockItemInput!]
   retailShopId: String
   sourceWarehouseId: String
   transferType: TransferType
@@ -822,7 +879,6 @@ input UpdateGoodsTransferInput {
 input UpdateNotificationTokenInput {
   device_type: String
   notification_token: String
-  status: Boolean
   userId: String
 }
 
@@ -841,17 +897,8 @@ input UpdateRetailShopStockInput {
 }
 
 input UpdateSaleTransactionInput {
-  price: Float
-  productId: String
-  purchasedPrice: Float
-  quantity: Float
+  goods: [CreateStockItemInput!]
   retailShopId: String
-}
-
-input UpdateStockItemInput {
-  goodsTransferId: String
-  productId: String
-  quantity: Float
 }
 
 input UpdateUserInput {
@@ -864,6 +911,7 @@ input UpdateUserInput {
 }
 
 input UpdateUserProfileInput {
+  address: UpdateAddressInput
   addressId: String
   idUrl: String
   photoUrl: String
@@ -894,6 +942,8 @@ type User {
   firstName: String
   id: ID!
   lastName: String
+  notificationTokens: [NotificationToken!]
+  notifications: [Notification!]
   phone: String
   retailShop: [RetailShop!]
   role: UserRole!
@@ -992,14 +1042,9 @@ enum WarehouseStockOrderField {
   updatedAt
 }
 
-input sendBulkPushNotificationInput {
-  body: String!
-  title: String!
-  userIds: String!
-}
-
 input sendPushNotificationInput {
   body: String!
+  recipientId: String
+  recipientType: RecipientType!
   title: String!
-  userId: String!
 }
