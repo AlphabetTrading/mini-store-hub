@@ -71,7 +71,7 @@ const DATA = [
   },
 ];
 
-const selectCategory = ({ navigation }: any) => {
+const SelectCategory = ({ navigation }: any) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -120,7 +120,7 @@ const selectCategory = ({ navigation }: any) => {
   );
 };
 
-export default selectCategory;
+export default SelectCategory;
 
 const styles = StyleSheet.create({
   container: {

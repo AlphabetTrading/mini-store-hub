@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/auth";
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const BASE_URL = "https://mini-store-hub-api.onrender.com/graphql/";

@@ -7,10 +7,14 @@ import {
   View,
 } from "react-native";
 import React from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Path, Svg } from "react-native-svg";
-import Colors from "../../constants/Colors";
+<<<<<<< Updated upstream
+=======
+import Colors from "@/constants/Colors";
+>>>>>>> Stashed changes
 import { useQuery } from "@apollo/client";
-import { GET_PRODUCT_DETAIL } from "../../graphql/queries/productQueries";
+import { GET_PRODUCT_DETAIL } from "@/graphql/queries/productQueries";
 
 type Props = {};
 
@@ -18,30 +22,39 @@ const DATA = [
   {
     id: "1",
     name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
+    imageSrc: require("@/assets/icons/categories/egg.png"),
   },
   {
     id: "2",
     name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
+    imageSrc: require("@/assets/icons/categories/milk.png"),
   },
   {
     id: "3",
     name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
+    imageSrc: require("@/assets/icons/categories/biscuit.png"),
   },
 ];
 
-const ItemDetailScreen = ({ navigation, route }: any) => {
-  const { id, name } = route.params;
+const itemDetail = (props: Props) => {
+  const params = useLocalSearchParams<any>();
   const { loading, data, error, refetch } = useQuery(GET_PRODUCT_DETAIL, {
     variables: {
-      productId: id,
+      productId: params.itemId,
     },
   });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          title: params.name,
+          headerStyle: {
+            backgroundColor: Colors.light.tint,
+          },
+          headerTintColor: "#FFF",
+        }}
+      />
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -54,7 +67,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
             style={{
               marginLeft: 8,
               color: "#828282",
-              fontFamily: "InterBold",
+              fontFamily: "Inter-Bold",
               textTransform: "uppercase",
             }}
           >
@@ -76,38 +89,38 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
               style={{
                 width: "100%",
                 color: "#80848A",
-                fontFamily: "InterRegular",
+                fontFamily: "Inter-Regular",
                 fontSize: 14,
               }}
             >
-              Item #{data.product.serialNumber}
+              No. #XX1034
             </Text>
             <Text
               style={{
                 width: "100%",
                 color: "#2B2C2E",
-                fontFamily: "InterSemiBold",
+                fontFamily: "Inter-SemiBold",
                 fontSize: 18,
               }}
             >
-              {data.product.priceHistory[0]?.price} ETB
+              35.00 ETB
             </Text>
             <Text
               style={{
                 width: "100%",
                 color: "#80848A",
-                fontFamily: "InterRegular",
+                fontFamily: "Inter-Regular",
                 fontSize: 14,
               }}
             >
-              Quantity: 40
+              Quantity: 100
             </Text>
           </View>
           <Text
             style={{
               marginLeft: 8,
               color: "#828282",
-              fontFamily: "InterBold",
+              fontFamily: "Inter-Bold",
               textTransform: "uppercase",
             }}
           >
@@ -141,7 +154,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                       style={{
                         width: 120,
                         color: "#80848A",
-                        fontFamily: "InterRegular",
+                        fontFamily: "Inter-Regular",
                         fontSize: 16,
                       }}
                     >
@@ -173,7 +186,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                           color: "#2B2C2E",
                           width: "100%",
                           textAlign: "right",
-                          fontFamily: "InterMedium",
+                          fontFamily: "Inter-Medium",
                           fontSize: 18,
                         }}
                       >
@@ -192,7 +205,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
   );
 };
 
-export default ItemDetailScreen;
+export default itemDetail;
 
 const styles = StyleSheet.create({
   container: {

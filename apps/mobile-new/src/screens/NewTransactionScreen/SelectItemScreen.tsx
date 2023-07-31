@@ -71,7 +71,7 @@ const DATA = [
   },
 ];
 
-const selectItem = (props: Props) => {
+const SelectItem = (props: Props) => {
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
 
   const selectItem = (item: any) => {
@@ -191,7 +191,7 @@ const selectItem = (props: Props) => {
   );
 };
 
-export default selectItem;
+export default SelectItem;
 
 const styles = StyleSheet.create({
   container: {

@@ -10,6 +10,7 @@ import { Stack } from "expo-router";
 import Colors from "@/constants/Colors";
 import { Path, Svg } from "react-native-svg";
 import { useState } from "react";
+import { useAuth } from "@/context/auth";
 
 export default function HomeScreen() {
   const filters = [
@@ -18,7 +19,7 @@ export default function HomeScreen() {
     { id: 3, name: "monthly" },
   ];
   const [selectedFilter, setSelectedFilter] = useState("daily");
-
+  const { authState } = useAuth();
   return (
     <SafeAreaView
       style={{

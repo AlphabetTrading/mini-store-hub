@@ -9,6 +9,7 @@ import {
 import { Path, Svg } from "react-native-svg";
 import { useState } from "react";
 import Colors from "../../constants/Colors";
+import { useAuth } from "../../contexts/auth";
 
 export default function HomeScreen() {
   const filters = [

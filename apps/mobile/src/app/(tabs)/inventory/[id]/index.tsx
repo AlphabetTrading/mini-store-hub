@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React from "react";
-import { Stack, router } from "expo-router";
+import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import Colors from "@/constants/Colors";
 import SearchBar from "@/components/common/SearchBar";
+import { useQuery } from "@apollo/client";
+import { GET_SINGLE_CATEGORY } from "@/graphql/queries/categoryQueries";
 
 type Props = {};
 
@@ -73,83 +76,112 @@ const DATA = [
 ];
 
 const categoryDetail = (props: Props) => {
+  const params = useLocalSearchParams<any>();
+  const { loading, data, error, refetch } = useQuery(GET_SINGLE_CATEGORY, {
+    variables: {
+      categoryId: params.id,
+    },
+  });
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: "Biscuit",
+          title: params.name,
           headerStyle: {
             backgroundColor: Colors.light.tint,
           },
           headerTintColor: "#FFF",
         }}
       />
-      <View style={styles.container}>
+      {loading ? (
         <View
-          style={{
-            backgroundColor: Colors.light.background,
-            width: "100%",
-          }}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <SearchBar />
-          <FlatList
-            data={DATA}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.light.background,
-                  marginVertical: 4,
-                }}
-                onPress={() => {}}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "#FFF",
-                    width: "100%",
-                    padding: 10,
-                    paddingVertical: 15,
-                    alignItems: "center",
-                    gap: 16,
-                  }}
-                >
-                  <View
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View style={{ flex: 1 }}>
+          <View style={styles.container}>
+            <View
+              style={{
+                backgroundColor: Colors.light.background,
+                width: "100%",
+              }}
+            >
+              <SearchBar />
+              <FlatList
+                data={data.category.products}
+                renderItem={({ item, index }) => (
+                  <Link
                     style={{
-                      borderRadius: 100,
-                      backgroundColor: "#F0F0F0",
-                      width: 60,
-                      height: 60,
+                      backgroundColor: Colors.light.background,
+                      marginVertical: 4,
                     }}
-                  ></View>
-                  {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <Text style={{ fontSize: 18, fontFamily: "Inter-Medium" }}>
-                      Abu Walad
-                    </Text>
-                    <Text
-                      style={{ fontFamily: "Inter-Regular", color: "#80848A" }}
-                    >
-                      Quantity: 199
-                    </Text>
-                  </View>
-                  <Text
-                    style={{
-                      width: 80,
-                      fontSize: 18,
-                      fontFamily: "Inter-Medium",
-                      alignSelf: "flex-end",
-                      color: "#626262",
+                    href={{
+                      pathname: "/inventory/[id]/[itemId]",
+                      params: {
+                        id: params.id,
+                        itemId: item.id,
+                        name: item.name,
+                      },
                     }}
                   >
-                    ETB 35
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-          />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "#FFF",
+                        width: "100%",
+                        padding: 10,
+                        paddingVertical: 15,
+                        alignItems: "center",
+                        gap: 16,
+                      }}
+                    >
+                      <View
+                        style={{
+                          borderRadius: 100,
+                          backgroundColor: "#F0F0F0",
+                          width: 60,
+                          height: 60,
+                        }}
+                      ></View>
+                      {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
+                      <View style={{ flex: 1, gap: 5 }}>
+                        <Text
+                          style={{ fontSize: 18, fontFamily: "Inter-Medium" }}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "Inter-Regular",
+                            color: "#80848A",
+                          }}
+                        >
+                          Quantity: 10
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          width: 80,
+                          fontSize: 18,
+                          fontFamily: "Inter-Medium",
+                          alignSelf: "flex-end",
+                          color: "#626262",
+                        }}
+                      >
+                        ETB 35
+                      </Text>
+                    </View>
+                  </Link>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 };

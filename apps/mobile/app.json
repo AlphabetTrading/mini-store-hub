@@ -23,7 +23,8 @@
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.kalmad99.mobile"
+      "package": "com.kalmad99.mobile",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -40,8 +41,10 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "a26167e1-22e9-460c-8bc6-56ba456c7332"
       }
-     
     }
   }
 }

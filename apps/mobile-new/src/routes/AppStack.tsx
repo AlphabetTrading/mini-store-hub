@@ -17,6 +17,7 @@ import SalesScreen from "../screens/SalesScreen";
 import TabItem from "../components/TabItem";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import CustomMaterialMenu from "../components/CustomMenu";
 
 type Props = {};
 
@@ -87,69 +88,7 @@ const AppStack = ({ navigation }: any) => {
                   <Text style={{ color: "white", fontSize: 8 }}>12</Text>
                 </View>
               </View>
-              <View>
-                <AntDesign
-                  style={{ marginRight: 20, marginLeft: 10 }}
-                  name="setting"
-                  color="#FFF"
-                  size={24}
-                  onPress={() => {
-                    setOpenMenu(true);
-                  }}
-                />
-                <Modal transparent visible={openMenu}>
-                  <SafeAreaView
-                    style={{ flex: 1 }}
-                    onTouchStart={() => {
-                      setOpenMenu(false);
-                    }}
-                  >
-                    <View
-                      style={{
-                        borderRadius: 8,
-                        borderWidth: 1,
-                        paddingLeft: 10,
-                        paddingRight: 30,
-                        borderColor: "#333",
-                        backgroundColor: "#FFF",
-                        position: "absolute",
-                        top: 50,
-                        right: 20,
-                      }}
-                    >
-                      {options.map((option, index) => {
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            style={{
-                              flexDirection: "row",
-                              paddingVertical: 10,
-                              gap: 5,
-                            }}
-                            onPress={option.action}
-                          >
-                            <MaterialCommunityIcons
-                              name={
-                                option.icon as keyof typeof MaterialCommunityIcons.glyphMap
-                              }
-                              color="#FF0000"
-                              size={24}
-                            />
-                            <Text
-                              style={{
-                                color: "red",
-                                fontFamily: "InterRegular",
-                              }}
-                            >
-                              {option.title}
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </View>
-                  </SafeAreaView>
-                </Modal>
-              </View>
+              <CustomMaterialMenu options={options} />
             </View>
           ),
           tabBarLabelStyle: {

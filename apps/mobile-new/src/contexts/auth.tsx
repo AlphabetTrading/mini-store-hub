@@ -1,13 +1,8 @@
-import {
-  useRootNavigation,
-  useRootNavigationState,
-  useRouter,
-  useSegments,
-} from "expo-router";
 import React, { useContext, createContext, useEffect, useState } from "react";
-import { apolloClient } from "@/graphql/apolloClient";
-import { LOGIN_MUTATION } from "@/graphql/mutations/authMutations";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apolloClient } from "../graphql/apolloClient";
+import { LOGIN_MUTATION } from "../graphql/mutations/authMutations";
+
 interface AuthState {
   accessToken: string;
   refreshToken: string;
@@ -62,28 +57,23 @@ export function AuthContextProvider(props: ProviderProps) {
   }, []);
 
   // This hook will protect the route access based on user authentication.
-  const useProtectedRoute = (authState: AuthState | null) => {
-    const segments = useSegments();
-    const router = useRouter();
+  //   const useProtectedRoute = (authState: AuthState | null) => {
+  //     useEffect(() => {
+  //       // checking that navigation is all good;
+  //       if (!navigationState?.key) return;
 
-    const navigationState = useRootNavigationState();
-
-    useEffect(() => {
-      // checking that navigation is all good;
-      if (!navigationState?.key) return;
-
-      const inAuthGroup = segments[0] === "(auth)";
-      if (
-        // If the user is not signed in and the initial segment is not anything in the auth group.
-        !authState &&
-        !inAuthGroup
-      ) {
-        router.replace("/login");
-      } else if (authState && inAuthGroup) {
-        router.replace("/(tabs)/");
-      }
-    }, [authState, segments, navigationState?.key]);
-  };
+  //       const inAuthGroup = segments[0] === "(auth)";
+  //       if (
+  //         // If the user is not signed in and the initial segment is not anything in the auth group.
+  //         !authState &&
+  //         !inAuthGroup
+  //       ) {
+  //         router.replace("/login");
+  //       } else if (authState && inAuthGroup) {
+  //         router.replace("/(tabs)/");
+  //       }
+  //     }, [authState, segments, navigationState?.key]);
+  //   };
 
   /**
    *
@@ -131,7 +121,7 @@ export function AuthContextProvider(props: ProviderProps) {
     }
   };
 
-  useProtectedRoute(authState);
+  //   useProtectedRoute(authState);
 
   return (
     <AuthContext.Provider

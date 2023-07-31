@@ -5,6 +5,9 @@ import Navigation from "./src/routes";
 import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import React, { useEffect } from "react";
+import { ApolloProvider } from "@apollo/client";
+import { apolloClient } from "./src/graphql/apolloClient";
+import { AuthContextProvider } from "./src/contexts/auth";
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -20,6 +23,7 @@ export default function App() {
     InterBlack: require("./assets/fonts/Inter-Black.ttf"),
     ...FontAwesome.font,
   });
+  const client = apolloClient("");
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -30,7 +34,11 @@ export default function App() {
     return null;
   }
 
-  return <Navigation />;
+  return (
+    <AuthContextProvider>
+      <Navigation />
+    </AuthContextProvider>
+  );
 }
 
 const styles = StyleSheet.create({
