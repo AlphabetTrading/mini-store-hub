@@ -12,12 +12,14 @@ import TopNavSection from "./top-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { NavigationItem } from "../config";
 
 type Props = {
   onMobileNav: () => void;
+  navigationItems:NavigationItem[];
 };
 
-export const TopNav = (props: Props) => {
+export const TopNav = ({navigationItems,onMobileNav}: Props) => {
   // const { color = 'evident', onMobileNav, sections = [] } = props;
   const theme = useTheme();
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
@@ -65,7 +67,7 @@ export const TopNav = (props: Props) => {
       >
         <Stack alignItems="center" direction="row" spacing={2}>
           {!mdUp && (
-            <IconButton onClick={props.onMobileNav}>
+            <IconButton onClick={onMobileNav}>
               <SvgIcon>
                 <MenuIcon />
               </SvgIcon>
@@ -131,6 +133,7 @@ export const TopNav = (props: Props) => {
           >
             {/* {sections.map((section, index) => ( */}
             <TopNavSection
+            navigationItems={navigationItems}
             // items={section.items}
             // key={index}
             // pathname={pathname}
