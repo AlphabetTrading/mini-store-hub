@@ -13,6 +13,9 @@ import Colors from "../../constants/Colors";
 import SearchBar from "../../components/SearchBar";
 import { useQuery } from "@apollo/client";
 import { GET_SINGLE_CATEGORY } from "../../graphql/queries/categoryQueries";
+import { GET_RETAIL_SHOP_PRODUCTS } from "../../graphql/queries/retailShopQuery";
+import { useAuth } from "../../contexts/auth";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -76,14 +79,22 @@ const DATA = [
 
 const CategoryDetailScreen = ({ navigation, route }: any) => {
   const { id, name } = route.params;
-  const { loading, data, error, refetch } = useQuery(GET_SINGLE_CATEGORY, {
+  const { authState } = useAuth();
+  const { loading, data, error, refetch } = useQuery(GET_RETAIL_SHOP_PRODUCTS, {
     variables: {
-      categoryId: id,
+      filterRetailShopStockInput: {
+        product: {
+          category: {
+            id: id,
+          },
+        },
+        retailShopId: authState?.user.retailShop[0].id,
+      },
     },
   });
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <BaseLayout>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -92,7 +103,7 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
         </View>
       ) : (
         <View style={styles.container}>
-          {data.category.products.length > 0 ? (
+          {data.retailShopStockByRetailShopId.items.length > 0 ? (
             <View
               style={{
                 backgroundColor: Colors.light.background,
@@ -101,7 +112,7 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
             >
               <SearchBar />
               <FlatList
-                data={data.category.products}
+                data={data.retailShopStockByRetailShopId.items}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
@@ -110,8 +121,8 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
                     }}
                     onPress={() =>
                       navigation.navigate("ItemDetail", {
-                        id: item.id,
-                        name: item.name,
+                        id: item.product.id,
+                        name: item.product.name,
                       })
                     }
                   >
@@ -139,7 +150,7 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
                         <Text
                           style={{ fontSize: 18, fontFamily: "InterMedium" }}
                         >
-                          {item.name}
+                          {item.product.name}
                         </Text>
                         <Text
                           style={{
@@ -147,7 +158,7 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
                             color: "#80848A",
                           }}
                         >
-                          Quantity: 40
+                          Quantity: {item.quantity}
                         </Text>
                       </View>
                       <Text
@@ -182,7 +193,7 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
           )}
         </View>
       )}
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 

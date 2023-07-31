@@ -9,6 +9,12 @@ export const LOGIN_MUTATION = gql`
         id
         firstName
         lastName
+        username
+        phone
+        role
+        retailShop {
+          id
+        }
       }
     }
   }

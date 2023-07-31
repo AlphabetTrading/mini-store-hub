@@ -13,6 +13,7 @@ import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useQuery } from "@apollo/client";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -61,9 +62,8 @@ const DATA = [
 
 const InventoryScreen = ({ navigation }: any) => {
   const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
-  console.log("Categories", data);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
+    <BaseLayout>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -95,9 +95,9 @@ const InventoryScreen = ({ navigation }: any) => {
                   <TouchableOpacity
                     style={{
                       backgroundColor: Colors.light.background,
-                      width: "100%",
+                      maxWidth: "100%",
                       height: "100%",
-                      flex: 1,
+                      flex: 1 / 4,
                       alignItems: "center",
                       margin: 8,
                       gap: 4,
@@ -112,7 +112,8 @@ const InventoryScreen = ({ navigation }: any) => {
                     <View style={styles.categoryItem} key={index}>
                       <Image
                         style={styles.categoryImage}
-                        source={item.imageSrc}
+                        // source={item.imageSrc}
+                        source={require("../../../assets/icons/categories/egg.png")}
                       />
                     </View>
                     <Text style={styles.categoryText}>{item.name}</Text>
@@ -137,7 +138,7 @@ const InventoryScreen = ({ navigation }: any) => {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 

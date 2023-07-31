@@ -13,6 +13,7 @@ interface AuthState {
     username: string;
     phone: string;
     role: string;
+    retailShop: any[];
   };
 }
 // Define the AuthContextValue interface
@@ -42,7 +43,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthContextProvider(props: ProviderProps) {
   const [authState, setAuth] = useState<AuthState | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   // get user from async storage, and set it to state
   useEffect(() => {
     const fetchData = async () => {

@@ -11,6 +11,9 @@ import { Path, Svg } from "react-native-svg";
 import Colors from "../../constants/Colors";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_DETAIL } from "../../graphql/queries/productQueries";
+import { GET_RETAIL_SHOP_PRODUCT_DETAIL } from "../../graphql/queries/retailShopQuery";
+import { useAuth } from "../../contexts/auth";
+import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
@@ -34,14 +37,19 @@ const DATA = [
 
 const ItemDetailScreen = ({ navigation, route }: any) => {
   const { id, name } = route.params;
-  const { loading, data, error, refetch } = useQuery(GET_PRODUCT_DETAIL, {
-    variables: {
-      productId: id,
-    },
-  });
+  const { authState } = useAuth();
+  const { loading, data, error, refetch } = useQuery(
+    GET_RETAIL_SHOP_PRODUCT_DETAIL,
+    {
+      variables: {
+        productId: id,
+        retailShopId: authState?.user.retailShop[0].id,
+      },
+    }
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <BaseLayout>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -80,7 +88,11 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                 fontSize: 14,
               }}
             >
-              Item #{data.product.serialNumber}
+              Item #
+              {
+                data.retailShopStockByProductIdAndByRetailShopId.product
+                  .serialNumber
+              }
             </Text>
             <Text
               style={{
@@ -90,7 +102,11 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                 fontSize: 18,
               }}
             >
-              {data.product.priceHistory[0]?.price} ETB
+              {
+                data.retailShopStockByProductIdAndByRetailShopId.product
+                  .priceHistory[0]?.price
+              }{" "}
+              ETB
             </Text>
             <Text
               style={{
@@ -100,7 +116,8 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                 fontSize: 14,
               }}
             >
-              Quantity: 40
+              Quantity:{" "}
+              {data.retailShopStockByProductIdAndByRetailShopId.quantity}
             </Text>
           </View>
           <Text
@@ -120,7 +137,10 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
             }}
           >
             <FlatList
-              data={DATA}
+              data={
+                data.retailShopStockByProductIdAndByRetailShopId.product
+                  .priceHistory
+              }
               renderItem={({ item, index }) => (
                 <View
                   style={{
@@ -145,7 +165,8 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                         fontSize: 16,
                       }}
                     >
-                      02 Apr, 2022
+                      {/* 02 Apr, 2022 */}
+                      {item.createdAt}
                     </Text>
                     <View
                       style={{
@@ -177,7 +198,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                           fontSize: 18,
                         }}
                       >
-                        ETB 35.00
+                        ETB {item.price}
                       </Text>
                     </View>
                   </View>
@@ -188,7 +209,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </BaseLayout>
   );
 };
 

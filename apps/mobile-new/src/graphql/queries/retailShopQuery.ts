@@ -27,27 +27,29 @@ export const GET_RETAIL_SHOP_PRODUCTS = gql`
 `;
 
 export const GET_RETAIL_SHOP_PRODUCT_DETAIL = gql`
-  query Product($retailShopStockByIdId: String!) {
-    retailShopStockById(id: $retailShopStockByIdId) {
-      id
+  query RetailShopStockByProductIdAndByRetailShopId(
+    $productId: String!
+    $retailShopId: String!
+  ) {
+    retailShopStockByProductIdAndByRetailShopId(
+      productId: $productId
+      retailShopId: $retailShopId
+    ) {
       quantity
       product {
+        id
         name
-        amharicName
         description
+        amharicName
         amharicDescription
-        unit
         serialNumber
         images
         activePrice {
           price
-          purchasedPrice
         }
         priceHistory {
-          id
           price
-          purchasedPrice
-          product_created_at
+          createdAt
         }
       }
     }

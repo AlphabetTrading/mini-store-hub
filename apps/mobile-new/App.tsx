@@ -8,37 +8,27 @@ import React, { useEffect } from "react";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./src/graphql/apolloClient";
 import { AuthContextProvider } from "./src/contexts/auth";
+import { LoadingContextProvider } from "./src/contexts/loading";
+import { ApolloContextProvider } from "./src/contexts/apollo";
+import useCachedResources from "./src/hooks/useCachedResources";
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [loaded, error] = useFonts({
-    InterThin: require("./assets/fonts/Inter-Thin.ttf"),
-    InterExtraLight: require("./assets/fonts/Inter-ExtraLight.ttf"),
-    InterLight: require("./assets/fonts/Inter-Light.ttf"),
-    InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
-    InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
-    InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
-    InterBold: require("./assets/fonts/Inter-Bold.ttf"),
-    InterExtraBold: require("./assets/fonts/Inter-ExtraBold.ttf"),
-    InterBlack: require("./assets/fonts/Inter-Black.ttf"),
-    ...FontAwesome.font,
-  });
-  const client = apolloClient("");
+  const isLoadingComplete = useCachedResources();
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  if (!loaded) {
+  if (!isLoadingComplete) {
     return null;
+  } else {
+    return (
+      <LoadingContextProvider>
+        <AuthContextProvider>
+          <ApolloContextProvider>
+            <Navigation />
+          </ApolloContextProvider>
+        </AuthContextProvider>
+      </LoadingContextProvider>
+    );
   }
-
-  return (
-    <AuthContextProvider>
-      <Navigation />
-    </AuthContextProvider>
-  );
 }
 
 const styles = StyleSheet.create({
