@@ -4,17 +4,20 @@ export type User = {
   id: string;
   firstName: string;
   lastName: string;
-  userName: string;
+  username: string;
   phone: string;
-  role: Role;
+  role: UserRole;
+  createdAt: Date;
   userProfile?: UserProfile;
-  warehouse: { id: string };
+  warehouse: { id: string; name: string};
+  retailShop: { id: string; name: string};
 };
 type UserProfile = {
   address: Address;
+  photoUrl: string;
 };
 
-export enum Role {
+export enum UserRole {
   ADMIN = "ADMIN",
   RETAIL_SHOP_MANAGER = "RETAIL_SHOP_MANAGER",
   USER = "USER",
