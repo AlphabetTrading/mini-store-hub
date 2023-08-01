@@ -1,7 +1,8 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const BASE_URL =
-  process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:5000/graphql/";
+  process.env.EXPO_PUBLIC_API_URL ??
+  "https://mini-store-hub-api.onrender.com/graphql";
 
 export const apolloClient = (token: any) => {
   console.log(process.env.EXPO_PUBLIC_API_URL, BASE_URL, "apolloClient");
