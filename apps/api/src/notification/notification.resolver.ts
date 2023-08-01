@@ -188,7 +188,7 @@ export class NotificationResolver {
       statusCode: 200,
     };
   }
-  @Mutation(() => Notification, { name: 'sendBulkNotification' })
+  @Mutation(() => Notification, { name: 'markNotificationAsRead' })
   async markNotificationAsRead(
     @Args('notificationId') notificationId: string,
     @Args('userId') userId: string,

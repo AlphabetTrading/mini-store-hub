@@ -72,9 +72,13 @@ export class NotificationService {
         OR: [
           {
             recipientId: userId,
+          },
+          {
             id: {
               in: notificationIds,
             },
+          },
+          {
             recipientType: {
               in: recipientType,
             },
@@ -87,6 +91,23 @@ export class NotificationService {
   }
 
   async getAllReadNotifications(userId: string): Promise<Notification[]> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    let recipientType: RecipientType[] = ['USER'];
+    switch (user.role) {
+      case UserRole.ADMIN:
+        recipientType = ['ALL'];
+        break;
+      case UserRole.RETAIL_SHOP_MANAGER:
+        recipientType = ['RETAIL_SHOP', 'ALL'];
+        break;
+      case UserRole.WAREHOUSE_MANAGER:
+        recipientType = ['WAREHOUSE', 'ALL'];
+        break;
+      default:
+        break;
+    }
+
     const readNotificationIds = await this.prisma.notificationRead.findMany({
       where: {
         userId,
@@ -102,9 +123,18 @@ export class NotificationService {
 
     const readNotifications = await this.prisma.notification.findMany({
       where: {
-        id: {
-          in: notificationIds,
-        },
+        OR: [
+          {
+            id: {
+              in: notificationIds,
+            },
+          },
+          {
+            recipientType: {
+              in: recipientType,
+            },
+          },
+        ],
       },
     });
 
@@ -348,7 +378,40 @@ export class NotificationService {
     notificationId: string,
     userId: string,
   ): Promise<Notification> {
-    const notification = await this.prisma.notification.update({
+    // get the notification and if the notification is group notification, then mark the notification as read
+    // for all users
+
+    const notification = await this.prisma.notification.findUnique({
+      where: {
+        id: notificationId,
+      },
+    });
+
+    // check if the notification is group notification
+    if (notification.recipientType !== 'USER') {
+      const notificationRead = await this.prisma.notificationRead.upsert({
+        where: {
+          notificationId_userId: {
+            notificationId,
+            userId,
+          },
+        },
+        create: {
+          notificationId,
+          userId,
+        },
+        update: {
+          notificationId,
+          userId,
+        },
+        include: {
+          notification: true,
+        },
+      });
+      return notificationRead.notification;
+    }
+
+    return await this.prisma.notification.update({
       where: {
         id: notificationId,
       },
@@ -356,15 +419,6 @@ export class NotificationService {
         isRead: true,
       },
     });
-
-    await this.prisma.notificationRead.create({
-      data: {
-        notificationId,
-        userId,
-      },
-    });
-
-    return notification;
   }
 
   async sendBroadcastNotification({

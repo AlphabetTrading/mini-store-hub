@@ -101,7 +101,6 @@ input CreateBulkRetailShopStockInput {
 input CreateBulkSaleTransactionInput {
   goods: [CreateStockItemInput!]
   retailShopId: String!
-  totalPrice: Float!
 }
 
 input CreateBulkWarehouseStockInput {
@@ -405,9 +404,10 @@ type Mutation {
   disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
   forgotPassword(phone: String!): ForgotPasswordResponse!
   login(data: LoginInput!): Auth!
+  markNotificationAsRead(notificationId: String!, userId: String!): Notification!
   refreshToken(refreshToken: JWT!): Token!
   resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
-  sendBulkNotification(notificationId: String!, userId: String!): Notification!
+  sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
@@ -1040,6 +1040,12 @@ enum WarehouseStockOrderField {
   id
   name
   updatedAt
+}
+
+input sendBulkPushNotificationInput {
+  body: String!
+  title: String!
+  tokens: String!
 }
 
 input sendPushNotificationInput {
