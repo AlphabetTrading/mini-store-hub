@@ -131,7 +131,7 @@ export function AuthContextProvider(props: ProviderProps) {
         device_type,
         token,
         userId: authState.user.id,
-        status: true,
+        status: "active",
       };
       console.log(notificationInput, "notificationInput");
       const res = await client.mutate({

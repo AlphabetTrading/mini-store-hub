@@ -9,8 +9,5 @@ export class CreateNotificationTokenInput {
   device_type: string;
 
   @Field(() => String)
-  status: string;
-
-  @Field(() => String)
   userId?: string;
 }

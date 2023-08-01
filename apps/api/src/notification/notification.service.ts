@@ -277,12 +277,11 @@ export class NotificationService {
     const { userId, token, device_type } = notification_token_dto;
     const notification_token = this.prisma.notificationToken.upsert({
       where: {
-        userId: userId,
         token: token,
       },
       create: {
         device_type: device_type,
-        token: token,
+        token,
         status: true,
         user: {
           connect: {
