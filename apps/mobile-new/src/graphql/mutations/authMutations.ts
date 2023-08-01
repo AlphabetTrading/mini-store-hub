@@ -19,3 +19,15 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `;
+
+export const ACCEPT_NOTIFICATION_MUTATION = gql`
+  mutation AcceptNotification(
+    $notificationInput: CreateNotificationTokenInput!
+  ) {
+    acceptNotification(notificationInput: $notificationInput) {
+      id
+      token
+      device_type
+    }
+  }
+`;

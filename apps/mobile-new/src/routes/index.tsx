@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
@@ -17,6 +17,7 @@ import { ApolloProvider } from "@apollo/client";
 import { useAuth } from "../contexts/auth";
 import { apolloClient } from "../graphql/apolloClient";
 import LinkingConfiguration from "./LinkingConfiguration";
+import { useNotifications } from "../hooks/useNotifications";
 
 type Props = {};
 
@@ -29,6 +30,30 @@ const Navigation = (props: Props) => {
 };
 
 function RootNavigator() {
+  const { registerForPushNotificationsAsync, handleNotificationResponse } =
+    useNotifications();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener(
+        handleNotificationResponse
+      );
+
+    return () => {
+      if (responseListener)
+        Notifications.removeNotificationSubscription(responseListener);
+    };
+  }, []);
+
   const Stack = createNativeStackNavigator();
   const { authState } = useAuth();
   const isLoggedIn = authState?.user ? true : false;

@@ -11,6 +11,8 @@ import { FilterNotificationInput } from './dto/filter-notifications.input';
 import { NotificationOrder } from './dto/notifications-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { Prisma } from '@prisma/client';
+import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
+import { NotificationToken } from './models/notification_token.model';
 
 @Resolver()
 export class NotificationResolver {
@@ -135,6 +137,21 @@ export class NotificationResolver {
     @Args('data') createNoficationInput: sendPushNotificationInput,
   ) {
     if (createNoficationInput.recipientId) {
+      // get notification token using the recipient type
+      const notificationTokens =
+        await this.notificationService.getNotificationTokensByUserId(
+          createNoficationInput.recipientId,
+        );
+      // call event emitter to send broadcast notification
+      this.eventEmitter.emitAsync(
+        'notification.created',
+        new NotificationEvent({
+          notification_body: createNoficationInput.body,
+          notification_title: createNoficationInput.title,
+          tokens: notificationTokens,
+        }),
+      );
+
       return this.notificationService.sendIndividualNotification(
         createNoficationInput,
       );
@@ -144,6 +161,8 @@ export class NotificationResolver {
         await this.notificationService.getNotificationTokens(
           createNoficationInput.recipientType,
         );
+
+      console.log(notificationTokens, 'nati');
 
       // call event emitter to send broadcast notification
       this.eventEmitter.emitAsync(
@@ -160,7 +179,27 @@ export class NotificationResolver {
     }
   }
 
-  @Mutation(() => Notification)
+  @Mutation(() => NotificationToken, { name: 'acceptNotification' })
+  async acceptNotification(
+    @Args('notificationInput') notificationInput: CreateNotificationTokenInput,
+  ) {
+    return this.notificationService.acceptPushNotification(notificationInput);
+  }
+
+  @Mutation(() => NotificationToken, { name: 'removeNotificationToken' })
+  async removeNotificationToken(@Args('data') notificationToken: string) {
+    return this.notificationService.removeNotificationToken(notificationToken);
+  }
+
+  @Mutation(() => NotificationToken, { name: 'updateNotificationToken' })
+  async updateNotificationToken(
+    @Args('userId') id: string,
+    @Args('data') data: UpdateNotificationTokenInput,
+  ) {
+    return this.notificationService.updateNotificationToken(id, data);
+  }
+
+  @Mutation(() => NotificationToken, { name: 'disablePushNotification' })
   async disablePushNotification(
     @Args('userId') id: string,
     @Args('data') data: UpdateNotificationTokenInput,

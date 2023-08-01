@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import * as firebase from 'firebase-admin';
-import { User } from 'src/users/models/user.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
 import { NotificationEvent } from './events/notification.event';
-import { Prisma, RecipientType, UserRole } from '@prisma/client';
+import { Expo, ExpoPushMessage } from 'expo-server-sdk';
+
+import {
+  NotificationToken,
+  Prisma,
+  RecipientType,
+  UserRole,
+} from '@prisma/client';
 import { Notification } from './models/notification.model';
 import { CreateNotificationInput } from './dto/createNotification.dto';
 
@@ -170,10 +176,17 @@ export class NotificationService {
 
   async sendBulkPush(payload: NotificationEvent) {
     try {
-      // send bulk push notification
       const notification_title = payload.notification_title;
       const notification_body = payload.notification_body;
+      const notification_tokens = payload.tokens;
+      // send notification to firebase
+      await this.sendExpoNotification(
+        notification_tokens,
+        notification_title,
+        notification_body,
+      );
 
+      // save notification on each users
       const users = await this.prisma.user.findMany({
         where: {
           id: {
@@ -184,27 +197,6 @@ export class NotificationService {
           notificationTokens: true,
         },
       });
-
-      const notification_tokens = users.map(
-        (user) => user.notificationTokens[0].token,
-      );
-
-      // send notification
-      await firebase.messaging().sendEachForMulticast({
-        tokens: notification_tokens,
-        data: {
-          notification_title: notification_title,
-          notification_body: notification_body,
-        },
-
-        notification: {
-          title: notification_title,
-          body: notification_body,
-        },
-      });
-
-      // save notification on each users
-
       users.forEach(async (user) => {
         await this.prisma.notification.create({
           data: {
@@ -280,33 +272,59 @@ export class NotificationService {
   }
 
   async acceptPushNotification(
-    user: User,
     notification_token_dto: CreateNotificationTokenInput,
   ) {
+    const { userId, token, device_type } = notification_token_dto;
     const notification_token = this.prisma.notificationToken.upsert({
       where: {
-        userId: user.id,
-        token: notification_token_dto.token,
+        userId: userId,
+        token: token,
       },
       create: {
-        device_type: notification_token_dto.device_type,
-        token: notification_token_dto.token,
+        device_type: device_type,
+        token: token,
         status: true,
         user: {
           connect: {
-            id: user.id,
+            id: userId,
           },
         },
       },
       update: {
         user: {
           connect: {
-            id: user.id,
+            id: userId,
           },
         },
-        device_type: notification_token_dto.device_type,
-        token: notification_token_dto.token,
+        device_type: device_type,
+        token: token,
         status: true,
+      },
+    });
+
+    return notification_token;
+  }
+
+  async updateNotificationToken(
+    id: string,
+    data: UpdateNotificationTokenInput,
+  ) {
+    const notification_token = this.prisma.notificationToken.upsert({
+      where: {
+        token: data.notification_token,
+      },
+      create: {
+        token: data.notification_token,
+        status: true,
+        device_type: data.device_type,
+        user: {
+          connect: {
+            id: id,
+          },
+        },
+      },
+      update: {
+        ...data,
       },
     });
 
@@ -333,6 +351,18 @@ export class NotificationService {
     }
   }
 
+  async removeNotificationToken(
+    notification_token: string,
+  ): Promise<NotificationToken> {
+    const notification = await this.prisma.notificationToken.delete({
+      where: {
+        token: notification_token,
+      },
+    });
+
+    return notification;
+  }
+
   async getNotifications() {
     const notifications = await this.prisma.notification.findMany();
     return notifications;
@@ -345,6 +375,7 @@ export class NotificationService {
         where: { user: { id: recipientId }, status: true },
       });
       if (notification) {
+        await this.sendExpoNotification([notification.token], title, body);
         await this.prisma.notification.create({
           data: {
             title,
@@ -358,16 +389,6 @@ export class NotificationService {
             },
           },
         });
-        await firebase
-          .messaging()
-          .send({
-            notification: { title, body },
-            token: notification.token,
-            android: { priority: 'high' },
-          })
-          .catch((error: any) => {
-            console.error(error);
-          });
       }
     } catch (error) {
       return error;
@@ -426,6 +447,7 @@ export class NotificationService {
     body,
     recipientType,
   }: sendPushNotificationInput): Promise<Notification> {
+    console.log('nati');
     const notification = await this.prisma.notification.create({
       data: {
         title,
@@ -444,6 +466,15 @@ export class NotificationService {
     recipientType,
     recipientId,
   }: sendPushNotificationInput): Promise<Notification> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: recipientId,
+      },
+      include: {
+        notificationTokens: true,
+      },
+    });
+
     const notification = await this.prisma.notification.create({
       data: {
         title,
@@ -455,6 +486,19 @@ export class NotificationService {
     });
 
     return notification;
+  }
+
+  async getNotificationTokensByUserId(userId: string) {
+    const notificationTokens = await this.prisma.notificationToken.findMany({
+      where: { user: { id: userId }, status: true },
+      select: {
+        token: true,
+      },
+    });
+
+    return notificationTokens.map(
+      (notificationToken) => notificationToken.token,
+    );
   }
 
   async getNotificationTokens(recipientType: RecipientType) {
@@ -489,5 +533,48 @@ export class NotificationService {
     return notificationTokens.map(
       (notificationToken) => notificationToken.token,
     );
+  }
+
+  async sendExpoNotification(
+    notificationTokens: string[],
+    title: string,
+    body: string,
+  ) {
+    const expo = new Expo();
+    // Create the messages that you want to send to clients
+    let messages = [];
+    for (let pushToken of notificationTokens) {
+      // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+
+      // Check that all your push tokens appear to be valid Expo push tokens
+      if (!Expo.isExpoPushToken(pushToken)) {
+        console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        continue;
+      }
+      console.log(pushToken);
+
+      // Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
+      messages.push({
+        to: pushToken,
+        sound: 'default',
+        title: title,
+        body,
+        data: { otherData: 'data' },
+      });
+    }
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+    (async () => {
+      for (const chunk of chunks) {
+        try {
+          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })();
+
+    return tickets;
   }
 }
