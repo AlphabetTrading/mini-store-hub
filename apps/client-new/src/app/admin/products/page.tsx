@@ -16,33 +16,28 @@ import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
 import ItemListTable from "@/components/stock/stock-list-table";
 import {
-  WAREHOUSE_STOCK,
-  WarehouseStockData,
-  WarehouseStockVars,
+    PRODUCTS,
+  ProductsData,
 } from "@/graphql/products/queries";
 // import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import ItemListSearch from "@/components/stock/stock-list-search";
 // import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { useSession } from "next-auth/react";
+import ProductsListSearch from "@/components/products/products-list-search";
+import ProductsListTable from "@/components/products/products-list-table";
 
 type Props = {};
 
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
+  const {data,error,loading} = useQuery<ProductsData>(PRODUCTS,{
+    fetchPolicy:"cache-and-network"
+  })
 
-  const { data, loading, error, refetch } = useQuery<
-    WarehouseStockData,
-    WarehouseStockVars
-  >(WAREHOUSE_STOCK, {
-    variables: {
-      warehouseId: "clki1bbrx000srlwgvx7jzw1i",
-    },
-  });
 
   return (
     <Box component="main" sx={{ py: 8 }}>
-      {JSON.stringify(data)}
       <Container maxWidth="xl">
         <Stack spacing={4}>
           <Stack
@@ -66,10 +61,10 @@ const Page = (props: Props) => {
               <Button
                 variant="contained"
                 component={NextLink}
-                href={"/stock/add"}
+                href={"/admin/products/create"}
                 startIcon={<AddIcon />}
               >
-                Add New Items
+               Create Product
               </Button>
             </Stack>
           </Stack>
@@ -81,8 +76,8 @@ const Page = (props: Props) => {
             </Typography>
           ) : (
             <Card>
-              <ItemListSearch />
-              <ItemListTable warehouseStockData={data} />
+              <ProductsListSearch />
+              <ProductsListTable products={data.products.items} />
             </Card>
           )}
           {/* <Card>

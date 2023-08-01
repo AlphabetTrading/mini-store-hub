@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import ItemListRow from "./item-list-row";
+import ItemListRow from "./stock-list-row";
 import { WarehouseStockData } from "@/graphql/products/queries";
 
 

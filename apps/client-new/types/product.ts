@@ -3,6 +3,7 @@ export interface Product {
   serialNumber: string;
   unit: string;
   name: string;
+  description: string;
   category: { id: string; name: string };
   activePrice: { id: string; purchasedPrice: number; price: number };
   priceHisotry: {
