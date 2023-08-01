@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "mobile-new",
-    "scheme": "mini-store-hub",
+    "scheme": "com.kalmad99.mobile",
     "slug": "mobile-new",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,6 +19,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.kalmad99.mobile",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -26,6 +28,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2fa6b5a7-f577-465e-a177-18e218351aca"
+      }
     }
   }
 }

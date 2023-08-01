@@ -7,7 +7,4 @@ export class UpdateNotificationTokenInput {
 
   @Field(() => String, { nullable: true })
   device_type: string;
-
-  @Field(() => String, { nullable: true })
-  userId?: string;
 }

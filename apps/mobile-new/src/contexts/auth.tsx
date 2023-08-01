@@ -1,7 +1,10 @@
 import React, { useContext, createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apolloClient } from "../graphql/apolloClient";
-import { LOGIN_MUTATION } from "../graphql/mutations/authMutations";
+import {
+  ACCEPT_NOTIFICATION_MUTATION,
+  LOGIN_MUTATION,
+} from "../graphql/mutations/authMutations";
 
 interface AuthState {
   accessToken: string;
@@ -14,6 +17,7 @@ interface AuthState {
     phone: string;
     role: string;
     retailShop: any[];
+    allowsNotifications: boolean;
   };
 }
 // Define the AuthContextValue interface
@@ -31,6 +35,12 @@ interface AuthContextValue {
   signIn: (e: string, p: string) => Promise<SignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   authState: AuthState | undefined | null;
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState | null>>;
+  updateNotificationToken: (
+    authState: AuthState,
+    token: string,
+    device_type: string
+  ) => Promise<any>;
 }
 
 // Define the Provider component
@@ -42,38 +52,19 @@ interface ProviderProps {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthContextProvider(props: ProviderProps) {
-  const [authState, setAuth] = useState<AuthState | null>(null);
+  const [authState, setAuthState] = useState<AuthState | null>(null);
   // get user from async storage, and set it to state
   useEffect(() => {
     const fetchData = async () => {
       const localState = await AsyncStorage.getItem("login");
       if (localState) {
-        setAuth(JSON.parse(localState));
+        setAuthState(JSON.parse(localState));
       }
     };
     if (!authState) {
       fetchData();
     }
   }, []);
-
-  // This hook will protect the route access based on user authentication.
-  //   const useProtectedRoute = (authState: AuthState | null) => {
-  //     useEffect(() => {
-  //       // checking that navigation is all good;
-  //       if (!navigationState?.key) return;
-
-  //       const inAuthGroup = segments[0] === "(auth)";
-  //       if (
-  //         // If the user is not signed in and the initial segment is not anything in the auth group.
-  //         !authState &&
-  //         !inAuthGroup
-  //       ) {
-  //         router.replace("/login");
-  //       } else if (authState && inAuthGroup) {
-  //         router.replace("/(tabs)/");
-  //       }
-  //     }, [authState, segments, navigationState?.key]);
-  //   };
 
   /**
    *
@@ -82,12 +73,12 @@ export function AuthContextProvider(props: ProviderProps) {
   const logout = async (): Promise<SignOutResponse> => {
     try {
       await AsyncStorage.removeItem("login");
-      setAuth(null);
+      setAuthState(null);
       return { error: undefined, data: true };
     } catch (error) {
       return { error, data: undefined };
     } finally {
-      setAuth(null);
+      setAuthState(null);
     }
   };
 
@@ -113,10 +104,47 @@ export function AuthContextProvider(props: ProviderProps) {
         },
       });
       await AsyncStorage.setItem("login", JSON.stringify(res.data.login));
-      setAuth(res.data.login);
+      setAuthState(res.data.login);
       return { data: res.data.login, error: undefined };
     } catch (error) {
-      setAuth(null);
+      setAuthState(null);
+      return { error: error as Error, data: undefined };
+    }
+  };
+
+  /**
+   *
+   * @param authState
+   * @param token
+   * @returns
+   *
+   */
+  const updateNotificationToken = async (
+    authState: AuthState,
+    token: string,
+    device_type: string
+  ) => {
+    try {
+      console.log(authState, "authState");
+      const client = apolloClient(authState.accessToken);
+      const notificationInput = {
+        device_type,
+        token,
+        userId: authState.user.id,
+        status: true,
+      };
+      console.log(notificationInput, "notificationInput");
+      const res = await client.mutate({
+        mutation: ACCEPT_NOTIFICATION_MUTATION,
+        variables: {
+          notificationInput,
+        },
+      });
+      console.log(res.data, "notification");
+      return { data: res.data, error: undefined };
+    } catch (error) {
+      console.log(error);
+      // setAuthState(prev => ({...prev, user: {...prev?.user, allowsNotifications: false}}));
       return { error: error as Error, data: undefined };
     }
   };
@@ -129,6 +157,8 @@ export function AuthContextProvider(props: ProviderProps) {
         signIn: login,
         signOut: logout,
         authState,
+        setAuthState,
+        updateNotificationToken,
       }}
     >
       {props.children}

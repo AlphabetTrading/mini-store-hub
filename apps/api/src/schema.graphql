@@ -126,6 +126,13 @@ input CreateGoodsTransferInput {
   transferType: TransferType!
 }
 
+input CreateNotificationTokenInput {
+  device_type: String!
+  status: String!
+  token: String!
+  userId: String!
+}
+
 input CreatePriceHistoryInput {
   price: Float!
   productId: String!
@@ -372,6 +379,7 @@ type MonthlyTransaction {
 }
 
 type Mutation {
+  acceptNotification(notificationInput: CreateNotificationTokenInput!): NotificationToken!
   changePassword(data: ChangePasswordInput!): User!
   createBulkRetailShopStock(data: CreateBulkRetailShopStockInput!): [RetailShopStock!]!
   createBulkWarehouseStock(data: CreateBulkWarehouseStockInput!): [WarehouseStock!]!
@@ -401,17 +409,19 @@ type Mutation {
   deleteUserProfile(id: String!): UserProfile!
   deleteWarehouse(id: String!): Warehouse!
   deleteWarehouseStock(id: String!): WarehouseStock!
-  disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): Notification!
+  disablePushNotification(data: UpdateNotificationTokenInput!, userId: String!): NotificationToken!
   forgotPassword(phone: String!): ForgotPasswordResponse!
   login(data: LoginInput!): Auth!
   markNotificationAsRead(notificationId: String!, userId: String!): Notification!
   refreshToken(refreshToken: JWT!): Token!
+  removeNotificationToken(data: String!): NotificationToken!
   resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
   sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
   updateGoodsTransfer(data: UpdateGoodsTransferInput!, id: String!): GoodsTransfer!
+  updateNotificationToken(data: UpdateNotificationTokenInput!, userId: String!): NotificationToken!
   updateProduct(data: CreateProductInput!, id: String!): Product!
   updateRetailShop(data: UpdateRetailShopInput!, id: String!): RetailShop!
   updateRetailShopStock(data: UpdateRetailShopStockInput!, id: String!): RetailShopStock!
@@ -879,7 +889,6 @@ input UpdateGoodsTransferInput {
 input UpdateNotificationTokenInput {
   device_type: String
   notification_token: String
-  userId: String
 }
 
 input UpdateRetailShopInput {
