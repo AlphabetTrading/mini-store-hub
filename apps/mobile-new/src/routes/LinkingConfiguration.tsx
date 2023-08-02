@@ -46,6 +46,7 @@ const linking: LinkingOptions<any> = {
         },
       },
       Notifications: "notifications",
+      Profile: "profile",
       ForgotPassword: "forgotpassword",
       ResetPassword: { path: "resetpassword/:otp" },
       SignIn: "signin",

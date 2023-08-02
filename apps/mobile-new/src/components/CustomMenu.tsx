@@ -1,4 +1,9 @@
-import { AntDesign, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Entypo,
+  Feather,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
 import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
@@ -13,10 +18,11 @@ type Props = {
   options: any[];
 };
 
-const CustomMaterialMenu = ({ navigation }: any) => {
+const CustomMaterialMenu = ({}: any) => {
   const { signOut } = useAuth();
   const [visible, setVisible] = useState(false);
   const hideMenu = () => setVisible(false);
+  const navigation = useNavigation();
   // const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const showMenu = () => setVisible(true);
@@ -24,14 +30,22 @@ const CustomMaterialMenu = ({ navigation }: any) => {
   const options = [
     {
       id: 1,
-      title: "Settings",
-      icon: "key",
-      action: () => {},
+      title: "View Profile",
+      icon: <MaterialCommunityIcons name="account" color="#FF0000" size={24} />,
+      action: () => {
+        navigation.navigate("Profile");
+      },
     },
     {
       id: 2,
+      title: "Settings",
+      icon: <Feather name="settings" color="#FF0000" size={24} />,
+      action: () => {},
+    },
+    {
+      id: 3,
       title: "Logout",
-      icon: "logout",
+      icon: <MaterialCommunityIcons name="logout" color="#FF0000" size={24} />,
       action: async () => {
         const res = await signOut();
         console.log("logout", res);
@@ -72,13 +86,7 @@ const CustomMaterialMenu = ({ navigation }: any) => {
                 option.action();
               }}
             >
-              <MaterialCommunityIcons
-                name={
-                  option.icon as keyof typeof MaterialCommunityIcons.glyphMap
-                }
-                color="#FF0000"
-                size={24}
-              />
+              {option.icon}
               <Text
                 style={{
                   color: "red",
