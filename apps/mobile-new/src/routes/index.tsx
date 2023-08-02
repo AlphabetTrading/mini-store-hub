@@ -19,6 +19,7 @@ import { apolloClient } from "../graphql/apolloClient";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { useNotifications } from "../hooks/useNotifications";
 import Loading from "../components/Loading";
+import ProfileScreen from "../screens/ProfileScreen";
 
 type Props = {};
 
@@ -70,6 +71,17 @@ function RootNavigator() {
           <Stack.Screen
             name="Notifications"
             component={NotificationScreen}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: Colors.light.tint,
+              },
+              headerTintColor: "#FFF",
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
             options={{
               headerShown: true,
               headerStyle: {
