@@ -162,8 +162,6 @@ export class NotificationResolver {
           createNoficationInput.recipientType,
         );
 
-      console.log(notificationTokens, 'nati');
-
       // call event emitter to send broadcast notification
       this.eventEmitter.emitAsync(
         'notification.created',
@@ -207,26 +205,27 @@ export class NotificationResolver {
     return this.notificationService.disablePushNotification(id, data);
   }
 
-  @Mutation(() => Notification, { name: 'sendBulkNotification' })
-  async sendBulkNotification(
-    @Args('data') data: sendBulkPushNotificationInput,
-  ) {
-    // call event emitter to send bulk notification
-    this.eventEmitter.emitAsync(
-      'bulkNotification.created',
-      new NotificationEvent({
-        notification_body: data.body,
-        notification_title: data.title,
-        tokens: data.tokens,
-      }),
-    );
+  // @Mutation(() => Notification, { name: 'sendBulkNotification' })
+  // async sendBulkNotification(
+  //   @Args('data') data: sendBulkPushNotificationInput,
+  // ) {
+  //   // call event emitter to send bulk notification
+  //   this.eventEmitter.emitAsync(
+  //     'bulkNotification.created',
+  //     new NotificationEvent({
+  //       notification_body: data.body,
+  //       notification_title: data.title,
+  //       tokens: data.tokens,
+  //     }),
+  //   );
 
-    return {
-      message: 'Bulk Notification Sent',
-      status: 'success',
-      statusCode: 200,
-    };
-  }
+  //   return {
+  //     message: 'Bulk Notification Sent',
+  //     status: 'success',
+  //     statusCode: 200,
+  //   };
+  // }
+
   @Mutation(() => Notification, { name: 'markNotificationAsRead' })
   async markNotificationAsRead(
     @Args('notificationId') notificationId: string,

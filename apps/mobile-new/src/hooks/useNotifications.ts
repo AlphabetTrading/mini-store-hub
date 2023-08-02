@@ -5,9 +5,11 @@ import { openSettings } from "expo-linking";
 
 import { useUser } from "./useUser";
 import { useAuth } from "../contexts/auth";
+import { useNavigation } from "@react-navigation/native";
 
 export const useNotifications = () => {
   const { addPushToken, setAllowsNotifications } = useUser();
+  const navigation = useNavigation<any>();
   const { authState } = useAuth();
 
   const registerForPushNotificationsAsync = async (alertUser?: boolean) => {
@@ -65,8 +67,13 @@ export const useNotifications = () => {
     response: Notifications.NotificationResponse
   ) => {
     const data: { url?: string } = response.notification.request.content.data;
-
-    if (data?.url) Linking.openURL(data.url);
+    // go to the notification url, with screen Name Notifications
+    try {
+      navigation.navigate("Notifications");
+      // Linking.openURL("exp://192.168.42.135:19000/notifications");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return {

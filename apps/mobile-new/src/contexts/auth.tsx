@@ -1,10 +1,16 @@
 import React, { useContext, createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
 import { apolloClient } from "../graphql/apolloClient";
 import {
-  ACCEPT_NOTIFICATION_MUTATION,
+  FORGOT_PASSWORD_MUTATION,
   LOGIN_MUTATION,
+  RESET_PASSWORD_MUTATION,
 } from "../graphql/mutations/authMutations";
+import {
+  ACCEPT_NOTIFICATION_MUTATION,
+  REMOVE_NOTIFICATION_MUTATION,
+} from "../graphql/mutations/notificationMutations";
 
 interface AuthState {
   accessToken: string;
@@ -18,6 +24,7 @@ interface AuthState {
     role: string;
     retailShop: any[];
     allowsNotifications: boolean;
+    notification_token?: string;
   };
 }
 // Define the AuthContextValue interface
@@ -41,6 +48,8 @@ interface AuthContextValue {
     token: string,
     device_type: string
   ) => Promise<any>;
+  forgotPassword: (OTP: string, username: string) => Promise<any>;
+  resetPassword: (newPassword: string, username: string) => Promise<any>;
 }
 
 // Define the Provider component
@@ -72,7 +81,16 @@ export function AuthContextProvider(props: ProviderProps) {
    */
   const logout = async (): Promise<SignOutResponse> => {
     try {
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
+
       await AsyncStorage.removeItem("login");
+      const client = apolloClient(authState?.accessToken);
+      const res = await client.mutate({
+        mutation: REMOVE_NOTIFICATION_MUTATION,
+        variables: {
+          token,
+        },
+      });
       setAuthState(null);
       return { error: undefined, data: true };
     } catch (error) {
@@ -131,7 +149,6 @@ export function AuthContextProvider(props: ProviderProps) {
         device_type,
         token,
         userId: authState.user.id,
-        status: "active",
       };
       console.log(notificationInput, "notificationInput");
       const res = await client.mutate({
@@ -149,6 +166,54 @@ export function AuthContextProvider(props: ProviderProps) {
     }
   };
 
+  /***
+   * forgot password
+   * @param OTP
+   * @param username
+   */
+  const forgotPassword = async (OTP: string, username: string) => {
+    try {
+      const client = apolloClient(null);
+      const res = await client.mutate({
+        mutation: FORGOT_PASSWORD_MUTATION,
+        variables: {
+          data: {
+            username,
+          },
+        },
+      });
+      return { data: res.data.login, error: undefined };
+    } catch (error) {
+      setAuthState(null);
+      return { error: error as Error, data: undefined };
+    }
+  };
+
+  /***
+   * reset password
+   * @param newPassword
+   * @param username
+   * @returns
+   */
+
+  const resetPassword = async (newPassword: string, username: string) => {
+    try {
+      const client = apolloClient(null);
+      const res = await client.mutate({
+        mutation: RESET_PASSWORD_MUTATION,
+        variables: {
+          data: {
+            username,
+          },
+        },
+      });
+      return { data: res.data.login, error: undefined };
+    } catch (error) {
+      setAuthState(null);
+      return { error: error as Error, data: undefined };
+    }
+  };
+
   //   useProtectedRoute(authState);
 
   return (
@@ -159,6 +224,8 @@ export function AuthContextProvider(props: ProviderProps) {
         authState,
         setAuthState,
         updateNotificationToken,
+        forgotPassword,
+        resetPassword,
       }}
     >
       {props.children}

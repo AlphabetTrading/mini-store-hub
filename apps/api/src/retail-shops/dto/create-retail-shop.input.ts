@@ -1,12 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { Address } from 'src/common/models/address.model';
-import { GoodsTransfer } from 'src/goods-transfers/models/goods-transfer.model';
-import { RetailShopStock } from 'src/retail-shop-inventories/models/retail-shop-inventory.model';
-import { AnnualTransaction } from 'src/sale-transactions/models/annual-transaction';
-import { DailyTransaction } from 'src/sale-transactions/models/daily-transaction';
-import { MonthlyTransaction } from 'src/sale-transactions/models/monthly-transaction';
-import { SaleTransaction } from 'src/sale-transactions/models/sale-transaction.model';
-import { User } from 'src/users/models/user.model';
+import { CreateAddressInput } from 'src/common/dtos/address/create-address.input';
 
 @InputType()
 export class CreateRetailShopInput {
@@ -14,7 +7,10 @@ export class CreateRetailShopInput {
   name: string;
 
   @Field(() => String, { nullable: true })
-  addressId?: string;
+  amharicName?: string;
+
+  @Field(() => CreateAddressInput, { nullable: true })
+  address?: CreateAddressInput;
 
   @Field(() => String, { nullable: true })
   retailShopManagerId?: string;

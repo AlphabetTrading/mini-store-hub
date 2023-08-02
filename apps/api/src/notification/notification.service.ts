@@ -353,7 +353,17 @@ export class NotificationService {
   async removeNotificationToken(
     notification_token: string,
   ): Promise<NotificationToken> {
-    const notification = await this.prisma.notificationToken.delete({
+    const notification = await this.prisma.notificationToken.findUnique({
+      where: {
+        token: notification_token,
+      },
+    });
+
+    if (!notification) {
+      return;
+    }
+
+    await this.prisma.notificationToken.delete({
       where: {
         token: notification_token,
       },
@@ -446,7 +456,6 @@ export class NotificationService {
     body,
     recipientType,
   }: sendPushNotificationInput): Promise<Notification> {
-    console.log('nati');
     const notification = await this.prisma.notification.create({
       data: {
         title,
@@ -501,29 +510,40 @@ export class NotificationService {
   }
 
   async getNotificationTokens(recipientType: RecipientType) {
-    let roleWhere = {};
+    let where: Prisma.NotificationTokenWhereInput = {};
     if (recipientType === 'ALL') {
-      roleWhere = {
-        NOT: {
-          role: UserRole.ADMIN,
+      where = {
+        user: {
+          role: {
+            not: UserRole.ADMIN,
+          },
         },
       };
     } else if (recipientType === 'RETAIL_SHOP') {
-      roleWhere = {
-        role: UserRole.RETAIL_SHOP_MANAGER,
+      where = {
+        user: {
+          role: UserRole.RETAIL_SHOP_MANAGER,
+        },
       };
     } else if (recipientType === 'WAREHOUSE') {
-      roleWhere = {
-        role: UserRole.WAREHOUSE_MANAGER,
+      where = {
+        user: {
+          role: UserRole.WAREHOUSE_MANAGER,
+        },
       };
     } else {
-      roleWhere = {
-        role: UserRole.USER,
+      where = {
+        user: {
+          role: UserRole.USER,
+        },
       };
     }
 
     const notificationTokens = await this.prisma.notificationToken.findMany({
-      where: { user: { role: roleWhere }, status: true },
+      where: {
+        ...where,
+        status: true,
+      },
       select: {
         token: true,
       },

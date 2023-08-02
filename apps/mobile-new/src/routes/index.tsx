@@ -18,12 +18,13 @@ import { useAuth } from "../contexts/auth";
 import { apolloClient } from "../graphql/apolloClient";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { useNotifications } from "../hooks/useNotifications";
+import Loading from "../components/Loading";
 
 type Props = {};
 
 const Navigation = (props: Props) => {
   return (
-    <NavigationContainer linking={LinkingConfiguration}>
+    <NavigationContainer linking={LinkingConfiguration} fallback={<Loading />}>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -135,11 +136,13 @@ function RootNavigator() {
           />
         </>
       ) : (
-        <Stack.Screen
-          name="Auth"
-          component={AuthStack}
-          options={{ headerShown: false }}
-        />
+        <Stack.Group screenOptions={{ presentation: "modal" }}>
+          <Stack.Screen
+            name="Auth"
+            component={AuthStack}
+            options={{ headerShown: false }}
+          />
+        </Stack.Group>
       )}
     </Stack.Navigator>
   );

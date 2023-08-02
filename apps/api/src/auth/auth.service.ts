@@ -134,7 +134,7 @@ export class AuthService {
     );
 
     if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new BadRequestException('Invalid Credentials');
     }
 
     return this.generateTokens({

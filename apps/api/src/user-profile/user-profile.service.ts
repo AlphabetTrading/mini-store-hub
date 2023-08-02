@@ -17,13 +17,8 @@ export class UserProfileService {
     return this.prisma.userProfile.create({
       data: {
         address: {
-          connectOrCreate: {
-            where: {
-              id: data.addressId,
-            },
-            create: {
-              ...data.address,
-            },
+          create: {
+            ...data.address,
           },
         },
         photoUrl: data.photoUrl,

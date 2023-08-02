@@ -4,9 +4,6 @@ import { UnitType } from '@prisma/client';
 @InputType()
 export class CreateProductInput {
   @Field()
-  serialNumber: string;
-
-  @Field()
   name: string;
 
   @Field()

@@ -20,14 +20,30 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
-export const ACCEPT_NOTIFICATION_MUTATION = gql`
-  mutation AcceptNotification(
-    $notificationInput: CreateNotificationTokenInput!
+export const FORGOT_PASSWORD_MUTATION = gql`
+  mutation ForgotPassword($phone: String!) {
+    forgotPassword(phone: $phone) {
+      accessToken
+      message
+      success
+    }
+  }
+`;
+
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation ResetPassword(
+    $accessToken: String!
+    $password: String!
+    $phone: String!
   ) {
-    acceptNotification(notificationInput: $notificationInput) {
-      id
-      token
-      device_type
+    resetPassword(
+      accessToken: $accessToken
+      password: $password
+      phone: $phone
+    ) {
+      accessToken
+      message
+      success
     }
   }
 `;

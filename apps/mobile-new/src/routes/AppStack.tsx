@@ -21,8 +21,7 @@ import CustomMaterialMenu from "../components/CustomMenu";
 
 type Props = {};
 
-const Tab = createBottomTabNavigator();
-const Stack = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator();
 
 const CustomTabBarButton = ({ children, onPress }: any) => {
   return (
@@ -52,10 +51,9 @@ const CustomTabBarButton = ({ children, onPress }: any) => {
 const options = [{ id: 1, title: "Logout", icon: "logout", action: () => {} }];
 
 const AppStack = ({ navigation }: any) => {
-  const [openMenu, setOpenMenu] = useState(false);
   return (
     <>
-      <Tab.Navigator
+      <BottomTab.Navigator
         screenOptions={{
           // headerTintColor: "#fff",
           headerShown: true,
@@ -70,7 +68,11 @@ const AppStack = ({ navigation }: any) => {
                   name="bells"
                   color="#FFF"
                   size={24}
-                  onPress={() => navigation.navigate("Notifications")}
+                  onPress={() =>
+                    navigation.navigate("Notifications", {
+                      screen: "Notifications",
+                    })
+                  }
                 />
                 <View
                   style={{
@@ -118,8 +120,8 @@ const AppStack = ({ navigation }: any) => {
           // tabBarInactiveTintColor: "#828282",
         }}
       >
-        <Tab.Screen
-          name="index"
+        <BottomTab.Screen
+          name="Index"
           options={{
             title: "Hello, User",
             headerShown: true,
@@ -174,8 +176,8 @@ const AppStack = ({ navigation }: any) => {
           }}
           component={HomeScreen}
         />
-        <Tab.Screen
-          name="inventory"
+        <BottomTab.Screen
+          name="Inventory"
           options={{
             title: "Inventory",
             headerShown: true,
@@ -231,8 +233,8 @@ const AppStack = ({ navigation }: any) => {
           }}
           component={InventoryScreen}
         />
-        <Tab.Screen
-          name="new_transaction"
+        <BottomTab.Screen
+          name="NewTransaction"
           options={{
             tabBarStyle: {
               zIndex: 100,
@@ -290,8 +292,8 @@ const AppStack = ({ navigation }: any) => {
           }}
           component={NewTransactionScreen}
         />
-        <Tab.Screen
-          name="sales"
+        <BottomTab.Screen
+          name="Sales"
           options={{
             title: "Sales",
             headerShown: true,
@@ -431,8 +433,8 @@ const AppStack = ({ navigation }: any) => {
           }}
           component={SalesScreen}
         />
-        <Tab.Screen
-          name="insights"
+        <BottomTab.Screen
+          name="Insights"
           options={{
             title: "Insights",
             tabBarItemStyle: {
@@ -460,7 +462,7 @@ const AppStack = ({ navigation }: any) => {
           }}
           component={InsightsScreen}
         />
-      </Tab.Navigator>
+      </BottomTab.Navigator>
     </>
   );
 };

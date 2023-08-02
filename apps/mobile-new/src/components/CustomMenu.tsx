@@ -3,6 +3,11 @@ import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
 import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
 import { useAuth } from "../contexts/auth";
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
 
 type Props = {
   options: any[];
@@ -12,6 +17,7 @@ const CustomMaterialMenu = ({ navigation }: any) => {
   const { signOut } = useAuth();
   const [visible, setVisible] = useState(false);
   const hideMenu = () => setVisible(false);
+  // const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const showMenu = () => setVisible(true);
 
@@ -27,9 +33,13 @@ const CustomMaterialMenu = ({ navigation }: any) => {
       title: "Logout",
       icon: "logout",
       action: async () => {
-        await signOut();
-        hideMenu();
-        navigation.replace("Login");
+        const res = await signOut();
+        console.log("logout", res);
+        // hideMenu();
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: "Login" }],
+        // });
       },
     },
   ];
