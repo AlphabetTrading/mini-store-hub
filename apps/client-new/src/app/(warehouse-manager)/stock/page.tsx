@@ -36,7 +36,7 @@ const Page = (props: Props) => {
     WarehouseStockVars
   >(WAREHOUSE_STOCK, {
     variables: {
-      warehouseId: "clki1bbrx000srlwgvx7jzw1i",
+      warehouseId: ((sessionData?.user)as any).warehouseId || "",
     },
   });
 

@@ -46,13 +46,13 @@ const Page = (props: Props) => {
             alignItems="center"
           >
             <Stack spacing={1}>
-              <Typography variant="h4">Stock</Typography>
+              <Typography variant="h4">Products</Typography>
               <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-                <Link component={NextLink} href={"/dashboard"}>
+                <Link component={NextLink} href={"/admin/dashboard"}>
                   Dashboard
                 </Link>
-                <Link component={NextLink} href={"/dashboard"}>
-                  Stock
+                <Link component={NextLink} href={"/admin/products"}>
+                  Products
                 </Link>
                 <Typography>List</Typography>
               </Breadcrumbs>

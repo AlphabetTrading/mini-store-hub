@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   serialNumber: string;
-  unit: string;
+  unit: Unit;
   name: string;
   description: string;
   category: { id: string; name: string };
@@ -14,8 +14,19 @@ export interface Product {
   }[];
 }
 
-  export interface WarehouseStock {
-    quantity: number;
-    product: Product;
-  }
-  
+export interface WarehouseStock {
+  quantity: number;
+  product: Product;
+}
+
+export enum Unit {
+  BAG = "BAG",
+  BOTTLE = "BOTTLE",
+  BOX = "BOX",
+  KG = "KG",
+  LITER = "LITER",
+  METER = "METER",
+  METER_SQUARE = "METER_SQUARE",
+  OTHER = "OTHER",
+  PIECES = "PIECES",
+}

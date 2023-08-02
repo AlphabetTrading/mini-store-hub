@@ -1,6 +1,9 @@
 import {
+  Alert,
+  AlertTitle,
   Button,
   CardContent,
+  CircularProgress,
   Divider,
   Grid,
   IconButton,
@@ -64,12 +67,10 @@ const validationSchema = Yup.object({
 
 const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
   const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
-  const [updateProduct, {}] = useMutation<UpdateProductData, UpdateProductVars>(
-    UPDATE_PRODUCT
-  );
-  const [deleteProduct, {}] = useMutation<DeleteProductData, DeleteProductVars>(
-    DELETE_PRODUCT
-  );
+  const [updateProduct, { loading: updateLoading, error: updateError }] =
+    useMutation<UpdateProductData, UpdateProductVars>(UPDATE_PRODUCT);
+  const [deleteProduct, { loading: deleteLoading, error: deleteError }] =
+    useMutation<DeleteProductData, DeleteProductVars>(DELETE_PRODUCT);
   const handleDeleteProduct = async () => {
     await deleteProduct({
       variables: {
@@ -98,7 +99,6 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
           data: {
             categoryId: values.category,
             name: values.name,
-            serialNumber: values.serialNumber,
             description: values.description,
             unit: values.unit,
           },
@@ -270,24 +270,63 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                 sx={{ p: 2 }}
               >
                 <Stack alignItems="center" direction="row" spacing={2}>
-                  <Button onClick={() => {}} type="submit" variant="contained">
+                  <Button
+                    onClick={() => {}}
+                    type="submit"
+                    variant="contained"
+                    disabled={updateLoading}
+                  >
+                    {updateLoading && (
+                      <CircularProgress
+                        sx={{
+                          color: "neutral.400",
+                          // display: loading ? "block" : "none",
+                          width: "25px !important",
+                          height: "25px !important",
+                          mr: 1,
+                        }}
+                      />
+                    )}
                     Update
                   </Button>
-                  <Button color="inherit" onClick={() => {}}>
+                  <Button
+                    color="inherit"
+                    onClick={() => {
+                      handleItemToggle(product.id);
+                    }}
+                  >
                     Cancel
                   </Button>
                 </Stack>
                 <div>
                   <Button
+                    disabled={deleteLoading}
                     onClick={() => {
                       handleDeleteProduct();
                     }}
                     color="error"
                   >
+                    {deleteLoading && (
+                      <CircularProgress
+                        sx={{
+                          color: "neutral.400",
+                          // display: loading ? "block" : "none",
+                          width: "25px !important",
+                          height: "25px !important",
+                          mr: 1,
+                        }}
+                      />
+                    )}
                     Delete product
                   </Button>
                 </div>
               </Stack>
+              {(deleteError || updateError) && (
+                <Alert severity="error">
+                  <AlertTitle>Error</AlertTitle>
+                 {deleteError?.message || updateError?.message}
+                </Alert>
+              )}
             </form>
           </TableCell>
         </TableRow>

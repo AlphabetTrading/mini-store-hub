@@ -30,6 +30,7 @@ import {
 import { useMutation } from "@apollo/client";
 import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
+import { Unit } from "../../../../../types/product";
 
 type Props = {};
 
@@ -57,10 +58,18 @@ const initialValues: Values = {
 };
 
 const Page = (props: Props) => {
-  const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
-  const [createProduct, {}] = useMutation<CreateProductData, CreateProductVars>(
-    CREATE_PRODUCT
-  );
+
+  const {
+    data: categoryData,
+    loading: categoryLoading,
+    error: categoryError,
+  } = useQuery<CategoryData>(CATEGORIES);
+
+
+  const [createProduct, { data, loading, error }] = useMutation<
+    CreateProductData,
+    CreateProductVars
+  >(CREATE_PRODUCT);
   const router = useRouter();
 
   const formik = useFormik({
@@ -73,7 +82,6 @@ const Page = (props: Props) => {
             name: values.name,
             categoryId: values.category,
             description: values.description,
-            serialNumber: values.serialNumber,
             unit: values.unit,
           },
         },
@@ -87,17 +95,16 @@ const Page = (props: Props) => {
   });
   return (
     <Box component="main" sx={{ py: 8 }}>
-      {JSON.stringify(formik.errors)}
       <Container maxWidth="xl">
         <Stack spacing={4}>
           <Stack spacing={1}>
-            <Typography variant="h4">Create Item</Typography>
+            <Typography variant="h4">Create Product</Typography>
             <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-              <Link component={NextLink} href={"/dashboard"}>
+              <Link component={NextLink} href={"/admin/dashboard"}>
                 Dashboard
               </Link>
-              <Link component={NextLink} href={"/items"}>
-                Items
+              <Link component={NextLink} href={"/admin/products"}>
+                Products
               </Link>
               <Typography>Create</Typography>
             </Breadcrumbs>
@@ -123,7 +130,7 @@ const Page = (props: Props) => {
                           onChange={formik.handleChange}
                           value={formik.values.name}
                         />
-                        {loading ? <CircularProgress /> : null}
+                        {categoryLoading ? <CircularProgress /> : null}
                         <TextField
                           error={
                             !!(
@@ -141,14 +148,14 @@ const Page = (props: Props) => {
                           value={formik.values.category}
                           select
                         >
-                          {data?.categories.items.map((option) => (
+                          {categoryData?.categories.items.map((option) => (
                             <MenuItem key={option.id} value={option.id}>
                               {option.name}
                             </MenuItem>
                           ))}
                         </TextField>
 
-                        <TextField
+                        {/* <TextField
                           error={
                             !!(
                               formik.touched.serialNumber &&
@@ -165,7 +172,7 @@ const Page = (props: Props) => {
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                           value={formik.values.serialNumber}
-                        />
+                        /> */}
                         <TextField
                           error={
                             !!(
@@ -209,7 +216,14 @@ const Page = (props: Props) => {
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
                         value={formik.values.unit}
-                      />
+                        select
+                      >
+                        {Object.values(Unit).map((option) => (
+                            <MenuItem key={option} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -221,7 +235,18 @@ const Page = (props: Props) => {
                 spacing={1}
               >
                 <Button color="inherit">Cancel</Button>
-                <Button type="submit" variant="contained">
+                <Button disabled={loading} type="submit" variant="contained">
+                  {loading && (
+                    <CircularProgress
+                      sx={{
+                        color: "neutral.400",
+                        // display: loading ? "block" : "none",
+                        width: "25px !important",
+                        height: "25px !important",
+                        mr: 1,
+                      }}
+                    />
+                  )}
                   Create
                 </Button>
               </Stack>

@@ -6,7 +6,6 @@ export interface CreateProductVars {
     name: string;
     unit: string;
     categoryId: string;
-    serialNumber: string;
   };
 }
 
@@ -27,7 +26,6 @@ export interface UpdateProductVars {
   data: {
     categoryId: string;
     description: string;
-    serialNumber: string;
     unit: string;
     name: string;
   };
