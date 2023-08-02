@@ -71,14 +71,45 @@ export class RetailShopsService {
 
   async create(data: CreateRetailShopInput): Promise<any> {
     return this.prisma.retailShop.create({
-      data,
+      data: {
+        name: data.name,
+        amharicName: data.amharicName,
+        retailShopManager: data.retailShopManagerId && {
+          connect: {
+            id: data.retailShopManagerId,
+          },
+        },
+        address: {
+          create: {
+            ...data.address,
+          },
+        },
+      },
     });
   }
 
   async update(id: string, data: UpdateRetailShopInput) {
     return this.prisma.retailShop.update({
       where: { id },
-      data,
+      data: {
+        name: data.name,
+        amharicName: data.amharicName,
+        address: {
+          upsert: {
+            create: {
+              ...data.address,
+            },
+            update: {
+              ...data.address,
+            },
+          },
+        },
+        retailShopManager: data.retailShopManagerId && {
+          connect: {
+            id: data.retailShopManagerId,
+          },
+        },
+      },
     });
   }
 

@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { CreateAddressInput } from 'src/common/dtos/address/create-address.input';
 
 @InputType()
 export class CreateWarehouseInput {
@@ -6,7 +7,10 @@ export class CreateWarehouseInput {
   name: string;
 
   @Field(() => String, { nullable: true })
-  addressId?: string;
+  amharicName?: string;
+
+  @Field(() => CreateAddressInput, { nullable: true })
+  address?: CreateAddressInput;
 
   @Field(() => String, { nullable: true })
   warehouseManagerId?: string;

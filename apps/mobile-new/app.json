@@ -24,7 +24,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "intentFilters": [{
+        "action": "VIEW",
+        "data": [
+          {
+            "scheme": "com.kalmad99.mobile"
+          },
+            { "scheme": "http", "host": "exp://192.168.42.135:19000" },
+            { "scheme": "https", "host": "exp://192.168.42.135:19000" }
+        ],
+        "category": ["BROWSABLE", "DEFAULT"]
+    }]
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -36,7 +36,35 @@ export class UsersService {
 
   updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({
-      data: newUserData,
+      data: {
+        ...newUserData,
+        userProfile: newUserData.userProfile && {
+          upsert: {
+            create: {
+              ...newUserData.userProfile,
+              address: newUserData.userProfile.address && {
+                create: {
+                  ...newUserData.userProfile.address,
+                },
+              },
+            },
+
+            update: {
+              ...newUserData.userProfile,
+              address: newUserData.userProfile.address && {
+                upsert: {
+                  create: {
+                    ...newUserData.userProfile.address,
+                  },
+                  update: {
+                    ...newUserData.userProfile.address,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       where: {
         id: userId,
       },

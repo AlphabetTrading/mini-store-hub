@@ -72,7 +72,22 @@ export class WarehousesService {
   }
 
   async create(data: CreateWarehouseInput) {
-    return await this.prisma.warehouse.create({ data });
+    return await this.prisma.warehouse.create({
+      data: {
+        name: data.name,
+        amharicName: data.amharicName,
+        warehouseManager: data.warehouseManagerId && {
+          connect: {
+            id: data.warehouseManagerId,
+          },
+        },
+        address: {
+          create: {
+            ...data.address,
+          },
+        },
+      },
+    });
   }
 
   async update(id: string, data: UpdateWarehouseInput) {
@@ -80,6 +95,22 @@ export class WarehousesService {
       where: { id },
       data: {
         name: data.name,
+        amharicName: data.amharicName,
+        address: {
+          upsert: {
+            create: {
+              ...data.address,
+            },
+            update: {
+              ...data.address,
+            },
+          },
+        },
+        warehouseManager: data.warehouseManagerId && {
+          connect: {
+            id: data.warehouseManagerId,
+          },
+        },
       },
     });
   }

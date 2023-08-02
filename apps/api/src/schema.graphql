@@ -128,7 +128,6 @@ input CreateGoodsTransferInput {
 
 input CreateNotificationTokenInput {
   device_type: String!
-  status: String!
   token: String!
   userId: String!
 }
@@ -146,12 +145,12 @@ input CreateProductInput {
   description: String!
   images: [String!]
   name: String!
-  serialNumber: String!
   unit: UnitType!
 }
 
 input CreateRetailShopInput {
-  addressId: String
+  address: CreateAddressInput
+  amharicName: String
   name: String!
   retailShopManagerId: String
 }
@@ -172,14 +171,14 @@ input CreateStockItemInput {
 
 input CreateUserProfileInput {
   address: CreateAddressInput
-  addressId: String
   idUrl: String
   photoUrl: String
   userId: String
 }
 
 input CreateWarehouseInput {
-  addressId: String
+  address: CreateAddressInput
+  amharicName: String
   name: String!
   warehouseManagerId: String
 }
@@ -416,7 +415,6 @@ type Mutation {
   refreshToken(refreshToken: JWT!): Token!
   removeNotificationToken(data: String!): NotificationToken!
   resetPassword(accessToken: String!, password: String!, phone: String!): ResetPasswordResponse!
-  sendBulkNotification(data: sendBulkPushNotificationInput!): Notification!
   sendPushNotification(data: sendPushNotificationInput!): Notification!
   signup(data: SignupInput!): Auth!
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
@@ -892,8 +890,9 @@ input UpdateNotificationTokenInput {
 }
 
 input UpdateRetailShopInput {
-  addressId: String
-  name: String!
+  address: UpdateAddressInput
+  amharicName: String
+  name: String
   retailShopManagerId: String
 }
 
@@ -911,24 +910,26 @@ input UpdateSaleTransactionInput {
 }
 
 input UpdateUserInput {
-  firstname: String
-  id: String
-  lastname: String
+  amharicFirstName: String
+  amharicLastName: String
+  firstName: String
+  lastName: String
   phone: String
   role: UserRole!
+  userProfile: UpdateUserProfileInput
   username: String
 }
 
 input UpdateUserProfileInput {
   address: UpdateAddressInput
-  addressId: String
   idUrl: String
   photoUrl: String
   userId: String
 }
 
 input UpdateWarehouseInput {
-  addressId: String
+  address: UpdateAddressInput
+  amharicName: String
   name: String
   warehouseManagerId: String
 }
@@ -1049,12 +1050,6 @@ enum WarehouseStockOrderField {
   id
   name
   updatedAt
-}
-
-input sendBulkPushNotificationInput {
-  body: String!
-  title: String!
-  tokens: String!
 }
 
 input sendPushNotificationInput {

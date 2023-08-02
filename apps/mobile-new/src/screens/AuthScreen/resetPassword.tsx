@@ -1,5 +1,3 @@
-import { Alert, Linking, Platform } from "react-native";
-
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -10,31 +8,34 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
-import { notifyMessage } from "../../components/Toast";
+import { Entypo } from "@expo/vector-icons";
+import { StackActions } from "@react-navigation/native";
 
 type Props = {};
 
 interface FormValues {
-  userName: string;
   password: string;
+  confirm: string;
 }
 
-const loginSchema = Yup.object().shape({
-  userName: Yup.string().required("Required"),
-  password: Yup.string().required("Required"),
+const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .required("Required")
+    .min(6, "Password is too short - should be 6 chars minimum."),
+  confirm: Yup.string().oneOf([Yup.ref("password")], "Passwords must match"),
 });
 
-const LoginScreen = ({ navigation }: any) => {
-  const { signIn } = useAuth();
+const ResetPasswordScreen = ({ navigation, route }: any) => {
+  const { resetPassword } = useAuth();
+  const username = route.params?.username ?? "";
   const [viewPassword, setViewPassword] = useState(false);
-  // const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
   const INITIAL_VALUES: FormValues = {
-    userName: "",
     password: "",
+    confirm: "",
   };
 
   return (
@@ -42,69 +43,33 @@ const LoginScreen = ({ navigation }: any) => {
       <Text
         style={{ color: "#5684E0", fontSize: 48, fontFamily: "InterMedium" }}
       >
-        Hello!
+        Reset password!
       </Text>
       <Text
         style={{ color: "#BFBFBF", fontSize: 18, fontFamily: "InterRegular" }}
       >
-        Sign in to continue
+        Enter New Password
       </Text>
       <Formik
         initialValues={INITIAL_VALUES}
-        validationSchema={loginSchema}
+        validationSchema={resetPasswordSchema}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
           try {
-            const res = await signIn(values.userName, values.password);
-            if (res.error) {
-              if (res.error?.message === "Invalid Credentials") {
-                notifyMessage("Invalid Credentials Please try again");
-              } else {
-                notifyMessage("Network Error Please try again");
-              }
-              return;
-            }
+            const res = await resetPassword(values.password, username);
+            // navigation.dispatch(StackActions.replace("Login"));
             navigation.reset({
               index: 0,
-              routes: [{ name: "Home" }],
+              routes: [{ name: "Login" }],
             });
           } catch (e) {
             console.log(e);
-            notifyMessage("Network Error Please try again");
           }
           setSubmitting(false);
         }}
       >
-        {({
-          handleChange,
-          handleSubmit,
-          submitForm,
-          isSubmitting,
-          values,
-          errors,
-          setErrors,
-        }) => (
+        {({ handleChange, handleSubmit, isSubmitting, values, errors }) => (
           <View>
-            <View style={{ marginTop: 30 }}>
-              <Text style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}>
-                Username
-              </Text>
-              <View style={styles.inputStyle}>
-                <AntDesign name="user" size={20} color="#5684E0" />
-                <TextInput
-                  style={styles.inputTextStyle}
-                  placeholder="Enter Username"
-                  placeholderTextColor="#6C6C6C66"
-                  value={values.userName}
-                  onChangeText={handleChange("userName")}
-                />
-              </View>
-              {errors.userName && (
-                <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
-                  Username is required
-                </Text>
-              )}
-            </View>
             <View style={{ marginTop: 30 }}>
               <Text style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}>
                 Password
@@ -140,32 +105,55 @@ const LoginScreen = ({ navigation }: any) => {
               </View>
               {errors.password && (
                 <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
-                  Password is required
+                  {errors.password}
                 </Text>
               )}
             </View>
-            <Text
-              onPress={() => {
-                if (values.userName) {
-                  navigation.navigate("ForgotPassword", {
-                    screen: "ForgotPassword",
-                    username: values.userName,
-                  });
-                } else {
-                  notifyMessage("Enter your Username");
-                }
-              }}
-              style={styles.forgotPassword}
-            >
-              Forgot password?
-            </Text>
-
+            <View style={{ marginTop: 30 }}>
+              <Text style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}>
+                Confirm
+              </Text>
+              <View style={styles.inputStyle}>
+                <Entypo name="key" size={20} color="#5684E0" />
+                <TextInput
+                  style={styles.inputTextStyle}
+                  placeholderTextColor="#6C6C6C66"
+                  placeholder="Confirm Password"
+                  value={values.confirm}
+                  secureTextEntry={!viewPassword}
+                  keyboardType={!viewPassword ? "default" : "visible-password"}
+                  onChangeText={handleChange("confirm")}
+                />
+                {viewPassword ? (
+                  <Entypo
+                    name="eye-with-line"
+                    onPress={() => setViewPassword(!viewPassword)}
+                    style={{ alignSelf: "flex-end" }}
+                    size={20}
+                    color="#5684E0"
+                  />
+                ) : (
+                  <Entypo
+                    name="eye"
+                    onPress={() => setViewPassword(!viewPassword)}
+                    style={{ alignSelf: "flex-end" }}
+                    size={20}
+                    color="#5684E0"
+                  />
+                )}
+              </View>
+              {errors.confirm && (
+                <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
+                  {errors.confirm}
+                </Text>
+              )}
+            </View>
             <TouchableOpacity
-              style={styles.loginButton}
+              style={styles.resetPasswordButton}
               onPress={() => handleSubmit()}
             >
-              <Text style={styles.loginButtonText}>
-                {isSubmitting ? <ActivityIndicator /> : "Sign In"}
+              <Text style={styles.resetPasswordButtonText}>
+                {isSubmitting ? <ActivityIndicator /> : "Submit"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -175,7 +163,7 @@ const LoginScreen = ({ navigation }: any) => {
   );
 };
 
-export default LoginScreen;
+export default ResetPasswordScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -198,21 +186,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: "100%",
   },
-  forgotPassword: {
+  resetPassword: {
     color: "#5684E0",
     fontSize: 16,
     marginTop: 30,
     textAlign: "right",
     textTransform: "capitalize",
   },
-  loginButton: {
+  resetPasswordButton: {
     backgroundColor: "#5684E0",
     padding: 16,
     marginTop: 30,
     alignItems: "center",
     borderRadius: 6,
   },
-  loginButtonText: {
+  resetPasswordButtonText: {
     fontFamily: "InterSemiBold",
     color: "#FFF",
     fontSize: 18,

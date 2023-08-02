@@ -1,5 +1,6 @@
 import { useAuth } from "../contexts/auth";
 import { Platform } from "react-native";
+
 export const useUser = () => {
   const { authState, signIn, signOut, setAuthState, updateNotificationToken } =
     useAuth();
@@ -9,7 +10,7 @@ export const useUser = () => {
       const updatedAuthState = { ...authState };
       const prevAuthState = { ...authState };
 
-      //   updatedAuthState.user.allowsNotifications = token;
+      updatedAuthState.user.notification_token = token;
       updatedAuthState.user.allowsNotifications = true;
       setAuthState(updatedAuthState);
 
