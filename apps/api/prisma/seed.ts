@@ -635,27 +635,27 @@ async function seedGoodsTransfers() {
 
 async function seedSaleTransactions() {
   try {
-    const products = await prisma.product.findMany();
     const retailShops = await prisma.retailShop.findMany();
+    const product = await prisma.product.findFirst({
+      include: {
+        activePrice: true,
+      },
+    });
 
     await prisma.saleTransaction.create({
       data: {
         retailShopId: retailShops[0].id,
         saleTransactionItems: {
-          create: [
-            {
-              productId: products[0].id,
-              price: 100,
-              quantity: 2,
-              subTotal: 200,
-            },
-            {
-              productId: products[1].id,
-              price: 200,
-              quantity: 3,
-              subTotal: 600,
-            },
-          ],
+          createMany: {
+            data: [
+              {
+                productId: product.id,
+                quantity: 2,
+                subTotal: 200,
+                soldPriceHistoryId: product.activePrice?.id,
+              },
+            ],
+          },
         },
         totalPrice: 800,
       },

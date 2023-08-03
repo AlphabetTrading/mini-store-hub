@@ -8,4 +8,13 @@ export class UpdateCategoryInput extends PartialType(CreateCategoryInput) {
 
   @Field(() => String, { nullable: true })
   description?: string;
+
+  @Field(() => String, { nullable: true })
+  amharicName?: string;
+
+  @Field(() => String, { nullable: true })
+  amharicDescription?: string;
+
+  @Field(() => String, { nullable: true })
+  parentId?: string;
 }

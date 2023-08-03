@@ -10,13 +10,13 @@ export class UpdateProductInput extends PartialType(CreateProductInput) {
   @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   serialNumber?: string;
 
   @Field(() => UnitType, { nullable: true })
   unit?: UnitType;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   categoryId?: string;
 
   @Field(() => String, { nullable: true })

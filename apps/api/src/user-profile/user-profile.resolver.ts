@@ -12,14 +12,6 @@ export class UserProfileResolver {
   constructor(private readonly userProfileService: UserProfileService) {}
 
   @Mutation(() => UserProfile)
-  createUserProfile(
-    @Args('createUserProfileInput')
-    createUserProfileInput: CreateUserProfileInput,
-  ) {
-    return this.userProfileService.create(createUserProfileInput);
-  }
-
-  @Mutation(() => UserProfile)
   updateUserProfile(
     @Args('userId') id: string,
     @Args('updateProfileInput')

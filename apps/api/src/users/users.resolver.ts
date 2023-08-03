@@ -8,11 +8,13 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { UsersService } from './users.service';
 import { UserOrder } from './dto/user-order.input';
-import { SignupInput } from 'src/auth/dto/signup.input';
 import { PaginationUser } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterUserInput } from './dto/filter-user.input';
 import { Warehouse } from 'src/warehouses/models/warehouse.model';
+import { CreateUserInput } from './dto/create-user.input';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { HasRoles } from 'src/common/decorators';
 
 @Resolver(() => User)
 @UseGuards(GqlAuthGuard)
@@ -124,7 +126,7 @@ export class UsersResolver {
 
   @Query(() => [User])
   async warehouseManagers(@Parent() user: User) {
-    return this.usersService.getRetailManagers();
+    return this.usersService.getWarehouseManagers();
   }
 
   // get warehouse from user that manages it
@@ -133,13 +135,35 @@ export class UsersResolver {
     return this.usersService.getWarehouseByUserId(user.id);
   }
 
+  @HasRoles('ADMIN')
+  @UseGuards(RolesGuard)
   @Mutation(() => User)
-  async createRetailShopManager(@Args('data') data: SignupInput) {
-    return this.usersService.createRetailShopManager(data);
+  async createRetailShopManager(@Args('data') data: CreateUserInput) {
+    return this.usersService.createUser(data, 'RETAIL_SHOP_MANAGER');
+  }
+
+  @HasRoles('ADMIN')
+  @UseGuards(RolesGuard)
+  @Mutation(() => User)
+  async createWarehouseManager(@Args('data') data: CreateUserInput) {
+    return this.usersService.createUser(data, 'WAREHOUSE_MANAGER');
   }
 
   @Mutation(() => User)
-  async createWarehouseManager(@Args('data') data: SignupInput) {
-    return this.usersService.createWarehouseManager(data);
+  async updateUserRole(
+    @Args('userId') userId: string,
+    @Args('role') role: string,
+  ) {
+    return this.usersService.updateUserRole(userId, role);
+  }
+
+  @Mutation(() => User)
+  async deactivateUser(@Args('userId') userId: string) {
+    return this.usersService.changeUserStatus(userId, false);
+  }
+
+  @Mutation(() => User)
+  async activateUser(@Args('userId') userId: string) {
+    return this.usersService.changeUserStatus(userId, true);
   }
 }

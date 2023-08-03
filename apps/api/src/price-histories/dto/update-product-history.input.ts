@@ -1,6 +1,5 @@
 import { InputType, Field, PartialType, Float } from '@nestjs/graphql';
-import { CreatePriceHistoryInput } from './create-product.input';
-import { DateTime } from 'graphql-scalars/typings/mocks';
+import { CreatePriceHistoryInput } from './create-product-history.input';
 
 @InputType()
 export class UpdatePriceHistoryInput extends PartialType(
@@ -14,7 +13,4 @@ export class UpdatePriceHistoryInput extends PartialType(
 
   @Field(() => Float, { nullable: true })
   purchasedPrice?: number;
-
-  @Field({ name: 'product_created_at', nullable: true })
-  productCreatedAt?: Date;
 }

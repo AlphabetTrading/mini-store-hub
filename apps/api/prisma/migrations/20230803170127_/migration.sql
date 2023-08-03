@@ -2,7 +2,10 @@
 CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN', 'WAREHOUSE_MANAGER', 'RETAIL_SHOP_MANAGER');
 
 -- CreateEnum
-CREATE TYPE "UnitType" AS ENUM ('PIECES', 'WEIGHT');
+CREATE TYPE "RecipientType" AS ENUM ('USER', 'RETAIL_SHOP', 'WAREHOUSE', 'ALL');
+
+-- CreateEnum
+CREATE TYPE "UnitType" AS ENUM ('PIECES', 'KG', 'LITER', 'METER', 'METER_SQUARE', 'BOX', 'BAG', 'BOTTLE', 'OTHER');
 
 -- CreateEnum
 CREATE TYPE "TransferType" AS ENUM ('WarehouseToWarehouse', 'WarehouseToRetailShop');
@@ -15,6 +18,8 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "የ መጀመሪያ ስም" TEXT,
+    "የ አባት ስም" TEXT,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
     "isActive" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -27,20 +32,36 @@ CREATE TABLE "User" (
 CREATE TABLE "Notification" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "የ ርዕስ ስም" TEXT,
     "body" TEXT NOT NULL,
+    "መልእክት" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT false,
-    "createdById" TEXT NOT NULL,
+    "recipientType" "RecipientType" NOT NULL DEFAULT 'USER',
+    "recipientId" TEXT,
+    "isRead" BOOLEAN NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT,
+
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "NotificationRead" (
+    "id" TEXT NOT NULL,
+    "notificationId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "NotificationRead_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "NotificationToken" (
     "id" TEXT NOT NULL,
     "device_type" TEXT NOT NULL,
-    "notifications_token" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT false,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -66,7 +87,9 @@ CREATE TABLE "UserProfile" (
 CREATE TABLE "Category" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "የ እቃ ክፍል ስም" TEXT,
     "description" TEXT NOT NULL,
+    "መግለጫ" TEXT,
     "parentId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -81,11 +104,13 @@ CREATE TABLE "Product" (
     "name" TEXT NOT NULL,
     "የ እቃ ስም" TEXT,
     "description" TEXT NOT NULL,
+    "መግለጫ" TEXT,
     "categoryId" TEXT NOT NULL,
     "unit" "UnitType" NOT NULL,
     "images" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "activePriceId" TEXT,
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
@@ -94,7 +119,6 @@ CREATE TABLE "Product" (
 CREATE TABLE "PriceHistory" (
     "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
-    "productCreatedAt" TIMESTAMP(3) NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "purchasedPrice" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -111,6 +135,7 @@ CREATE TABLE "Address" (
     "lng" DOUBLE PRECISION,
     "lat" DOUBLE PRECISION,
     "formattedAddress" TEXT,
+    "ሙሉ አድራሻ" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -121,6 +146,7 @@ CREATE TABLE "Address" (
 CREATE TABLE "RetailShop" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "የስራ ቦታ ስም" TEXT,
     "addressId" TEXT,
     "retailShopManagerId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -133,8 +159,10 @@ CREATE TABLE "RetailShop" (
 CREATE TABLE "Warehouse" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "የስራ ቦታ ስም" TEXT,
     "addressId" TEXT,
     "warehouseManagerId" TEXT,
+    "isMain" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -169,15 +197,26 @@ CREATE TABLE "StockItem" (
 -- CreateTable
 CREATE TABLE "SaleTransaction" (
     "id" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
-    "quantity" DOUBLE PRECISION NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
-    "purchasedPrice" DOUBLE PRECISION NOT NULL,
+    "totalPrice" DOUBLE PRECISION NOT NULL,
     "retailShopId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "SaleTransaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SaleTransactionItem" (
+    "id" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
+    "quantity" DOUBLE PRECISION NOT NULL,
+    "soldPriceHistoryId" TEXT NOT NULL,
+    "subTotal" DOUBLE PRECISION NOT NULL,
+    "saleTransactionId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "SaleTransactionItem_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -252,10 +291,10 @@ CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
 CREATE INDEX "User_username_phone_idx" ON "User"("username", "phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "NotificationToken_notifications_token_key" ON "NotificationToken"("notifications_token");
+CREATE UNIQUE INDEX "NotificationRead_notificationId_userId_key" ON "NotificationRead"("notificationId", "userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "NotificationToken_userId_key" ON "NotificationToken"("userId");
+CREATE UNIQUE INDEX "NotificationToken_token_key" ON "NotificationToken"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserProfile_userId_key" ON "UserProfile"("userId");
@@ -267,10 +306,10 @@ CREATE UNIQUE INDEX "UserProfile_addressId_key" ON "UserProfile"("addressId");
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Product_id_createdAt_key" ON "Product"("id", "createdAt");
+CREATE UNIQUE INDEX "Product_activePriceId_key" ON "Product"("activePriceId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PriceHistory_productId_productCreatedAt_key" ON "PriceHistory"("productId", "productCreatedAt");
+CREATE UNIQUE INDEX "Product_id_createdAt_key" ON "Product"("id", "createdAt");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RetailShop_addressId_key" ON "RetailShop"("addressId");
@@ -285,7 +324,10 @@ CREATE UNIQUE INDEX "RetailShopStock_productId_retailShopId_key" ON "RetailShopS
 CREATE UNIQUE INDEX "WarehouseStock_productId_warehouseId_key" ON "WarehouseStock"("productId", "warehouseId");
 
 -- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "NotificationRead" ADD CONSTRAINT "NotificationRead_notificationId_fkey" FOREIGN KEY ("notificationId") REFERENCES "Notification"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "NotificationToken" ADD CONSTRAINT "NotificationToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -303,7 +345,7 @@ ALTER TABLE "Category" ADD CONSTRAINT "Category_parentId_fkey" FOREIGN KEY ("par
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PriceHistory" ADD CONSTRAINT "PriceHistory_productId_productCreatedAt_fkey" FOREIGN KEY ("productId", "productCreatedAt") REFERENCES "Product"("id", "createdAt") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Product" ADD CONSTRAINT "Product_activePriceId_fkey" FOREIGN KEY ("activePriceId") REFERENCES "PriceHistory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PriceHistory" ADD CONSTRAINT "PriceHistory_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -336,10 +378,16 @@ ALTER TABLE "StockItem" ADD CONSTRAINT "StockItem_productId_fkey" FOREIGN KEY ("
 ALTER TABLE "StockItem" ADD CONSTRAINT "StockItem_goodsTransferId_fkey" FOREIGN KEY ("goodsTransferId") REFERENCES "GoodsTransfer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SaleTransaction" ADD CONSTRAINT "SaleTransaction_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SaleTransaction" ADD CONSTRAINT "SaleTransaction_retailShopId_fkey" FOREIGN KEY ("retailShopId") REFERENCES "RetailShop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SaleTransaction" ADD CONSTRAINT "SaleTransaction_retailShopId_fkey" FOREIGN KEY ("retailShopId") REFERENCES "RetailShop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SaleTransactionItem" ADD CONSTRAINT "SaleTransactionItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SaleTransactionItem" ADD CONSTRAINT "SaleTransactionItem_soldPriceHistoryId_fkey" FOREIGN KEY ("soldPriceHistoryId") REFERENCES "PriceHistory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SaleTransactionItem" ADD CONSTRAINT "SaleTransactionItem_saleTransactionId_fkey" FOREIGN KEY ("saleTransactionId") REFERENCES "SaleTransaction"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RetailShopStock" ADD CONSTRAINT "RetailShopStock_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,7 +1,7 @@
-import { ObjectType, Field, registerEnumType, Float } from '@nestjs/graphql';
-import { DateTime } from 'graphql-scalars/typings/mocks';
+import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
 import { Product } from 'src/products/models/product.model';
+import { SaleTransactionItem } from 'src/sale-transactions/models/sale-transaction-item.model';
 
 @ObjectType()
 export class PriceHistory extends BaseModel {
@@ -22,4 +22,7 @@ export class PriceHistory extends BaseModel {
 
   @Field(() => Product, { nullable: true })
   activeProduct?: Product;
+
+  @Field(() => [SaleTransactionItem], { nullable: true })
+  saleTransactionItems?: SaleTransactionItem[];
 }

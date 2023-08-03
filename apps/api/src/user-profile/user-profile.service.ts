@@ -13,26 +13,6 @@ const userProfileIncludeObject: Prisma.UserProfileInclude = {
 export class UserProfileService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateUserProfileInput) {
-    return this.prisma.userProfile.create({
-      data: {
-        address: {
-          create: {
-            ...data.address,
-          },
-        },
-        photoUrl: data.photoUrl,
-        idUrl: data.idUrl,
-        user: {
-          connect: {
-            id: data.userId,
-          },
-        },
-      },
-      include: userProfileIncludeObject,
-    });
-  }
-
   async update(userId: string, data: UpdateUserProfileInput) {
     return this.prisma.userProfile.update({
       where: { userId },

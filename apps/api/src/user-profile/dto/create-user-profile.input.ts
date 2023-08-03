@@ -11,7 +11,4 @@ export class CreateUserProfileInput {
 
   @Field(() => CreateAddressInput, { nullable: true })
   address?: CreateAddressInput;
-
-  @Field(() => String, { nullable: true })
-  userId?: string;
 }

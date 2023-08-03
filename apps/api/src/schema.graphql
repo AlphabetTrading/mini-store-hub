@@ -109,8 +109,11 @@ input CreateBulkWarehouseStockInput {
 }
 
 input CreateCategoryInput {
+  amharicDescription: String
+  amharicName: String
   description: String!
   name: String!
+  parentId: String
 }
 
 input CreateGoodsTransferFromMainWarehouseInput {
@@ -135,7 +138,6 @@ input CreateNotificationTokenInput {
 input CreatePriceHistoryInput {
   price: Float!
   productId: String!
-  product_created_at: DateTime!
   purchasedPrice: Float!
 }
 
@@ -163,17 +165,26 @@ input CreateRetailShopStockInput {
 }
 
 input CreateStockItemInput {
-  goodsTransferId: String
-  price: Float!
   productId: String!
   quantity: Float!
+}
+
+input CreateUserInput {
+  amharicFirstName: String
+  amharicLastName: String
+  firstName: String
+  lastName: String
+  password: String!
+  phone: String!
+  role: UserRole!
+  userProfile: CreateUserProfileInput
+  username: String!
 }
 
 input CreateUserProfileInput {
   address: CreateAddressInput
   idUrl: String
   photoUrl: String
-  userId: String
 }
 
 input CreateWarehouseInput {
@@ -379,6 +390,7 @@ type MonthlyTransaction {
 
 type Mutation {
   acceptNotification(notificationInput: CreateNotificationTokenInput!): NotificationToken!
+  activateUser(userId: String!): User!
   changePassword(data: ChangePasswordInput!): User!
   createBulkRetailShopStock(data: CreateBulkRetailShopStockInput!): [RetailShopStock!]!
   createBulkWarehouseStock(data: CreateBulkWarehouseStockInput!): [WarehouseStock!]!
@@ -390,13 +402,13 @@ type Mutation {
   createPriceHistory(priceHistory: CreatePriceHistoryInput!): PriceHistory!
   createProduct(data: CreateProductInput!): Product!
   createRetailShop(data: CreateRetailShopInput!): RetailShop!
-  createRetailShopManager(data: SignupInput!): User!
+  createRetailShopManager(data: CreateUserInput!): User!
   createRetailShopStock(data: CreateRetailShopStockInput!): RetailShopStock!
   createSaleTransaction(data: CreateBulkSaleTransactionInput!): SaleTransaction!
-  createUserProfile(createUserProfileInput: CreateUserProfileInput!): UserProfile!
   createWarehouse(data: CreateWarehouseInput!): Warehouse!
-  createWarehouseManager(data: SignupInput!): User!
+  createWarehouseManager(data: CreateUserInput!): User!
   createWarehouseStock(data: CreateWarehouseStockInput!): WarehouseStock!
+  deactivateUser(userId: String!): User!
   deleteCategory(id: String!): Category!
   deleteFile(url: String!): Boolean!
   deleteGoodsTransfer(id: String!): GoodsTransfer!
@@ -420,12 +432,13 @@ type Mutation {
   updateCategory(data: UpdateCategoryInput!, id: String!): Category!
   updateGoodsTransfer(data: UpdateGoodsTransferInput!, id: String!): GoodsTransfer!
   updateNotificationToken(data: UpdateNotificationTokenInput!, userId: String!): NotificationToken!
-  updateProduct(data: CreateProductInput!, id: String!): Product!
+  updateProduct(data: UpdateProductInput!, id: String!): Product!
   updateRetailShop(data: UpdateRetailShopInput!, id: String!): RetailShop!
   updateRetailShopStock(data: UpdateRetailShopStockInput!, id: String!): RetailShopStock!
   updateSaleTransaction(data: UpdateSaleTransactionInput!, id: String!): SaleTransaction!
   updateUser(data: UpdateUserInput!): User!
   updateUserProfile(updateProfileInput: UpdateUserProfileInput!, userId: String!): UserProfile!
+  updateUserRole(role: String!, userId: String!): User!
   updateWarehouse(data: UpdateWarehouseInput!, id: String!): Warehouse!
   updateWarehouseStock(data: UpdateWarehouseStockInput!, id: String!): WarehouseStock!
   uploadFile(file: Upload!): String!
@@ -541,6 +554,7 @@ type PriceHistory {
   product: Product
   productId: String!
   purchasedPrice: Float!
+  saleTransactionItems: [SaleTransactionItem!]
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -777,11 +791,12 @@ type SaleTransactionItem {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID!
-  price: Float!
   product: Product
   productId: String!
   quantity: Float!
   saleTransaction: SaleTransaction!
+  soldPrice: PriceHistory
+  soldPriceHistoryId: String!
   subTotal: Float!
 
   """Identifies the date and time when the object was last updated."""
@@ -872,8 +887,11 @@ input UpdateAddressInput {
 }
 
 input UpdateCategoryInput {
+  amharicDescription: String
+  amharicName: String
   description: String
   name: String
+  parentId: String
 }
 
 input UpdateGoodsTransferInput {
@@ -887,6 +905,16 @@ input UpdateGoodsTransferInput {
 input UpdateNotificationTokenInput {
   device_type: String
   notification_token: String
+}
+
+input UpdateProductInput {
+  activePriceId: String
+  categoryId: String
+  description: String
+  images: [String!]
+  name: String
+  serialNumber: String
+  unit: UnitType
 }
 
 input UpdateRetailShopInput {
@@ -914,6 +942,7 @@ input UpdateUserInput {
   amharicLastName: String
   firstName: String
   lastName: String
+  password: String
   phone: String
   role: UserRole!
   userProfile: UpdateUserProfileInput

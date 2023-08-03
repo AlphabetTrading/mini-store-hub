@@ -124,6 +124,7 @@ Table PriceHistory {
   updatedAt DateTime [not null]
   activeProduct Product
   product Product [not null]
+  saleTransactionItems SaleTransactionItem [not null]
 }
 
 Table Address {
@@ -216,7 +217,8 @@ Table SaleTransactionItem {
   productId String [not null]
   product Product [not null]
   quantity Float [not null]
-  price Float [not null]
+  soldPriceHistoryId String [not null]
+  soldPriceHistory PriceHistory [not null]
   subTotal Float [not null]
   saleTransactionId String [not null]
   saleTransaction SaleTransaction [not null]
@@ -357,6 +359,8 @@ Ref: StockItem.goodsTransferId > GoodsTransfer.id
 Ref: SaleTransaction.retailShopId > RetailShop.id
 
 Ref: SaleTransactionItem.productId > Product.id
+
+Ref: SaleTransactionItem.soldPriceHistoryId > PriceHistory.id
 
 Ref: SaleTransactionItem.saleTransactionId > SaleTransaction.id
 

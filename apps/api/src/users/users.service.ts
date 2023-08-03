@@ -7,9 +7,10 @@ import { PasswordService } from 'src/auth/password.service';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import { SignupInput } from 'src/auth/dto/signup.input';
 import { User } from './models/user.model';
+import { CreateUserInput } from './dto/create-user.input';
 
 const userIncludeObject: Prisma.UserInclude = {
   userProfile: { include: { address: true } },
@@ -34,7 +35,7 @@ export class UsersService {
     });
   }
 
-  updateUser(userId: string, newUserData: UpdateUserInput) {
+  async updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({
       data: {
         ...newUserData,
@@ -75,7 +76,7 @@ export class UsersService {
     return this.prisma.user.count({ where });
   }
 
-  async createWarehouseManager(payload: SignupInput) {
+  async createUser(payload: CreateUserInput, role: UserRole) {
     const hashedPassword = await this.passwordService.hashPassword(
       payload.password,
     );
@@ -83,45 +84,30 @@ export class UsersService {
     try {
       const user = await this.prisma.user.create({
         data: {
-          ...payload,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          amharicFirstName: payload.amharicFirstName,
+          amharicLastName: payload.amharicLastName,
+          phone: payload.phone,
+          username: payload.username,
           password: hashedPassword,
-          role: 'WAREHOUSE_MANAGER',
+          role,
+          userProfile: {
+            create: {
+              ...payload.userProfile,
+              address: {
+                create: {
+                  ...payload.userProfile.address,
+                },
+              },
+              photoUrl: payload.userProfile.photoUrl,
+              idUrl: payload.userProfile.idUrl,
+            },
+          },
         },
       });
 
-      return {
-        userId: user.id,
-      };
-    } catch (e) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === 'P2002'
-      ) {
-        throw new ConflictException(
-          `Username/Phone ${payload.phone} already used.`,
-        );
-      }
-      throw new Error(e);
-    }
-  }
-
-  async createRetailShopManager(payload: SignupInput) {
-    const hashedPassword = await this.passwordService.hashPassword(
-      payload.password,
-    );
-
-    try {
-      const user = await this.prisma.user.create({
-        data: {
-          ...payload,
-          password: hashedPassword,
-          role: 'RETAIL_SHOP_MANAGER',
-        },
-      });
-
-      return {
-        userId: user.id,
-      };
+      return user;
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -188,7 +174,7 @@ export class UsersService {
     });
   }
 
-  async getUserByEmail(username: string) {
+  async getUserByUsername(username: string) {
     return this.prisma.user.findUnique({
       where: { username },
       include: userIncludeObject,
@@ -212,6 +198,31 @@ export class UsersService {
       include: userIncludeObject,
       where: {
         role: 'WAREHOUSE_MANAGER',
+      },
+    });
+  }
+
+  async updateUserRole(userId: string, role: string) {
+    throw new Error('Method not implemented.');
+  }
+
+  async changeUserStatus(userId: string, isActive: boolean) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return this.prisma.user.update({
+      data: {
+        isActive,
+      },
+      where: {
+        id: userId,
       },
     });
   }
