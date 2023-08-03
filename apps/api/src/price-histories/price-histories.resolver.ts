@@ -1,8 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PriceHistoriesService } from './price-histories.service';
 import { PriceHistory } from './models/price-history.model';
-import { CreatePriceHistoryInput } from './dto/create-product.input';
-import { UpdatePriceHistoryInput } from './dto/update-product.input';
+import { CreatePriceHistoryInput } from './dto/create-product-history.input';
+import { UpdatePriceHistoryInput } from './dto/update-product-history.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { FilterPriceHistoryInput } from './dto/filter-price-history.input';

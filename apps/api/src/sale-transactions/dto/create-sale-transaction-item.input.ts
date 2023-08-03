@@ -8,8 +8,8 @@ export class CreateSaleTransactionItemInput {
   @Field(() => Float)
   quantity: number;
 
-  @Field(() => Float)
-  price: number;
+  @Field(() => String)
+  soldPriceHistoryId: string;
 
   @Field(() => Float)
   purchasedPrice: number;

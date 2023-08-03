@@ -9,6 +9,7 @@ import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterProductInput } from './dto/filter-product.input';
 import { Prisma } from '@prisma/client';
 import { ProductOrder } from './dto/product-order.input';
+import { UpdateProductInput } from './dto/update-product.input';
 
 @Resolver(() => Product)
 @UseGuards(GqlAuthGuard)
@@ -304,7 +305,12 @@ export class ProductsResolver {
 
   @Mutation(() => Product, { name: 'createProduct' })
   async createProduct(@Args('data') data: CreateProductInput) {
-    return this.productsService.create(data);
+    try {
+      return this.productsService.create(data);
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException('Error creating product!');
+    }
   }
 
   // @ResolveField('category', () => Category)
@@ -320,13 +326,23 @@ export class ProductsResolver {
   @Mutation(() => Product, { name: 'updateProduct' })
   async updateProduct(
     @Args('id') id: string,
-    @Args('data') data: CreateProductInput,
+    @Args('data') data: UpdateProductInput,
   ) {
-    return this.productsService.update(id, data);
+    try {
+      return this.productsService.update(id, data);
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException('Error updating product!');
+    }
   }
 
   @Mutation(() => Product)
   async deleteProduct(@Args('id') id: string) {
-    return this.productsService.remove(id);
+    try {
+      return this.productsService.remove(id);
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException('Error deleting product!');
+    }
   }
 }

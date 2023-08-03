@@ -1,5 +1,4 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { TransferType } from '@prisma/client';
 import { CreateStockItemInput } from './create-stock-item.input';
 
 @InputType()

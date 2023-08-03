@@ -474,15 +474,6 @@ export class NotificationService {
     recipientType,
     recipientId,
   }: sendPushNotificationInput): Promise<Notification> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: recipientId,
-      },
-      include: {
-        notificationTokens: true,
-      },
-    });
-
     const notification = await this.prisma.notification.create({
       data: {
         title,

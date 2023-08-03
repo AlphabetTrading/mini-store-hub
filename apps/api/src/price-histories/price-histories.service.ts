@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreatePriceHistoryInput } from './dto/create-product.input';
-import { UpdatePriceHistoryInput } from './dto/update-product.input';
+import { CreatePriceHistoryInput } from './dto/create-product-history.input';
+import { UpdatePriceHistoryInput } from './dto/update-product-history.input';
 import { Prisma } from '@prisma/client';
 import { PriceHistory } from './models/price-history.model';
 

@@ -200,14 +200,22 @@ export class ProductsService {
         ...data,
         serialNumber,
       },
+      include: ProductsIncludeObject,
     });
   }
 
   async update(id: string, data: UpdateProductInput) {
-    return this.prisma.product.update({ where: { id }, data });
+    return this.prisma.product.update({
+      where: { id },
+      data,
+      include: ProductsIncludeObject,
+    });
   }
 
   async remove(id: string) {
-    return this.prisma.product.delete({ where: { id } });
+    return this.prisma.product.delete({
+      where: { id },
+      include: ProductsIncludeObject,
+    });
   }
 }

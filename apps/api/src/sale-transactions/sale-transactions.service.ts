@@ -422,12 +422,6 @@ export class SaleTransactionsService {
       throw new NotFoundException('Retail shop not found');
     }
 
-    // calculate total price
-    let totalPrice = goods.reduce(
-      (acc, good) => acc + good.quantity * good.price,
-      0,
-    );
-
     // check if retail shop has enough stock
     for (const good of goods) {
       const { productId, quantity } = good;
@@ -486,7 +480,41 @@ export class SaleTransactionsService {
         });
       }
     });
+    // calculate total price
+    let totalPrice = 0;
 
+    const goodsWithSubTotal = goods.map(async (good) => {
+      if (good.quantity <= 0) {
+        throw new BadRequestException('Invalid quantity');
+      }
+      const product = await this.prisma.product.findUnique({
+        where: { id: good.productId },
+        include: {
+          activePrice: { include: {} },
+        },
+      });
+      if (!product) {
+        throw new NotFoundException('Product price not found');
+      }
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
+      if (!product.activePrice) {
+        throw new NotFoundException('Product has no active price');
+      }
+
+      if (product.activePrice.purchasedPrice === null) {
+        throw new NotFoundException('Product has no purchased price');
+      }
+      const subTotal = product.activePrice.price * good.quantity;
+      totalPrice += subTotal;
+      return {
+        ...good,
+        subTotal: subTotal,
+        soldPriceHistoryId: product.activePrice.id,
+      };
+    });
+    const goodsWithSubTotalResolved = await Promise.all(goodsWithSubTotal);
     return await this.prisma.saleTransaction.create({
       data: {
         totalPrice,
@@ -497,12 +525,7 @@ export class SaleTransactionsService {
         },
         saleTransactionItems: {
           createMany: {
-            data: goods.map((good) => {
-              return {
-                ...good,
-                subTotal: good.price * good.quantity,
-              };
-            }),
+            data: goodsWithSubTotalResolved,
           },
         },
       },
