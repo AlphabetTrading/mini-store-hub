@@ -16,6 +16,7 @@ import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { notifyMessage } from "../../components/Toast";
 import { StatusBar } from "expo-status-bar";
+import { useLoading } from "../../contexts/loading";
 
 type Props = {};
 
@@ -30,6 +31,7 @@ const loginSchema = Yup.object().shape({
 });
 
 const LoginScreen = ({ navigation }: any) => {
+  const { loading, setLoading } = useLoading();
   const { signIn } = useAuth();
   const [viewPassword, setViewPassword] = useState(false);
   // const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -39,145 +41,169 @@ const LoginScreen = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
+    <SafeAreaView style={{ flex: 1 }}>
+      {loading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <StatusBar style="auto" />
 
-      <Text
-        style={{ color: "#5684E0", fontSize: 48, fontFamily: "InterMedium" }}
-      >
-        Hello!
-      </Text>
-      <Text
-        style={{ color: "#BFBFBF", fontSize: 18, fontFamily: "InterRegular" }}
-      >
-        Sign in to continue
-      </Text>
-      <Formik
-        initialValues={INITIAL_VALUES}
-        validationSchema={loginSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true);
-          try {
-            const res = await signIn(values.userName, values.password);
-            if (res.error) {
-              if (
-                res.error?.message === "Invalid Credentials" ||
-                res.error?.message ===
-                  "No user found for email: " + values.userName
-              ) {
-                notifyMessage("Invalid Credentials Please try again");
-              } else {
+          <Text
+            style={{
+              color: "#5684E0",
+              fontSize: 48,
+              fontFamily: "InterMedium",
+            }}
+          >
+            Hello!
+          </Text>
+          <Text
+            style={{
+              color: "#BFBFBF",
+              fontSize: 18,
+              fontFamily: "InterRegular",
+            }}
+          >
+            Sign in to continue
+          </Text>
+          <Formik
+            initialValues={INITIAL_VALUES}
+            validationSchema={loginSchema}
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(true);
+              try {
+                const res = await signIn(values.userName, values.password);
+                if (res.error) {
+                  if (
+                    res.error?.message === "Invalid Credentials" ||
+                    res.error?.message ===
+                      "No user found for email: " + values.userName
+                  ) {
+                    notifyMessage("Invalid Credentials Please try again");
+                  } else {
+                    notifyMessage("Network Error Please try again");
+                  }
+                  return;
+                }
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "Root" }],
+                });
+              } catch (e) {
+                console.log(e);
                 notifyMessage("Network Error Please try again");
               }
-              return;
-            }
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Home" }],
-            });
-          } catch (e) {
-            console.log(e);
-            notifyMessage("Network Error Please try again");
-          }
-          setSubmitting(false);
-        }}
-      >
-        {({
-          handleChange,
-          handleSubmit,
-          submitForm,
-          isSubmitting,
-          values,
-          errors,
-          setErrors,
-        }) => (
-          <View>
-            <View style={{ marginTop: 30 }}>
-              <Text style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}>
-                Username
-              </Text>
-              <View style={styles.inputStyle}>
-                <AntDesign name="user" size={20} color="#5684E0" />
-                <TextInput
-                  style={styles.inputTextStyle}
-                  placeholder="Enter Username"
-                  placeholderTextColor="#6C6C6C66"
-                  value={values.userName}
-                  onChangeText={handleChange("userName")}
-                />
-              </View>
-              {errors.userName && (
-                <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
-                  Username is required
+              setSubmitting(false);
+            }}
+          >
+            {({
+              handleChange,
+              handleSubmit,
+              submitForm,
+              isSubmitting,
+              values,
+              errors,
+              setErrors,
+            }) => (
+              <View>
+                <View style={{ marginTop: 30 }}>
+                  <Text
+                    style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}
+                  >
+                    Username
+                  </Text>
+                  <View style={styles.inputStyle}>
+                    <AntDesign name="user" size={20} color="#5684E0" />
+                    <TextInput
+                      style={styles.inputTextStyle}
+                      placeholder="Enter Username"
+                      placeholderTextColor="#6C6C6C66"
+                      value={values.userName}
+                      onChangeText={handleChange("userName")}
+                    />
+                  </View>
+                  {errors.userName && (
+                    <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
+                      Username is required
+                    </Text>
+                  )}
+                </View>
+                <View style={{ marginTop: 30 }}>
+                  <Text
+                    style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}
+                  >
+                    Password
+                  </Text>
+                  <View style={styles.inputStyle}>
+                    <Entypo name="key" size={20} color="#5684E0" />
+                    <TextInput
+                      style={styles.inputTextStyle}
+                      placeholderTextColor="#6C6C6C66"
+                      placeholder="Enter Password"
+                      value={values.password}
+                      secureTextEntry={!viewPassword}
+                      keyboardType={
+                        !viewPassword ? "default" : "visible-password"
+                      }
+                      onChangeText={handleChange("password")}
+                    />
+                    {viewPassword ? (
+                      <Entypo
+                        name="eye-with-line"
+                        onPress={() => setViewPassword(!viewPassword)}
+                        style={{ alignSelf: "flex-end" }}
+                        size={20}
+                        color="#5684E0"
+                      />
+                    ) : (
+                      <Entypo
+                        name="eye"
+                        onPress={() => setViewPassword(!viewPassword)}
+                        style={{ alignSelf: "flex-end" }}
+                        size={20}
+                        color="#5684E0"
+                      />
+                    )}
+                  </View>
+                  {errors.password && (
+                    <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
+                      Password is required
+                    </Text>
+                  )}
+                </View>
+                <Text
+                  onPress={() => {
+                    if (values.userName) {
+                      navigation.navigate("ForgotPassword", {
+                        screen: "ForgotPassword",
+                        username: values.userName,
+                      });
+                    } else {
+                      notifyMessage("Enter your Username");
+                    }
+                  }}
+                  style={styles.forgotPassword}
+                >
+                  Forgot password?
                 </Text>
-              )}
-            </View>
-            <View style={{ marginTop: 30 }}>
-              <Text style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}>
-                Password
-              </Text>
-              <View style={styles.inputStyle}>
-                <Entypo name="key" size={20} color="#5684E0" />
-                <TextInput
-                  style={styles.inputTextStyle}
-                  placeholderTextColor="#6C6C6C66"
-                  placeholder="Enter Password"
-                  value={values.password}
-                  secureTextEntry={!viewPassword}
-                  keyboardType={!viewPassword ? "default" : "visible-password"}
-                  onChangeText={handleChange("password")}
-                />
-                {viewPassword ? (
-                  <Entypo
-                    name="eye-with-line"
-                    onPress={() => setViewPassword(!viewPassword)}
-                    style={{ alignSelf: "flex-end" }}
-                    size={20}
-                    color="#5684E0"
-                  />
-                ) : (
-                  <Entypo
-                    name="eye"
-                    onPress={() => setViewPassword(!viewPassword)}
-                    style={{ alignSelf: "flex-end" }}
-                    size={20}
-                    color="#5684E0"
-                  />
-                )}
-              </View>
-              {errors.password && (
-                <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
-                  Password is required
-                </Text>
-              )}
-            </View>
-            <Text
-              onPress={() => {
-                if (values.userName) {
-                  navigation.navigate("ForgotPassword", {
-                    screen: "ForgotPassword",
-                    username: values.userName,
-                  });
-                } else {
-                  notifyMessage("Enter your Username");
-                }
-              }}
-              style={styles.forgotPassword}
-            >
-              Forgot password?
-            </Text>
 
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => handleSubmit()}
-            >
-              <Text style={styles.loginButtonText}>
-                {isSubmitting ? <ActivityIndicator /> : "Sign In"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </Formik>
+                <TouchableOpacity
+                  style={styles.loginButton}
+                  onPress={() => handleSubmit()}
+                >
+                  <Text style={styles.loginButtonText}>
+                    {isSubmitting ? <ActivityIndicator /> : "Sign In"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </Formik>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

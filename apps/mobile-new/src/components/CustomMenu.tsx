@@ -48,6 +48,7 @@ const CustomMaterialMenu = ({}: any) => {
       icon: <MaterialCommunityIcons name="logout" color="#FF0000" size={24} />,
       action: async () => {
         const res = await signOut();
+        navigation.reset({ index: 0, routes: [{ name: "Auth" }] });
         console.log("logout", res);
         // hideMenu();
         // navigation.reset({

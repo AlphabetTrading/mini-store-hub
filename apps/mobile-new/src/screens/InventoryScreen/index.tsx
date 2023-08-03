@@ -17,50 +17,8 @@ import { BaseLayout } from "../../components/BaseLayout";
 
 type Props = {};
 
-const DATA = [
-  {
-    id: "1",
-    name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
-  },
-  {
-    id: "2",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "3",
-    name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
-  },
-  {
-    id: "4",
-    name: "Oil",
-    imageSrc: require("../../../assets/icons/categories/oil.png"),
-  },
-  {
-    id: "5",
-    name: "Soft",
-    imageSrc: require("../../../assets/icons/categories/soft.png"),
-  },
-  {
-    id: "6",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "7",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "8",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-];
-
-const InventoryScreen = ({ navigation }: any) => {
+const InventoryScreen = (props: Props) => {
+  const navigation = useNavigation();
   const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
   return (
     <BaseLayout>
@@ -103,9 +61,15 @@ const InventoryScreen = ({ navigation }: any) => {
                       gap: 4,
                     }}
                     onPress={() => {
-                      navigation.navigate("CategoryDetail", {
-                        id: item.id,
-                        name: item.name,
+                      navigation.navigate("Root", {
+                        screen: "InventoryRoot",
+                        params: {
+                          screen: "CategoryDetailScreen",
+                          params: {
+                            categoryID: item.id,
+                            categoryName: item.name,
+                          },
+                        },
                       });
                     }}
                   >

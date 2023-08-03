@@ -1,193 +1,201 @@
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native";
 import { SearchBar } from "react-native-screens";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
-
+import { useQuery } from "@apollo/client";
+import { useAuth } from "../../contexts/auth";
+import { GET_RETAIL_SHOP_PRODUCTS_SIMPLE } from "../../graphql/queries/retailShopQuery";
+import * as SecureStore from "expo-secure-store";
 type Props = {};
 
-const DATA = [
-  {
-    id: "1",
-    name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
-  },
-  {
-    id: "2",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "3",
-    name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
-  },
-  {
-    id: "4",
-    name: "Oil",
-    imageSrc: require("../../../assets/icons/categories/oil.png"),
-  },
-  {
-    id: "5",
-    name: "Soft",
-    imageSrc: require("../../../assets/icons/categories/soft.png"),
-  },
-  {
-    id: "6",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "7",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "8",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "9",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "10",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "11",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-];
+const SelectItem = ({ route, navigation }: any) => {
+  const { categoryID } = route.params;
+  const [alreadySelected, setAlreadySelected] = useState<any[]>([]);
+  const fetchCheckout = useCallback(async () => {
+    const items = await SecureStore.getItemAsync("checkout");
+    setAlreadySelected(JSON.parse(items ? items : ""));
+  }, []);
 
-const SelectItem = (props: Props) => {
-  const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
+  useEffect(() => {
+    fetchCheckout();
+  }, [fetchCheckout]);
 
-  const selectItem = (item: any) => {
-    if (selectedItems.some((i) => i.id === item.id)) {
-      setSelectedItems(selectedItems.filter((i) => i.id !== item.id));
+  const { authState } = useAuth();
+  const { loading, data, error, refetch } = useQuery(
+    GET_RETAIL_SHOP_PRODUCTS_SIMPLE,
+    {
+      variables: {
+        filterRetailShopStockInput: {
+          product: {
+            category: {
+              id: categoryID,
+            },
+          },
+          retailShopId: authState?.user.retailShop[0].id,
+        },
+      },
+    }
+  );
+
+  const selectItem = (stockItem: any) => {
+    if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
+      setAlreadySelected(
+        alreadySelected.filter((filterItem) => filterItem.id !== stockItem.id)
+      );
     } else {
-      setSelectedItems([...selectedItems, item]);
+      setAlreadySelected([...alreadySelected, stockItem]);
     }
   };
 
   return (
     <BaseLayout>
-      <View style={styles.container}>
+      {loading ? (
         <View
-          style={{
-            backgroundColor: Colors.light.background,
-            width: "100%",
-          }}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <SearchBar />
-          <FlatList
-            data={DATA}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <View
+            style={{
+              backgroundColor: Colors.light.background,
+              width: "100%",
+            }}
+          >
+            {data.retailShopStockByRetailShopId.items.length > 0 ? (
+              <View
                 style={{
                   backgroundColor: Colors.light.background,
-                  marginVertical: 4,
-                }}
-                onPress={() => {
-                  selectItem(item);
+                  width: "100%",
                 }}
               >
-                <View
-                  style={[
-                    {
-                      flexDirection: "row",
-                      backgroundColor: "#FFF",
-                      width: "100%",
-                      padding: 10,
-                      paddingVertical: 15,
-                      alignItems: "center",
-                      gap: 16,
-                    },
-                    selectedItems.some((i) => i.id === item.id) && {
-                      borderWidth: 0.5,
-                      borderColor: "#3CC949",
-                    },
-                  ]}
-                >
-                  <View
-                    style={{
-                      borderRadius: 100,
-                      backgroundColor: "#F0F0F0",
-                      width: 60,
-                      height: 60,
-                    }}
-                  ></View>
-                  {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
-                      Abu Walad
-                    </Text>
-                    <Text
-                      style={{ fontFamily: "InterRegular", color: "#80848A" }}
+                <SearchBar />
+                <FlatList
+                  data={data.retailShopStockByRetailShopId.items}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: Colors.light.background,
+                        marginVertical: 4,
+                      }}
+                      onPress={() => {
+                        selectItem(item);
+                      }}
                     >
-                      Quantity: 199
-                    </Text>
-                  </View>
-                  <Text
-                    style={{
-                      width: 80,
-                      fontSize: 18,
-                      fontFamily: "InterMedium",
-                      alignSelf: "flex-end",
-                      color: "#626262",
-                    }}
-                  >
-                    ETB 35
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                      <View
+                        style={[
+                          {
+                            flexDirection: "row",
+                            backgroundColor: "#FFF",
+                            width: "100%",
+                            padding: 10,
+                            paddingVertical: 15,
+                            alignItems: "center",
+                            gap: 16,
+                          },
+                          alreadySelected.some((i) => i.id === item.id) && {
+                            borderWidth: 0.5,
+                            borderColor: "#3CC949",
+                          },
+                        ]}
+                      >
+                        <View
+                          style={{
+                            borderRadius: 100,
+                            backgroundColor: "#F0F0F0",
+                            width: 60,
+                            height: 60,
+                          }}
+                        ></View>
+                        {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
+                        <View style={{ flex: 1, gap: 5 }}>
+                          <Text
+                            style={{ fontSize: 18, fontFamily: "InterMedium" }}
+                          >
+                            {item.product.name}
+                          </Text>
+                          <Text
+                            style={{
+                              fontFamily: "InterRegular",
+                              color: "#80848A",
+                            }}
+                          >
+                            Quantity: {item.quantity}
+                          </Text>
+                        </View>
+                        <Text
+                          style={{
+                            width: 80,
+                            fontSize: 18,
+                            fontFamily: "InterMedium",
+                            alignSelf: "flex-end",
+                            color: "#626262",
+                          }}
+                        >
+                          ETB 35
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={(item) => item.id}
+                />
+              </View>
+            ) : (
+              <View
+                style={{
+                  marginVertical: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+                  No Items Found
+                </Text>
+              </View>
             )}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            bottom: 10,
-            right: 10,
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            backgroundColor: "#5684E0",
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "flex-end",
-            margin: 10,
-          }}
-          onPress={() => {}}
-        >
-          <AntDesign
-            name="check"
-            style={{ padding: 5 }}
-            size={36}
-            color="white"
-            onPress={() => {
-              //   router.push({
-              //     pathname: "/checkout",
-              //     params: { items: JSON.stringify(selectedItems) },
-              //   })
+          </View>
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              bottom: 10,
+              right: 10,
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              backgroundColor: "#5684E0",
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "flex-end",
+              margin: 10,
             }}
-          />
-        </TouchableOpacity>
-      </View>
+            onPress={async () => {
+              await SecureStore.setItemAsync(
+                "checkout",
+                JSON.stringify(alreadySelected)
+              );
+              navigation.replace("Checkout");
+            }}
+          >
+            <AntDesign
+              name="check"
+              style={{ padding: 5 }}
+              size={36}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+      )}
     </BaseLayout>
   );
 };

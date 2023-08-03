@@ -10,8 +10,6 @@ type Props = {
 
 export const ApolloContextProvider = (props: Props) => {
   const { authState } = useAuth();
-  const { loading } = useLoading();
   const client = apolloClient(authState?.accessToken);
-  if (loading) return <Loading />;
   return <ApolloProvider client={client}>{props.children}</ApolloProvider>;
 };

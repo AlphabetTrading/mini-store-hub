@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import Loading from "../components/Loading";
 
 interface LoadingContextProps {
   loading: boolean;
@@ -19,7 +20,7 @@ export const LoadingContextProvider = (props: Props) => {
 
   return (
     <LoadingContext.Provider value={{ loading, setLoading }}>
-      {props.children}
+      {loading ? <Loading /> : props.children}
     </LoadingContext.Provider>
   );
 };

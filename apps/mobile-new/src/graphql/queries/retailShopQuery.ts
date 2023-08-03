@@ -1,5 +1,28 @@
 import { gql } from "@apollo/client";
 
+export const GET_RETAIL_SHOP_PRODUCTS_SIMPLE = gql`
+  query RetailShopStockByRetailShopId(
+    $filterRetailShopStockInput: FilterRetailShopStockInput
+  ) {
+    retailShopStockByRetailShopId(
+      filterRetailShopStockInput: $filterRetailShopStockInput
+    ) {
+      items {
+        id
+        quantity
+        product {
+          id
+          name
+          amharicName
+          activePrice {
+            price
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GET_RETAIL_SHOP_PRODUCTS = gql`
   query RetailShopStockByRetailShopId(
     $filterRetailShopStockInput: FilterRetailShopStockInput

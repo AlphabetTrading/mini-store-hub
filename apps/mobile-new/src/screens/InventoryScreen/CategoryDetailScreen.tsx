@@ -16,6 +16,7 @@ import { GET_SINGLE_CATEGORY } from "../../graphql/queries/categoryQueries";
 import { GET_RETAIL_SHOP_PRODUCTS } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 
@@ -77,15 +78,20 @@ const DATA = [
   },
 ];
 
-const CategoryDetailScreen = ({ navigation, route }: any) => {
-  const { id, name } = route.params;
+const CategoryDetailScreen = ({
+  route,
+}: {
+  route: { params: { categoryID: string; categoryName: string } };
+}) => {
+  const navigation = useNavigation();
+  const categoryID = route.params.categoryID;
   const { authState } = useAuth();
   const { loading, data, error, refetch } = useQuery(GET_RETAIL_SHOP_PRODUCTS, {
     variables: {
       filterRetailShopStockInput: {
         product: {
           category: {
-            id: id,
+            id: categoryID,
           },
         },
         retailShopId: authState?.user.retailShop[0].id,
@@ -120,12 +126,19 @@ const CategoryDetailScreen = ({ navigation, route }: any) => {
                       marginVertical: 4,
                     }}
                     onPress={() =>
-                      navigation.navigate("ItemDetail", {
-                        id: item.product.id,
-                        name: item.product.name,
+                      navigation.navigate("Root", {
+                        screen: "InventoryRoot",
+                        params: {
+                          screen: "ItemDetailScreen",
+                          params: {
+                            itemID: item.product.id,
+                            itemName: item.product.name,
+                          },
+                        },
                       })
                     }
                   >
+                    <Text>{JSON.stringify(item)}</Text>
                     <View
                       style={{
                         flexDirection: "row",

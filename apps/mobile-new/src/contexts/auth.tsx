@@ -71,20 +71,19 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthContextProvider(props: ProviderProps) {
   const [authState, setAuthState] = useState<AuthState | null>(null);
   const { loading, setLoading } = useLoading();
+  console.log(loading, " loading");
   // get user from async storage, and set it to state
   const fetchData = useCallback(async () => {
-    setLoading(true);
     const localState = await SecureStore.getItemAsync("login");
     if (localState) {
       await setAuthState(JSON.parse(localState));
     }
-    setLoading(false);
   }, []);
   useEffect(() => {
     if (!authState) {
       fetchData();
     }
-  }, []);
+  }, [fetchData]);
 
   /**
    *
@@ -135,6 +134,8 @@ export function AuthContextProvider(props: ProviderProps) {
       console.log(res, " res");
       await SecureStore.setItemAsync("login", JSON.stringify(res.data.login));
       setAuthState(res.data.login);
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
+      await updateNotificationToken(res.data.login, token, "android");
       return { data: res.data.login, error: undefined };
     } catch (error) {
       console.log(error, " is the error");

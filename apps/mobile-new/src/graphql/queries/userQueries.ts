@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-const GET_ME_QUERY = gql`
+export const GET_ME_QUERY = gql`
   query Me {
     me {
       id
@@ -16,10 +16,12 @@ const GET_ME_QUERY = gql`
       role
       createdAt
       updatedAt
+      notificationTokens {
+        token
+      }
       userProfile {
         photoUrl
         address {
-          amharicFormattedAddress
           city
           formattedAddress
           id
