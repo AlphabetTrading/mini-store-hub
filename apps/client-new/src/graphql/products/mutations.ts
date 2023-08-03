@@ -61,3 +61,13 @@ export const DELETE_PRODUCT = gql`
     }
   }
 `;
+
+
+export const ADD_PRICE_HISTORY = gql`
+ mutation DeleteProduct($deleteProductId: String!) {
+    deleteProduct(id: $deleteProductId) {
+      id
+    }
+  }
+
+`

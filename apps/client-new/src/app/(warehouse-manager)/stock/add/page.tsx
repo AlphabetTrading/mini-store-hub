@@ -73,7 +73,7 @@ const Page = (props: Props) => {
       },
       onCompleted: (data) => {
         console.log(data);
-        router.push("/items");
+        router.push("/stock");
       },
       onError(error, clientOptions) {
         console.log(error);

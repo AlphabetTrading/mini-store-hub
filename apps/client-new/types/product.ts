@@ -6,12 +6,14 @@ export interface Product {
   description: string;
   category: { id: string; name: string };
   activePrice: { id: string; purchasedPrice: number; price: number };
-  priceHisotry: {
-    id: string;
-    purchasedPrice: number;
-    price: number;
-    createdAt: Date;
-  }[];
+  priceHistory: PriceHistory[];
+}
+
+export interface PriceHistory {
+  id: string;
+  purchasedPrice: number;
+  price: number;
+  createdAt: Date;
 }
 
 export interface WarehouseStock {

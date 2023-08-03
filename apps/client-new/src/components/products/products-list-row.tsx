@@ -216,7 +216,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                     </Grid>
                   </Grid>
                   <Grid item md={6} xs={12}>
-                    <Typography variant="h6">Pricing and stocks</Typography>
+                    <Typography variant="h6">Pricing and Details</Typography>
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={0}>
                       <Grid item md={6} xs={12}>
@@ -251,9 +251,9 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                       </Grid>
                       <Grid item md={6} xs={12}>
                         <Button
-                          variant="contained"
+                          variant="outlined"
                           component={NextLink}
-                          href={`/items/edit/${product.id}`}
+                          href={`/admin/products/edit/${product.id}`}
                         >
                           Edit Price History
                         </Button>

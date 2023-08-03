@@ -61,6 +61,7 @@ const Page = (props: Props) => {
           goods: selectedItems.map((item) => ({
             productId: item.warehouseStock.product.id,
             quantity: item.selectedQuantity,
+            price:item.warehouseStock.product.activePrice.price
           })),
           retailShopId: selectedRetailShop!,
           sourceWarehouseId:((sessionData?.user)as any).warehouseId || "",
