@@ -1,6 +1,11 @@
 import {
-  Modal,
-  SafeAreaView,
+  InventoryTabParamList,
+  NewTransactionParamList,
+  RootTabParamList,
+  SalesParamList,
+} from "../types";
+import {
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -9,26 +14,36 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import Svg, { Path, G, Defs, ClipPath, Rect } from "react-native-svg";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import InventoryScreen from "../screens/InventoryScreen";
-import HomeScreen from "../screens/HomeScreen";
-import InsightsScreen from "../screens/InsightsScreen";
-import NewTransactionScreen from "../screens/NewTransactionScreen";
-import SalesScreen from "../screens/SalesScreen";
 import TabItem from "../components/TabItem";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import CustomMaterialMenu from "../components/CustomMenu";
-import { RootTabParamList } from "../types";
-import { InventoryStack, NewTransactionStack, SalesStack } from ".";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
+import HomeScreen from "../screens/HomeScreen";
+import InsightsScreen from "../screens/InsightsScreen";
+import {
+  getFocusedRouteNameFromRoute,
+  useNavigation,
+} from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SalesScreen from "../screens/SalesScreen";
+import TransactionDetailScreen from "../screens/SalesScreen/TransactionDetail";
+import InventoryScreen from "../screens/InventoryScreen";
+import CategoryDetailScreen from "../screens/InventoryScreen/CategoryDetailScreen";
+import ItemDetailScreen from "../screens/InventoryScreen/ItemDetailScreen";
+import CheckoutScreen from "../screens/NewTransactionScreen";
+import SelectItemScreen from "../screens/NewTransactionScreen/SelectItemScreen";
+import SelectCategoryScreen from "../screens/NewTransactionScreen/SelectCategoryScreen";
 type Props = {};
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 const CustomTabBarButton = ({ children, onPress }: any) => {
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
         top: -35,
         justifyContent: "center",
@@ -47,13 +62,139 @@ const CustomTabBarButton = ({ children, onPress }: any) => {
       >
         {children}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
-const options = [{ id: 1, title: "Logout", icon: "logout", action: () => {} }];
+const SalesStackNavigator = createNativeStackNavigator<SalesParamList>();
 
-const AppStack = ({ navigation, route }: any) => {
+export const SalesStack = () => (
+  <SalesStackNavigator.Navigator initialRouteName="Index">
+    <SalesStackNavigator.Screen
+      name="Index"
+      component={SalesScreen}
+      options={{ headerShown: false }}
+    />
+    <SalesStackNavigator.Screen
+      name="TransactionDetailScreen"
+      component={TransactionDetailScreen}
+      options={({ route }: any) => ({
+        title: route?.params?.name,
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      })}
+    />
+  </SalesStackNavigator.Navigator>
+);
+
+const InventoryStackNavigator =
+  createNativeStackNavigator<InventoryTabParamList>();
+
+export const InventoryStack = () => (
+  <InventoryStackNavigator.Navigator initialRouteName="Index">
+    <InventoryStackNavigator.Screen
+      name="Index"
+      component={InventoryScreen}
+      options={{
+        title: "Inventory",
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      }}
+    />
+    <InventoryStackNavigator.Screen
+      name="CategoryDetailScreen"
+      component={CategoryDetailScreen}
+      options={({ route }: any) => ({
+        title: route?.params?.categoryName,
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      })}
+    />
+    <InventoryStackNavigator.Screen
+      name="ItemDetailScreen"
+      component={ItemDetailScreen}
+      options={({ route }: any) => ({
+        title: route?.params?.itemName,
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      })}
+    />
+  </InventoryStackNavigator.Navigator>
+);
+
+const NewTransactionStackNavigator =
+  createNativeStackNavigator<NewTransactionParamList>();
+
+export const NewTransactionStack = ({ navigation, route }: any) => {
+  return (
+    <NewTransactionStackNavigator.Navigator
+      initialRouteName="Index"
+      screenOptions={{
+        animation: "fade",
+        animationDuration: 5000,
+      }}
+    >
+      <NewTransactionStackNavigator.Screen
+        name="Index"
+        component={CheckoutScreen}
+        options={{
+          title: "Add New Transaction",
+          animation: "fade",
+          headerLeft: () => {
+            return (
+              <View style={{ marginRight: 25 }}>
+                <Ionicons
+                  onPress={() => navigation.goBack()}
+                  name="arrow-back"
+                  size={24}
+                  color="white"
+                />
+              </View>
+            );
+          },
+          headerStyle: {
+            backgroundColor: Colors.light.tint,
+          },
+          headerTintColor: "#FFF",
+        }}
+        // options={{ headerShown: false }}
+      />
+      <NewTransactionStackNavigator.Screen
+        name="SelectItem"
+        component={SelectItemScreen}
+        options={{
+          title: "Select Items",
+          headerStyle: {
+            backgroundColor: Colors.light.tint,
+          },
+          headerTintColor: "#FFF",
+        }}
+      />
+      <NewTransactionStackNavigator.Screen
+        name="SelectCategory"
+        component={SelectCategoryScreen}
+        options={{
+          title: "Select Category",
+          headerStyle: {
+            backgroundColor: Colors.light.tint,
+          },
+          headerTintColor: "#FFF",
+        }}
+      />
+    </NewTransactionStackNavigator.Navigator>
+  );
+};
+
+const AppStack = ({ route }: any) => {
+  const navigation = useNavigation();
   const tabHiddenRoutes = ["NewTransactionRoot"];
   const [hideBottomTab, setHideBottomTab] = useState(false);
 
@@ -86,7 +227,8 @@ const AppStack = ({ navigation, route }: any) => {
                   size={24}
                   onPress={() =>
                     navigation.navigate("Notifications", {
-                      screen: "Notifications",
+                      conversationID: 1,
+                      recipientName: "",
                     })
                   }
                 />
@@ -106,7 +248,7 @@ const AppStack = ({ navigation, route }: any) => {
                   <Text style={{ color: "white", fontSize: 8 }}>12</Text>
                 </View>
               </View>
-              <CustomMaterialMenu options={options} />
+              <CustomMaterialMenu />
             </View>
           ),
           tabBarLabelStyle: {
@@ -121,6 +263,7 @@ const AppStack = ({ navigation, route }: any) => {
           // },
           tabBarShowLabel: false,
           tabBarStyle: {
+            display: hideBottomTab ? "none" : "flex",
             height: 60,
           },
 
@@ -198,7 +341,11 @@ const AppStack = ({ navigation, route }: any) => {
         name="InventoryRoot"
         options={{
           title: "Inventory",
-          headerShown: true,
+          headerShown: false,
+          tabBarStyle: {
+            display: hideBottomTab ? "none" : "flex",
+            height: 60,
+          },
           tabBarLabelStyle: {
             borderWidth: 1,
           },
@@ -255,7 +402,8 @@ const AppStack = ({ navigation, route }: any) => {
         name="NewTransactionRoot"
         options={{
           tabBarStyle: {
-            zIndex: 100,
+            height: 60,
+            zIndex: 20,
             display: hideBottomTab ? "none" : "flex",
           },
           title: "New Transaction",
@@ -271,7 +419,8 @@ const AppStack = ({ navigation, route }: any) => {
                 backgroundColor: "#5684E0",
                 justifyContent: "center",
                 alignItems: "center",
-                elevation: 4,
+                borderWidth: 0.25,
+                borderColor: "#FFF",
               }}
             >
               <TabItem
@@ -311,6 +460,10 @@ const AppStack = ({ navigation, route }: any) => {
         options={{
           title: "Sales",
           headerShown: true,
+          tabBarStyle: {
+            display: hideBottomTab ? "none" : "flex",
+            height: 60,
+          },
           tabBarIcon: ({ color, focused }) => (
             <TabItem
               color={color}

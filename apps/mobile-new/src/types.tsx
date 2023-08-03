@@ -18,16 +18,19 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  ForgotPassword: undefined;
-  ResetPassword: { token: string };
-  SignIn: undefined;
-  NewTransaction: undefined;
+  Auth: NavigatorScreenParams<AuthTabParamList> | undefined;
   Notifications: { conversationID: number; recipientName: string };
   Profile: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
+
+export type AuthTabParamList = {
+  Index: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { token: string };
+};
 
 export type RootTabParamList = {
   Index: undefined;
@@ -41,20 +44,19 @@ export type RootTabParamList = {
 };
 export type InventoryTabParamList = {
   Index: undefined;
-  CategoryDetailScreen: { categoryID: number };
-  ItemDetailScreen: { itemID: number };
+  CategoryDetailScreen: { categoryID: string; categoryName: string };
+  ItemDetailScreen: { itemID: string; itemName: string };
 };
 
 export type NewTransactionParamList = {
   Index: undefined;
-  SelectItem: undefined;
+  SelectItem: { categoryID: string };
   SelectCategory: undefined;
-  Checkout: undefined;
 };
 
 export type SalesParamList = {
   Index: undefined;
-  TransactionDetailScreen: { transactionID: number };
+  TransactionDetailScreen: { transactionID: string; totalPrice: number };
 };
 
 export type AccountTabParamList = {

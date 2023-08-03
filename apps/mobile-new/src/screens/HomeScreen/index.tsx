@@ -20,6 +20,7 @@ export default function HomeScreen() {
   ];
   const [selectedFilter, setSelectedFilter] = useState("daily");
 
+  console.log("Home");
   return (
     <BaseLayout
       style={{

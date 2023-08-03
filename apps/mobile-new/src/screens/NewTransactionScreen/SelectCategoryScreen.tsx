@@ -6,107 +6,83 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import SearchBar from "../../components/SearchBar";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 
-const DATA = [
-  {
-    id: "1",
-    name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
-  },
-  {
-    id: "2",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "3",
-    name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
-  },
-  {
-    id: "4",
-    name: "Oil",
-    imageSrc: require("../../../assets/icons/categories/oil.png"),
-  },
-  {
-    id: "5",
-    name: "Soft",
-    imageSrc: require("../../../assets/icons/categories/soft.png"),
-  },
-  {
-    id: "6",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "7",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "8",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "9",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "10",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "11",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-];
-
-const SelectCategory = ({ navigation }: any) => {
+const SelectCategory = ({ route }: any) => {
+  const navigation = useNavigation();
+  const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
   return (
     <BaseLayout style={{ padding: 10 }}>
-      <SearchBar />
-      <View
-        style={{
-          backgroundColor: Colors.light.background,
-          width: "100%",
-        }}
-      >
-        <FlatList
-          data={DATA}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
+      {loading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          {data.categories.items.length > 0 ? (
+            <View
               style={{
                 backgroundColor: Colors.light.background,
                 width: "100%",
-                height: "100%",
-                flex: 0.25,
-                alignItems: "center",
-                margin: 8,
-                gap: 4,
               }}
-              onPress={() => navigation.navigate("SelectItem")}
             >
-              <View style={styles.categoryItem} key={index}>
-                <Image style={styles.categoryImage} source={item.imageSrc} />
-              </View>
-              <Text style={styles.categoryText}>{item.name}</Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={4}
-        />
-        {/* {DATA.map((item: any, index: number) => {
+              <SearchBar />
+              <View
+                style={{
+                  backgroundColor: Colors.light.background,
+                  width: "100%",
+                }}
+              >
+                <FlatList
+                  data={data.categories.items}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: Colors.light.background,
+                        width: "100%",
+                        height: "100%",
+                        flex: 0.25,
+                        alignItems: "center",
+                        margin: 8,
+                        gap: 4,
+                      }}
+                      onPress={() =>
+                        navigation.navigate("Root", {
+                          screen: "NewTransactionRoot",
+                          params: {
+                            screen: "SelectItem",
+                            params: {
+                              categoryID: item.id,
+                            },
+                          },
+                        })
+                      }
+                    >
+                      <View style={styles.categoryItem} key={index}>
+                        <Image
+                          style={styles.categoryImage}
+                          source={require("../../../assets/icons/categories/egg.png")}
+                        />
+                      </View>
+                      <Text style={styles.categoryText}>{item.name}</Text>
+                    </TouchableOpacity>
+                  )}
+                  // keyExtractor={(item) => item.id}
+                  numColumns={4}
+                />
+                {/* {DATA.map((item: any, index: number) => {
             return (
               <View style={styles.categoryItem} key={index}>
                 <Image
@@ -117,7 +93,23 @@ const SelectCategory = ({ navigation }: any) => {
               </View>
             );
           })} */}
-      </View>
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                marginVertical: 30,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+                No Items Found
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
     </BaseLayout>
   );
 };

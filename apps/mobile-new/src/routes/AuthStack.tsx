@@ -4,15 +4,16 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "../screens/AuthScreen";
 import ForgotPasswordScreen from "../screens/AuthScreen/forgotPassword";
 import ResetPasswordScreen from "../screens/AuthScreen/resetPassword";
+import { AuthTabParamList } from "../types";
 
 type Props = {};
 
 const AuthStack = (props: Props) => {
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<AuthTabParamList>();
   return (
-    <Stack.Navigator initialRouteName="SignIn">
+    <Stack.Navigator initialRouteName="Index">
       <Stack.Screen
-        name="SignIn"
+        name="Index"
         component={LoginScreen}
         options={{ headerShown: false }}
       />

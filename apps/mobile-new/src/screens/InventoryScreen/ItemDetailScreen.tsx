@@ -14,6 +14,8 @@ import { GET_PRODUCT_DETAIL } from "../../graphql/queries/productQueries";
 import { GET_RETAIL_SHOP_PRODUCT_DETAIL } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
+import { useNavigation } from "@react-navigation/native";
+import { format } from "date-fns";
 
 type Props = {};
 
@@ -35,14 +37,14 @@ const DATA = [
   },
 ];
 
-const ItemDetailScreen = ({ navigation, route }: any) => {
-  const { id, name } = route.params;
+const ItemDetailScreen = ({ route }: any) => {
+  const { itemID, itemName } = route.params;
   const { authState } = useAuth();
   const { loading, data, error, refetch } = useQuery(
     GET_RETAIL_SHOP_PRODUCT_DETAIL,
     {
       variables: {
-        productId: id,
+        productId: itemID,
         retailShopId: authState?.user.retailShop[0].id,
       },
     }
@@ -166,7 +168,7 @@ const ItemDetailScreen = ({ navigation, route }: any) => {
                       }}
                     >
                       {/* 02 Apr, 2022 */}
-                      {item.createdAt}
+                      {format(new Date(item.createdAt), "dd MMM, yyyy")}
                     </Text>
                     <View
                       style={{
