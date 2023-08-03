@@ -8,7 +8,7 @@ export const apolloClient = (token: any) => {
   console.log(process.env.EXPO_PUBLIC_API_URL, BASE_URL, "apolloClient");
   // create an apollo link instance, a network interface for apollo client
   const link = new HttpLink({
-    uri: "https://ebbf-196-188-34-119.ngrok-free.app/graphql",
+    uri: BASE_URL,
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { Entypo } from "@expo/vector-icons";
 import { StackActions } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 type Props = {};
 
@@ -40,6 +41,8 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
+
       <Text
         style={{ color: "#5684E0", fontSize: 48, fontFamily: "InterMedium" }}
       >
@@ -60,7 +63,7 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
             // navigation.dispatch(StackActions.replace("Login"));
             navigation.reset({
               index: 0,
-              routes: [{ name: "Login" }],
+              routes: [{ name: "SignIn" }],
             });
           } catch (e) {
             console.log(e);

@@ -11,7 +11,7 @@ import { useState } from "react";
 import Colors from "../../constants/Colors";
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
-
+import { StatusBar } from "expo-status-bar";
 export default function HomeScreen() {
   const filters = [
     { id: 1, name: "daily" },
@@ -26,6 +26,8 @@ export default function HomeScreen() {
         position: "relative",
       }}
     >
+      <StatusBar style="light" />
+
       <View style={styles.container}>
         <View
           style={{

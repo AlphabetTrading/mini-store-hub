@@ -9,6 +9,7 @@ import React from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import { BaseLayout } from "../../components/BaseLayout";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 
@@ -19,7 +20,9 @@ interface checkoutItem {
   price: number;
 }
 
-const CheckoutScreen = ({ navigation }: any) => {
+const CheckoutScreen = ({}: any) => {
+  const navigation = useNavigation();
+
   const [checkoutItems, setCheckoutItems] = React.useState<checkoutItem[]>([]);
 
   const [total, setTotal] = React.useState<number>(0);
@@ -207,7 +210,12 @@ const CheckoutScreen = ({ navigation }: any) => {
           alignSelf: "flex-end",
           margin: 10,
         }}
-        onPress={() => navigation.navigate("SelectCategory")}
+        onPress={() => {
+          navigation.navigate("Root", {
+            screen: "NewTransactionRoot",
+            params: { screen: "SelectCategory" },
+          });
+        }}
       >
         <Entypo name="plus" style={{ padding: 5 }} size={36} color="white" />
       </TouchableOpacity>

@@ -5,6 +5,9 @@ import { Cuid, UUID } from 'graphql-scalars/typings/mocks';
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.notificationToken.deleteMany();
+  await prisma.notificationRead.deleteMany();
+  await prisma.notification.deleteMany();
   await prisma.userProfile.deleteMany();
   await prisma.user.deleteMany();
   await prisma.priceHistory.deleteMany();
@@ -17,7 +20,6 @@ async function main() {
   await prisma.retailShop.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
-  await prisma.notification.deleteMany();
 
   console.log('Seeding...');
 

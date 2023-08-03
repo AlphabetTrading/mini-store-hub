@@ -2,8 +2,7 @@ import { useAuth } from "../contexts/auth";
 import { Platform } from "react-native";
 
 export const useUser = () => {
-  const { authState, signIn, signOut, setAuthState, updateNotificationToken } =
-    useAuth();
+  const { authState, setAuthState, updateNotificationToken } = useAuth();
 
   const addPushToken = async (token: string) => {
     if (authState) {
@@ -31,7 +30,7 @@ export const useUser = () => {
       const updatedAuthState = { ...authState };
       const prevAuthState = { ...authState };
       updatedAuthState.user.allowsNotifications = allowed;
-      //   setAndStoreAuthState(updatedAuthState);
+      setAuthState(updatedAuthState);
 
       try {
         // await alterAllowsNotifications(authState.ID, allowed, authState.accessToken);
