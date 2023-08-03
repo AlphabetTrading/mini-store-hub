@@ -1,7 +1,14 @@
-import React, { useContext, createContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  useContext,
+  createContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import * as Notifications from "expo-notifications";
+import * as SecureStore from "expo-secure-store";
 import { apolloClient } from "../graphql/apolloClient";
+
 import {
   FORGOT_PASSWORD_MUTATION,
   LOGIN_MUTATION,
@@ -11,6 +18,7 @@ import {
   ACCEPT_NOTIFICATION_MUTATION,
   REMOVE_NOTIFICATION_MUTATION,
 } from "../graphql/mutations/notificationMutations";
+import { useLoading } from "./loading";
 
 interface AuthState {
   accessToken: string;
@@ -62,14 +70,17 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthContextProvider(props: ProviderProps) {
   const [authState, setAuthState] = useState<AuthState | null>(null);
+  const { loading, setLoading } = useLoading();
   // get user from async storage, and set it to state
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    const localState = await SecureStore.getItemAsync("login");
+    if (localState) {
+      await setAuthState(JSON.parse(localState));
+    }
+    setLoading(false);
+  }, []);
   useEffect(() => {
-    const fetchData = async () => {
-      const localState = await AsyncStorage.getItem("login");
-      if (localState) {
-        setAuthState(JSON.parse(localState));
-      }
-    };
     if (!authState) {
       fetchData();
     }
@@ -83,7 +94,7 @@ export function AuthContextProvider(props: ProviderProps) {
     try {
       const token = (await Notifications.getExpoPushTokenAsync()).data;
 
-      await AsyncStorage.removeItem("login");
+      await SecureStore.deleteItemAsync("login");
       const client = apolloClient(authState?.accessToken);
       const res = await client.mutate({
         mutation: REMOVE_NOTIFICATION_MUTATION,
@@ -121,10 +132,12 @@ export function AuthContextProvider(props: ProviderProps) {
           },
         },
       });
-      await AsyncStorage.setItem("login", JSON.stringify(res.data.login));
+      console.log(res, " res");
+      await SecureStore.setItemAsync("login", JSON.stringify(res.data.login));
       setAuthState(res.data.login);
       return { data: res.data.login, error: undefined };
     } catch (error) {
+      console.log(error, " is the error");
       setAuthState(null);
       return { error: error as Error, data: undefined };
     }

@@ -15,6 +15,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { notifyMessage } from "../../components/Toast";
+import { StatusBar } from "expo-status-bar";
 
 type Props = {};
 
@@ -39,6 +40,8 @@ const LoginScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
+
       <Text
         style={{ color: "#5684E0", fontSize: 48, fontFamily: "InterMedium" }}
       >
@@ -57,7 +60,11 @@ const LoginScreen = ({ navigation }: any) => {
           try {
             const res = await signIn(values.userName, values.password);
             if (res.error) {
-              if (res.error?.message === "Invalid Credentials") {
+              if (
+                res.error?.message === "Invalid Credentials" ||
+                res.error?.message ===
+                  "No user found for email: " + values.userName
+              ) {
                 notifyMessage("Invalid Credentials Please try again");
               } else {
                 notifyMessage("Network Error Please try again");

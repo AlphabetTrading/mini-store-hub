@@ -9,7 +9,7 @@ const linking: LinkingOptions<any> = {
         initialRouteName: "index" as any,
         screens: {
           Index: "index",
-          Inventory: {
+          InventoryRoot: {
             initialRouteName: "index" as any,
             screens: {
               Index: "index",
@@ -21,9 +21,9 @@ const linking: LinkingOptions<any> = {
             initialRouteName: "index" as any,
             screens: {
               Index: "index",
-              SelectItemScreen: "selectitem",
-              SelectCategoryScreen: "selectcategory",
-              CheckoutScreen: "checkout",
+              SelectItem: "selectitem",
+              SelectCategory: "selectcategory",
+              Checkout: "checkout",
             },
           },
           Sales: {
@@ -50,6 +50,7 @@ const linking: LinkingOptions<any> = {
       ForgotPassword: "forgotpassword",
       ResetPassword: { path: "resetpassword/:otp" },
       SignIn: "signin",
+      NotFound: "*",
     },
   },
 };

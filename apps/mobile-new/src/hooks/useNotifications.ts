@@ -11,6 +11,7 @@ export const useNotifications = () => {
   const { addPushToken, setAllowsNotifications } = useUser();
   const navigation = useNavigation<any>();
   const { authState } = useAuth();
+  console.log(authState, "authState");
 
   const registerForPushNotificationsAsync = async (alertUser?: boolean) => {
     if (Device.isDevice) {
@@ -24,6 +25,7 @@ export const useNotifications = () => {
       }
 
       if (finalStatus !== "granted") {
+        if (authState.user.allowsNotifications) setAllowsNotifications(false);
         if (alertUser)
           Alert.alert(
             "Error",
@@ -38,10 +40,12 @@ export const useNotifications = () => {
               },
             ]
           );
+        return;
       }
       const token = (await Notifications.getExpoPushTokenAsync()).data;
       await addPushToken(token);
-      if (!authState.user.allowsNotifications) setAllowsNotifications(false);
+
+      if (!authState.user.allowsNotifications) setAllowsNotifications(true);
     } else {
       alert("Must use physical device for Push Notifications");
     }

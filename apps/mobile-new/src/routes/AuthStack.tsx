@@ -10,9 +10,9 @@ type Props = {};
 const AuthStack = (props: Props) => {
   const Stack = createNativeStackNavigator();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen
-        name="Login"
+        name="SignIn"
         component={LoginScreen}
         options={{ headerShown: false }}
       />

@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
+import { StatusBar } from "expo-status-bar";
 
 type Props = {};
 
@@ -33,6 +34,8 @@ const ForgotPasswordScreen = ({ navigation, route }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
+
       <Text
         style={{ color: "#5684E0", fontSize: 48, fontFamily: "InterMedium" }}
       >
