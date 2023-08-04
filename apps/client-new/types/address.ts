@@ -3,4 +3,5 @@ export type Address = {
   street: string;
   lat: string;
   lng: string;
+  formattedAddress: string;
 };

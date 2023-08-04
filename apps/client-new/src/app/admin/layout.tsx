@@ -32,7 +32,6 @@ const Layout = ({ children }: Props) => {
   const navigationData = useNavigationItems();
   return (
     <>
-    <div>vgubhnj</div>
       <SideNav
         // color={navColor}
         // sections={sections}
