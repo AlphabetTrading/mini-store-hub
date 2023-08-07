@@ -76,6 +76,7 @@ export const PRODUCTS = gql`
         activePrice {
           price
           purchasedPrice
+          id
         }
       }
     }
@@ -98,7 +99,13 @@ export const PRODUCT = gql`
       serialNumber
       unit
       description
+      activePrice {
+        id
+        price
+        purchasedPrice
+      }
       priceHistory {
+        id
         price
         purchasedPrice
         createdAt

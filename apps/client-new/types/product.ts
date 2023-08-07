@@ -5,7 +5,7 @@ export interface Product {
   name: string;
   description: string;
   category: { id: string; name: string };
-  activePrice: { id: string; purchasedPrice: number; price: number };
+  activePrice: PriceHistory;
   priceHistory: PriceHistory[];
 }
 

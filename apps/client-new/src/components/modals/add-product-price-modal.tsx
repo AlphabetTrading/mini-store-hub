@@ -1,12 +1,26 @@
-import { Button, Modal, Paper, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Modal,
+  Paper,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ADD_PRICE_HISTORY } from "@/graphql/products/mutations";
+import {
+  ADD_PRICE_HISTORY,
+  AddPriceHistoryData,
+  AddPriceHistoryVars,
+} from "@/graphql/products/mutations";
+import { on } from "events";
+import { PRODUCT } from "@/graphql/products/queries";
 
 type Props = {
   open: boolean;
   handleClose: () => void;
+  productId: string;
 };
 interface Values {
   price: number;
@@ -26,15 +40,31 @@ const validationSchema = Yup.object({
 });
 
 export const AddProductPriceModal = (props: Props) => {
-  const { open, handleClose } = props;
-  const [addNewPrice, { data, loading, error }] =
-    useMutation(ADD_PRICE_HISTORY);
+
+  const { open, handleClose, productId } = props;
+  const [addPriceHistory, { data, loading, error }] = useMutation<
+    AddPriceHistoryData,
+    AddPriceHistoryVars
+  >(ADD_PRICE_HISTORY);
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      handleClose();
+      await addPriceHistory({
+        variables: {
+          priceHistory: {
+            price: values.price,
+            purchasedPrice: values.purchasedPrice,
+            productId: productId,
+          },
+        },
+        onCompleted: (data) => {
+          handleClose();
+          helpers.resetForm();
+        },
+        refetchQueries: [PRODUCT],
+      });
     },
   });
 
@@ -86,7 +116,17 @@ export const AddProductPriceModal = (props: Props) => {
               helperText={formik.touched.price && formik.errors.price}
               error={formik.touched.price && formik.errors.price ? true : false}
             />
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" disabled={loading}>
+              {loading && (
+                <CircularProgress
+                  sx={{
+                    color: "neutral.400",
+                    width: "25px !important",
+                    height: "25px !important",
+                    mr: 1,
+                  }}
+                />
+              )}
               Add new price
             </Button>
           </Stack>

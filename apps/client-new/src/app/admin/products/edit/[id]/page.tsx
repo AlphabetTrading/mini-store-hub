@@ -2,7 +2,7 @@
 import loading from "@/app/loading";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import Edit from "@mui/icons-material/Edit";
 import {
   Box,
@@ -13,9 +13,7 @@ import {
   Card,
   CardContent,
   Grid,
-  TextField,
   CircularProgress,
-  MenuItem,
   Button,
   Link,
   Table,
@@ -36,6 +34,14 @@ import dayjs from "dayjs";
 import { PRODUCT, ProductData, ProductVars } from "@/graphql/products/queries";
 import { PriceHistory } from "../../../../../../types/product";
 import { AddProductPriceModal } from "@/components/modals/add-product-price-modal";
+import StateHandler from "@/components/state-handler";
+import CustomChip from "@/components/custom-chip";
+import {
+  UPDATE_PRODUCT,
+  UpdateProductData,
+  UpdateProductVars,
+} from "@/graphql/products/mutations";
+import PriceHistoryListRow from "@/components/products/price-history-list-row";
 
 type Props = {
   params: { id: string };
@@ -69,8 +75,10 @@ const Page = ({ params }: Props) => {
     validationSchema,
     onSubmit: async (values, helpers) => {},
   });
+
   const [open, setOpen] = useState<boolean>(false);
-  const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
+  const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+
   const {
     data: productData,
     loading: productLoading,
@@ -79,12 +87,8 @@ const Page = ({ params }: Props) => {
     variables: {
       productId: params.id,
     },
+    fetchPolicy: "cache-and-network",
   });
-  useEffect(() => {
-    // console.log(productData.product)
-  }, [productData]);
-
-  const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
 
   const handlePriceToggle = (id: string) => {
     setSelectedPrice((prev) => {
@@ -97,7 +101,11 @@ const Page = ({ params }: Props) => {
 
   return (
     <>
-      <AddProductPriceModal open={open} handleClose={() => setOpen(false)} />
+      <AddProductPriceModal
+        productId={params.id}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
       <Box component="main" sx={{ py: 8 }}>
         <Container maxWidth="xl">
           {productLoading && <CircularProgress />}
@@ -231,67 +239,61 @@ const Page = ({ params }: Props) => {
                     </Grid>
                   </CardContent>
                 </Card> */}
-
                 <Card>
                   <CardContent>
                     <Stack spacing={2} alignItems="flex-end">
-                      <Button startIcon={<AddIcon />} onClick={()=>setOpen(true)} variant="contained">
+                      <Button
+                        startIcon={<AddIcon />}
+                        onClick={() => setOpen(true)}
+                        variant="contained"
+                      >
                         Add price
                       </Button>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={3}>
-                          <Typography variant="h6">Pricing details</Typography>
-                        </Grid>
+                      <StateHandler
+                        empty={productData?.product.priceHistory.length === 0}
+                        error={productError}
+                        loading={productLoading}
+                      >
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} md={3}>
+                            <Typography variant="h6">
+                              Pricing details
+                            </Typography>
+                          </Grid>
 
-                        <Grid xs={12} md={9}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell />
-                                <TableCell align="left">Date</TableCell>
-                                <TableCell align="left">
-                                  Purchased Price Per Unit
-                                </TableCell>
-                                <TableCell align="left">
-                                  Selling Price Per Unit
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {productData?.product?.priceHistory?.map(
-                                (history: PriceHistory, idx: number) => {
-                                  return (
-                                    <TableRow key={idx}>
-                                      <TableCell>
-                                        <IconButton
-                                          onClick={() =>
-                                            handlePriceToggle(history.id)
-                                          }
-                                        >
-                                          {selectedPrice ? (
-                                            <ExpandMore />
-                                          ) : (
-                                            <ChevronRightIcon />
-                                          )}
-                                        </IconButton>
-                                      </TableCell>
-                                      <TableCell>
-                                        {dayjs(history.createdAt).format(
-                                          "DD/MM/YYYY"
-                                        )}
-                                      </TableCell>
-                                      <TableCell>
-                                        {history.purchasedPrice}
-                                      </TableCell>
-                                      <TableCell>{history.price}</TableCell>
-                                    </TableRow>
-                                  );
-                                }
-                              )}
-                            </TableBody>
-                          </Table>
+                          <Grid xs={12} md={9}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell />
+                                  <TableCell align="left">Date</TableCell>
+                                  <TableCell align="left">
+                                    Purchased Price Per Unit
+                                  </TableCell>
+                                  <TableCell align="left">
+                                    Selling Price Per Unit
+                                  </TableCell>
+                                  <TableCell />
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {productData?.product?.priceHistory?.map(
+                                  (history: PriceHistory, idx: number) => (
+                                    <PriceHistoryListRow
+                                      key={idx}
+                                      activePriceId={
+                                        productData?.product?.activePrice?.id
+                                      }
+                                      productId={productData?.product?.id}
+                                      priceHistory={history}
+                                    />
+                                  )
+                                )}
+                              </TableBody>
+                            </Table>
+                          </Grid>
                         </Grid>
-                      </Grid>
+                      </StateHandler>
                     </Stack>
                   </CardContent>
                 </Card>
@@ -302,10 +304,10 @@ const Page = ({ params }: Props) => {
                   justifyContent="flex-end"
                   spacing={1}
                 >
-                  <Button color="inherit">Cancel</Button>
+                  {/* <Button color="inherit">Cancel</Button>
                   <Button type="submit" variant="contained">
                     Update
-                  </Button>
+                  </Button> */}
                 </Stack>
               </Stack>
             </form>

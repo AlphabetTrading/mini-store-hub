@@ -24,23 +24,26 @@ export const CREATE_PRODUCT = gql`
 export interface UpdateProductVars {
   updateProductId: string;
   data: {
-    categoryId: string;
-    description: string;
-    unit: string;
-    name: string;
+    activePriceId?: string;
+    categoryId?: string;
+    description?: string;
+    unit?: string;
+    name?: string;
   };
 }
 
 export interface UpdateProductData {
-  id: string;
+  updateProduct: {
+    id: string;
+  };
 }
 
 export const UPDATE_PRODUCT = gql`
   mutation UpdateProduct(
+    $data: UpdateProductInput!
     $updateProductId: String!
-    $data: CreateProductInput!
   ) {
-    updateProduct(id: $updateProductId, data: $data) {
+    updateProduct(data: $data, id: $updateProductId) {
       id
     }
   }
@@ -62,12 +65,22 @@ export const DELETE_PRODUCT = gql`
   }
 `;
 
+export interface AddPriceHistoryData {
+  id: string;
+}
+
+export interface AddPriceHistoryVars {
+  priceHistory: {
+    price: number;
+    productId: string;
+    purchasedPrice: number;
+  };
+}
 
 export const ADD_PRICE_HISTORY = gql`
- mutation DeleteProduct($deleteProductId: String!) {
-    deleteProduct(id: $deleteProductId) {
+  mutation CreatePriceHistory($priceHistory: CreatePriceHistoryInput!) {
+    createPriceHistory(priceHistory: $priceHistory) {
       id
     }
   }
-
-`
+`;

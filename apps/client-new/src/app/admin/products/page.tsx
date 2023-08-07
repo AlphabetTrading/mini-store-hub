@@ -14,14 +14,10 @@ import React from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
-import ItemListTable from "@/components/stock/stock-list-table";
 import {
     PRODUCTS,
   ProductsData,
 } from "@/graphql/products/queries";
-// import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import ItemListSearch from "@/components/stock/stock-list-search";
-// import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { useSession } from "next-auth/react";
 import ProductsListSearch from "@/components/products/products-list-search";

@@ -67,10 +67,14 @@ const validationSchema = Yup.object({
 
 const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
   const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
-  const [updateProduct, { loading: updateLoading, error: updateError }] =
-    useMutation<UpdateProductData, UpdateProductVars>(UPDATE_PRODUCT);
-  const [deleteProduct, { loading: deleteLoading, error: deleteError }] =
-    useMutation<DeleteProductData, DeleteProductVars>(DELETE_PRODUCT);
+  const [
+    updateProduct,
+    { loading: updateLoading, error: updateError, reset: updateReset },
+  ] = useMutation<UpdateProductData, UpdateProductVars>(UPDATE_PRODUCT);
+  const [
+    deleteProduct,
+    { loading: deleteLoading, error: deleteError, reset: deleteReset },
+  ] = useMutation<DeleteProductData, DeleteProductVars>(DELETE_PRODUCT);
   const handleDeleteProduct = async () => {
     await deleteProduct({
       variables: {
@@ -115,7 +119,13 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
     <>
       <TableRow>
         <TableCell>
-          <IconButton onClick={() => handleItemToggle(product.id)}>
+          <IconButton
+            onClick={() => {
+              handleItemToggle(product.id);
+              updateReset();
+              deleteReset();
+            }}
+          >
             {selected ? <ExpandMore /> : <ChevronRightIcon />}
           </IconButton>
         </TableCell>
@@ -324,7 +334,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
               {(deleteError || updateError) && (
                 <Alert severity="error">
                   <AlertTitle>Error</AlertTitle>
-                 {deleteError?.message || updateError?.message}
+                  {deleteError?.message || updateError?.message}
                 </Alert>
               )}
             </form>

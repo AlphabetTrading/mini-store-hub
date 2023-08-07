@@ -37,7 +37,7 @@ type Props = {};
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   unit: Yup.string().required("Unit is required"),
-  serialNumber: Yup.string().required("Serial number is required"),
+  // serialNumber: Yup.string().required("Serial number is required"),
   description: Yup.string().required("Description is required"),
   category: Yup.string().required("Category is required"),
 });
@@ -76,7 +76,8 @@ const Page = (props: Props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      createProduct({
+      console.log("...")
+      await createProduct({
         variables: {
           data: {
             name: values.name,
