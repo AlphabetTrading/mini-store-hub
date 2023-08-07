@@ -35,6 +35,16 @@ export class UsersResolver {
     return this.usersService.updateUser(user.id, newUserData);
   }
 
+  @HasRoles('ADMIN')
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User)
+  async updateUserbyId(
+    @Args('id') userId: string,
+    @Args('data') newUserData: UpdateUserInput,
+  ) {
+    return this.usersService.updateUser(userId, newUserData);
+  }
+
   @Mutation(() => User)
   async changePassword(
     @UserEntity() user: User,

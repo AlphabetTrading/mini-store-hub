@@ -234,31 +234,67 @@ export class SaleTransactionsResolver {
     return this.saleTransactionsService.totalProfitByProduct(id);
   }
 
-  // @Mutation(() => SaleTransaction)
-  // async createSaleTransaction(
-  //   @Args('data') data: CreateSaleTransactionInput,
-  // ): Promise<SaleTransaction> {
-  //   const sales = await this.saleTransactionsService.create(data);
+  @Query(() => Float)
+  async totalProfitByRetailShopAndProduct(
+    @Args('retailShopId') retailShopId: string,
+    @Args('productId') productId: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalProfitByRetailShopAndProduct(
+      retailShopId,
+      productId,
+    );
+  }
 
-  //   // check retailShop inventory and update it, and if there is low level of stock notify the retail shop manager and warehouse manager
-  //   // this is done by subscribing to the inventoryUpdated event
-  //   //
-  //   // const inventoryUpdated = await this.RetailShopStockService;
-  //   // console.log(inventoryUpdated);
-  //   //
+  @Query(() => Float)
+  async totalSalesByRetailShopAndProduct(
+    @Args('retailShopId') retailShopId: string,
+    @Args('productId') productId: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalSalesByRetailShopAndProduct(
+      retailShopId,
+      productId,
+    );
+  }
 
-  //   // pubSub.publish('inventoryUpdated', { inventoryUpdated: { sales } });
-  //   return sales;
-  // }
+  @Query(() => Float)
+  async totalSoldQuantityByRetailShopAndProduct(
+    @Args('retailShopId') retailShopId: string,
+    @Args('productId') productId: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalSoldQuantityByRetailShopAndProduct(
+      retailShopId,
+      productId,
+    );
+  }
 
-  // @Mutation(() => SaleTransaction)
-  // async createBulkSaleTransaction(
-  //   @Args('data', { type: () => CreateBulkSaleTransactionInput })
-  //   data: CreateBulkSaleTransactionInput,
-  // ) {
-  //   const sales = await this.saleTransactionsService.createBulk(data);
-  //   return sales;
-  // }
+  @Query(() => Float)
+  async totalSoldQuantityByRetailShop(
+    @Args('retailShopId') retailShopId: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalSoldQuantityByRetailShop(
+      retailShopId,
+    );
+  }
+
+  @Query(() => Float)
+  async totalSoldQuantityByProduct(
+    @Args('productId') productId: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalSoldQuantityByProduct(productId);
+  }
+
+  @Query(() => Float)
+  async totalSoldQuantityByRetailShopAndByDate(
+    @Args('retailShopId') retailShopId: string,
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalSoldQuantityByDate(
+      retailShopId,
+      startDate,
+      endDate,
+    );
+  }
 
   @Mutation(() => SaleTransaction)
   async createSaleTransaction(

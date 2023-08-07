@@ -439,6 +439,7 @@ type Mutation {
   updateUser(data: UpdateUserInput!): User!
   updateUserProfile(updateProfileInput: UpdateUserProfileInput!, userId: String!): UserProfile!
   updateUserRole(role: String!, userId: String!): User!
+  updateUserbyId(data: UpdateUserInput!, id: String!): User!
   updateWarehouse(data: UpdateWarehouseInput!, id: String!): Warehouse!
   updateWarehouseStock(data: UpdateWarehouseStockInput!, id: String!): WarehouseStock!
   uploadFile(file: Upload!): String!
@@ -621,7 +622,9 @@ type Query {
   findGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findIncomingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findOutgoingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
-  findProductsByTopSelling(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopSale(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
   getAllNotifications: [Notification!]!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
@@ -660,12 +663,18 @@ type Query {
   totalProfitByDateAndRetailShop(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalProfitByProduct(productId: String!): Float!
   totalProfitByRetailShop(retailShopId: String!): Float!
+  totalProfitByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
   totalSales: Float!
   totalSalesByDate(endDate: String!, startDate: String!): Float!
   totalSalesByDateAndProduct(endDate: String!, productId: String!, startDate: String!): Float!
   totalSalesByDateAndRetailShop(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSalesByProduct(productId: String!): Float!
   totalSalesByRetailShop(retailShopId: String!): Float!
+  totalSalesByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
+  totalSoldQuantityByProduct(productId: String!): Float!
+  totalSoldQuantityByRetailShop(retailShopId: String!): Float!
+  totalSoldQuantityByRetailShopAndByDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
+  totalSoldQuantityByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
   unreadNotificationsByUserId(userId: String!): [Notification!]!
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): PaginationUser!

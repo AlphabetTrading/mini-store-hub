@@ -85,76 +85,76 @@ export class ProductsResolver {
     }
   }
 
-  // @Query(() => PaginationProducts, { name: 'findProductsByTopProfit' })
-  // async findProductsByTopProfit(
-  //   @Args('filterProductInput', {
-  //     type: () => FilterProductInput,
-  //     nullable: true,
-  //   })
-  //   filterProductInput?: FilterProductInput,
-  //   @Args('orderBy', {
-  //     type: () => ProductOrder,
-  //     nullable: true,
-  //   })
-  //   orderBy?: ProductOrder,
-  //   @Args('paginationInput', { type: () => PaginationInput, nullable: true })
-  //   paginationInput?: PaginationInput,
-  // ): Promise<PaginationProducts> {
-  //   try {
-  //     const where: Prisma.ProductWhereInput = {
-  //       AND: [
-  //         {
-  //           id: filterProductInput?.id,
-  //         },
-  //         {
-  //           OR: [
-  //             {
-  //               name: filterProductInput?.name,
-  //             },
-  //             {
-  //               amharicName: filterProductInput?.name,
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           serialNumber: filterProductInput?.serialNumber,
-  //         },
-  //         {
-  //           description: filterProductInput?.description,
-  //         },
-  //         {
-  //           category: filterProductInput?.category,
-  //         },
-  //         {
-  //           createdAt: filterProductInput?.createdAt,
-  //         },
-  //       ],
-  //     };
+  @Query(() => PaginationProducts, { name: 'findProductsByTopProfit' })
+  async findProductsByTopProfit(
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
+    @Args('orderBy', {
+      type: () => ProductOrder,
+      nullable: true,
+    })
+    orderBy?: ProductOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationProducts> {
+    try {
+      const where: Prisma.ProductWhereInput = {
+        AND: [
+          {
+            id: filterProductInput?.id,
+          },
+          {
+            OR: [
+              {
+                name: filterProductInput?.name,
+              },
+              {
+                amharicName: filterProductInput?.name,
+              },
+            ],
+          },
+          {
+            serialNumber: filterProductInput?.serialNumber,
+          },
+          {
+            description: filterProductInput?.description,
+          },
+          {
+            category: filterProductInput?.category,
+          },
+          {
+            createdAt: filterProductInput?.createdAt,
+          },
+        ],
+      };
 
-  //     const products = await this.productsService.findProductsByTopProfit({
-  //       where,
-  //       orderBy: {
-  //         [orderBy?.field]: orderBy?.direction,
-  //       },
-  //       skip: paginationInput?.skip,
-  //       take: paginationInput?.take,
-  //     });
+      const products = await this.productsService.findProductsByTopProfit({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
 
-  //     const count = await this.productsService.count();
-  //     return {
-  //       items: products,
-  //       meta: {
-  //         page: paginationInput?.skip,
-  //         limit: paginationInput?.take,
-  //         count,
-  //       },
-  //     };
-  //   } catch (e) {
-  //     throw new BadRequestException('Error loading products!');
-  //   }
-  // }
+      const count = await this.productsService.count();
+      return {
+        items: products,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
+  }
 
-  @Query(() => PaginationProducts, { name: 'findProductsByTopSelling' })
+  @Query(() => PaginationProducts, { name: 'findProductsByTopSale' })
   async findProductsByTopSelling(
     @Args('filterProductInput', {
       type: () => FilterProductInput,
@@ -223,6 +223,109 @@ export class ProductsResolver {
       throw new BadRequestException('Error loading products!');
     }
   }
+
+  @Query(() => PaginationProducts, { name: 'findProductsBySoldQuantity' })
+  async findProductsBySoldQuantity(
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
+    @Args('orderBy', {
+      type: () => ProductOrder,
+      // type: () => OrderByProductInput,
+      nullable: true,
+    })
+    orderBy?: ProductOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationProducts> {
+    try {
+      const where: Prisma.ProductWhereInput = {
+        AND: [
+          {
+            id: filterProductInput?.id,
+          },
+          {
+            OR: [
+              {
+                name: filterProductInput?.name,
+              },
+              {
+                amharicName: filterProductInput?.name,
+              },
+            ],
+          },
+          {
+            serialNumber: filterProductInput?.serialNumber,
+          },
+          {
+            description: filterProductInput?.description,
+          },
+          {
+            category: filterProductInput?.category,
+          },
+          {
+            createdAt: filterProductInput?.createdAt,
+          },
+        ],
+      };
+
+      const products = await this.productsService.findProductsByTopSoldQuantity(
+        {
+          where,
+          orderBy: {
+            [orderBy?.field]: orderBy?.direction,
+          },
+          skip: paginationInput?.skip,
+          take: paginationInput?.take,
+        },
+      );
+
+      const count = await this.productsService.count();
+      return {
+        items: products,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
+  }
+
+  // generate functions for insights
+  // top profit
+  // top sale
+  // top sold quantity
+  // top profit by category
+  // top sale by category
+  // top sold quantity by category
+  // top profit by retail shop
+  // top sale by retail shop
+
+  // top sold quantity by retail shop
+  // top profit by retail shop and category
+  // top sale by retail shop and category
+  // top sold quantity by retail shop and category
+  // top profit by retail shop and product
+  // top sale by retail shop and product
+  // top sold quantity by retail shop and product
+  // top profit by retail shop and product and category
+  // top sale by retail shop and product and category
+  // top sold quantity by retail shop and product and category
+  // top profit by product
+  // top sale by product
+  // top sold quantity by product
+  // top profit by product and category
+  // top sale by product and category
+  // top sold quantity by product and category
+  // top profit by product and retail shop
+  // top sale by product and retail shop
+  // top sold quantity by product and retail shop
+  // top profit by product and retail shop and category
 
   // search product
   @Query(() => [Product], { name: 'searchProducts' })

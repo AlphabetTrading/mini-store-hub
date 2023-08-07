@@ -122,6 +122,8 @@ export class AuthService {
   }
 
   async login(username: string, password: string): Promise<Token> {
+    // make case insensitive
+
     const user = await this.prisma.user.findUnique({ where: { username } });
 
     if (!user) {
