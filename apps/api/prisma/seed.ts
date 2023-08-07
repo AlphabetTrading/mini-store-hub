@@ -1,19 +1,23 @@
-import { PrismaClient, UnitType } from '@prisma/client';
+import { PrismaClient, TransferType, UnitType } from '@prisma/client';
 import { randomInt } from 'crypto';
-import { Cuid, UUID } from 'graphql-scalars/typings/mocks';
-
+import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.annualTransaction.deleteMany();
+  await prisma.dailyTransaction.deleteMany();
+  await prisma.monthlyTransaction.deleteMany();
+  await prisma.address.deleteMany();
   await prisma.notificationToken.deleteMany();
   await prisma.notificationRead.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.userProfile.deleteMany();
   await prisma.user.deleteMany();
-  await prisma.priceHistory.deleteMany();
   await prisma.saleTransactionItem.deleteMany();
   await prisma.saleTransaction.deleteMany();
+  await prisma.priceHistory.deleteMany();
   await prisma.goodsTransfer.deleteMany();
+  await prisma.stockItem.deleteMany();
   await prisma.warehouseStock.deleteMany();
   await prisma.retailShopStock.deleteMany();
   await prisma.warehouse.deleteMany();
@@ -45,25 +49,79 @@ async function seedUserModels() {
           username: 'admin',
           firstName: 'John',
           lastName: 'Doe',
-          phone: '+251929876541',
+          phone: '+251929876540',
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'ADMIN',
         },
         {
-          username: 'warehouse_manager',
+          username: 'warehouse',
           firstName: 'Jane',
           lastName: 'Doe',
-          phone: '+251929876542',
+          phone: '+251929876541',
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'WAREHOUSE_MANAGER',
         },
         {
-          username: 'retail_shop_manager',
-          firstName: 'Mathew',
-          lastName: 'Jackson',
-          phone: '+251929876543',
+          username: 'retailshop',
+          firstName: 'George',
+          lastName: 'Thomas',
+          phone: '+251929876542',
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'RETAIL_SHOP_MANAGER',
@@ -82,23 +140,24 @@ async function seedUserProfile() {
   try {
     await prisma.user.create({
       data: {
-        username: 'userone',
-        firstName: 'User',
-        lastName: 'One',
-        phone: '+251929876540',
+        // generate a random first name, last name, and phone number, and randomize the username
+        username: faker.internet.userName(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        phone: faker.phone.number(),
         password:
           '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        role: 'USER',
+        role: 'WAREHOUSE_MANAGER',
         userProfile: {
           create: {
             photoUrl: 'https://i.imgur.com/UqZ2w1J.png',
             address: {
               create: {
-                street: 'St 128, Main Street',
-                city: 'Kampala',
-                lat: 0,
-                lng: 0,
-                formattedAddress: 'St 128, Main Street, Kampala',
+                street: faker.location.street(),
+                city: faker.location.city(),
+                lat: faker.location.latitude(),
+                lng: faker.location.longitude(),
+                formattedAddress: faker.location.secondaryAddress(),
               },
             },
           },
@@ -172,42 +231,24 @@ async function seedCategories() {
           description: 'All the latest biscuits, snacks & chocolates products',
           amharicDescription: 'ሁሉም የቢስክት፣ ስናክስ እና ቸኮሌት እቃዎች',
         },
-        {
-          name: 'Cooking Oil & Ghee',
-          amharicName: 'የምግብ ዘይት እና ጉድ',
-          description: 'All the latest cooking oil & ghee products',
-          amharicDescription: 'ሁሉም የምግብ ዘይት እና ጉድ እቃዎች',
-        },
-        {
-          name: 'Breakfast Cereals',
-          amharicName: 'የማዳን ዝንባቡ እና የማዳን ዘይት',
-          description: 'All the latest breakfast cereals products',
-          amharicDescription: 'ሁሉም የማዳን ዝንባቡ እና የማዳን ዘይት እቃዎች',
-        },
-        {
-          name: 'Rice, Pasta & Noodles',
-          amharicName: 'ሩዝ፣ ፓስታ እና ኖድልስ',
-          description: 'All the latest rice, pasta & noodles products',
-          amharicDescription: 'ሁሉም የሩዝ፣ ፓስታ እና ኖድልስ እቃዎች',
-        },
       ],
     });
     await prisma.category.create({
       data: {
-        name: 'Electronics',
+        name: faker.commerce.department(),
         amharicName: 'ኤሌክትሮኒክስ',
-        description: 'All the latest electronics products',
+        description: faker.commerce.department(),
         amharicDescription: 'ሁሉም የኤሌክትሮኒክስ እቃዎች',
         subcategories: {
           create: [
             {
-              name: 'Laptops',
+              name: faker.commerce.productName(),
               amharicName: 'ላፕቶፕቶች',
               description: 'Laptops',
               amharicDescription: 'ላፕቶፕቶች',
             },
             {
-              name: 'Mobile Phones',
+              name: faker.commerce.productName(),
               amharicName: 'ሞባይል ፎንሎች',
               description: 'Mobile Phones',
               amharicDescription: 'ሞባይል ፎንሎች',
@@ -241,46 +282,85 @@ async function seedProducts() {
   try {
     const categories = await prisma.category.findMany();
     const products = [
-      {
-        name: 'Shirt',
-        amharicName: 'ሸሚዝ',
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
         categoryId: categories[0].id,
         unit: UnitType.PIECES,
-        description: 'Shirt',
+        description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
-      },
-      {
-        name: 'Jeans',
-        amharicName: 'ጅንስ',
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
         categoryId: categories[1].id,
-        unit: UnitType.PIECES,
-        description: 'Jeans',
+        unit: UnitType.BOTTLE,
+        description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
-      },
-      {
-        name: 'Shoes',
-        amharicName: 'አልባሳት ጫማ',
-        categoryId: categories[0].id,
-        unit: UnitType.PIECES,
-        description: 'Shoes',
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
+        categoryId: categories[2].id,
+        unit: UnitType.LITER,
+        description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
-      },
-      {
-        name: 'T-Shirt',
-        amharicName: 'ቲ-ሸሚዝ',
-        categoryId: categories[0].id,
-        unit: UnitType.PIECES,
-        description: 'T-Shirt',
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
+        categoryId: categories[3].id,
+        unit: UnitType.METER,
+        description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
-      },
-      {
-        name: 'Sweater',
-        amharicName: 'ስዊትር',
-        categoryId: categories[0].id,
-        unit: UnitType.PIECES,
-        description: 'Sweater',
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
+        categoryId: categories[2].id,
+        unit: UnitType.LITER,
+        description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
-      },
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
+        categoryId: categories[3].id,
+        unit: UnitType.METER,
+        description: faker.commerce.productDescription(),
+        serialNumber: generateSerialNumber(),
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
+        categoryId: categories[4].id,
+        unit: UnitType.METER,
+        description: faker.commerce.productDescription(),
+        serialNumber: generateSerialNumber(),
+      })),
+
+      // generate 10 products
+      ...Array.from({ length: 5 }, () => ({
+        name: faker.commerce.productName(),
+        amharicName: 'ስዊትር ጫማ',
+        categoryId: categories[5].id,
+        unit: UnitType.KG,
+        description: faker.commerce.productDescription(),
+        serialNumber: generateSerialNumber(),
+      })),
     ];
 
     for (const product of products) {
@@ -318,6 +398,10 @@ async function seedProducts() {
           priceHistory: {
             createMany: {
               data: [
+                {
+                  price: randomInt(10, 30),
+                  purchasedPrice: randomInt(5, 20),
+                },
                 {
                   price: randomInt(10, 30),
                   purchasedPrice: randomInt(5, 20),
@@ -399,7 +483,16 @@ async function seedPriceHistory() {
 async function seedRetailShops() {
   try {
     await prisma.retailShop.createMany({
-      data: [{ name: 'Retail Shop A' }, { name: 'Retail Shop B' }],
+      data: [
+        { name: faker.company.name() },
+        { name: faker.company.name() },
+        { name: faker.company.name() },
+        { name: faker.company.name() },
+        {
+          name: faker.company.name(),
+          amharicName: 'የሚከተለው የስራ ቦታ',
+        },
+      ],
     });
     const user = await prisma.user.findFirst({
       where: {
@@ -408,7 +501,7 @@ async function seedRetailShops() {
     });
     await prisma.retailShop.create({
       data: {
-        name: 'Retail Shop  C',
+        name: faker.company.name(),
         retailShopManager: {
           connect: {
             id: user?.id,
@@ -416,11 +509,11 @@ async function seedRetailShops() {
         },
         address: {
           create: {
-            street: 'St 212, Main Street',
-            city: 'Kampala',
+            street: faker.location.street(),
+            city: faker.location.city(),
             lat: 0,
             lng: 0,
-            formattedAddress: 'St 212, Main Street, Kampala',
+            formattedAddress: faker.location.secondaryAddress(),
           },
         },
       },
@@ -442,11 +535,11 @@ async function seedWarehouses() {
         isMain: true,
         address: {
           create: {
-            street: 'St 128, Main Street',
-            city: 'Kampala',
-            lat: 0,
-            lng: 0,
-            formattedAddress: 'St 128, Main Street, Kampala',
+            street: faker.location.street(),
+            city: faker.location.city(),
+            lat: faker.location.latitude(),
+            lng: faker.location.longitude(),
+            formattedAddress: faker.location.secondaryAddress(),
           },
         },
       },
@@ -454,9 +547,9 @@ async function seedWarehouses() {
 
     await prisma.warehouse.createMany({
       data: [
-        { name: 'Warehouse A' },
-        { name: 'Warehouse B' },
-        { name: 'Warehouse D' },
+        { name: faker.company.name() },
+        { name: faker.company.name() },
+        { name: faker.company.name() },
       ],
     });
 
@@ -467,7 +560,7 @@ async function seedWarehouses() {
     });
     await prisma.warehouse.create({
       data: {
-        name: 'Warehouse C',
+        name: faker.company.name(),
         warehouseManager: {
           connect: {
             id: user?.id,
@@ -475,11 +568,11 @@ async function seedWarehouses() {
         },
         address: {
           create: {
-            street: 'St 128, Main Street',
-            city: 'Kampala',
-            lat: 0,
-            lng: 0,
-            formattedAddress: 'St 128, Main Street, Kampala',
+            street: faker.location.street(),
+            city: faker.location.city(),
+            lat: faker.location.latitude(),
+            lng: faker.location.longitude(),
+            formattedAddress: faker.location.secondaryAddress(),
           },
         },
       },
@@ -501,25 +594,28 @@ async function seedWarehouseStocks() {
       },
     });
 
-    await prisma.warehouseStock.createMany({
-      data: [
-        {
-          productId: products[0].id,
-          warehouseId: warehouses[0].id,
-          quantity: 10,
-        },
-        {
-          productId: products[1].id,
-          warehouseId: warehouses[0].id,
-          quantity: 20,
-        },
-        {
-          productId: products[2].id,
-          warehouseId: warehouses[0].id,
-          quantity: 30,
-        },
-      ],
-    });
+    try {
+      await prisma.warehouseStock.createMany({
+        data: [
+          ...Array.from({ length: 30 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {}
+    try {
+      await prisma.warehouseStock.createMany({
+        data: [
+          ...Array.from({ length: 30 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {}
     console.log('Warehouses stock is seeded successfully');
   } catch (error) {
     console.error('Error seeding warehouses stock', error);
@@ -534,31 +630,75 @@ async function seedRetailshopStocks() {
     const retailshops = await prisma.retailShop.findMany();
     const warehouses = await prisma.warehouse.findMany();
 
-    await prisma.retailShopStock.createMany({
-      data: [
-        {
-          productId: products[0].id,
-          retailShopId: retailshops[0].id,
-          quantity: 10,
-          warehouseId: warehouses[0].id,
-          maxQuantity: 50,
-        },
-        {
-          productId: products[1].id,
-          retailShopId: retailshops[0].id,
-          quantity: 20,
-          warehouseId: warehouses[0].id,
-          maxQuantity: 50,
-        },
-        {
-          productId: products[2].id,
-          retailShopId: retailshops[0].id,
-          quantity: 30,
-          warehouseId: warehouses[0].id,
-          maxQuantity: 50,
-        },
-      ],
-    });
+    try {
+      await prisma.retailShopStock.createMany({
+        data: [
+          {
+            productId: products[0].id,
+            retailShopId: retailshops[0].id,
+            quantity: 10,
+            warehouseId: warehouses[0].id,
+            maxQuantity: 50,
+          },
+          {
+            productId: products[1].id,
+            retailShopId: retailshops[0].id,
+            quantity: 20,
+            warehouseId: warehouses[0].id,
+            maxQuantity: 50,
+          },
+          {
+            productId: products[2].id,
+            retailShopId: retailshops[0].id,
+            quantity: 30,
+            warehouseId: warehouses[0].id,
+            maxQuantity: 50,
+          },
+          {
+            productId: products[0].id,
+            retailShopId: retailshops[1].id,
+            quantity: 10,
+            warehouseId: warehouses[0].id,
+            maxQuantity: 50,
+          },
+          {
+            productId: products[1].id,
+            retailShopId: retailshops[1].id,
+            quantity: 20,
+            warehouseId: warehouses[0].id,
+            maxQuantity: 50,
+          },
+          {
+            productId: products[2].id,
+            retailShopId: retailshops[1].id,
+            quantity: 30,
+            warehouseId: warehouses[0].id,
+            maxQuantity: 50,
+          },
+          ...Array.from({ length: 30 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            retailShopId: retailshops[randomInt(0, retailshops.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+            maxQuantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {}
+
+    try {
+      await prisma.retailShopStock.createMany({
+        data: [
+          ...Array.from({ length: 30 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            retailShopId: retailshops[randomInt(0, retailshops.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+            maxQuantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {}
 
     await prisma.retailShopStock.create({
       data: {
@@ -596,6 +736,24 @@ async function seedGoodsTransfers() {
 
     await prisma.goodsTransfer.createMany({
       data: [
+        ...Array.from({ length: 20 }, () => ({
+          sourceWarehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+          retailShopId: retailShops[randomInt(0, retailShops.length - 1)].id,
+          transferType: 'WarehouseToRetailShop' as TransferType,
+        })),
+        ...Array.from({ length: 5 }, () => ({
+          sourceWarehouseId:
+            warehouses[randomInt(0, Math.floor(warehouses.length / 2) - 1)].id,
+          destinationWarehouseId:
+            warehouses[
+              randomInt(
+                Math.floor(warehouses.length / 2),
+                retailShops.length - 1,
+              )
+            ].id,
+          transferType: 'WarehouseToWarehouse' as TransferType,
+        })),
+
         {
           sourceWarehouseId: warehouses[0].id,
           retailShopId: retailShops[0].id,
@@ -636,30 +794,35 @@ async function seedGoodsTransfers() {
 async function seedSaleTransactions() {
   try {
     const retailShops = await prisma.retailShop.findMany();
-    const product = await prisma.product.findFirst({
+    const products = await prisma.product.findMany({
       include: {
         activePrice: true,
       },
     });
 
-    await prisma.saleTransaction.create({
-      data: {
-        retailShopId: retailShops[0].id,
-        saleTransactionItems: {
-          createMany: {
-            data: [
-              {
-                productId: product.id,
-                quantity: 2,
-                subTotal: 200,
-                soldPriceHistoryId: product.activePrice?.id,
-              },
-            ],
+    for (let i = 0; i < 20; i++) {
+      await prisma.saleTransaction.create({
+        data: {
+          retailShopId: retailShops[randomInt(0, retailShops.length - 1)].id,
+          saleTransactionItems: {
+            createMany: {
+              data: [
+                {
+                  productId: products[randomInt(0, products.length - 1)].id,
+                  quantity: 2,
+                  subTotal:
+                    products[randomInt(0, products.length - 1)].activePrice
+                      .price * 2,
+                  soldPriceHistoryId:
+                    products[randomInt(0, products.length - 1)].activePrice?.id,
+                },
+              ],
+            },
           },
+          totalPrice: Number(faker.finance.amount()),
         },
-        totalPrice: 800,
-      },
-    });
+      });
+    }
 
     console.log('Sale transactions seeded successfully');
   } catch (error) {
@@ -680,8 +843,8 @@ async function seedNotifications() {
     await prisma.notification.createMany({
       data: [
         {
-          title: 'Product is out of stock',
-          body: 'Product is out of stock',
+          title: faker.lorem.sentence(),
+          body: faker.lorem.words({ min: 10, max: 20 }),
           amharicTitle: 'የእቃ አይነት የለም',
           amharicBody: 'የእቃ አይነት የለም',
           recipientType: 'USER',
@@ -689,12 +852,45 @@ async function seedNotifications() {
           recipientId: user?.id,
         },
         {
-          title: 'Product is out of stock',
-          body: 'Product is out of stock',
+          title: faker.lorem.sentence(),
+          body: faker.lorem.words({ min: 10, max: 20 }),
+          amharicTitle: 'የእቃ አይነት የለም',
+          amharicBody: 'የእቃ አይነት የለም',
+          recipientType: 'USER',
+          isRead: true,
+          recipientId: user?.id,
+        },
+        {
+          title: faker.word.words(3),
+          body: faker.word.words(10),
           amharicTitle: 'የእቃ አይነት የለም',
           amharicBody: 'የእቃ አይነት የለም',
           isRead: false,
           recipientType: 'ALL',
+        },
+        {
+          title: faker.word.words(3),
+          body: faker.word.words(10),
+          amharicTitle: 'የእቃ አይነት የለም',
+          amharicBody: 'የእቃ አይነት የለም',
+          isRead: false,
+          recipientType: 'RETAIL_SHOP',
+        },
+        {
+          title: faker.word.words(3),
+          body: faker.word.words(10),
+          amharicTitle: 'የእቃ አይነት የለም',
+          amharicBody: 'የእቃ አይነት የለም',
+          isRead: false,
+          recipientType: 'WAREHOUSE',
+        },
+        {
+          title: faker.word.words(3),
+          body: faker.word.words(10),
+          amharicTitle: 'የእቃ አይነት የለም',
+          amharicBody: 'የእቃ አይነት የለም',
+          isRead: true,
+          recipientType: 'RETAIL_SHOP',
         },
       ],
     });

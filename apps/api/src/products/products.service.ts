@@ -40,9 +40,10 @@ export class ProductsService {
     });
   }
 
-  async findProductsByTopSale({
+  async findProductsByTopSoldQuantity({
     skip,
     take,
+    where,
     orderBy,
   }: {
     skip?: number;
@@ -51,6 +52,7 @@ export class ProductsService {
     orderBy?: Prisma.ProductOrderByWithRelationInput;
   }): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
+      where,
       orderBy,
       include: {
         saleTransactionItem: true,
@@ -76,40 +78,84 @@ export class ProductsService {
     return products;
   }
 
-  // async findProductsByTopProfit({
-  //   skip,
-  //   take,
-  //   orderBy,
-  // }: {
-  //   skip?: number;
-  //   take?: number;
-  //   where?: Prisma.ProductWhereInput;
-  //   orderBy?: Prisma.ProductOrderByWithRelationInput;
-  // }): Promise<Product[]> {
-  //   const products = await this.prisma.product.findMany({
-  //     orderBy,
-  //     include: {
-  //       saleTransactionItem: true,
-  //     },
-  //   });
+  async findProductsByTopSale({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy,
+      where,
+      include: {
+        saleTransactionItem: true,
+      },
+    });
 
-  //   products.sort((a, b) => {
-  //     const totalProfitA = a.saleTransactionItem.reduce(
-  //       (acc, t) => acc + (t.price - t.purchasedPrice) * t.quantity,
-  //       0,
-  //     );
-  //     const totalProfitB = b.saleTransactionItem.reduce(
-  //       (acc, t) => acc + (t.price - t.purchasedPrice) * t.quantity,
-  //       0,
-  //     );
+    products.sort((a, b) => {
+      const totalSalesA = a.saleTransactionItem.reduce(
+        (acc, t) => acc + t.subTotal,
+        0,
+      );
+      const totalSalesB = b.saleTransactionItem.reduce(
+        (acc, t) => acc + t.subTotal,
+        0,
+      );
 
-  //     return totalProfitB - totalProfitA;
-  //   });
-  //   if (skip && take) {
-  //     return products.splice(skip, take);
-  //   }
-  //   return products;
-  // }
+      return totalSalesB - totalSalesA;
+    });
+
+    if (skip && take) {
+      return products.splice(skip, take);
+    }
+    return products;
+  }
+
+  async findProductsByTopProfit({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy,
+      where,
+      include: {
+        saleTransactionItem: {
+          include: {
+            soldPriceHistory: true,
+          },
+        },
+      },
+    });
+
+    products.sort((a, b) => {
+      const totalProfitA = a.saleTransactionItem.reduce(
+        (acc, t) => acc + t.subTotal,
+        0,
+      );
+      const totalProfitB = b.saleTransactionItem.reduce(
+        (acc, t) => acc + t.soldPriceHistory.purchasedPrice * t.quantity,
+        0,
+      );
+
+      return totalProfitB - totalProfitA;
+    });
+    if (skip && take) {
+      return products.splice(skip, take);
+    }
+    return products;
+  }
 
   async count(where?: Prisma.ProductWhereInput): Promise<number> {
     return this.prisma.product.count({ where });
