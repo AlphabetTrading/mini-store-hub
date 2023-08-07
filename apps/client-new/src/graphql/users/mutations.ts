@@ -1,17 +1,19 @@
 import { gql } from "@apollo/client";
 export interface UpdateUserVars {
+  updateUserbyIdId: string;
   data: {
     firstName?: string;
     lastName?: string;
     role: string;
     phone?: string;
     username?: string;
-    userProfile: {
-      userId: string;
+    userProfile?: {
+      idUrl?: string;
+      photoUrl?: string;
       address?: {
         city?: string;
-        lat?: string;
-        lng?: string;
+        lat?: number;
+        lng?: number;
         street?: string;
         formattedAddress?: string;
       };
@@ -19,11 +21,13 @@ export interface UpdateUserVars {
   };
 }
 export interface UpdateUserData {
-  id: string;
+  updateUserbyId: {
+    id: string;
+  };
 }
 export const UPDATE_USER = gql`
-  mutation UpdateUser($data: UpdateUserInput!) {
-    updateUser(data: $data) {
+  mutation Mutation($updateUserbyIdId: String!, $data: UpdateUserInput!) {
+    updateUserbyId(id: $updateUserbyIdId, data: $data) {
       id
     }
   }

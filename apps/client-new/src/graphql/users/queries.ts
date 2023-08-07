@@ -44,10 +44,12 @@ export const USERS = gql`
           }
         }
         retailShop {
+          name
           id
         }
         username
         warehouse {
+          name
           id
         }
       }
@@ -80,7 +82,7 @@ export const USER = gql`
           lng
           street
         }
-        photoUrl
+        # photoUrl
       }
       retailShop {
         id

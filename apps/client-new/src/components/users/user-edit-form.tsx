@@ -9,9 +9,7 @@ import {
   CardHeader,
   Divider,
   Stack,
-  Switch,
   TextField,
-  Typography,
   Unstable_Grid2 as Grid,
   MenuItem,
   CircularProgress,
@@ -22,7 +20,7 @@ import {
   UpdateUserVars,
   UPDATE_USER,
 } from "@/graphql/users/mutations";
-import { USERS } from "@/graphql/users/queries";
+import { USER } from "@/graphql/users/queries";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 
@@ -35,6 +33,11 @@ interface Values {
   role: UserRole;
   phoneNumber: string;
   username: string;
+  city: string;
+  formattedAddress: string;
+  street: string;
+  lat: number;
+  lng: number;
 }
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -58,14 +61,20 @@ export const UserEditForm = ({ user }: Props) => {
     role: user?.role || UserRole.USER,
     phoneNumber: user?.phone || "",
     username: user?.username || "",
+    city: user?.userProfile?.address?.city || "",
+    formattedAddress: user?.userProfile?.address?.formattedAddress || "",
+    street: user?.userProfile?.address?.street || "",
+    lat: user?.userProfile?.address?.lat || 0,
+    lng: user?.userProfile?.address?.lng || 0,
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
-      updateUser({
+      await updateUser({
         variables: {
+          updateUserbyIdId: user?.id || "",
           data: {
             firstName: values.firstName,
             lastName: values.lastName,
@@ -73,11 +82,20 @@ export const UserEditForm = ({ user }: Props) => {
             username: values.username,
             role: values.role,
             userProfile: {
-              userId: user?.id || "",
+              address: {
+                city: values.city,
+                formattedAddress: values.formattedAddress,
+                lat: values.lat,
+                lng: values.lng,
+                street: values.street,
+              },
             },
           },
         },
-        refetchQueries: [USERS],
+        onCompleted: (data) => {
+          router.back();
+        },
+        refetchQueries: [USER],
       });
     },
   });
@@ -85,7 +103,7 @@ export const UserEditForm = ({ user }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Card>
-        <CardHeader title="Edit Customer" />
+        <CardHeader title="Edit User" />
         <CardContent sx={{ pt: 0 }}>
           <Grid container spacing={3}>
             <Grid xs={12} md={6}>
@@ -179,8 +197,99 @@ export const UserEditForm = ({ user }: Props) => {
                 type="text"
               />
             </Grid>
-            <Grid xs={12} md={6}></Grid>
-            <Grid xs={12} md={6}></Grid>
+            <Grid xs={12} md={6}>
+              <TextField
+                error={formik.errors.city && formik.touched.city ? true : false}
+                helperText={formik.touched.city && formik.errors.city}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.city}
+                fullWidth
+                label="City"
+                name="city"
+                type="text"
+              />
+            </Grid>
+            <Grid xs={12} md={6}>
+              <TextField
+                error={
+                  formik.errors.street && formik.touched.street ? true : false
+                }
+                helperText={formik.touched.street && formik.errors.street}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.street}
+                fullWidth
+                label="Street"
+                name="street"
+                type="text"
+              />
+            </Grid>
+
+            <Grid xs={12} md={6}>
+              <TextField
+                error={
+                  formik.errors.formattedAddress &&
+                  formik.touched.formattedAddress
+                    ? true
+                    : false
+                }
+                helperText={
+                  formik.touched.formattedAddress &&
+                  formik.errors.formattedAddress
+                }
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.formattedAddress}
+                fullWidth
+                label="Address Description"
+                name="formattedAddress"
+                type="text"
+              />
+            </Grid>
+
+            <Grid xs={12} md={6}>
+              <TextField
+                error={
+                  formik.errors.lng &&
+                  formik.touched.lng
+                    ? true
+                    : false
+                }
+                helperText={
+                  formik.touched.lng &&
+                  formik.errors.lng
+                }
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.lng}
+                fullWidth
+                label="Longitude"
+                name="lng"
+                type="number"
+              />
+            </Grid>
+            <Grid xs={12} md={6}>
+              <TextField
+                error={
+                  formik.errors.lat &&
+                  formik.touched.lat
+                    ? true
+                    : false
+                }
+                helperText={
+                  formik.touched.lat &&
+                  formik.errors.lat
+                }
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.lat}
+                fullWidth
+                label="Latitude"
+                name="lat"
+                type="number"
+              />
+            </Grid>
           </Grid>
           <Stack divider={<Divider />} spacing={3} sx={{ mt: 3 }}>
             <Stack
@@ -213,6 +322,7 @@ export const UserEditForm = ({ user }: Props) => {
             )}
             Update
           </Button>
+          {JSON.stringify(formik.errors, null, 2)}
           <Button
             color="inherit"
             onClick={() => {

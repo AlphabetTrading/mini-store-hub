@@ -32,7 +32,7 @@ const ManagersListRow = ({
         <TableCell align="left">{retailShopManager.lastName}</TableCell>
         <TableCell align="left">{retailShopManager.phone}</TableCell>
         <TableCell align="left">
-          {retailShopManager.userProfile?.address.city}
+          {retailShopManager?.userProfile?.address?.city}
         </TableCell>
       </TableRow>
     </>

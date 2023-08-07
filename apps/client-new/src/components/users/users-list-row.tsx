@@ -66,7 +66,7 @@ const UsersListRow = ({ user }: Props) => {
         <TableCell>{user.role}</TableCell>
         <TableCell>{user.phone}</TableCell>
         <TableCell>
-          {user.userProfile?.address.street} {user.userProfile?.address.city}
+          {user?.userProfile?.address?.street} {user?.userProfile?.address?.city}
         </TableCell>
       </TableRow>
     </>
