@@ -3,9 +3,9 @@ import AddHomeOutlinedIcon from "@mui/icons-material/AddHomeOutlined";
 import { useMemo } from "react";
 
 export interface NavigationItem {
-    title: string;
-    path:string;
-    icon: React.ReactElement;
+  title: string;
+  path: string;
+  icon: React.ReactElement;
 }
 
 export const useNavigationItems = () => {
@@ -15,6 +15,15 @@ export const useNavigationItems = () => {
         {
           title: "Overview",
           path: "/admin/dashboard",
+          icon: (
+            <SvgIcon fontSize="small">
+              <AddHomeOutlinedIcon />
+            </SvgIcon>
+          ),
+        },
+        {
+          title: "Products",
+          path: "/admin/products",
           icon: (
             <SvgIcon fontSize="small">
               <AddHomeOutlinedIcon />

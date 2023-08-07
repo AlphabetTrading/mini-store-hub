@@ -76,7 +76,43 @@ export const PRODUCTS = gql`
         activePrice {
           price
           purchasedPrice
+          id
         }
+      }
+    }
+  }
+`;
+
+export interface ProductData {
+  product: Product;
+}
+
+export interface ProductVars {
+  productId: string;
+}
+
+export const PRODUCT = gql`
+  query Product($productId: String!) {
+    product(productId: $productId) {
+      id
+      name
+      serialNumber
+      unit
+      description
+      activePrice {
+        id
+        price
+        purchasedPrice
+      }
+      priceHistory {
+        id
+        price
+        purchasedPrice
+        createdAt
+      }
+      category {
+        id
+        name
       }
     }
   }

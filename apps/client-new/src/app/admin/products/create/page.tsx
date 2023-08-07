@@ -22,15 +22,24 @@ import * as Yup from "yup";
 import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { API_URL } from "@/constants/urls";
+import {
+  CREATE_PRODUCT,
+  CreateProductData,
+  CreateProductVars,
+} from "@/graphql/products/mutations";
+import { useMutation } from "@apollo/client";
+import { PRODUCTS } from "@/graphql/products/queries";
+import { useRouter } from "next/navigation";
+import { Unit } from "../../../../../types/product";
 
 type Props = {};
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   unit: Yup.string().required("Unit is required"),
-  serialNumber: Yup.string().required("Serial number is required"),
+  // serialNumber: Yup.string().required("Serial number is required"),
   description: Yup.string().required("Description is required"),
-  categoryId: Yup.string().required("Category is required"),
+  category: Yup.string().required("Category is required"),
 });
 
 interface Values {
@@ -49,28 +58,54 @@ const initialValues: Values = {
 };
 
 const Page = (props: Props) => {
-  const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
+
+  const {
+    data: categoryData,
+    loading: categoryLoading,
+    error: categoryError,
+  } = useQuery<CategoryData>(CATEGORIES);
+
+
+  const [createProduct, { data, loading, error }] = useMutation<
+    CreateProductData,
+    CreateProductVars
+  >(CREATE_PRODUCT);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      console.log(values);
+      console.log("...")
+      await createProduct({
+        variables: {
+          data: {
+            name: values.name,
+            categoryId: values.category,
+            description: values.description,
+            unit: values.unit,
+          },
+        },
+        refetchQueries: [PRODUCTS],
+        onCompleted: () => {
+          helpers.resetForm();
+          router.push("/admin/products");
+        },
+      });
     },
   });
   return (
     <Box component="main" sx={{ py: 8 }}>
-      {JSON.stringify(formik.errors)}
       <Container maxWidth="xl">
         <Stack spacing={4}>
           <Stack spacing={1}>
-            <Typography variant="h4">Create Item</Typography>
+            <Typography variant="h4">Create Product</Typography>
             <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-              <Link component={NextLink} href={"/dashboard"}>
+              <Link component={NextLink} href={"/admin/dashboard"}>
                 Dashboard
               </Link>
-              <Link component={NextLink} href={"/items"}>
-                Items
+              <Link component={NextLink} href={"/admin/products"}>
+                Products
               </Link>
               <Typography>Create</Typography>
             </Breadcrumbs>
@@ -96,7 +131,7 @@ const Page = (props: Props) => {
                           onChange={formik.handleChange}
                           value={formik.values.name}
                         />
-                        {loading ? <CircularProgress /> : null}
+                        {categoryLoading ? <CircularProgress /> : null}
                         <TextField
                           error={
                             !!(
@@ -111,17 +146,17 @@ const Page = (props: Props) => {
                           name="category"
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
-                          value={formik.values.name}
+                          value={formik.values.category}
                           select
                         >
-                          {data?.categories.items.map((option) => (
+                          {categoryData?.categories.items.map((option) => (
                             <MenuItem key={option.id} value={option.id}>
                               {option.name}
                             </MenuItem>
                           ))}
                         </TextField>
 
-                        <TextField
+                        {/* <TextField
                           error={
                             !!(
                               formik.touched.serialNumber &&
@@ -138,7 +173,7 @@ const Page = (props: Props) => {
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                           value={formik.values.serialNumber}
-                        />
+                        /> */}
                         <TextField
                           error={
                             !!(
@@ -174,15 +209,22 @@ const Page = (props: Props) => {
 
                     <Grid xs={12} md={8}>
                       <TextField
-                        error={!!(formik.touched.name && formik.errors.name)}
+                        error={!!(formik.touched.unit && formik.errors.unit)}
                         fullWidth
-                        helperText={formik.touched.name && formik.errors.name}
+                        helperText={formik.touched.unit && formik.errors.unit}
                         label="Unit"
                         name="unit"
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
-                        value={formik.values.name}
-                      />
+                        value={formik.values.unit}
+                        select
+                      >
+                        {Object.values(Unit).map((option) => (
+                            <MenuItem key={option} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -194,7 +236,18 @@ const Page = (props: Props) => {
                 spacing={1}
               >
                 <Button color="inherit">Cancel</Button>
-                <Button type="submit" variant="contained">
+                <Button disabled={loading} type="submit" variant="contained">
+                  {loading && (
+                    <CircularProgress
+                      sx={{
+                        color: "neutral.400",
+                        // display: loading ? "block" : "none",
+                        width: "25px !important",
+                        height: "25px !important",
+                        mr: 1,
+                      }}
+                    />
+                  )}
                   Create
                 </Button>
               </Stack>

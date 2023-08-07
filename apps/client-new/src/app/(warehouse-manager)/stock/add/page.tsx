@@ -48,7 +48,6 @@ const Page = (props: Props) => {
   >(REGISTER_INCOMING_STOCK);
   const router = useRouter();
 
-  console.log(sessionData);
 
   const handleAddItem = (item: any) => {
     setItems((prev: any) => {
@@ -69,12 +68,12 @@ const Page = (props: Props) => {
           goods: items.map((item: any) => {
             return { productId: item.selectedItem.id, quantity: item.quantity };
           }),
-          warehouseId: "clki1bbrx000srlwgvx7jzw1i",
+          warehouseId: ((sessionData?.user)as any).warehouseId || "",
         },
       },
       onCompleted: (data) => {
         console.log(data);
-        router.push("/items");
+        router.push("/stock");
       },
       onError(error, clientOptions) {
         console.log(error);
@@ -163,7 +162,7 @@ const Page = (props: Props) => {
               </Scrollbar>
             </Card>
             <Stack justifyContent="flex-start" direction="row">
-              <Button onClick={handleRegisterStock} variant="contained">
+              <Button disabled={loading} onClick={()=>handleRegisterStock()} variant="contained">
                 Regsiter
               </Button>
             </Stack>

@@ -22,6 +22,7 @@ import {
 import { useFormik } from "formik";
 import React from "react";
 import { Product, WarehouseStock } from "../../../types/product";
+import { useSession } from "next-auth/react";
 
 type Props = {
   open: boolean;
@@ -38,6 +39,10 @@ const initialValues: Values = {
 };
 
 const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
+
+
+  const { data: sessionData } = useSession();
+  
   const generateValidationSchema = (values: Values) => {
     const maxQuantity = itemsData?.warehouseStockByWarehouseId.find(
       (item) => item.product.id === values.itemId
@@ -59,7 +64,7 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
     error: itemsError,
   } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
     variables: {
-      warehouseId: "clki1bbrx000srlwgvx7jzw1i",
+      warehouseId: ((sessionData?.user)as any).warehouseId || "",
     },
   });
 

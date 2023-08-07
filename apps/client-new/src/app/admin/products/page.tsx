@@ -14,35 +14,26 @@ import React from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
-import ItemListTable from "@/components/stock/stock-list-table";
 import {
-  WAREHOUSE_STOCK,
-  WarehouseStockData,
-  WarehouseStockVars,
+    PRODUCTS,
+  ProductsData,
 } from "@/graphql/products/queries";
-// import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import ItemListSearch from "@/components/stock/stock-list-search";
-// import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { useSession } from "next-auth/react";
+import ProductsListSearch from "@/components/products/products-list-search";
+import ProductsListTable from "@/components/products/products-list-table";
 
 type Props = {};
 
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
+  const {data,error,loading} = useQuery<ProductsData>(PRODUCTS,{
+    fetchPolicy:"cache-and-network"
+  })
 
-  const { data, loading, error, refetch } = useQuery<
-    WarehouseStockData,
-    WarehouseStockVars
-  >(WAREHOUSE_STOCK, {
-    variables: {
-      warehouseId: ((sessionData?.user)as any).warehouseId || "",
-    },
-  });
 
   return (
     <Box component="main" sx={{ py: 8 }}>
-      {JSON.stringify(data)}
       <Container maxWidth="xl">
         <Stack spacing={4}>
           <Stack
@@ -51,13 +42,13 @@ const Page = (props: Props) => {
             alignItems="center"
           >
             <Stack spacing={1}>
-              <Typography variant="h4">Stock</Typography>
+              <Typography variant="h4">Products</Typography>
               <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-                <Link component={NextLink} href={"/dashboard"}>
+                <Link component={NextLink} href={"/admin/dashboard"}>
                   Dashboard
                 </Link>
-                <Link component={NextLink} href={"/dashboard"}>
-                  Stock
+                <Link component={NextLink} href={"/admin/products"}>
+                  Products
                 </Link>
                 <Typography>List</Typography>
               </Breadcrumbs>
@@ -66,10 +57,10 @@ const Page = (props: Props) => {
               <Button
                 variant="contained"
                 component={NextLink}
-                href={"/stock/add"}
+                href={"/admin/products/create"}
                 startIcon={<AddIcon />}
               >
-                Add New Items
+               Create Product
               </Button>
             </Stack>
           </Stack>
@@ -81,8 +72,8 @@ const Page = (props: Props) => {
             </Typography>
           ) : (
             <Card>
-              <ItemListSearch />
-              <ItemListTable warehouseStockData={data} />
+              <ProductsListSearch />
+              <ProductsListTable products={data.products.items} />
             </Card>
           )}
           {/* <Card>

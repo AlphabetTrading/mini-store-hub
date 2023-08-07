@@ -31,6 +31,7 @@ import {
   TransferGoodsData,
   TransferGoodsVars,
 } from "@/graphql/transfer-goods/mutations";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
@@ -45,6 +46,8 @@ const Page = (props: Props) => {
     TransferGoodsVars
   >(TRANSFER_GOODS);
 
+  const {data:sessionData} = useSession()
+
   const [selectedItems, setSelectedItems] = useState<SelectedWarehouseItem[]>(
     []
   );
@@ -58,9 +61,10 @@ const Page = (props: Props) => {
           goods: selectedItems.map((item) => ({
             productId: item.warehouseStock.product.id,
             quantity: item.selectedQuantity,
+            price:item.warehouseStock.product.activePrice.price
           })),
           retailShopId: selectedRetailShop!,
-          sourceWarehouseId: "clki1bbrx000srlwgvx7jzw1i",
+          sourceWarehouseId:((sessionData?.user)as any).warehouseId || "",
           transferType: "WarehouseToRetailShop",
         },
       },
