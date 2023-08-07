@@ -35,17 +35,17 @@ export const UserBasicDetails = ({user}:Props) => {
         <PropertyListItem
           divider
           label="City"
-          value={user?.userProfile?.address.city}
+          value={user?.userProfile?.address?.city}
         />
         <PropertyListItem
           divider
           label="Street"
-          value={user?.userProfile?.address.street}
+          value={user?.userProfile?.address?.street}
         />
         <PropertyListItem
           divider
           label="Formatted Address"
-          value={user?.userProfile?.address.formattedAddress}
+          value={user?.userProfile?.address?.formattedAddress}
         />
         <PropertyListItem
           divider

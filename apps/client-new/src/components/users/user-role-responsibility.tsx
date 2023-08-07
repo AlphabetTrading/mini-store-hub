@@ -3,29 +3,31 @@ import { PropertyList } from "../property-list";
 import { PropertyListItem } from "../property-list-item";
 import { Card, CardHeader } from "@mui/material";
 import { UserRole } from "../../../types/user";
+import { Warehouse } from "../../../types/warehouse";
+import { RetailShop } from "../../../types/retail-shop";
 
 type Props = {
   role?: UserRole;
-  warehouseName?: string;
-  retailShopName?: string;
+  warehouses?: Warehouse[];
+  retailShops?: RetailShop[];
   createdAt?: Date;
 };
 
 const UserRoleResponsibility = (props: Props) => {
-  const { role, warehouseName, retailShopName, createdAt } = props;
+  const { role, warehouses, retailShops, createdAt } = props;
   return (
     <Card>
       <CardHeader title="Roles and Responsibilities" />
       <PropertyList>
         <PropertyListItem divider label="Role" value={role} />
-        {warehouseName && (
-          <PropertyListItem divider label="Warehouse" value={warehouseName} />
+        {warehouses && warehouses.length>0 && (
+          <PropertyListItem divider label="Warehouse" value={warehouses[0].name} />
         )}
-        {retailShopName && (
+        {retailShops && retailShops.length>0 &&(
           <PropertyListItem
             divider
             label="Retail Shop"
-            value={retailShopName}
+            value={retailShops[0].name}
           />
         )}
         <PropertyListItem divider label="User Created At" value={createdAt} />

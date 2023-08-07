@@ -23,7 +23,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useQuery } from "@apollo/client";
 import { USER, UserData, UserVars } from "@/graphql/users/queries";
 import StateHandler from "@/components/state-handler";
-import UserRoleResponsibiltiy from "@/components/users/user-role-responsibility";
 import UserRoleResponsibility from "@/components/users/user-role-responsibility";
 import UserManagement from "@/components/users/user-management";
 
@@ -45,7 +44,9 @@ const Page = ({ params }: Props) => {
     variables: {
       userId: params.id,
     },
+    fetchPolicy: "cache-and-network",
   });
+  console.log(data?.user?.warehouse)
 
   return (
     <>
@@ -74,7 +75,7 @@ const Page = ({ params }: Props) => {
                     {/* <SvgIcon sx={{ mr: 1 }}>
                     <ArrowLeftIcon />
                   </SvgIcon> */}
-                    <Typography variant="subtitle2">Customers</Typography>
+                    <Typography variant="subtitle2">Users</Typography>
                   </Link>
                 </div>
                 <Stack
@@ -169,8 +170,8 @@ const Page = ({ params }: Props) => {
                         <UserRoleResponsibility
                           role={data?.user.role}
                           createdAt={data?.user.createdAt}
-                          retailShopName={data?.user.retailShop?.name}
-                          warehouseName={data?.user.warehouse?.name}
+                          retailShops={data?.user.retailShop}
+                          warehouses={data?.user.warehouse}
                         />
                         <UserManagement/>
 

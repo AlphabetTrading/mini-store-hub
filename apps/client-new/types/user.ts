@@ -1,4 +1,6 @@
 import { Address } from "./address";
+import { RetailShop } from "./retail-shop";
+import { Warehouse } from "./warehouse";
 
 export type User = {
   id: string;
@@ -9,12 +11,13 @@ export type User = {
   role: UserRole;
   createdAt: Date;
   userProfile?: UserProfile;
-  warehouse: { id: string; name: string};
-  retailShop: { id: string; name: string};
+  warehouse: Warehouse[];
+  retailShop: RetailShop[];
 };
 type UserProfile = {
-  address: Address;
-  photoUrl: string;
+  address?: Address;
+  photoUrl?: string;
+  idUrl?:string;
 };
 
 export enum UserRole {

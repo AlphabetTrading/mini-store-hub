@@ -11,10 +11,10 @@ const StateHandler = (props: Props) => {
   if (props.loading) {
     return <div>Loading...</div>;
   }
-  if(props.error){
-    return <div>Error</div>;
+  if (props.error) {
+    return <div>Error {props.error.message}</div>;
   }
-  if(props.empty){
+  if (props.empty) {
     return <div>Empty</div>;
   }
   return <>{props.children}</>;
