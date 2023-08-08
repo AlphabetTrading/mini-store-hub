@@ -1,4 +1,4 @@
-import { ObjectType, Field, Float, InputType } from '@nestjs/graphql';
+import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
 import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 import { UserProfile } from 'src/user-profile/models/userProfile.model';
@@ -7,7 +7,7 @@ import { Warehouse } from 'src/warehouses/models/warehouse.model';
 @ObjectType()
 export class Address extends BaseModel {
   @Field(() => String)
-  street?: string;
+  street: string;
 
   @Field(() => String, { nullable: true })
   city?: string;

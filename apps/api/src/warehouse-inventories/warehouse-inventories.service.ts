@@ -64,10 +64,80 @@ export class WarehouseStockService {
   }
 
   async findByWarehouseId(warehouseId: string) {
+    const warehouseStock = await this.prisma.warehouseStock.findFirst({
+      where: { warehouseId },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
     return this.prisma.warehouseStock.findMany({
       where: { warehouseId },
       include: warehouseStockIncludeObject,
     });
+  }
+
+  async totalValuationByWarehouseId(warehouseId: string) {
+    const warehouseStock = await this.prisma.warehouseStock.findFirst({
+      where: { warehouseId },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
+    const warehouseStocks = await this.prisma.warehouseStock.findMany({
+      where: { warehouseId },
+      include: {
+        ...warehouseStockIncludeObject,
+        product: {
+          include: {
+            activePrice: true,
+          },
+        },
+      },
+    });
+    return warehouseStocks.reduce((acc, cur) => {
+      return acc + cur.quantity * cur.product.activePrice.price;
+    }, 0);
+  }
+
+  async totalValuationByWarehouseIdAndDate(
+    warehouseId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const warehouseStock = await this.prisma.warehouseStock.findFirst({
+      where: { warehouseId },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
+    const warehouseStocks = await this.prisma.warehouseStock.findMany({
+      where: {
+        warehouseId,
+        createdAt: {
+          gte: new Date(startDate),
+          lte: new Date(endDate),
+        },
+      },
+      include: {
+        ...warehouseStockIncludeObject,
+
+        product: {
+          include: {
+            activePrice: true,
+          },
+        },
+      },
+    });
+
+    return warehouseStocks.reduce((acc, cur) => {
+      return acc + cur.quantity * cur.product.activePrice.price;
+    }, 0);
   }
 
   async create(data: CreateWarehouseStockInput) {
@@ -102,6 +172,14 @@ export class WarehouseStockService {
   }
 
   async update(id: string, data: UpdateWarehouseStockInput) {
+    const warehouseStock = await this.prisma.warehouseStock.findUnique({
+      where: { id },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
     return this.prisma.warehouseStock.update({
       where: { id },
       data,
@@ -109,6 +187,14 @@ export class WarehouseStockService {
   }
 
   async remove(id: string) {
+    const warehouseStock = await this.prisma.warehouseStock.findUnique({
+      where: { id },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
     return this.prisma.warehouseStock.delete({ where: { id } });
   }
 }

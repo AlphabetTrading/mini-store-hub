@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Float, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { WarehouseStockService } from './warehouse-inventories.service';
 import { WarehouseStock } from './models/warehouse-inventory.model';
 import {
@@ -83,6 +83,30 @@ export class WarehouseStockResolver {
   })
   async WarehouseStockByWarehouseId(@Args('warehouseId') warehouseId: string) {
     return this.warehouseStockService.findByWarehouseId(warehouseId);
+  }
+
+  @Query(() => Float, {
+    name: 'totalValuationByWarehouseId',
+  })
+  async totalValuationByWarehouseId(
+    @Args('warehouseId') warehouseId: string,
+  ): Promise<number> {
+    return this.warehouseStockService.totalValuationByWarehouseId(warehouseId);
+  }
+
+  @Query(() => Float, {
+    name: 'totalValuationByWarehouseId',
+  })
+  async totalValuationByWarehouseIdAndDate(
+    @Args('warehouseId') warehouseId: string,
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
+    return this.warehouseStockService.totalValuationByWarehouseIdAndDate(
+      warehouseId,
+      startDate,
+      endDate,
+    );
   }
 
   @Mutation(() => WarehouseStock)

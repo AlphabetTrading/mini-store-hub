@@ -72,9 +72,9 @@ export class ProductsService {
       return totalSalesB - totalSalesA;
     });
 
-    if (skip && take) {
-      return products.splice(skip, take);
-    }
+    // paginate if there is skip and take
+
+    if (take) return products.slice(skip * take, (skip + 1) * take);
     return products;
   }
 
@@ -96,7 +96,6 @@ export class ProductsService {
         saleTransactionItem: true,
       },
     });
-
     products.sort((a, b) => {
       const totalSalesA = a.saleTransactionItem.reduce(
         (acc, t) => acc + t.subTotal,
@@ -110,9 +109,8 @@ export class ProductsService {
       return totalSalesB - totalSalesA;
     });
 
-    if (skip && take) {
-      return products.splice(skip, take);
-    }
+    if (take) return products.slice(skip * take, (skip + 1) * take);
+
     return products;
   }
 
@@ -151,9 +149,8 @@ export class ProductsService {
 
       return totalProfitB - totalProfitA;
     });
-    if (skip && take) {
-      return products.splice(skip, take);
-    }
+    if (take) return products.slice(skip * take, (skip + 1) * take);
+
     return products;
   }
 
@@ -177,6 +174,14 @@ export class ProductsService {
   }
 
   async findByCategory(categoryId: string) {
+    const category = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
     return this.prisma.product.findMany({ where: { categoryId } });
   }
 
@@ -251,6 +256,14 @@ export class ProductsService {
   }
 
   async update(id: string, data: UpdateProductInput) {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
     return this.prisma.product.update({
       where: { id },
       data,
@@ -259,6 +272,14 @@ export class ProductsService {
   }
 
   async remove(id: string) {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
     return this.prisma.product.delete({
       where: { id },
       include: ProductsIncludeObject,

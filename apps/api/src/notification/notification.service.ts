@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as firebase from 'firebase-admin';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
@@ -251,9 +251,17 @@ export class NotificationService {
   }
 
   async findOne(notificationId: string) {
-    return this.prisma.notification.findUnique({
-      where: { id: notificationId },
+    const notification = await this.prisma.notification.findUnique({
+      where: {
+        id: notificationId,
+      },
     });
+
+    if (!notification) {
+      throw new NotFoundException('Notification is not found');
+    }
+
+    return notification;
   }
 
   async getNotificationsByUserIdAndStatus(user_id: string, status: boolean) {

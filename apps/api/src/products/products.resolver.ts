@@ -154,7 +154,7 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, { name: 'findProductsByTopSale' })
+  @Query(() => PaginationProducts, { name: 'findProductsByTopSell' })
   async findProductsByTopSelling(
     @Args('filterProductInput', {
       type: () => FilterProductInput,
@@ -197,6 +197,89 @@ export class ProductsResolver {
           },
           {
             createdAt: filterProductInput?.createdAt,
+          },
+        ],
+      };
+
+      const products = await this.productsService.findProductsByTopSale({
+        where,
+        orderBy: {
+          [orderBy?.field]: orderBy?.direction,
+        },
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      });
+
+      const count = await this.productsService.count();
+      return {
+        items: products,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
+  }
+
+  @Query(() => PaginationProducts, {
+    name: 'findProductsByTopSellAndByRetailShop',
+  })
+  async findProductsByTopSellingByRetailShop(
+    @Args('retailShopId', {
+      type: () => String,
+    })
+    retailShopId?: string,
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
+    @Args('orderBy', {
+      type: () => ProductOrder,
+      // type: () => OrderByProductInput,
+      nullable: true,
+    })
+    orderBy?: ProductOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationProducts> {
+    try {
+      const where: Prisma.ProductWhereInput = {
+        AND: [
+          {
+            id: filterProductInput?.id,
+          },
+          {
+            OR: [
+              {
+                name: filterProductInput?.name,
+              },
+              {
+                amharicName: filterProductInput?.name,
+              },
+            ],
+          },
+          {
+            serialNumber: filterProductInput?.serialNumber,
+          },
+          {
+            description: filterProductInput?.description,
+          },
+          {
+            category: filterProductInput?.category,
+          },
+          {
+            createdAt: filterProductInput?.createdAt,
+          },
+          {
+            retailShopStock: {
+              every: {
+                retailShopId,
+              },
+            },
           },
         ],
       };
@@ -267,6 +350,91 @@ export class ProductsResolver {
           },
           {
             createdAt: filterProductInput?.createdAt,
+          },
+        ],
+      };
+
+      const products = await this.productsService.findProductsByTopSoldQuantity(
+        {
+          where,
+          orderBy: {
+            [orderBy?.field]: orderBy?.direction,
+          },
+          skip: paginationInput?.skip,
+          take: paginationInput?.take,
+        },
+      );
+
+      const count = await this.productsService.count();
+      return {
+        items: products,
+        meta: {
+          page: paginationInput?.skip,
+          limit: paginationInput?.take,
+          count,
+        },
+      };
+    } catch (e) {
+      throw new BadRequestException('Error loading products!');
+    }
+  }
+
+  @Query(() => PaginationProducts, {
+    name: 'findProductsBySoldQuantityAndRetailShop',
+  })
+  async findProductsBySoldQuantityAndRetailShop(
+    @Args('retailShopId', {
+      type: () => String,
+    })
+    retailShopId?: string,
+    @Args('filterProductInput', {
+      type: () => FilterProductInput,
+      nullable: true,
+    })
+    filterProductInput?: FilterProductInput,
+    @Args('orderBy', {
+      type: () => ProductOrder,
+      // type: () => OrderByProductInput,
+      nullable: true,
+    })
+    orderBy?: ProductOrder,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ): Promise<PaginationProducts> {
+    try {
+      const where: Prisma.ProductWhereInput = {
+        AND: [
+          {
+            id: filterProductInput?.id,
+          },
+          {
+            OR: [
+              {
+                name: filterProductInput?.name,
+              },
+              {
+                amharicName: filterProductInput?.name,
+              },
+            ],
+          },
+          {
+            serialNumber: filterProductInput?.serialNumber,
+          },
+          {
+            description: filterProductInput?.description,
+          },
+          {
+            category: filterProductInput?.category,
+          },
+          {
+            createdAt: filterProductInput?.createdAt,
+          },
+          {
+            retailShopStock: {
+              every: {
+                retailShopId,
+              },
+            },
           },
         ],
       };

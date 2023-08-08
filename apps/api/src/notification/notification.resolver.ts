@@ -91,7 +91,7 @@ export class NotificationResolver {
   // }
 
   // get a single notification
-  @Query(() => Notification)
+  @Query(() => Notification, { name: 'notificationById' })
   async notificationById(@Args('id') notificationId: string) {
     return this.notificationService.findOne(notificationId);
   }

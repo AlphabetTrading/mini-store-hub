@@ -181,6 +181,33 @@ export class SaleTransactionsService {
     return total;
   }
 
+  async totalSoldProductsByRetailShopAndDate(
+    retailShopId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const response = await this.prisma.saleTransactionItem.aggregate({
+      where: {
+        saleTransaction: {
+          retailShopId: retailShopId,
+        },
+        createdAt: {
+          gte: formattedStartDate,
+          lt: formattedEndDate,
+        },
+      },
+      _count: {
+        id: true,
+      },
+    });
+    const total = response._count.id;
+    return total;
+  }
+
   async totalProfitByRetailShopByDate(
     id: string,
     startDate: string,
@@ -633,9 +660,23 @@ export class SaleTransactionsService {
   }
 
   async update(id: string, data: UpdateSaleTransactionInput) {
+    const saleTransaction = await this.prisma.saleTransaction.findUnique({
+      where: { id },
+    });
+    if (!saleTransaction) {
+      throw new NotFoundException('Sale transaction not found');
+    }
+
     return this.prisma.saleTransaction.update({ where: { id }, data });
   }
   async remove(id: string) {
+    const saleTransaction = await this.prisma.saleTransaction.findUnique({
+      where: { id },
+    });
+    if (!saleTransaction) {
+      throw new NotFoundException('Sale transaction not found');
+    }
+
     return this.prisma.saleTransaction.delete({ where: { id } });
   }
 

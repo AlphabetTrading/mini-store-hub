@@ -26,6 +26,14 @@ export class PriceHistoriesService {
   }
 
   async findOne(id: string) {
+    const priceHistory = await this.prisma.priceHistory.findUnique({
+      where: { id },
+    });
+
+    if (!priceHistory) {
+      throw new Error('Price history not found');
+    }
+
     return this.prisma.priceHistory.findUnique({
       where: { id },
       include: priceHistoryIncludeObject,
@@ -59,10 +67,26 @@ export class PriceHistoriesService {
   }
 
   async update(id: string, data: UpdatePriceHistoryInput) {
+    const priceHistory = await this.prisma.priceHistory.findUnique({
+      where: { id },
+    });
+
+    if (!priceHistory) {
+      throw new Error('Price history not found');
+    }
+
     return this.prisma.priceHistory.update({ where: { id }, data });
   }
 
   async remove(id: string) {
+    const priceHistory = await this.prisma.priceHistory.findUnique({
+      where: { id },
+    });
+
+    if (!priceHistory) {
+      throw new Error('Price history not found');
+    }
+
     return this.prisma.priceHistory.delete({ where: { id } });
   }
 }

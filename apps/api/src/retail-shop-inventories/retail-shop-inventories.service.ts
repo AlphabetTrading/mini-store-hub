@@ -32,6 +32,14 @@ export class RetailShopStockService {
   }
 
   async findOne(id: string) {
+    const retailShopStock = await this.prisma.retailShopStock.findUnique({
+      where: { id },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.findUnique({
       where: { id },
       include: retailShopStockInclude,
@@ -43,6 +51,14 @@ export class RetailShopStockService {
   }
 
   async findByProductId(productId: string) {
+    const retailShopStock = await this.prisma.retailShopStock.findFirst({
+      where: { productId },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.findMany({
       where: { productId },
       include: retailShopStockInclude,
@@ -50,6 +66,14 @@ export class RetailShopStockService {
   }
 
   async findByWarehouseId(warehouseId: string) {
+    const retailShopStock = await this.prisma.retailShopStock.findFirst({
+      where: { warehouseId },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.findMany({
       where: { warehouseId },
       include: retailShopStockInclude,
@@ -80,6 +104,14 @@ export class RetailShopStockService {
     retailShopId: string,
     productId: string,
   ) {
+    const retailShopStock = await this.prisma.retailShopStock.findUnique({
+      where: { productId_retailShopId: { productId, retailShopId } },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.findUnique({
       where: { productId_retailShopId: { productId, retailShopId } },
       include: retailShopStockInclude,
@@ -87,6 +119,14 @@ export class RetailShopStockService {
   }
 
   async findByProductIdAndWarehouseId(productId: string, warehouseId: string) {
+    const retailShopStock = await this.prisma.retailShopStock.findFirst({
+      where: { productId, warehouseId },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.findMany({
       where: { productId, warehouseId },
       include: retailShopStockInclude,
@@ -133,6 +173,14 @@ export class RetailShopStockService {
   }
 
   async update(id: string, data: UpdateRetailShopStockInput) {
+    const retailShopStock = await this.prisma.retailShopStock.findUnique({
+      where: { id },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.update({
       where: { id },
       data,
@@ -140,6 +188,14 @@ export class RetailShopStockService {
   }
 
   async remove(id: string) {
+    const retailShopStock = await this.prisma.retailShopStock.findUnique({
+      where: { id },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Retail shop stock not found');
+    }
+
     return this.prisma.retailShopStock.delete({ where: { id } });
   }
 }

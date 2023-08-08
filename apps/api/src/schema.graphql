@@ -623,8 +623,10 @@ type Query {
   findIncomingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findOutgoingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
   findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
-  findProductsByTopSale(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
   getAllNotifications: [Notification!]!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
@@ -671,10 +673,12 @@ type Query {
   totalSalesByProduct(productId: String!): Float!
   totalSalesByRetailShop(retailShopId: String!): Float!
   totalSalesByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
+  totalSoldProductsByRetailShopAndDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSoldQuantityByProduct(productId: String!): Float!
   totalSoldQuantityByRetailShop(retailShopId: String!): Float!
   totalSoldQuantityByRetailShopAndByDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSoldQuantityByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
+  totalValuationByWarehouseId(endDate: String!, startDate: String!, warehouseId: String!): Float!
   unreadNotificationsByUserId(userId: String!): [Notification!]!
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): PaginationUser!
@@ -1015,7 +1019,7 @@ type UserProfile {
   createdAt: DateTime!
   id: ID!
   idUrl: String
-  photoUrl: String!
+  photoUrl: String
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
