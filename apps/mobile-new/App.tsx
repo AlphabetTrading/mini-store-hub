@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import Navigation from "./src/routes";
 import React from "react";
 import { AuthContextProvider } from "./src/contexts/auth";
@@ -16,7 +16,9 @@ export default function App() {
       <LoadingContextProvider>
         <AuthContextProvider>
           <ApolloContextProvider>
-            <Navigation />
+            <SafeAreaView style={{ flex: 1 }}>
+              <Navigation />
+            </SafeAreaView>
           </ApolloContextProvider>
         </AuthContextProvider>
       </LoadingContextProvider>

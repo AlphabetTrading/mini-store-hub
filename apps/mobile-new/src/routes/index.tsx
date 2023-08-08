@@ -3,12 +3,7 @@ import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
-import CategoryDetailScreen from "../screens/InventoryScreen/CategoryDetailScreen";
-import ItemDetailScreen from "../screens/InventoryScreen/ItemDetailScreen";
-import CheckoutScreen from "../screens/NewTransactionScreen";
 import AuthStack from "./AuthStack";
-import SelectItemScreen from "../screens/NewTransactionScreen/SelectItemScreen";
-import SelectCategoryScreen from "../screens/NewTransactionScreen/SelectCategoryScreen";
 import NotificationScreen from "../screens/NotificationScreen";
 import Colors from "../constants/Colors";
 import { useAuth } from "../contexts/auth";
@@ -16,20 +11,9 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { useNotifications } from "../hooks/useNotifications";
 import Loading from "../components/Loading";
 import ProfileScreen from "../screens/ProfileScreen";
-import {
-  InventoryTabParamList,
-  NewTransactionParamList,
-  RootStackParamList,
-  SalesParamList,
-} from "../types";
-import InventoryScreen from "../screens/InventoryScreen";
-import NewTransactionScreen from "../screens/NewTransactionScreen";
-import TransactionDetailScreen from "../screens/SalesScreen/TransactionDetail";
-import SalesScreen from "../screens/SalesScreen";
-import { Ionicons } from "@expo/vector-icons";
+import { RootStackParamList } from "../types";
 import AppStack from "./AppStack";
 import {} from "@react-navigation/native-stack";
-import { useLoading } from "../contexts/loading";
 
 type Props = {};
 const Stack = createNativeStackNavigator();
@@ -103,13 +87,13 @@ function RootNavigator() {
           }}
         />
       </RootStack.Group>
-      {/* <RootStack.Group screenOptions={{ presentation: "modal" }}>
+      <RootStack.Group screenOptions={{ presentation: "modal" }}>
         <RootStack.Screen
           name="Auth"
           component={AuthStack}
           options={{ headerShown: false }}
         />
-      </RootStack.Group> */}
+      </RootStack.Group>
     </RootStack.Navigator>
   );
 }
