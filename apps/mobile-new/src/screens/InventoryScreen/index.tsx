@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useQuery } from "@apollo/client";
 import { BaseLayout } from "../../components/BaseLayout";
+import SearchBar from "../../components/SearchBar";
 
 type Props = {};
 
@@ -30,6 +31,7 @@ const InventoryScreen = (props: Props) => {
         </View>
       ) : (
         <View style={styles.container}>
+          <SearchBar />
           <Text
             style={{
               marginLeft: 8,

@@ -76,9 +76,15 @@ const SalesScreen = (props: Props) => {
                     borderRadius: 10,
                   }}
                   onPress={() => {
-                    navigation.navigate("SalesDetail", {
-                      id: item.id,
-                      totalPrice: item.totalPrice,
+                    navigation.navigate("Root", {
+                      screen: "SalesRoot",
+                      params: {
+                        screen: "TransactionDetailScreen",
+                        params: {
+                          transactionID: item.id,
+                          totalPrice: item.totalPrice,
+                        },
+                      },
                     });
                   }}
                 >
