@@ -47,6 +47,14 @@ export class RetailShopsService {
   }
 
   async findOne(id: string) {
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
     return this.prisma.retailShop.findUnique({
       where: { id },
       include: retailShopInclude,
@@ -89,6 +97,14 @@ export class RetailShopsService {
   }
 
   async update(id: string, data: UpdateRetailShopInput) {
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
     return this.prisma.retailShop.update({
       where: { id },
       data: {
@@ -114,6 +130,14 @@ export class RetailShopsService {
   }
 
   async remove(id: string) {
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
     return this.prisma.retailShop.delete({ where: { id } });
   }
 }

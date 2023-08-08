@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWarehouseInput } from './dto/create-warehouse.input';
 import { UpdateWarehouseInput } from './dto/update-warehouse.input';
 import { Prisma } from '@prisma/client';
@@ -35,13 +35,24 @@ export class WarehousesService {
     return await this.prisma.warehouse.findMany({
       skip,
       take,
-      where,
+      where: {
+        ...where,
+        isMain: false,
+      },
       orderBy,
       include: warehouseInclude,
     });
   }
 
   async findOne(id: string) {
+    const warehouse = await this.prisma.warehouse.findUnique({
+      where: { id },
+    });
+
+    if (!warehouse) {
+      throw new Error('Warehouse not found');
+    }
+
     return await this.prisma.warehouse.findUnique({
       where: { id },
       include: warehouseInclude,
@@ -53,8 +64,15 @@ export class WarehousesService {
   }
 
   async findByWarehouseManager(id: string) {
+    const warehouse = await this.prisma.warehouse.findFirst({
+      where: { warehouseManagerId: id, isMain: false },
+    });
+
+    if (!warehouse) {
+      throw new Error('Warehouse not found');
+    }
     return await this.prisma.warehouse.findMany({
-      where: { warehouseManagerId: id },
+      where: { warehouseManagerId: id, isMain: false },
       include: warehouseInclude,
     });
   }
@@ -91,6 +109,14 @@ export class WarehousesService {
   }
 
   async update(id: string, data: UpdateWarehouseInput) {
+    const warehouse = await this.prisma.warehouse.findUnique({
+      where: { id },
+    });
+
+    if (!warehouse) {
+      throw new NotFoundException('Warehouse not found');
+    }
+
     return await this.prisma.warehouse.update({
       where: { id },
       data: {
@@ -116,6 +142,14 @@ export class WarehousesService {
   }
 
   async remove(id: string) {
+    const warehouse = await this.prisma.warehouse.findUnique({
+      where: { id },
+    });
+
+    if (!warehouse) {
+      throw new NotFoundException('Warehouse not found');
+    }
+
     return await this.prisma.warehouse.delete({
       where: { id },
     });

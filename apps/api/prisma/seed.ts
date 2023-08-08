@@ -616,6 +616,17 @@ async function seedWarehouseStocks() {
         ],
       });
     } catch (error) {}
+    try {
+      await prisma.warehouseStock.createMany({
+        data: [
+          ...Array.from({ length: 30 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {}
     console.log('Warehouses stock is seeded successfully');
   } catch (error) {
     console.error('Error seeding warehouses stock', error);

@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateGoodsTransferInput } from './dto/create-goods-transfer.input';
 import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -44,10 +49,17 @@ export class GoodsTransfersService {
   }
 
   async findOne(id: string) {
-    return this.prisma.goodsTransfer.findUnique({
+    const goodsTransfer = await this.prisma.goodsTransfer.findUnique({
       where: { id },
       include: goodsTransferInclude,
     });
+
+    if (!goodsTransfer) {
+      throw new BadRequestException(
+        "Goods transfer with the provided ID doesn't exist",
+      );
+    }
+    return goodsTransfer;
   }
 
   async count(where?: Prisma.GoodsTransferWhereInput): Promise<number> {
@@ -75,6 +87,26 @@ export class GoodsTransfersService {
 
   async transferToRetailShop(data: CreateGoodsTransferInput) {
     const { goods, sourceWarehouseId, retailShopId } = data;
+
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: {
+        id: retailShopId,
+      },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
+    const sourceWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: sourceWarehouseId,
+      },
+    });
+
+    if (!sourceWarehouse) {
+      throw new Error('Source warehouse not found');
+    }
 
     return await this.prisma.$transaction(
       async (tx) => {
@@ -157,6 +189,27 @@ export class GoodsTransfersService {
 
   async transferToWarehouse(data: CreateGoodsTransferInput) {
     const { goods, sourceWarehouseId, destinationWarehouseId } = data;
+
+    const sourceWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: sourceWarehouseId,
+      },
+    });
+
+    if (!sourceWarehouse) {
+      throw new Error('Source warehouse not found');
+    }
+
+    const destinationWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: destinationWarehouseId,
+      },
+    });
+
+    if (!destinationWarehouse) {
+      throw new Error('Destination warehouse not found');
+    }
+
     try {
       return await this.prisma.$transaction(async (tx) => {
         for (const good of goods) {
@@ -251,6 +304,17 @@ export class GoodsTransfersService {
     if (!sourceWarehouse) {
       throw new Error('Main warehouse not found');
     }
+
+    const destinationWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: destinationWarehouseId,
+      },
+    });
+
+    if (!destinationWarehouse) {
+      throw new Error('Destination warehouse not found');
+    }
+
     try {
       return await this.prisma.$transaction(async (tx) => {
         for (const good of goods) {
@@ -314,6 +378,26 @@ export class GoodsTransfersService {
 
   async updateTransferToRetailShop(id: string, data: UpdateGoodsTransferInput) {
     const { goods, sourceWarehouseId, retailShopId } = data;
+
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: {
+        id: retailShopId,
+      },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
+    const sourceWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: sourceWarehouseId,
+      },
+    });
+
+    if (!sourceWarehouse) {
+      throw new Error('Source warehouse not found');
+    }
 
     try {
       return await this.prisma.$transaction(async (tx) => {
@@ -382,6 +466,26 @@ export class GoodsTransfersService {
   async updateTransferToWarehouse(id: string, data: UpdateGoodsTransferInput) {
     const { goods, sourceWarehouseId, destinationWarehouseId } = data;
 
+    const sourceWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: sourceWarehouseId,
+      },
+    });
+
+    if (!sourceWarehouse) {
+      throw new Error('Source warehouse not found');
+    }
+
+    const destinationWarehouse = await this.prisma.warehouse.findUnique({
+      where: {
+        id: destinationWarehouseId,
+      },
+    });
+
+    if (!destinationWarehouse) {
+      throw new Error('Destination warehouse not found');
+    }
+
     try {
       return await this.prisma.$transaction(async (tx) => {
         for (const good of goods) {
@@ -437,6 +541,16 @@ export class GoodsTransfersService {
   }
 
   async remove(id: string) {
+    const goodsTransfer = await this.prisma.goodsTransfer.findUnique({
+      where: { id },
+    });
+
+    if (!goodsTransfer) {
+      throw new BadRequestException(
+        "Goods transfer with the provided ID doesn't exist",
+      );
+    }
+
     return this.prisma.goodsTransfer.delete({
       where: { id },
       include: goodsTransferInclude,

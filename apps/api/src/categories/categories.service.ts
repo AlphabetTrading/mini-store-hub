@@ -41,6 +41,14 @@ export class CategoriesService {
   }
 
   async findOne(id: string) {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
     return this.prisma.category.findUnique({
       where: { id },
       include: { products: true, parent: true, subcategories: true },
@@ -62,10 +70,25 @@ export class CategoriesService {
   }
 
   async update(id: string, data: UpdateCategoryInput) {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
     return this.prisma.category.update({ where: { id }, data });
   }
 
   async remove(id: string) {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
     return this.prisma.category.delete({ where: { id } });
   }
 }

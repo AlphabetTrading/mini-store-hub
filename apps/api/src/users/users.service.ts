@@ -1,6 +1,6 @@
 import {
   Injectable,
-  BadRequestException,
+  NotFoundException,
   ConflictException,
 } from '@nestjs/common';
 import { PasswordService } from 'src/auth/password.service';
@@ -132,7 +132,7 @@ export class UsersService {
     );
 
     if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new NotFoundException('Invalid password');
     }
 
     const hashedPassword = await this.passwordService.hashPassword(
@@ -168,20 +168,40 @@ export class UsersService {
   }
 
   async getUser(id: string) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
       include: userIncludeObject,
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   async getUserByUsername(username: string) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { username },
       include: userIncludeObject,
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   async deleteUser(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return this.prisma.user.delete({ where: { id } });
   }
 
@@ -202,8 +222,25 @@ export class UsersService {
     });
   }
 
-  async updateUserRole(userId: string, role: string) {
-    throw new Error('Method not implemented.');
+  async updateUserRole(userId: string, role: UserRole) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.prisma.user.update({
+      data: {
+        role,
+      },
+      where: {
+        id: userId,
+      },
+    });
   }
 
   async changeUserStatus(userId: string, isActive: boolean) {
@@ -214,7 +251,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return this.prisma.user.update({

@@ -268,6 +268,19 @@ export class SaleTransactionsResolver {
   }
 
   @Query(() => Float)
+  async totalSoldProductsByRetailShopAndDate(
+    @Args('retailShopId') retailShopId: string,
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalSoldProductsByRetailShopAndDate(
+      retailShopId,
+      startDate,
+      endDate,
+    );
+  }
+
+  @Query(() => Float)
   async totalSoldQuantityByRetailShop(
     @Args('retailShopId') retailShopId: string,
   ): Promise<number> {

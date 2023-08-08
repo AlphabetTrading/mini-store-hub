@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import { Resolver, Query, Parent, Mutation, Args } from '@nestjs/graphql';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { UserEntity } from 'src/common/decorators/user.decorator';
@@ -162,7 +162,7 @@ export class UsersResolver {
   @Mutation(() => User)
   async updateUserRole(
     @Args('userId') userId: string,
-    @Args('role') role: string,
+    @Args('role') role: UserRole,
   ) {
     return this.usersService.updateUserRole(userId, role);
   }
