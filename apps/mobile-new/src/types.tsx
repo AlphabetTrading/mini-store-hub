@@ -48,6 +48,11 @@ export type InventoryTabParamList = {
   ItemDetailScreen: { itemID: string; itemName: string };
 };
 
+export type InsightsTabParamList = {
+  Index: undefined;
+  InsightsDetailScreen: { insightsID: string };
+};
+
 export type NewTransactionParamList = {
   Index: undefined;
   SelectItem: { categoryID: string };

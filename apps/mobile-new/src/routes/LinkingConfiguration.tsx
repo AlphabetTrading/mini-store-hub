@@ -35,7 +35,15 @@ const linking: LinkingOptions<any> = {
               },
             },
           },
-          Insights: "insights",
+          Insights: {
+            initialRouteName: "index" as any,
+            screens: {
+              Index: "index",
+              InsightsDetailScreen: {
+                path: "insights/:insightsID",
+              },
+            },
+          },
           AccountRoot: {
             initialRouteName: "account" as any,
             screens: {

@@ -1,4 +1,5 @@
 import {
+  InsightsTabParamList,
   InventoryTabParamList,
   NewTransactionParamList,
   RootTabParamList,
@@ -40,6 +41,7 @@ import CheckoutScreen from "../screens/NewTransactionScreen";
 import SelectItemScreen from "../screens/NewTransactionScreen/SelectItemScreen";
 import SelectCategoryScreen from "../screens/NewTransactionScreen/SelectCategoryScreen";
 import useKeyboard from "../hooks/useKeyboard";
+import InsightsDetailScreen from "../screens/InsightsScreen/InsightsDetail";
 
 type Props = {};
 
@@ -133,6 +135,37 @@ export const InventoryStack = () => (
       })}
     />
   </InventoryStackNavigator.Navigator>
+);
+
+const InsightsStackNavigator =
+  createNativeStackNavigator<InsightsTabParamList>();
+
+export const InsightsStack = () => (
+  <InsightsStackNavigator.Navigator initialRouteName="Index">
+    <InsightsStackNavigator.Screen
+      name="Index"
+      component={InventoryScreen}
+      options={{
+        title: "Inventory",
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      }}
+    />
+    <InsightsStackNavigator.Screen
+      name="InsightsDetailScreen"
+      component={InsightsDetailScreen}
+      options={({ route }: any) => ({
+        title: route?.params?.categoryName,
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      })}
+    />
+
+  </InsightsStackNavigator.Navigator>
 );
 
 const NewTransactionStackNavigator =
