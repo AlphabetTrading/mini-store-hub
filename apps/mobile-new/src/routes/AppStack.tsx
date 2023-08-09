@@ -1,4 +1,5 @@
 import {
+  InsightsTabParamList,
   InventoryTabParamList,
   NewTransactionParamList,
   RootTabParamList,
@@ -40,6 +41,7 @@ import CheckoutScreen from "../screens/NewTransactionScreen";
 import SelectItemScreen from "../screens/NewTransactionScreen/SelectItemScreen";
 import SelectCategoryScreen from "../screens/NewTransactionScreen/SelectCategoryScreen";
 import useKeyboard from "../hooks/useKeyboard";
+import InsightsDetailScreen from "../screens/InsightsScreen/InsightsDetail";
 
 type Props = {};
 
@@ -97,7 +99,7 @@ export const SalesStack = () => (
 const InventoryStackNavigator =
   createNativeStackNavigator<InventoryTabParamList>();
 
-export const InventoryStack = () => (
+export const InventoryStack = ({ navigation }: any) => (
   <InventoryStackNavigator.Navigator initialRouteName="Index">
     <InventoryStackNavigator.Screen
       name="Index"
@@ -108,6 +110,40 @@ export const InventoryStack = () => (
           backgroundColor: Colors.light.tint,
         },
         headerTintColor: "#FFF",
+        headerShown: true,
+        headerRight: () => (
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <AntDesign
+                name="bells"
+                color="#FFF"
+                size={24}
+                onPress={() =>
+                  navigation.navigate("Notifications", {
+                    conversationID: 1,
+                    recipientName: "",
+                  })
+                }
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: -5,
+                  right: -5,
+                  backgroundColor: "#FF0000",
+                  width: 16,
+                  height: 16,
+                  borderRadius: 12,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 8 }}>12</Text>
+              </View>
+            </View>
+            <CustomMaterialMenu />
+          </View>
+        ),
       }}
     />
     <InventoryStackNavigator.Screen
@@ -133,6 +169,70 @@ export const InventoryStack = () => (
       })}
     />
   </InventoryStackNavigator.Navigator>
+);
+
+const InsightsStackNavigator =
+  createNativeStackNavigator<InsightsTabParamList>();
+
+export const InsightsStack = ({ navigation }: any) => (
+  <InsightsStackNavigator.Navigator initialRouteName="Index">
+    <InsightsStackNavigator.Screen
+      name="Index"
+      component={InsightsScreen}
+      options={{
+        title: "Insights",
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+        headerShown: true,
+        headerRight: () => (
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <AntDesign
+                name="bells"
+                color="#FFF"
+                size={24}
+                onPress={() =>
+                  navigation.navigate("Notifications", {
+                    conversationID: 1,
+                    recipientName: "",
+                  })
+                }
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: -5,
+                  right: -5,
+                  backgroundColor: "#FF0000",
+                  width: 16,
+                  height: 16,
+                  borderRadius: 12,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 8 }}>12</Text>
+              </View>
+            </View>
+            <CustomMaterialMenu />
+          </View>
+        ),
+      }}
+    />
+    <InsightsStackNavigator.Screen
+      name="InsightsDetailScreen"
+      component={InsightsDetailScreen}
+      options={({ route }: any) => ({
+        title: route?.params?.categoryName,
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+      })}
+    />
+  </InsightsStackNavigator.Navigator>
 );
 
 const NewTransactionStackNavigator =
@@ -623,7 +723,7 @@ const AppStack = ({ route }: any) => {
               borderWidth: 0.5,
               borderColor: "#D3D3D3",
             },
-            headerShown: true,
+            headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabItem
                 color={color}
@@ -642,7 +742,7 @@ const AppStack = ({ route }: any) => {
               />
             ),
           }}
-          component={InsightsScreen}
+          component={InsightsStack}
         />
       </BottomTab.Navigator>
     </View>

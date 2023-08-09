@@ -39,13 +39,18 @@ export type RootTabParamList = {
     | NavigatorScreenParams<NewTransactionParamList>
     | undefined;
   SalesRoot: NavigatorScreenParams<SalesParamList> | undefined;
-  Insights: undefined;
+  Insights: NavigatorScreenParams<InsightsTabParamList> | undefined;
   Account: NavigatorScreenParams<AccountTabParamList> | undefined;
 };
 export type InventoryTabParamList = {
   Index: undefined;
   CategoryDetailScreen: { categoryID: string; categoryName: string };
   ItemDetailScreen: { itemID: string; itemName: string };
+};
+
+export type InsightsTabParamList = {
+  Index: undefined;
+  InsightsDetailScreen: { insightsID: INSIGHTS_TYPE };
 };
 
 export type NewTransactionParamList = {
@@ -69,3 +74,8 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >;
+
+export const enum INSIGHTS_TYPE {
+  MOST_SOLD_ITEMS = "MOST_SOLD_ITEMS",
+  MOST_REVENUE_BY_ITEM = "MOST_REVENUE_BY_ITEM",
+}

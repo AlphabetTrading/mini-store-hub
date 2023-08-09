@@ -19,6 +19,7 @@ import {
   REMOVE_NOTIFICATION_MUTATION,
 } from "../graphql/mutations/notificationMutations";
 import { useLoading } from "./loading";
+import Loading from "../components/Loading";
 
 interface AuthState {
   accessToken: string;
@@ -50,7 +51,9 @@ interface AuthContextValue {
   signIn: (e: string, p: string) => Promise<SignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   authState: AuthState | undefined | null;
-  setAuthState: React.Dispatch<React.SetStateAction<AuthState | null>>;
+  setAuthState: React.Dispatch<
+    React.SetStateAction<AuthState | null | undefined>
+  >;
   updateNotificationToken: (
     authState: AuthState,
     token: string,
@@ -69,7 +72,7 @@ interface ProviderProps {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthContextProvider(props: ProviderProps) {
-  const [authState, setAuthState] = useState<AuthState | null>(null);
+  const [authState, setAuthState] = useState<AuthState | null | undefined>();
   const { loading, setLoading } = useLoading();
   console.log(loading, " loading");
   // get user from async storage, and set it to state
@@ -77,6 +80,8 @@ export function AuthContextProvider(props: ProviderProps) {
     const localState = await SecureStore.getItemAsync("login");
     if (localState) {
       await setAuthState(JSON.parse(localState));
+    } else {
+      await setAuthState(null);
     }
   }, []);
   useEffect(() => {
@@ -242,7 +247,7 @@ export function AuthContextProvider(props: ProviderProps) {
         resetPassword,
       }}
     >
-      {props.children}
+      {typeof authState === "undefined" ? <Loading /> : props.children}
     </AuthContext.Provider>
   );
 }

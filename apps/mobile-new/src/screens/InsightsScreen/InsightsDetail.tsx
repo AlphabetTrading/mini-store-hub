@@ -1,22 +1,20 @@
 import {
   ActivityIndicator,
-  FlatList,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import Colors from "../../constants/Colors";
-import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
 import { INSIGHTS_TYPE } from "../../types";
-import { useGetInsightsData } from "../../hooks/api/useGetInsightsData";
+import {
+  useGetInsightsData,
+  useGetInsightsDataDetail,
+} from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
-
-type Props = {};
 
 const MostSoldItems = ({
   retailShopID,
@@ -25,12 +23,10 @@ const MostSoldItems = ({
   retailShopID: string;
   insightsType: INSIGHTS_TYPE;
 }) => {
-  const { data, loading, refetch, error } = useGetInsightsData(
+  const { data, loading, refetch, error } = useGetInsightsDataDetail(
     retailShopID,
     insightsType
   );
-
-  console.log(data, error, " -----------");
 
   return loading ? (
     <View>
@@ -73,7 +69,7 @@ const TopSellingItems = ({
   retailShopID: string;
   insightsType: INSIGHTS_TYPE;
 }) => {
-  const { data, loading, refetch, error } = useGetInsightsData(
+  const { data, loading, refetch, error } = useGetInsightsDataDetail(
     retailShopID,
     insightsType
   );
@@ -114,93 +110,49 @@ const TopSellingItems = ({
   );
 };
 
-const InsightsScreen = (props: Props) => {
+const InsightsDetailScreen = ({
+  route,
+}: {
+  route: { params: { insightsID: INSIGHTS_TYPE } };
+}) => {
   const navigation = useNavigation();
+  useEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: {
+        display: "none",
+      },
+    });
+    return () =>
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+  }, [navigation]);
+
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
 
   return (
-    <BaseLayout>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <View style={styles.container}>
-          <Text
-            style={{
-              textTransform: "uppercase",
-              color: "#828282",
-              marginBottom: 20,
-            }}
-          >
-            Most Sold Items
-          </Text>
-          <MostSoldItems
-            retailShopID={retailShopID}
-            insightsType={INSIGHTS_TYPE.MOST_SOLD_ITEMS}
-          />
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              paddingVertical: 30,
-            }}
-            onPress={() => {
-              navigation.navigate("Root", {
-                screen: "Insights",
-                params: {
-                  screen: "InsightsDetailScreen",
-                  params: {
-                    insightsID: INSIGHTS_TYPE.MOST_SOLD_ITEMS,
-                  },
-                },
-              });
-            }}
-          >
-            <Text style={{ color: "#5684E0", fontFamily: "InterMedium" }}>
-              See More
-            </Text>
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              textTransform: "uppercase",
-              color: "#828282",
-              marginBottom: 20,
-            }}
-          >
-            Most Revenue by item
-          </Text>
-          <TopSellingItems
-            retailShopID={retailShopID}
-            insightsType={INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM}
-          />
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              paddingVertical: 20,
-            }}
-            onPress={() => {
-              navigation.navigate("Root", {
-                screen: "Insights",
-                params: {
-                  screen: "InsightsDetailScreen",
-                  params: {
-                    insightsID: INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM,
-                  },
-                },
-              });
-            }}
-          >
-            <Text style={{ color: "#5684E0", fontFamily: "InterMedium" }}>
-              See More
-            </Text>
-          </TouchableOpacity>
+          {route.params.insightsID === INSIGHTS_TYPE.MOST_SOLD_ITEMS ? (
+            <MostSoldItems
+              retailShopID={retailShopID}
+              insightsType={INSIGHTS_TYPE.MOST_SOLD_ITEMS}
+            />
+          ) : (
+            <TopSellingItems
+              retailShopID={retailShopID}
+              insightsType={INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM}
+            />
+          )}
         </View>
       </ScrollView>
-    </BaseLayout>
+    </SafeAreaView>
   );
 };
 
-export default InsightsScreen;
+export default InsightsDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
