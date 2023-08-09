@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Path, Svg } from "react-native-svg";
 import React from "react";
 import { useAuth } from "../../contexts/auth";
-import { useQuery } from "@apollo/client";
 import { useGetSalesData } from "../../hooks/api/useGetDashboardData";
 
 type DashboardComponentsProps = {
@@ -17,6 +16,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
     retailShopID,
     selectedFilter
   );
+
   return (
     <View>
       <View
@@ -50,7 +50,13 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             Number of Sales
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>115</Text>
+            <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                data?.totalSoldProductsByRetailShopAndDate
+              )}
+            </Text>
             <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">
               <Path
                 d="M10.7917 10.2083H9.91666V9.33334H10.7917V10.2083ZM9.04166 10.2083H8.16666V9.04166L9.04166 9.33334V10.2083ZM7.29166 10.2083H6.41666V9.625L7.29166 8.75V10.2083ZM5.54166 10.2083H4.66666V7.58334L5.25 7L5.54166 8.45834V10.2083ZM3.79166 10.2083H2.91666V6.125L3.79166 7V10.2083Z"
@@ -86,7 +92,11 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>
-              11,561
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                data?.totalSalesByDateAndRetailShop
+              )}
             </Text>
             <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">
               <Path
@@ -122,7 +132,13 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             Profit{" "}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>1,536</Text>
+            <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                data?.totalProfitByDateAndRetailShop
+              )}
+            </Text>
             <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">
               <Path
                 d="M10.7917 10.2083H9.91666V9.33334H10.7917V10.2083ZM9.04166 10.2083H8.16666V9.04166L9.04166 9.33334V10.2083ZM7.29166 10.2083H6.41666V9.625L7.29166 8.75V10.2083ZM5.54166 10.2083H4.66666V7.58334L5.25 7L5.54166 8.45834V10.2083ZM3.79166 10.2083H2.91666V6.125L3.79166 7V10.2083Z"
@@ -154,11 +170,19 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
               textTransform: "uppercase",
             }}
           >
-            Cost
+            Gross Margin
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>
-              10,025
+              {loading ? (
+                <ActivityIndicator />
+              ) : data?.totalSalesByDateAndRetailShop ? (
+                (data?.totalProfitByDateAndRetailShop /
+                  data?.totalSalesByDateAndRetailShop) *
+                100
+              ) : (
+                0
+              )}
             </Text>
             <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">
               <Path
@@ -172,7 +196,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             </Svg>
           </View>
         </View>
-      </View>{" "}
+      </View>
     </View>
   );
 };

@@ -13,11 +13,8 @@ import Loading from "../components/Loading";
 import ProfileScreen from "../screens/ProfileScreen";
 import { RootStackParamList } from "../types";
 import AppStack from "./AppStack";
-import {} from "@react-navigation/native-stack";
 
 type Props = {};
-const Stack = createNativeStackNavigator();
-
 const Navigation = (props: Props) => {
   return (
     <NavigationContainer linking={LinkingConfiguration} fallback={<Loading />}>
@@ -55,45 +52,46 @@ function RootNavigator() {
   const { authState } = useAuth();
   console.log(authState, " is auth state");
   return (
-    <RootStack.Navigator
-      initialRouteName={authState !== null ? "Root" : "Auth"}
-    >
-      <RootStack.Group>
-        <RootStack.Screen
-          name="Root"
-          component={AppStack}
-          options={{ headerShown: false }}
-        />
-        <RootStack.Screen
-          name="Notifications"
-          component={NotificationScreen}
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: Colors.light.tint,
-            },
-            headerTintColor: "#FFF",
-          }}
-        />
-        <RootStack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: Colors.light.tint,
-            },
-            headerTintColor: "#FFF",
-          }}
-        />
-      </RootStack.Group>
-      <RootStack.Group screenOptions={{ presentation: "modal" }}>
-        <RootStack.Screen
-          name="Auth"
-          component={AuthStack}
-          options={{ headerShown: false }}
-        />
-      </RootStack.Group>
+    <RootStack.Navigator initialRouteName={"Root"}>
+      {authState !== null ? (
+        <RootStack.Group>
+          <RootStack.Screen
+            name="Root"
+            component={AppStack}
+            options={{ headerShown: false }}
+          />
+          <RootStack.Screen
+            name="Notifications"
+            component={NotificationScreen}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: Colors.light.tint,
+              },
+              headerTintColor: "#FFF",
+            }}
+          />
+          <RootStack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: Colors.light.tint,
+              },
+              headerTintColor: "#FFF",
+            }}
+          />
+        </RootStack.Group>
+      ) : (
+        <RootStack.Group screenOptions={{ presentation: "modal" }}>
+          <RootStack.Screen
+            name="Auth"
+            component={AuthStack}
+            options={{ headerShown: false }}
+          />
+        </RootStack.Group>
+      )}
     </RootStack.Navigator>
   );
 }

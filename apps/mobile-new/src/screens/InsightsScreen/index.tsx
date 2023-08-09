@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   SafeAreaView,
   ScrollView,
@@ -10,38 +11,114 @@ import {
 import React from "react";
 import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
+import { useNavigation } from "@react-navigation/native";
+import { INSIGHTS_TYPE } from "../../types";
+import { useGetInsightsData } from "../../hooks/api/useGetInsightsData";
+import { useAuth } from "../../contexts/auth";
 
 type Props = {};
 
-const DATA: { id: string; name: string; imageSrc: string }[] = [
-  {
-    id: "1",
-    name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
-  },
-  {
-    id: "2",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "3",
-    name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
-  },
-  {
-    id: "4",
-    name: "Oil",
-    imageSrc: require("../../../assets/icons/categories/oil.png"),
-  },
-  {
-    id: "5",
-    name: "Soft",
-    imageSrc: require("../../../assets/icons/categories/soft.png"),
-  },
-];
+const MostSoldItems = ({
+  retailShopID,
+  insightsType,
+}: {
+  retailShopID: string;
+  insightsType: INSIGHTS_TYPE;
+}) => {
+  const { data, loading, refetch, error } = useGetInsightsData(
+    retailShopID,
+    insightsType
+  );
+
+  console.log(data, error, " -----------");
+
+  return loading ? (
+    <View>
+      <ActivityIndicator />
+    </View>
+  ) : error ? (
+    <Text>Error Try Again</Text>
+  ) : (
+    data.findProductsBySoldQuantityAndRetailShop.items.map(
+      (item: any, index: number) => {
+        return (
+          <View
+            key={index}
+            style={{
+              backgroundColor: "#FFF",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              padding: 20,
+              marginVertical: 2,
+              borderRadius: 6,
+            }}
+          >
+            <Text style={{ fontFamily: "Inter-Medium", fontSize: 16 }}>
+              {index + 1}. {item.name}
+            </Text>
+            <Text style={{ fontSize: 16, fontFamily: "Inter-Medium" }}>
+              120kg
+            </Text>
+          </View>
+        );
+      }
+    )
+  );
+};
+
+const TopSellingItems = ({
+  retailShopID,
+  insightsType,
+}: {
+  retailShopID: string;
+  insightsType: INSIGHTS_TYPE;
+}) => {
+  const { data, loading, refetch, error } = useGetInsightsData(
+    retailShopID,
+    insightsType
+  );
+
+  console.log(data, error, " -----------");
+
+  return loading ? (
+    <View>
+      <ActivityIndicator />
+    </View>
+  ) : error ? (
+    <Text>Error Try Again</Text>
+  ) : (
+    data.findProductsByTopSellAndByRetailShop.items.map(
+      (item: any, index: number) => {
+        return (
+          <View
+            key={index}
+            style={{
+              backgroundColor: "#FFF",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              padding: 20,
+              marginVertical: 2,
+              borderRadius: 6,
+            }}
+          >
+            <Text style={{ fontFamily: "Inter-Medium", fontSize: 16 }}>
+              {index + 1}. {item.name}
+            </Text>
+            <Text style={{ fontSize: 16, fontFamily: "Inter-Medium" }}>
+              120kg
+            </Text>
+          </View>
+        );
+      }
+    )
+  );
+};
 
 const InsightsScreen = (props: Props) => {
+  const navigation = useNavigation();
+  const { authState } = useAuth();
+  const retailShopID = authState?.user.retailShop[0].id;
+
   return (
     <BaseLayout>
       <ScrollView>
@@ -55,35 +132,27 @@ const InsightsScreen = (props: Props) => {
           >
             Most Sold Items
           </Text>
-          {DATA.map((item, index) => {
-            return (
-              <View
-                key={index}
-                style={{
-                  backgroundColor: "#FFF",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  padding: 20,
-                  marginVertical: 2,
-                  borderRadius: 6,
-                }}
-              >
-                <Text style={{ fontSize: 16, fontFamily: "InterMedium" }}>
-                  Sugar
-                </Text>
-                <Text style={{ fontSize: 14, fontFamily: "InterMedium" }}>
-                  120Kg
-                </Text>
-              </View>
-            );
-          })}
+          <MostSoldItems
+            retailShopID={retailShopID}
+            insightsType={INSIGHTS_TYPE.MOST_SOLD_ITEMS}
+          />
           <TouchableOpacity
             style={{
               flexDirection: "row",
               justifyContent: "flex-end",
               paddingVertical: 30,
             }}
-            onPress={() => {}}
+            onPress={() => {
+              navigation.navigate("Root", {
+                screen: "Insights",
+                params: {
+                  screen: "InsightsDetailScreen",
+                  params: {
+                    insightsID: INSIGHTS_TYPE.MOST_SOLD_ITEMS,
+                  },
+                },
+              });
+            }}
           >
             <Text style={{ color: "#5684E0", fontFamily: "InterMedium" }}>
               See More
@@ -99,35 +168,27 @@ const InsightsScreen = (props: Props) => {
           >
             Most Revenue by item
           </Text>
-          {DATA.map((item, index) => {
-            return (
-              <View
-                key={index}
-                style={{
-                  backgroundColor: "#FFF",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  padding: 20,
-                  marginVertical: 2,
-                  borderRadius: 6,
-                }}
-              >
-                <Text style={{ fontSize: 16, fontFamily: "InterMedium" }}>
-                  Sugar
-                </Text>
-                <Text style={{ fontSize: 14, fontFamily: "InterMedium" }}>
-                  120Kg
-                </Text>
-              </View>
-            );
-          })}
+          <TopSellingItems
+            retailShopID={retailShopID}
+            insightsType={INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM}
+          />
           <TouchableOpacity
             style={{
               flexDirection: "row",
               justifyContent: "flex-end",
               paddingVertical: 20,
             }}
-            onPress={() => {}}
+            onPress={() => {
+              navigation.navigate("Root", {
+                screen: "Insights",
+                params: {
+                  screen: "InsightsDetailScreen",
+                  params: {
+                    insightsID: INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM,
+                  },
+                },
+              });
+            }}
           >
             <Text style={{ color: "#5684E0", fontFamily: "InterMedium" }}>
               See More

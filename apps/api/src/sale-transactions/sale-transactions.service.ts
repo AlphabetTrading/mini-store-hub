@@ -163,6 +163,27 @@ export class SaleTransactionsService {
       new Date(startDate),
       new Date(endDate),
     ];
+
+    // check if the retailshop exists
+
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id: retailShopId },
+    });
+
+    console.log(retailShop, ' retailshop');
+
+    if (!retailShop) {
+      throw new NotFoundException('Retail Shop not found');
+    }
+
+    const res = await this.prisma.saleTransactionItem.findMany({
+      where: {
+        saleTransaction: {
+          retailShopId,
+        },
+      },
+    });
+
     const response = await this.prisma.saleTransactionItem.aggregate({
       where: {
         saleTransaction: {
@@ -173,11 +194,14 @@ export class SaleTransactionsService {
           lt: formattedEndDate,
         },
       },
+
       _sum: {
         quantity: true,
+        subTotal: true,
       },
     });
-    const total = response._sum.quantity;
+
+    const total = response._sum.quantity ?? 0;
     return total;
   }
 
@@ -204,7 +228,7 @@ export class SaleTransactionsService {
         id: true,
       },
     });
-    const total = response._count.id;
+    const total = response._count.id ?? 0;
     return total;
   }
 
@@ -260,7 +284,7 @@ export class SaleTransactionsService {
         totalPrice: true,
       },
     });
-    return response._sum.totalPrice;
+    return response._sum.totalPrice ?? 0;
   }
 
   async totalSalesByDate(startDate: string, endDate: string) {
@@ -279,7 +303,7 @@ export class SaleTransactionsService {
         totalPrice: true,
       },
     });
-    return response._sum.totalPrice;
+    return response._sum.totalPrice ?? 0;
   }
 
   async totalSalesByRetailShop(id: string) {
@@ -291,7 +315,7 @@ export class SaleTransactionsService {
         totalPrice: true,
       },
     });
-    return response._sum.totalPrice;
+    return response._sum.totalPrice ?? 0;
   }
 
   async totalSalesByRetailShopByDate(
@@ -318,7 +342,7 @@ export class SaleTransactionsService {
         quantity: true,
       },
     });
-    const total = response._sum.subTotal;
+    const total = response._sum.subTotal ?? 0;
     return total;
   }
 
@@ -332,7 +356,7 @@ export class SaleTransactionsService {
         quantity: true,
       },
     });
-    const total = response._sum.subTotal;
+    const total = response._sum.subTotal ?? 0;
     return total;
   }
 
@@ -358,7 +382,7 @@ export class SaleTransactionsService {
         quantity: true,
       },
     });
-    const total = response._sum.subTotal;
+    const total = response._sum.subTotal ?? 0;
     return total;
   }
 

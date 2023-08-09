@@ -4,6 +4,11 @@ const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
   "https://mini-store-hub-api.onrender.com/graphql";
 
+// const BASE_URL =
+//   process.env.EXPO_PUBLIC_API_URL ??
+//   "https://beb2-197-156-86-213.ngrok-free.app/graphql";
+
+console.log(process.env.EXPO_PUBLIC_API_URL, BASE_URL, "apolloClient");
 export const apolloClient = (token: any) => {
   console.log(process.env.EXPO_PUBLIC_API_URL, BASE_URL, "apolloClient");
   // create an apollo link instance, a network interface for apollo client
