@@ -1,92 +1,110 @@
 "use client";
 import {
   Table,
-  TableHead,
   TableBody,
   TableRow,
   TableCell,
   Box,
   Typography,
+  CardHeader,
+  Card,
 } from "@mui/material";
 import React from "react";
 import CustomChip from "../custom-chip";
-import { TRACE_OUTPUT_VERSION } from "next/dist/shared/lib/constants";
-import {
-  TRANSACTION_HISTORY,
-  TransactionHistoryData,
-  TransactionHistoryVars,
-} from "@/graphql/transfer-goods/queries";
-import { useQuery } from "@apollo/client";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
+import {
+  TransactionHistory,
+  TransferType,
+} from "../../../types/transaction-history";
+import {
+  WarehouseStockData,
+  WarehouseStockVars,
+  WAREHOUSE_STOCK,
+} from "@/graphql/products/queries";
+import { useQuery } from "@apollo/client";
+import StateHandler from "../state-handler";
+import {
+  WarehouseTransactionHistoryData,
+  WarehouseTransactionHistoryVars,
+  WAREHOUSE_TRANSACTION_HISTORY,
+} from "@/graphql/transfer-goods/queries";
 
-type Props = {};
+type Props = {
+  warehouseId: string;
+};
 
-const TransactionHistoryTable = (props: Props) => {
-
-  const { data: sessionData } = useSession();
+const TransactionHistoryTable = ({ warehouseId }: Props) => {
   const { data, loading, error } = useQuery<
-    TransactionHistoryData,
-    TransactionHistoryVars
-  >(TRANSACTION_HISTORY, {
+    WarehouseTransactionHistoryData,
+    WarehouseTransactionHistoryVars
+  >(WAREHOUSE_TRANSACTION_HISTORY, {
     variables: {
-      warehouseId:((sessionData?.user)as any).warehouseId || "",
+      warehouseId: warehouseId,
     },
   });
+  const transactionHistory: TransactionHistory[] =
+    data?.findGoodsTransferByWarehouseId.items || [];
 
   const statusMap = {
-    WarehouseToWarehouse : 'error',
-    WarehouseToRetailShop : 'success',
-
-  }
+    WarehouseToWarehouse: "success",
+    WarehouseToRetailShop: "error",
+  };
 
   return (
-    <Table>
-      <TableBody>
-        {/* {JSON.stringify(data)}
-        {JSON.stringify(loading)}
+    <StateHandler
+      loading={loading}
+      error={error}
+      empty={transactionHistory.length === 0}
+    >
+      <Card>
+        <CardHeader title="Latest Outgoing Transactions" />
+        <Table>
+          <TableBody>
+            {transactionHistory?.map((item, idx) => {
+              const day: string = dayjs(item?.createdAt).format("DD");
+              const month: string = dayjs(item?.createdAt).format("MMM");
+              const time: string = dayjs(item?.createdAt).format("hh:mm A");
+              const color = statusMap[item.transferType];
 
-        {JSON.stringify(error)} */}
-
-        {data?.goodsTransferByWarehouseId?.map((item,idx) => {
-          const day: string = dayjs(item?.createdAt).format("DD");
-          const month: string = dayjs(item?.createdAt).format("MMM");
-          const time: string = dayjs(item?.createdAt).format("hh:mm A");
-          const color = statusMap[item.transferType];
-
-          return (
-            <TableRow key={idx}>
-              <TableCell sx={{ display: "flex", alignItems: "center" }}>
-                <Box
-                  sx={{
-                    borderRadius: 2,
-                    backgroundColor: "neutral.200",
-                    p: 1,
-                    maxWith: "fit-content",
-                  }}
-                >
-                  <Typography align="center" variant="subtitle2">
-                    {month.toUpperCase()}
-                  </Typography>
-                  <Typography align="center" variant="h6">
-                    {day}
-                  </Typography>
-                </Box>
-                <Box sx={{ ml: 2 }}>
-                  <Typography variant="subtitle2">Retail Shop A</Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    {time}
-                  </Typography>
-                </Box>
-              </TableCell>
-              <TableCell align="right">
-                <CustomChip label={item.transferType} status={color} />
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+              return (
+                <TableRow key={idx}>
+                  <TableCell sx={{ display: "flex", alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: "neutral.200",
+                        p: 1,
+                        maxWith: "fit-content",
+                      }}
+                    >
+                      <Typography align="center" variant="subtitle2">
+                        {month.toUpperCase()}
+                      </Typography>
+                      <Typography align="center" variant="h6">
+                        {day}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ ml: 2 }}>
+                      <Typography variant="subtitle2">
+                        {item.transferType == TransferType.WarehouseToWarehouse
+                          ? "Warehouse"
+                          : item.retailShop?.name}
+                      </Typography>
+                      <Typography color="text.secondary" variant="body2">
+                        {time}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <CustomChip label={item.transferType} status={color} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </Card>
+    </StateHandler>
   );
 };
 

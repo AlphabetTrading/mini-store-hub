@@ -28,8 +28,8 @@ import UserManagement from "@/components/users/user-management";
 
 const tabs = [
   { label: "Details", value: "details" },
-  { label: "Invoices", value: "invoices" },
-  { label: "Logs", value: "logs" },
+  // { label: "Invoices", value: "invoices" },
+  // { label: "Logs", value: "logs" },
 ];
 
 type Props = {

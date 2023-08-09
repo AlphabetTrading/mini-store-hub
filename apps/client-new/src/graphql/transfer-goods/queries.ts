@@ -1,24 +1,27 @@
 import { gql } from "@apollo/client";
 import { TransactionHistory } from "../../../types/transaction-history";
 
-export interface TransactionHistoryData{
-    goodsTransferByWarehouseId: TransactionHistory[];
+export interface WarehouseTransactionHistoryData {
+  findGoodsTransferByWarehouseId: { items: TransactionHistory[] };
 }
 
-export interface TransactionHistoryVars{
-    warehouseId: string;
+export interface WarehouseTransactionHistoryVars {
+  warehouseId: string;
 }
 
-
-export const TRANSACTION_HISTORY = gql`
-  query GoodsTransferByWarehouseId($warehouseId: String!) {
-    goodsTransferByWarehouseId(warehouseId: $warehouseId) {
-      retailShop {
-        name
+export const WAREHOUSE_TRANSACTION_HISTORY = gql`
+  query FindGoodsTransferByWarehouseId($warehouseId: String!) {
+    findGoodsTransferByWarehouseId(warehouseId: $warehouseId) {
+      items {
+        transferType
         id
+        createdAt
+        retailShop {
+          id
+          name
+        }
+        
       }
-      transferType
-      createdAt
     }
   }
 `;

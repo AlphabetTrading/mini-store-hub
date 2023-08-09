@@ -21,13 +21,13 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import React from "react";
-import { Product, WarehouseStock } from "../../../types/product";
+import { Product, StockItem } from "../../../types/product";
 import { useSession } from "next-auth/react";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  handleAddItem: (item: WarehouseStock, quantity: number) => void;
+  handleAddItem: (item: StockItem, quantity: number) => void;
 };
 interface Values {
   quantity: number;
@@ -74,9 +74,9 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
       return generateValidationSchema(values);
     },
     onSubmit: (values, helpers) => {
-      const item: WarehouseStock = itemsData?.warehouseStockByWarehouseId.find(
+      const item: StockItem = itemsData?.warehouseStockByWarehouseId.find(
         (i) => i.product.id === values.itemId
-      ) as WarehouseStock;
+      ) as StockItem;
 
       handleAddItem(item, values.quantity);
       setOpen(false);

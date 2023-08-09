@@ -1,12 +1,14 @@
 import { ButtonBase, Box, SvgIconProps } from "@mui/material";
 import React from "react";
+import NextLink from "next/link";
 
 type Props = {
-  disabled: boolean;
-  active: boolean;
+  disabled?: boolean;
+  active?: boolean;
+  icon: React.ReactElement<SvgIconProps>;
   title: string;
   label?: string;
-  icon: React.ReactElement<SvgIconProps>;
+  path: string;
 };
 
 const MobileNavItem = (props: Props) => {
@@ -31,7 +33,8 @@ const MobileNavItem = (props: Props) => {
             backgroundColor: "var(--nav-item-hover-bg)",
           },
         }}
-        // {...linkProps}
+        component={NextLink}
+        href={props.path}
       >
         <Box
           component="span"

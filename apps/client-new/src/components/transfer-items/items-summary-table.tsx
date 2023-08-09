@@ -1,16 +1,11 @@
 import {
-  IconButton,
-  Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-
-import { WarehouseStock } from "../../../types/product";
+import React from "react";
 import ItemsSummaryRow from "./items-summary-row";
 import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
 

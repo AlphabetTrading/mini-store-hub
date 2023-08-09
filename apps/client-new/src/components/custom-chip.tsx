@@ -8,13 +8,19 @@ type Props = {
 
 const CustomChip = ({ label, status }: Props) => {
   const state = { status };
-
+  //state is 'error' or 'success'
   return (
     <Chip
       label={label}
       sx={{
-        backgroundColor: (theme) => theme.palette.success.alpha12,
-        color: (theme) => theme.palette.success.main,
+        backgroundColor: (theme) =>
+          status === "success"
+            ? theme.palette.success.alpha12
+            : theme.palette.error.alpha12,
+        color: (theme) =>
+          status === "success"
+            ? theme.palette.success.main
+            : theme.palette.error.main,
       }}
     />
   );

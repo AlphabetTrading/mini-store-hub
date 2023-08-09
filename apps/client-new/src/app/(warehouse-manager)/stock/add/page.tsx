@@ -31,7 +31,7 @@ import {
   REGISTER_INCOMING_STOCK,
   RegisterIncomingStockData,
   RegisterIncomingStockVars,
-} from "@/graphql/warehouse/mutations";
+} from "@/graphql/warehouses/mutations";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
@@ -68,11 +68,10 @@ const Page = (props: Props) => {
           goods: items.map((item: any) => {
             return { productId: item.selectedItem.id, quantity: item.quantity };
           }),
-          warehouseId: ((sessionData?.user)as any).warehouseId || "",
+          destinationWarehouseId: ((sessionData?.user)as any).warehouseId || "",
         },
       },
       onCompleted: (data) => {
-        console.log(data);
         router.push("/stock");
       },
       onError(error, clientOptions) {
@@ -152,9 +151,9 @@ const Page = (props: Props) => {
                         <TableCell>{item.selectedItem.serialNumber}</TableCell>
                         <TableCell>{item.selectedItem.category.name}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
-                        {/* <TableCell>{item.activePrice.purchasedPrice}</TableCell> */}
-                        {/* <TableCell>{item.activePrice.price}</TableCell>
-                        <TableCell>{item.activePrice.price}</TableCell> */}
+                        <TableCell>{item.activePrice?.purchasedPrice}</TableCell>
+                        <TableCell>{item.activePrice?.price}</TableCell>
+                        <TableCell>{item.activePrice?.price}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

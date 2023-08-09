@@ -24,7 +24,7 @@ interface Values {
   password: string;
 }
 const validationSchema = Yup.object({
-  phoneNumber: Yup.string().required("Phone number is required"),
+  phoneNumber: Yup.string().required("Username is required"),
   password: Yup.string().max(255).required("Password is required"),
 });
 const initialValues: Values = {
@@ -64,18 +64,18 @@ const Login = (props: Props) => {
     <div>
       <Card elevation={16}>
         <CardHeader
-          subheader={
-            <Typography color="text.secondary" variant="body2">
-              Don&apos;t have an account? &nbsp;
-              <Link
-                // href={paths.auth.jwt.register}
-                underline="hover"
-                variant="subtitle2"
-              >
-                Register
-              </Link>
-            </Typography>
-          }
+          // subheader={
+          //   <Typography color="text.secondary" variant="body2">
+          //     Don&apos;t have an account? &nbsp;
+          //     <Link
+          //       // href={paths.auth.jwt.register}
+          //       underline="hover"
+          //       variant="subtitle2"
+          //     >
+          //       Register
+          //     </Link>
+          //   </Typography>
+          // }
           sx={{ pb: 0 }}
           title="Log in"
         />
@@ -91,7 +91,7 @@ const Login = (props: Props) => {
                 helperText={
                   formik.touched.phoneNumber && formik.errors.phoneNumber
                 }
-                label="Phone Number"
+                label="Username"
                 name="phoneNumber"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}

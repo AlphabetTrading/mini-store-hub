@@ -16,7 +16,7 @@ export interface PriceHistory {
   createdAt: Date;
 }
 
-export interface WarehouseStock {
+export interface StockItem {
   quantity: number;
   product: Product;
 }

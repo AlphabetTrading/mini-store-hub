@@ -1,6 +1,4 @@
 import { Box, Drawer, Stack, useTheme } from "@mui/material";
-// import { Scrollbar } from "../../../components/Scrollbar";
-import MobileNavItem from "./mobile-nav-item";
 import MobileNavSection from "./mobile-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { NavigationItem } from "../config";
