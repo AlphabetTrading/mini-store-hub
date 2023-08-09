@@ -19,10 +19,10 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import NextLink from "next/link";
-import { WarehouseStock } from "../../../types/product";
+import { StockItem } from "../../../types/product";
 
 type Props = {
-  warehouseStock: WarehouseStock;
+  warehouseStock: StockItem;
   handleItemToggle: (id: string) => void;
   selected: boolean;
 };

@@ -3,12 +3,14 @@
 import { Stack } from "@mui/material";
 import React from "react";
 import MobileNavItem from "./mobile-nav-item";
+import { usePathname } from "next/navigation";
 
 type Props = {
   navigationItems:any
 };
 
 const MobileNavSection = ({navigationItems}: Props) => {
+  const pathname = usePathname();
   return (
     <Stack
       component="ul"
@@ -20,14 +22,16 @@ const MobileNavSection = ({navigationItems}: Props) => {
       }}
     >
       {navigationItems.map((item: any) => {
+
+
         return (
           <MobileNavItem
-            active={false}
+            active={pathname.includes(item.path)}
             disabled={item.disabled}
             icon={item.icon}
             key={item.title}
             label={item.label}
-            // path={item.path}
+            path={item.path}
             title={item.title}
           />
         );

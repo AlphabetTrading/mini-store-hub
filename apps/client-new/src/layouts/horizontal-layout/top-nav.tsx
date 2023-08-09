@@ -13,13 +13,14 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { NavigationItem } from "../config";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 type Props = {
   onMobileNav: () => void;
-  navigationItems:NavigationItem[];
+  navigationItems: NavigationItem[];
 };
 
-export const TopNav = ({navigationItems,onMobileNav}: Props) => {
+export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
   // const { color = 'evident', onMobileNav, sections = [] } = props;
   const theme = useTheme();
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
@@ -29,21 +30,22 @@ export const TopNav = ({navigationItems,onMobileNav}: Props) => {
     <Box
       component="header"
       sx={{
-        "--nav-bg": theme.palette.neutral800,
-        "--nav-color": theme.palette.common.white,
-        "--nav-divider-color": theme.palette.neutral700,
-        "--nav-border-color": "transparent",
-        "--nav-logo-border": theme.palette.neutral700,
-        "--nav-item-color": theme.palette.neutral400,
-        "--nav-item-hover-bg": "rgba(255, 255, 255, 0.04)",
-        "--nav-item-active-bg": "rgba(255, 255, 255, 0.04)",
-        "--nav-item-active-color": theme.palette.common.white,
-        "--nav-item-disabled-color": theme.palette.neutral500,
-        "--nav-item-icon-color": theme.palette.neutral400,
+        "--nav-bg": theme.palette.neutral[50],
+        "--nav-color": theme.palette.text.primary,
+        "--nav-divider-color": theme.palette.neutral[200],
+        "--nav-border-color": theme.palette.divider,
+        "--nav-logo-border": theme.palette.neutral[200],
+        "--nav-section-title-color": theme.palette.neutral[500],
+        "--nav-item-color": theme.palette.neutral[500],
+        "--nav-item-hover-bg": theme.palette.action.hover,
+        "--nav-item-active-bg": theme.palette.action.selected,
+        "--nav-item-active-color": theme.palette.text.primary,
+        "--nav-item-disabled-color": theme.palette.neutral[400],
+        "--nav-item-icon-color": theme.palette.neutral[400],
         "--nav-item-icon-active-color": theme.palette.primary.main,
-        "--nav-item-icon-disabled-color": theme.palette.neutral500,
-        "--nav-item-chevron-color": theme.palette.neutral600,
-        "--nav-scrollbar-color": theme.palette.neutral400,
+        "--nav-item-icon-disabled-color": theme.palette.neutral[400],
+        "--nav-item-chevron-color": theme.palette.neutral[400],
+        "--nav-scrollbar-color": theme.palette.neutral[900],
         backgroundColor: "var(--nav-bg)",
         borderBottomColor: "var(--nav-border-color)",
         borderBottomStyle: "solid",
@@ -101,7 +103,9 @@ export const TopNav = ({navigationItems,onMobileNav}: Props) => {
           {/* <NotificationsButton /> */}
           {/* <ContactsButton /> */}
           {/* <AccountButton /> */}
-          <IconButton onClick={() => signOut()}>Logout</IconButton>
+          <IconButton onClick={() => signOut()}>
+            <LogoutIcon />
+          </IconButton>
         </Stack>
       </Stack>
       {mdUp && (
@@ -133,11 +137,11 @@ export const TopNav = ({navigationItems,onMobileNav}: Props) => {
           >
             {/* {sections.map((section, index) => ( */}
             <TopNavSection
-            navigationItems={navigationItems}
-            // items={section.items}
-            // key={index}
-            // pathname={pathname}
-            // subheader={section.subheader}
+              navigationItems={navigationItems}
+              // items={section.items}
+              // key={index}
+              // pathname={pathname}
+              // subheader={section.subheader}
             />
             {/* ))} */}
           </Stack>

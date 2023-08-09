@@ -95,3 +95,17 @@ export const USER = gql`
     }
   }
 `;
+
+export interface WarehouseManagersData {
+  warehouseManagers: User[];
+}
+
+export const WAREHOUSE_MANAGERS = gql`
+  query WarehouseManagers {
+    warehouseManagers {
+      id
+      firstName
+      lastName
+    }
+  }
+`;

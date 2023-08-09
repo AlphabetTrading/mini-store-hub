@@ -1,9 +1,10 @@
 import { RetailShop } from "./retail-shop";
 
 export interface TransactionHistory {
+  id: string;
   transferType: TransferType;
   createdAt: Date;
-  retailShop: RetailShop;
+  retailShop?: RetailShop;
 }
 
 export enum TransferType {

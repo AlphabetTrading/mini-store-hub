@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { WarehouseStock } from "../../../types/product";
+import React from "react";
 import {
   IconButton,
   Stack,

@@ -38,11 +38,11 @@ const Page = (props: Props) => {
     variables: {
       warehouseId: ((sessionData?.user)as any).warehouseId || "",
     },
+    fetchPolicy: "cache-and-network",
   });
 
   return (
     <Box component="main" sx={{ py: 8 }}>
-      {JSON.stringify(data)}
       <Container maxWidth="xl">
         <Stack spacing={4}>
           <Stack

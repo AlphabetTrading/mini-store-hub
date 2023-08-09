@@ -14,17 +14,13 @@ import {
   CardHeader,
   Button,
   CircularProgress,
-Alert,
 } from "@mui/material";
 import ItemsSummaryTable from "@/components/transfer-items/items-summary-table";
-import {
-  RETAIL_SHOP_MANAGERS,
-  RetailShopManagersData,
-} from "@/graphql/retail-shop-managers/queries";
-import { useMutation,  } from "@apollo/client";
-import {  WAREHOUSE_STOCK } from "@/graphql/products/queries";
+
+import { useMutation } from "@apollo/client";
+import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
 import TransferItemsDrawer from "@/components/modals/transfer-items-drawer";
-import { Product, WarehouseStock } from "../../../../types/product";
+import { StockItem } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
 import {
   TRANSFER_GOODS,
@@ -36,7 +32,7 @@ import { useSession } from "next-auth/react";
 type Props = {};
 
 export interface SelectedWarehouseItem {
-  warehouseStock: WarehouseStock;
+  warehouseStock: StockItem;
   selectedQuantity: number;
 }
 
@@ -46,7 +42,7 @@ const Page = (props: Props) => {
     TransferGoodsVars
   >(TRANSFER_GOODS);
 
-  const {data:sessionData} = useSession()
+  const { data: sessionData } = useSession();
 
   const [selectedItems, setSelectedItems] = useState<SelectedWarehouseItem[]>(
     []
@@ -61,10 +57,10 @@ const Page = (props: Props) => {
           goods: selectedItems.map((item) => ({
             productId: item.warehouseStock.product.id,
             quantity: item.selectedQuantity,
-            price:item.warehouseStock.product.activePrice.price
+            price: item.warehouseStock.product.activePrice.price,
           })),
           retailShopId: selectedRetailShop!,
-          sourceWarehouseId:((sessionData?.user)as any).warehouseId || "",
+          sourceWarehouseId: (sessionData?.user as any).warehouseId || "",
           transferType: "WarehouseToRetailShop",
         },
       },
@@ -78,7 +74,7 @@ const Page = (props: Props) => {
 
   const [open, setOpen] = useState(false);
 
-  const handleAddItem = (warehouseStock: WarehouseStock, quantity: number) => {
+  const handleAddItem = (warehouseStock: StockItem, quantity: number) => {
     const selectedStockItem: SelectedWarehouseItem = {
       warehouseStock: warehouseStock,
       selectedQuantity: quantity,

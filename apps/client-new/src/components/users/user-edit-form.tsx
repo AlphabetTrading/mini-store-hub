@@ -322,7 +322,6 @@ export const UserEditForm = ({ user }: Props) => {
             )}
             Update
           </Button>
-          {JSON.stringify(formik.errors, null, 2)}
           <Button
             color="inherit"
             onClick={() => {
