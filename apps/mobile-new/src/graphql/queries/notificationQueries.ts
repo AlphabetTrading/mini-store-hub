@@ -14,6 +14,10 @@ export const GET_NOTIFICATIONS = gql`
         status
         title
         updatedAt
+        notificationReads {
+          id
+          userId
+        }
       }
     }
   }
@@ -30,21 +34,64 @@ export const GET_UNREAD_NOTIFICATIONS = gql`
       status
       title
       updatedAt
+      notificationReads {
+        id
+        userId
+      }
     }
   }
 `;
 
 export const GET_NOTIFICATION_DETAIL = gql`
-  query NotificationById($notificationByIdId: String!) {
-    notificationById(id: $notificationByIdId) {
+  query notificationById($notificationById: String!) {
+    notificationById(id: $notificationById) {
       amharicBody
       amharicTitle
       body
       createdAt
       id
-      status
+      isRead
+      recipientId
+      recipientType
       title
       updatedAt
+      notificationReads {
+        id
+        userId
+      }
+    }
+  }
+`;
+
+export const GET_USERS_NOTIFICATIONS = gql`
+  query usersNotifications($userId: String!) {
+    allNotificationsByUserId(userId: $userId) {
+      id
+      isRead
+      body
+      amharicBody
+      amharicTitle
+      createdAt
+      recipientId
+      recipientType
+      title
+      updatedAt
+      notificationReads {
+        id
+        userId
+      }
+    }
+  }
+`;
+
+export const MARK_NOTIFICATION_AS_READ = gql`
+  mutation MarkNotificationAsRead($notificationId: String!, $userId: String!) {
+    markNotificationAsRead(notificationId: $notificationId, userId: $userId) {
+      id
+      notificationReads {
+        id
+        userId
+      }
     }
   }
 `;

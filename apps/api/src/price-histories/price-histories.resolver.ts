@@ -6,7 +6,7 @@ import { UpdatePriceHistoryInput } from './dto/update-product-history.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { FilterPriceHistoryInput } from './dto/filter-price-history.input';
-import { PriceHistoryOrder } from './dto/price-history-order.input';
+import { OrderByPriceHistoryInput } from './dto/price-history-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationPriceHistories } from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
@@ -29,10 +29,10 @@ export class PriceHistoriesResolver {
     })
     filterPriceHistoryInput?: FilterPriceHistoryInput,
     @Args('orderBy', {
-      type: () => PriceHistoryOrder,
+      type: () => OrderByPriceHistoryInput,
       nullable: true,
     })
-    orderBy?: PriceHistoryOrder,
+    orderBy?: OrderByPriceHistoryInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationPriceHistories> {
@@ -53,9 +53,7 @@ export class PriceHistoriesResolver {
     try {
       const priceHistories = await this.priceHistoriesService.findByProductId({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });

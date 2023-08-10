@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -10,35 +9,15 @@ import React from "react";
 import { Path, Svg } from "react-native-svg";
 import Colors from "../../constants/Colors";
 import { useQuery } from "@apollo/client";
-import { GET_PRODUCT_DETAIL } from "../../graphql/queries/productQueries";
 import { GET_RETAIL_SHOP_PRODUCT_DETAIL } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
-import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 
 type Props = {};
 
-const DATA = [
-  {
-    id: "1",
-    name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
-  },
-  {
-    id: "2",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "3",
-    name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
-  },
-];
-
 const ItemDetailScreen = ({ route }: any) => {
-  const { itemID, itemName } = route.params;
+  const { itemID } = route.params;
   const { authState } = useAuth();
   const { loading, data, error, refetch } = useQuery(
     GET_RETAIL_SHOP_PRODUCT_DETAIL,
@@ -107,7 +86,7 @@ const ItemDetailScreen = ({ route }: any) => {
               {
                 data.retailShopStockByProductIdAndByRetailShopId.product
                   .priceHistory[0]?.price
-              }{" "}
+              }
               ETB
             </Text>
             <Text

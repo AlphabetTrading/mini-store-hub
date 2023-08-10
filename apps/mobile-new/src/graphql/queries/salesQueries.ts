@@ -29,7 +29,6 @@ export const GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP = gql`
       createdAt
       saleTransactionItems {
         id
-        price
         quantity
         subTotal
         product {

@@ -19,6 +19,7 @@ import { PaginationCategories } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterCategoryInput } from './dto/filter-category.input';
 import { CategoryOrder } from './dto/category-order.input';
+import { OrderByCategoryInput } from './dto/order-by-category.input';
 
 @Resolver(() => Category)
 @UseGuards(GqlAuthGuard)
@@ -33,10 +34,10 @@ export class CategoriesResolver {
     })
     filterCategoryInput?: FilterCategoryInput,
     @Args('orderBy', {
-      type: () => CategoryOrder,
+      type: () => OrderByCategoryInput,
       nullable: true,
     })
-    orderBy?: CategoryOrder,
+    orderBy?: OrderByCategoryInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationCategories> {
@@ -71,9 +72,7 @@ export class CategoriesResolver {
 
     const categories = await this.categoriesService.findAll({
       where,
-      orderBy: {
-        [orderBy?.field]: orderBy?.direction,
-      },
+      orderBy,
       skip: paginationInput?.skip,
       take: paginationInput?.take,
     });

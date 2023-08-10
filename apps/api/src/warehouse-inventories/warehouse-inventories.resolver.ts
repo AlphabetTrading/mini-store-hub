@@ -13,6 +13,7 @@ import { WarehouseStockOrder } from './dto/warehouse-stock-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationWarehouseStocks } from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
+import { OrderByWarehouseStockInput } from './dto/order-by-warehouse-stock.input';
 
 @Resolver(() => WarehouseStock)
 @UseGuards(GqlAuthGuard)
@@ -27,10 +28,10 @@ export class WarehouseStockResolver {
     })
     filterWarehouseStockInput?: FilterWarehouseStockInput,
     @Args('orderBy', {
-      type: () => WarehouseStockOrder,
+      type: () => OrderByWarehouseStockInput,
       nullable: true,
     })
-    orderBy?: WarehouseStockOrder,
+    orderBy?: OrderByWarehouseStockInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationWarehouseStocks> {
@@ -53,9 +54,7 @@ export class WarehouseStockResolver {
     try {
       const warehouseStocks = await this.warehouseStockService.findAll({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -95,7 +94,7 @@ export class WarehouseStockResolver {
   }
 
   @Query(() => Float, {
-    name: 'totalValuationByWarehouseId',
+    name: 'totalValuationByWarehouseIdAndDate',
   })
   async totalValuationByWarehouseIdAndDate(
     @Args('warehouseId') warehouseId: string,

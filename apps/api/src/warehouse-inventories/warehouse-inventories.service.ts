@@ -57,6 +57,14 @@ export class WarehouseStockService {
   }
 
   async findOne(id: string) {
+    const warehouseStock = await this.prisma.warehouseStock.findUnique({
+      where: { id },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
     return this.prisma.warehouseStock.findUnique({
       where: { id },
       include: warehouseStockIncludeObject,

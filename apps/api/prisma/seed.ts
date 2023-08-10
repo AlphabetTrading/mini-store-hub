@@ -4,41 +4,41 @@ import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.annualTransaction.deleteMany();
-  await prisma.dailyTransaction.deleteMany();
-  await prisma.monthlyTransaction.deleteMany();
-  await prisma.address.deleteMany();
-  await prisma.notificationToken.deleteMany();
-  await prisma.notificationRead.deleteMany();
-  await prisma.notification.deleteMany();
-  await prisma.userProfile.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.saleTransactionItem.deleteMany();
-  await prisma.saleTransaction.deleteMany();
-  await prisma.priceHistory.deleteMany();
-  await prisma.goodsTransfer.deleteMany();
-  await prisma.stockItem.deleteMany();
+  // await prisma.annualTransaction.deleteMany();
+  // await prisma.dailyTransaction.deleteMany();
+  // await prisma.monthlyTransaction.deleteMany();
+  // await prisma.address.deleteMany();
+  // await prisma.notificationToken.deleteMany();
+  // await prisma.notificationRead.deleteMany();
+  // await prisma.notification.deleteMany();
+  // await prisma.userProfile.deleteMany();
+  // await prisma.user.deleteMany();
+  // await prisma.saleTransactionItem.deleteMany();
+  // await prisma.saleTransaction.deleteMany();
+  // await prisma.priceHistory.deleteMany();
+  // await prisma.goodsTransfer.deleteMany();
+  // await prisma.stockItem.deleteMany();
   await prisma.warehouseStock.deleteMany();
-  await prisma.retailShopStock.deleteMany();
-  await prisma.warehouse.deleteMany();
-  await prisma.retailShop.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
+  // await prisma.retailShopStock.deleteMany();
+  // await prisma.warehouse.deleteMany();
+  // await prisma.retailShop.deleteMany();
+  // await prisma.product.deleteMany();
+  // await prisma.category.deleteMany();
 
   console.log('Seeding...');
 
-  await seedUserModels();
-  await seedUserProfile();
-  await seedCategories();
-  await seedProducts();
-  await seedPriceHistory();
-  await seedWarehouses();
-  await seedRetailShops();
+  // await seedUserModels();
+  // await seedUserProfile();
+  // await seedCategories();
+  // await seedProducts();
+  // await seedPriceHistory();
+  // await seedWarehouses();
+  // await seedRetailShops();
   await seedWarehouseStocks();
-  await seedRetailshopStocks();
-  await seedGoodsTransfers();
-  await seedSaleTransactions();
-  await seedNotifications();
+  // await seedRetailshopStocks();
+  // await seedGoodsTransfers();
+  // await seedSaleTransactions();
+  // await seedNotifications();
 }
 
 async function seedUserModels() {
@@ -481,7 +481,116 @@ async function seedPriceHistory() {
 }
 
 async function seedRetailShops() {
+  const warehouse = await prisma.warehouse.findFirst({
+    where: {
+      isMain: false,
+    },
+  });
   try {
+    const user = await prisma.user.findFirst({
+      where: {
+        role: 'RETAIL_SHOP_MANAGER',
+      },
+    });
+    const products = await prisma.product.findMany();
+
+    await prisma.retailShop.create({
+      data: {
+        name: faker.company.name(),
+        retailShopManager: {
+          connect: {
+            id: user?.id,
+          },
+        },
+        retailShopStock: {
+          createMany: {
+            data: [
+              {
+                warehouseId: warehouse.id,
+                quantity: 10,
+                maxQuantity: 50,
+                productId: products[0].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 20,
+                maxQuantity: 50,
+                productId: products[1].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 30,
+                maxQuantity: 50,
+                productId: products[2].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 10,
+                maxQuantity: 50,
+                productId: products[3].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 20,
+                maxQuantity: 50,
+                productId: products[6].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 30,
+                maxQuantity: 50,
+                productId: products[7].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 10,
+                maxQuantity: 50,
+                productId: products[8].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 20,
+                maxQuantity: 50,
+                productId: products[10].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 30,
+                maxQuantity: 50,
+                productId: products[11].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 30,
+                maxQuantity: 50,
+                productId: products[12].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 30,
+                maxQuantity: 50,
+                productId: products[14].id,
+              },
+              {
+                warehouseId: warehouse.id,
+                quantity: 30,
+                maxQuantity: 50,
+                productId: products[15].id,
+              },
+            ],
+          },
+        },
+        address: {
+          create: {
+            street: faker.location.street(),
+            city: faker.location.city(),
+            lat: faker.location.latitude(),
+            lng: faker.location.longitude(),
+            formattedAddress: faker.location.secondaryAddress(),
+          },
+        },
+      },
+    });
     await prisma.retailShop.createMany({
       data: [
         { name: faker.company.name() },
@@ -494,30 +603,7 @@ async function seedRetailShops() {
         },
       ],
     });
-    const user = await prisma.user.findFirst({
-      where: {
-        role: 'RETAIL_SHOP_MANAGER',
-      },
-    });
-    await prisma.retailShop.create({
-      data: {
-        name: faker.company.name(),
-        retailShopManager: {
-          connect: {
-            id: user?.id,
-          },
-        },
-        address: {
-          create: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            lat: 0,
-            lng: 0,
-            formattedAddress: faker.location.secondaryAddress(),
-          },
-        },
-      },
-    });
+
     console.log('Retail shops seeded successfully');
   } catch (error) {
     console.error('Error seeding retail shops:', error);
@@ -545,14 +631,6 @@ async function seedWarehouses() {
       },
     });
 
-    await prisma.warehouse.createMany({
-      data: [
-        { name: faker.company.name() },
-        { name: faker.company.name() },
-        { name: faker.company.name() },
-      ],
-    });
-
     const user = await prisma.user.findFirst({
       where: {
         role: 'WAREHOUSE_MANAGER',
@@ -577,6 +655,15 @@ async function seedWarehouses() {
         },
       },
     });
+
+    await prisma.warehouse.createMany({
+      data: [
+        { name: faker.company.name() },
+        { name: faker.company.name() },
+        { name: faker.company.name() },
+      ],
+    });
+
     console.log('Warehouses seeded successfully');
   } catch (error) {
     console.error('Error seeding warehouses:', error);

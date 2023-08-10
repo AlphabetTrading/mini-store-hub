@@ -60,20 +60,6 @@ type Category {
   updatedAt: DateTime!
 }
 
-input CategoryOrder {
-  direction: OrderDirection!
-  field: CategoryOrderField!
-}
-
-"""Properties by which category connections can be ordered."""
-enum CategoryOrderField {
-  createdAt
-  description
-  id
-  name
-  updatedAt
-}
-
 input ChangePasswordInput {
   newPassword: String!
   oldPassword: String!
@@ -353,18 +339,6 @@ type GoodsTransfer {
   updatedAt: DateTime!
 }
 
-input GoodsTransferOrder {
-  direction: OrderDirection!
-  field: GoodsTransferOrderField!
-}
-
-"""Properties by which goodsTransfer connections can be ordered."""
-enum GoodsTransferOrderField {
-  createdAt
-  id
-  updatedAt
-}
-
 """
 A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
 """
@@ -461,7 +435,7 @@ type Notification {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-  user: User!
+  user: User
 }
 
 type NotificationToken {
@@ -474,6 +448,81 @@ type NotificationToken {
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   user: User
+}
+
+input OrderByCategoryInput {
+  createdAt: OrderDirection
+  name: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByGoodsTransferInput {
+  createdAt: OrderDirection
+  destinationWarehouse: OrderByWarehouseInput
+  retailShop: OrderByRetailShopInput
+  sourceWarehouse: OrderByWarehouseInput
+  transferType: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByPriceHistoryInput {
+  createdAt: OrderDirection
+  price: OrderDirection
+  product: OrderByProductInput
+  purchasedPrice: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByProductInput {
+  category: OrderByCategoryInput
+  createdAt: OrderDirection
+  name: OrderDirection
+  serialNumber: OrderDirection
+  unit: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByRetailShopInput {
+  createdAt: OrderDirection
+  name: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByRetailShopStockInput {
+  createdAt: OrderDirection
+  product: OrderByProductInput
+  quantity: OrderDirection
+  retailShop: OrderByRetailShopInput
+  updatedAt: OrderDirection
+}
+
+input OrderBySaleTransactionInput {
+  createdAt: OrderDirection
+  retailShop: OrderByRetailShopInput
+  totalPrice: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByUserInput {
+  createdAt: OrderDirection
+  firstName: OrderDirection
+  lastName: OrderDirection
+  phone: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByWarehouseInput {
+  createdAt: OrderDirection
+  name: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OrderByWarehouseStockInput {
+  createdAt: OrderDirection
+  product: OrderByProductInput
+  quantity: OrderDirection
+  updatedAt: OrderDirection
+  warehouse: OrderByWarehouseInput
 }
 
 """
@@ -561,19 +610,6 @@ type PriceHistory {
   updatedAt: DateTime!
 }
 
-input PriceHistoryOrder {
-  direction: OrderDirection!
-  field: PriceHistoryOrderField!
-}
-
-"""Properties by which priceHistory connections can be ordered."""
-enum PriceHistoryOrderField {
-  createdAt
-  id
-  name
-  updatedAt
-}
-
 type Product {
   activePrice: PriceHistory
   activePriceId: String
@@ -600,44 +636,29 @@ type Product {
   warehouseStock: [WarehouseStock!]
 }
 
-input ProductOrder {
-  direction: OrderDirection!
-  field: ProductOrderField!
-}
-
-"""Properties by which product connections can be ordered."""
-enum ProductOrderField {
-  category
-  createdAt
-  id
-  name
-  serialNumber
-  updatedAt
-}
-
 type Query {
   allNotificationsByUserId(userId: String!): [Notification!]!
-  categories(filterCategoryInput: FilterCategoryInput, orderBy: CategoryOrder, paginationInput: PaginationInput): PaginationCategories!
+  categories(filterCategoryInput: FilterCategoryInput, orderBy: OrderByCategoryInput, paginationInput: PaginationInput): PaginationCategories!
   category(id: String!): Category!
-  findGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
-  findIncomingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
-  findOutgoingGoodsTransferByWarehouseId(orderBy: GoodsTransferOrder, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
-  findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
-  findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
-  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
-  findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
-  findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
+  findGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
+  findIncomingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
+  findOutgoingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
+  findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
+  findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
+  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
+  findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
   getAllNotifications: [Notification!]!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
-  goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: GoodsTransferOrder, paginationInput: PaginationInput): PaginationGoodsTransfer!
+  goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput): PaginationGoodsTransfer!
   me: User!
   notificationById(id: String!): Notification!
   priceHistories: [PriceHistory!]!
   priceHistoryById(id: String!): PriceHistory!
-  priceHistoryByProduct(filterPriceHistoryInput: FilterPriceHistoryInput, orderBy: PriceHistoryOrder, paginationInput: PaginationInput): PaginationPriceHistories!
+  priceHistoryByProduct(filterPriceHistoryInput: FilterPriceHistoryInput, orderBy: OrderByPriceHistoryInput, paginationInput: PaginationInput): PaginationPriceHistories!
   product(productId: String!): Product!
-  products(filterProductInput: FilterProductInput, orderBy: ProductOrder, paginationInput: PaginationInput): PaginationProducts!
+  products(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
   productsByCategory: [Product!]!
   readNotificationsByUserId(userId: String!): [Notification!]!
   retailShop(id: String!): RetailShop!
@@ -647,14 +668,14 @@ type Query {
   retailShopStockByProductId(productId: String!): [RetailShopStock!]!
   retailShopStockByProductIdAndByRetailShopId(productId: String!, retailShopId: String!): RetailShopStock!
   retailShopStockByProductIdAndWarehouseId(productId: String!, warehouseId: String!): [RetailShopStock!]!
-  retailShopStockByRetailShopId(filterRetailShopStockInput: FilterRetailShopStockInput, orderBy: RetailShopStockOrder, paginationInput: PaginationInput): PaginationRetailShopStocks!
+  retailShopStockByRetailShopId(filterRetailShopStockInput: FilterRetailShopStockInput, orderBy: OrderByRetailShopStockInput, paginationInput: PaginationInput): PaginationRetailShopStocks!
   retailShopStockByWarehouseId(warehouseId: String!): [RetailShopStock!]!
   retailShopStocks: [RetailShopStock!]!
-  retailShops(filterRetailShopInput: FilterRetailShopInput, orderBy: RetailShopOrder, paginationInput: PaginationInput): PaginationRetailShops!
+  retailShops(filterRetailShopInput: FilterRetailShopInput, orderBy: OrderByRetailShopInput, paginationInput: PaginationInput): PaginationRetailShops!
   retailShopsByAddress(address: String!): [RetailShop!]!
   saleTransaction(id: String!): SaleTransaction!
-  saleTransactions(filterSaleTransactionInput: FilterSaleTransactionInput, orderBy: SaleTransactionOrder, paginationInput: PaginationInput): PaginationSaleTransactions!
-  saleTransactionsByRetailShop(orderBy: SaleTransactionOrder, paginationInput: PaginationInput, retailShopId: String!): PaginationSaleTransactions!
+  saleTransactions(filterSaleTransactionInput: FilterSaleTransactionInput, orderBy: OrderBySaleTransactionInput, paginationInput: PaginationInput): PaginationSaleTransactions!
+  saleTransactionsByRetailShop(orderBy: OrderBySaleTransactionInput, paginationInput: PaginationInput, retailShopId: String!): PaginationSaleTransactions!
   searchProduct(search: String!): [Product!]!
   searchProducts(search: String!): [Product!]!
   searchProductsByCategory(category: String!, search: String!): [Product!]!
@@ -678,16 +699,19 @@ type Query {
   totalSoldQuantityByRetailShop(retailShopId: String!): Float!
   totalSoldQuantityByRetailShopAndByDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSoldQuantityByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
-  totalValuationByWarehouseId(endDate: String!, startDate: String!, warehouseId: String!): Float!
+  totalValuationByRetailShopId(retailShopId: String!): Float!
+  totalValuationByRetailShopIdAndDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
+  totalValuationByWarehouseId(warehouseId: String!): Float!
+  totalValuationByWarehouseIdAndDate(endDate: String!, startDate: String!, warehouseId: String!): Float!
   unreadNotificationsByUserId(userId: String!): [Notification!]!
   user(id: String!): User!
-  users(filterUserInput: FilterUserInput, orderBy: UserOrder, paginationInput: PaginationInput): PaginationUser!
+  users(filterUserInput: FilterUserInput, orderBy: OrderByUserInput, paginationInput: PaginationInput): PaginationUser!
   warehouse(id: String!): Warehouse!
   warehouseManagers: [User!]!
   warehouseStock(id: String!): WarehouseStock!
   warehouseStockByWarehouseId(warehouseId: String!): [WarehouseStock!]!
-  warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: WarehouseStockOrder, paginationInput: PaginationInput): PaginationWarehouseStocks!
-  warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: WarehouseOrder, paginationInput: PaginationInput): PaginationWarehouses!
+  warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: OrderByWarehouseStockInput, paginationInput: PaginationInput): PaginationWarehouseStocks!
+  warehouses(filterWarehouseInput: FilterWarehouseInput, orderBy: OrderByWarehouseInput, paginationInput: PaginationInput): PaginationWarehouses!
   warehousesByAddress(address: String!): [Warehouse!]!
 }
 
@@ -745,19 +769,6 @@ type RetailShop {
   updatedAt: DateTime!
 }
 
-input RetailShopOrder {
-  direction: OrderDirection!
-  field: RetailShopOrderField!
-}
-
-"""Properties by which retailShop connections can be ordered."""
-enum RetailShopOrderField {
-  createdAt
-  id
-  name
-  updatedAt
-}
-
 type RetailShopStock {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -772,19 +783,6 @@ type RetailShopStock {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-}
-
-input RetailShopStockOrder {
-  direction: OrderDirection!
-  field: RetailShopStockOrderField!
-}
-
-"""Properties by which retailShopStock connections can be ordered."""
-enum RetailShopStockOrderField {
-  createdAt
-  id
-  name
-  updatedAt
 }
 
 type SaleTransaction {
@@ -814,18 +812,6 @@ type SaleTransactionItem {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-}
-
-input SaleTransactionOrder {
-  direction: OrderDirection!
-  field: SaleTransactionOrderField!
-}
-
-"""Properties by which saleTransaction connections can be ordered."""
-enum SaleTransactionOrderField {
-  createdAt
-  id
-  updatedAt
 }
 
 input SignupInput {
@@ -1007,10 +993,6 @@ type User {
   warehouse: [Warehouse!]
 }
 
-input UserOrder {
-  direction: OrderDirection!
-}
-
 type UserProfile {
   address: Address
   addressId: String
@@ -1053,19 +1035,6 @@ type Warehouse {
   warehouseStock: [WarehouseStock!]
 }
 
-input WarehouseOrder {
-  direction: OrderDirection!
-  field: WarehouseOrderField!
-}
-
-"""Properties by which warehouse connections can be ordered."""
-enum WarehouseOrderField {
-  createdAt
-  id
-  name
-  updatedAt
-}
-
 type WarehouseStock {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -1079,19 +1048,6 @@ type WarehouseStock {
   updatedAt: DateTime!
   warehouse: Warehouse
   warehouseId: String!
-}
-
-input WarehouseStockOrder {
-  direction: OrderDirection!
-  field: WarehouseStockOrderField!
-}
-
-"""Properties by which warehouseStock connections can be ordered."""
-enum WarehouseStockOrderField {
-  createdAt
-  id
-  name
-  updatedAt
 }
 
 input sendPushNotificationInput {

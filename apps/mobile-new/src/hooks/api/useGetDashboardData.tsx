@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_TOTAL_SALES_BY_DATE_AND_RETAIL_SHOP } from "../../graphql/queries/statsQueries";
 
 export const useGetSalesData = (
@@ -18,7 +18,6 @@ export const useGetSalesData = (
     endDate.setHours(23, 59, 59, 999); // Set time to the end of the day
   } else if (selectedFilter === "weekly") {
     // get weekly sales, startDate is 7 days ago, and endDate is today
-
     startDate = new Date(targetDate);
     startDate.setDate(targetDate.getDate() - 7);
     startDate.setHours(0, 0, 0, 0); // Set time to the beginning of the day

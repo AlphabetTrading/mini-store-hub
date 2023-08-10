@@ -84,6 +84,7 @@ export function AuthContextProvider(props: ProviderProps) {
       await setAuthState(null);
     }
   }, []);
+
   useEffect(() => {
     if (!authState) {
       fetchData();

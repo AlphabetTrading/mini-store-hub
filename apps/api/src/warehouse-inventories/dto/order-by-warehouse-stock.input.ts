@@ -1,24 +1,8 @@
 import { Field, InputType, registerEnumType } from '@nestjs/graphql';
-import { Order } from 'src/common/order/order';
+import { OrderByCategoryInput } from 'src/categories/dto/order-by-category.input';
 import { OrderDirection } from 'src/common/order/order-direction';
-
-export enum WarehouseOrderField {
-  id = 'id',
-  createdAt = 'createdAt',
-  updatedAt = 'updatedAt',
-  name = 'name',
-}
-
-registerEnumType(WarehouseOrderField, {
-  name: 'WarehouseOrderField',
-  description: 'Properties by which warehouse connections can be ordered.',
-});
-
-@InputType()
-export class WarehouseOrder extends Order {
-  @Field(() => WarehouseOrderField)
-  field: WarehouseOrderField;
-}
+import { OrderByProductInput } from 'src/products/dto/order-by-product.input';
+import { OrderByWarehouseInput } from 'src/warehouses/dto/warehouse-order.input';
 
 registerEnumType(OrderDirection, {
   name: 'OrderDirection',
@@ -27,9 +11,15 @@ registerEnumType(OrderDirection, {
 });
 
 @InputType()
-export class OrderByWarehouseInput {
+export class OrderByWarehouseStockInput {
+  @Field(() => OrderByProductInput, { nullable: true })
+  product?: OrderByProductInput;
+
+  @Field(() => OrderByWarehouseInput, { nullable: true })
+  warehouse?: OrderByWarehouseInput;
+
   @Field(() => OrderDirection, { nullable: true })
-  name?: OrderDirection;
+  quantity?: OrderDirection;
 
   @Field(() => OrderDirection, { nullable: true })
   createdAt?: OrderDirection;

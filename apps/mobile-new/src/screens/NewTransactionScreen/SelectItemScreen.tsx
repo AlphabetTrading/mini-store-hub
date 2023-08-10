@@ -1,6 +1,8 @@
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,15 +18,21 @@ import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
 import { GET_RETAIL_SHOP_PRODUCTS_SIMPLE } from "../../graphql/queries/retailShopQuery";
 import * as SecureStore from "expo-secure-store";
+import { useNavigation, useRoute } from "@react-navigation/native";
 type Props = {};
 
-const SelectItem = ({ route, navigation }: any) => {
+const SelectItem = () => {
+  const route = useRoute<any>();
   const { categoryID } = route.params;
+  const navigation = useNavigation();
   const [alreadySelected, setAlreadySelected] = useState<any[]>([]);
+
   const fetchCheckout = useCallback(async () => {
-    const items = await SecureStore.getItemAsync("checkout");
-    setAlreadySelected(JSON.parse(items ? items : ""));
-  }, []);
+    const prevCheckout = await SecureStore.getItemAsync("checkout");
+    const items = JSON.parse(prevCheckout ? prevCheckout : "");
+    setAlreadySelected(items);
+    console.log("prevItems", items);
+  }, [route]);
 
   useEffect(() => {
     fetchCheckout();
@@ -56,7 +64,14 @@ const SelectItem = ({ route, navigation }: any) => {
       setAlreadySelected([...alreadySelected, stockItem]);
     }
   };
-
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   return (
     <BaseLayout>
       {loading ? (
@@ -66,7 +81,14 @@ const SelectItem = ({ route, navigation }: any) => {
           <ActivityIndicator size="large" />
         </View>
       ) : (
-        <View style={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          horizontal={true}
+          style={{ width: "100%" }}
+        >
           <View
             style={{
               backgroundColor: Colors.light.background,
@@ -184,7 +206,11 @@ const SelectItem = ({ route, navigation }: any) => {
                 "checkout",
                 JSON.stringify(alreadySelected)
               );
-              navigation.replace("Checkout");
+              console.log(await SecureStore.getItemAsync("checkout"));
+              navigation.navigate("Root", {
+                screen: "NewTransactionRoot",
+                params: { screen: "Index" },
+              });
             }}
           >
             <AntDesign
@@ -194,7 +220,7 @@ const SelectItem = ({ route, navigation }: any) => {
               color="white"
             />
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       )}
     </BaseLayout>
   );

@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Float, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { RetailShopStockService } from './retail-shop-inventories.service';
 import { RetailShopStock } from './models/retail-shop-inventory.model';
 import {
@@ -7,7 +7,7 @@ import {
 } from './dto/create-retail-shop-inventory.input';
 import { UpdateRetailShopStockInput } from './dto/update-retail-shop.input';
 import { FilterRetailShopStockInput } from './dto/filter-retail-shop-stock.input';
-import { RetailShopStockOrder } from './dto/retail-shop-stock-order.input';
+import { OrderByRetailShopStockInput } from './dto/retail-shop-stock-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -39,10 +39,10 @@ export class RetailShopStockResolver {
     })
     filterRetailShopStockInput?: FilterRetailShopStockInput,
     @Args('orderBy', {
-      type: () => RetailShopStockOrder,
+      type: () => OrderByRetailShopStockInput,
       nullable: true,
     })
-    orderBy?: RetailShopStockOrder,
+    orderBy?: OrderByRetailShopStockInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ) {
@@ -65,9 +65,7 @@ export class RetailShopStockResolver {
     try {
       const products = await this.retailShopStockService.findByRetailShopId({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -127,6 +125,32 @@ export class RetailShopStockResolver {
   @Query(() => RetailShopStock)
   async retailShopStockById(@Args('id') retailShopStockId: string) {
     return this.retailShopStockService.findOne(retailShopStockId);
+  }
+
+  @Query(() => Float, {
+    name: 'totalValuationByRetailShopId',
+  })
+  async totalValuationByRetailShopId(
+    @Args('retailShopId') retailShopId: string,
+  ): Promise<number> {
+    return this.retailShopStockService.totalValuationByRetailShopId(
+      retailShopId,
+    );
+  }
+
+  @Query(() => Float, {
+    name: 'totalValuationByRetailShopIdAndDate',
+  })
+  async totalValuationByRetailShopIdAndDate(
+    @Args('retailShopId') retailShopId: string,
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
+    return this.retailShopStockService.totalValuationByRetailShopIdAndDate(
+      retailShopId,
+      startDate,
+      endDate,
+    );
   }
 
   @Mutation(() => RetailShopStock)

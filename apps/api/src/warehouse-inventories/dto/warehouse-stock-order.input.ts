@@ -6,6 +6,7 @@ export enum WarehouseStockOrderField {
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
   name = 'name',
+  ['product.name'] = 'product.name',
 }
 
 registerEnumType(WarehouseStockOrderField, {

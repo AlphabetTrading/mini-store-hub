@@ -6,10 +6,10 @@ import { UpdateRetailShopInput } from './dto/update-retail-shop.input';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { FilterRetailShopInput } from './dto/filter-retail-shop.input';
-import { RetailShopOrder } from './dto/warehouse-order.input';
 import { PaginationRetailShops } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { Prisma } from '@prisma/client';
+import { OrderByRetailShopInput } from './dto/order-by-retail-shop.input';
 
 @Resolver(() => RetailShop)
 @UseGuards(GqlAuthGuard)
@@ -24,10 +24,10 @@ export class RetailShopsResolver {
     })
     filterRetailShopInput?: FilterRetailShopInput,
     @Args('orderBy', {
-      type: () => RetailShopOrder,
+      type: () => OrderByRetailShopInput,
       nullable: true,
     })
-    orderBy?: RetailShopOrder,
+    orderBy?: OrderByRetailShopInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationRetailShops> {
@@ -54,9 +54,7 @@ export class RetailShopsResolver {
     try {
       const retailShops = await this.retailShopsService.findAll({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });

@@ -19,7 +19,7 @@ declare global {
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Auth: NavigatorScreenParams<AuthTabParamList> | undefined;
-  Notifications: { conversationID: number; recipientName: string };
+  Notifications: NavigatorScreenParams<NotificationTabParamList> | undefined;
   Profile: undefined;
 };
 
@@ -51,6 +51,11 @@ export type InventoryTabParamList = {
 export type InsightsTabParamList = {
   Index: undefined;
   InsightsDetailScreen: { insightsID: INSIGHTS_TYPE };
+};
+
+export type NotificationTabParamList = {
+  Index: undefined;
+  NotificationDetailScreen: { notificationID: string };
 };
 
 export type NewTransactionParamList = {

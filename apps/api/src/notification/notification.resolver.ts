@@ -5,14 +5,9 @@ import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto'
 import { Notification } from './models/notification.model';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NotificationEvent } from './events/notification.event';
-import { sendBulkPushNotificationInput } from './dto/sendBulkPushNotification.dto';
-import { PaginationNotifications } from 'src/common/pagination/pagination-info';
-import { FilterNotificationInput } from './dto/filter-notifications.input';
-import { NotificationOrder } from './dto/notifications-order.input';
-import { PaginationInput } from 'src/common/pagination/pagination.input';
-import { Prisma } from '@prisma/client';
 import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
 import { NotificationToken } from './models/notification_token.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Resolver()
 export class NotificationResolver {
@@ -136,6 +131,7 @@ export class NotificationResolver {
   async sendPushNotification(
     @Args('data') createNoficationInput: sendPushNotificationInput,
   ) {
+    const notification_id = uuidv4();
     if (createNoficationInput.recipientId) {
       // get notification token using the recipient type
       const notificationTokens =
@@ -146,15 +142,17 @@ export class NotificationResolver {
       this.eventEmitter.emitAsync(
         'notification.created',
         new NotificationEvent({
+          notification_id: notification_id,
           notification_body: createNoficationInput.body,
           notification_title: createNoficationInput.title,
           tokens: notificationTokens,
         }),
       );
 
-      return this.notificationService.sendIndividualNotification(
-        createNoficationInput,
-      );
+      return this.notificationService.sendIndividualNotification({
+        ...createNoficationInput,
+        notificationId: notification_id,
+      });
     } else {
       // get notification token using the recipient type
       const notificationTokens =
@@ -166,14 +164,16 @@ export class NotificationResolver {
       this.eventEmitter.emitAsync(
         'notification.created',
         new NotificationEvent({
+          notification_id: notification_id,
           notification_body: createNoficationInput.body,
           notification_title: createNoficationInput.title,
           tokens: notificationTokens,
         }),
       );
-      return this.notificationService.sendBroadcastNotification(
-        createNoficationInput,
-      );
+      return this.notificationService.sendBroadcastNotification({
+        ...createNoficationInput,
+        notificationId: notification_id,
+      });
     }
   }
 
@@ -237,10 +237,10 @@ export class NotificationResolver {
     );
   }
 
-  @OnEvent('bulkNotification.created', { async: true })
-  handleBulkNotificationEvent(payload: NotificationEvent) {
-    this.notificationService.sendBulkPush(payload);
-  }
+  // @OnEvent('bulkNotification.created', { async: true })
+  // handleBulkNotificationEvent(payload: NotificationEvent) {
+  //   this.notificationService.sendBulkPush(payload);
+  // }
 
   @OnEvent('notification.created', { async: true })
   handleBroadcastNotificationEvent(payload: NotificationEvent) {
