@@ -20,10 +20,14 @@ const UserRoleResponsibility = (props: Props) => {
       <CardHeader title="Roles and Responsibilities" />
       <PropertyList>
         <PropertyListItem divider label="Role" value={role} />
-        {warehouses && warehouses.length>0 && (
-          <PropertyListItem divider label="Warehouse" value={warehouses[0].name} />
+        {warehouses && warehouses.length > 0 && (
+          <PropertyListItem
+            divider
+            label="Warehouse"
+            value={warehouses[0].name}
+          />
         )}
-        {retailShops && retailShops.length>0 &&(
+        {retailShops && retailShops.length > 0 && (
           <PropertyListItem
             divider
             label="Retail Shop"
@@ -31,7 +35,6 @@ const UserRoleResponsibility = (props: Props) => {
           />
         )}
         <PropertyListItem divider label="User Created At" value={createdAt} />
-
       </PropertyList>
     </Card>
   );

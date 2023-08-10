@@ -34,23 +34,22 @@ const SideNavItem = (props: SideNavProps) => {
         }}
         href={props.path}
       >
- 
-          <Box
-            component="span"
-            sx={{
-              alignItems: "center",
-              color: "var(--nav-item-icon-color)",
-              display: "inline-flex",
-              justifyContent: "center",
-              mr: 2,
-              ...(props.active && {
-                color: "var(--nav-item-icon-active-color)",
-              }),
-            }}
-          >
-            {props.icon}
-          </Box>
-    
+        <Box
+          component="span"
+          sx={{
+            alignItems: "center",
+            color: "var(--nav-item-icon-color)",
+            display: "inline-flex",
+            justifyContent: "center",
+            mr: 2,
+            ...(props.active && {
+              color: "var(--nav-item-icon-active-color)",
+            }),
+          }}
+        >
+          {props.icon}
+        </Box>
+
         <Box
           component="span"
           sx={{

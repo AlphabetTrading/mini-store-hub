@@ -1,60 +1,152 @@
 import { gql } from "@apollo/client";
 import { Product, StockItem } from "../../../types/product";
-
-export interface WarehouseStockData {
-  warehouseStockByWarehouseId: StockItem[];
-}
+import { Meta } from "../../../types/common";
 
 export interface WarehouseStockVars {
-  warehouseId: string;
+  filterWarehouseStockInput: {
+    warehouse: {
+      id: string;
+    };
+    product?: {
+      name: {
+        contains: string;
+      };
+      serialNumber: {
+        contains: string;
+      };
+    };
+  };
+  paginationInput?: {
+    take: number;
+    skip: number;
+  };
+  orderBy?: {
+    product?: {
+      name?: string;
+      createdAt?: string;
+      category?: {
+        createdAt?: string;
+        name?: string;
+        updatedAt?: string;
+      };
+      serialNumber?: string;
+      unit?: string;
+      updatedAt?: string;
+    };
+    createdAt?: string;
+    quantity?: string;
+    updatedAt?: string;
+    warehouse?: {
+      createdAt: string;
+      name: string;
+      updatedAt: string;
+    };
+  };
+}
+
+export interface WarehouseStockData {
+  warehouseStocks: {
+    items: StockItem[];
+    meta: Meta;
+  };
 }
 
 export const WAREHOUSE_STOCK = gql`
-  query WarehouseStockByWarehouseId($warehouseId: String!) {
-    warehouseStockByWarehouseId(warehouseId: $warehouseId) {
-      product {
-        priceHistory {
-          id
-          price
-          purchasedPrice
-          createdAt
-        }
-        category {
+  query WarehouseStocks(
+    $paginationInput: PaginationInput
+    $filterWarehouseStockInput: FilterWarehouseStockInput
+    $orderBy: OrderByWarehouseStockInput
+  ) {
+    warehouseStocks(
+      paginationInput: $paginationInput
+      filterWarehouseStockInput: $filterWarehouseStockInput
+      orderBy: $orderBy
+    ) {
+      items {
+        product {
+          priceHistory {
+            id
+            price
+            purchasedPrice
+            createdAt
+          }
+          category {
+            id
+            name
+          }
           id
           name
+          activePrice {
+            price
+            purchasedPrice
+          }
+          serialNumber
+          unit
         }
-        id
-        name
-        activePrice {
-          price
-          purchasedPrice
-        }
-        serialNumber
-        unit
+        quantity
       }
-      quantity
+      meta {
+        count
+        page
+      }
     }
   }
 `;
 
 export interface ProductsData {
-  products: { items: Product[] };
+  products: {
+    items: Product[];
+    meta: Meta;
+  };
 }
 
 export interface ProductsVars {
   filterProductInput: {
-    id: string;
+    name: {
+      contains: string;
+    };
+    serialNumber: {
+      contains: string;
+    };
+  };
+  paginationInput: {
+    take: number;
+    skip: number;
+  };
+  orderBy?: {
+    product?: {
+      name?: string;
+      createdAt?: string;
+      category?: {
+        createdAt?: string;
+        name?: string;
+        updatedAt?: string;
+      };
+      serialNumber?: string;
+      unit?: string;
+      updatedAt?: string;
+    };
+    createdAt?: string;
+    quantity?: string;
+    updatedAt?: string;
+    warehouse?: {
+      createdAt: string;
+      name: string;
+      updatedAt: string;
+    };
   };
 }
 
 export const PRODUCTS = gql`
-  query Product(
-    $filterProductInput: FilterProductInput
+  query Products(
     $paginationInput: PaginationInput
+    $filterProductInput: FilterProductInput
+    $orderBy: OrderByProductInput
   ) {
     products(
-      filterProductInput: $filterProductInput
       paginationInput: $paginationInput
+      filterProductInput: $filterProductInput
+      orderBy: $orderBy
     ) {
       items {
         name
@@ -78,6 +170,9 @@ export const PRODUCTS = gql`
           purchasedPrice
           id
         }
+      }
+      meta {
+        count
       }
     }
   }

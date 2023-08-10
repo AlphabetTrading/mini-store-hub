@@ -5,23 +5,33 @@ import {
   Breadcrumbs,
   Button,
   Card,
+  CircularProgress,
   Container,
   Link,
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { UsersData, USERS } from "@/graphql/users/queries";
 import { useQuery } from "@apollo/client";
 import UsersListTable from "@/components/users/users-list-table";
 import StateHandler from "@/components/state-handler";
+import Pagination from "@/components/Pagination";
 
 type Props = {};
 
 const Page = (props: Props) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const { data, error, loading } = useQuery<UsersData>(USERS, {
+    variables: {
+      paginationInput: {
+        skip: page * rowsPerPage,
+        take: rowsPerPage,
+      },
+    },
     fetchPolicy: "cache-and-network",
   });
 
@@ -55,16 +65,30 @@ const Page = (props: Props) => {
               Register User
             </Button>
           </Stack>
-
-          <Card>
-            <StateHandler
-              empty={data?.users.items.length === 0}
-              error={error}
-              loading={loading}
-            >
-              <UsersListTable users={data?.users.items} />
-            </StateHandler>
-          </Card>
+          {loading ? (
+            <CircularProgress />
+          ) : !data || error ? (
+            <Typography variant="h4">
+              Failed to fetch {JSON.stringify(error)}
+            </Typography>
+          ) : (
+            <Card>
+              <StateHandler
+                empty={data?.users.items.length === 0}
+                error={error}
+                loading={loading}
+              >
+                <UsersListTable users={data?.users.items} />
+                <Pagination
+                  meta={data?.users.meta!}
+                  page={page}
+                  setPage={setPage}
+                  rowsPerPage={rowsPerPage}
+                  setRowsPerPage={setRowsPerPage}
+                />
+              </StateHandler>
+            </Card>
+          )}
         </Stack>
       </Container>
     </Box>

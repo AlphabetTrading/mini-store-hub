@@ -6,10 +6,10 @@ import MobileNavItem from "./mobile-nav-item";
 import { usePathname } from "next/navigation";
 
 type Props = {
-  navigationItems:any
+  navigationItems: any;
 };
 
-const MobileNavSection = ({navigationItems}: Props) => {
+const MobileNavSection = ({ navigationItems }: Props) => {
   const pathname = usePathname();
   return (
     <Stack
@@ -22,8 +22,6 @@ const MobileNavSection = ({navigationItems}: Props) => {
       }}
     >
       {navigationItems.map((item: any) => {
-
-
         return (
           <MobileNavItem
             active={pathname.includes(item.path)}

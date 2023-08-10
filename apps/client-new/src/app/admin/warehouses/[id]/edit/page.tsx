@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import StateHandler from "@/components/state-handler";
 import WarehouseCreateEditForm, {
   WarehouseInputValues,

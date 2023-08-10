@@ -10,7 +10,7 @@ import { User } from "../../../types/user";
 import UsersListRow from "./users-list-row";
 
 type Props = {
-  users: User[]|undefined;
+  users: User[] | undefined;
 };
 
 const UsersListTable = ({ users }: Props) => {
@@ -36,10 +36,7 @@ const UsersListTable = ({ users }: Props) => {
       </TableHead>
       <TableBody>
         {users?.map((user, idx) => (
-          <UsersListRow
-            key={idx}
-            user={user}
-          />
+          <UsersListRow key={idx} user={user} />
         ))}
       </TableBody>
     </Table>

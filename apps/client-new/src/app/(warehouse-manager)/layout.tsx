@@ -34,7 +34,11 @@ const Layout = ({ children }: Props) => {
         // sections={sections}
       />
       {!lgUp && (
-        <MobileNav   navigationItems={navigationData.warehouseManager} onClose={mobileNav.handleClose} open={mobileNav.open} />
+        <MobileNav
+          navigationItems={navigationData.warehouseManager}
+          onClose={mobileNav.handleClose}
+          open={mobileNav.open}
+        />
       )}
       <HorizontalLayoutRoot>
         <HorizontalLayoutContainer>{children}</HorizontalLayoutContainer>

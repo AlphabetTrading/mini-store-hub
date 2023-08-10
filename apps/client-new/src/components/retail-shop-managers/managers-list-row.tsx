@@ -1,8 +1,4 @@
-import {
-  IconButton,
-  TableCell,
-  TableRow,
-} from "@mui/material";
+import { IconButton, TableCell, TableRow } from "@mui/material";
 import React from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";

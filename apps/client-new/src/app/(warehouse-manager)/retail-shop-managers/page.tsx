@@ -24,7 +24,8 @@ import {
 type Props = {};
 
 const Page = (props: Props) => {
-  const { data, loading, error } = useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS)
+  const { data, loading, error } =
+    useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS);
 
   return (
     <Box component="main" sx={{ py: 8 }}>

@@ -7,7 +7,7 @@ type Props = {
   navigationItems: NavigationItem[];
 };
 
-const TopNavSection = ({navigationItems}: Props) => {
+const TopNavSection = ({ navigationItems }: Props) => {
   const pathname = usePathname();
   return (
     <Stack

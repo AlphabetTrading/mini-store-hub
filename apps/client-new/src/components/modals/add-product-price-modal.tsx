@@ -40,7 +40,6 @@ const validationSchema = Yup.object({
 });
 
 export const AddProductPriceModal = (props: Props) => {
-
   const { open, handleClose, productId } = props;
   const [addPriceHistory, { data, loading, error }] = useMutation<
     AddPriceHistoryData,

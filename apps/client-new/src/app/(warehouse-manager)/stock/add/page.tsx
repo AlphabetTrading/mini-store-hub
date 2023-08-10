@@ -48,7 +48,6 @@ const Page = (props: Props) => {
   >(REGISTER_INCOMING_STOCK);
   const router = useRouter();
 
-
   const handleAddItem = (item: any) => {
     setItems((prev: any) => {
       return [...prev, item];
@@ -68,7 +67,7 @@ const Page = (props: Props) => {
           goods: items.map((item: any) => {
             return { productId: item.selectedItem.id, quantity: item.quantity };
           }),
-          destinationWarehouseId: ((sessionData?.user)as any).warehouseId || "",
+          destinationWarehouseId: (sessionData?.user as any).warehouseId || "",
         },
       },
       onCompleted: (data) => {
@@ -145,13 +144,15 @@ const Page = (props: Props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {items.map((item: any,idx:number) => (
+                    {items.map((item: any, idx: number) => (
                       <TableRow key={idx}>
                         <TableCell>{item.selectedItem.name}</TableCell>
                         <TableCell>{item.selectedItem.serialNumber}</TableCell>
                         <TableCell>{item.selectedItem.category.name}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
-                        <TableCell>{item.activePrice?.purchasedPrice}</TableCell>
+                        <TableCell>
+                          {item.activePrice?.purchasedPrice}
+                        </TableCell>
                         <TableCell>{item.activePrice?.price}</TableCell>
                         <TableCell>{item.activePrice?.price}</TableCell>
                       </TableRow>
@@ -161,7 +162,11 @@ const Page = (props: Props) => {
               </Scrollbar>
             </Card>
             <Stack justifyContent="flex-start" direction="row">
-              <Button disabled={loading} onClick={()=>handleRegisterStock()} variant="contained">
+              <Button
+                disabled={loading}
+                onClick={() => handleRegisterStock()}
+                variant="contained"
+              >
                 Regsiter
               </Button>
             </Stack>

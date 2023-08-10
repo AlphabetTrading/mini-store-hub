@@ -13,17 +13,19 @@ export interface RegisterIncomingStockVars {
 }
 
 export interface RegisterIncomingStockData {
-  createGoodsTransferFromMainWarehouseToWarehouse:{
+  createGoodsTransferFromMainWarehouseToWarehouse: {
     id: string;
-  }
+  };
 }
 
 export const REGISTER_INCOMING_STOCK = gql`
-  mutation CreateGoodsTransferFromMainWarehouseToWarehouse($data: CreateGoodsTransferFromMainWarehouseInput!) {
-  createGoodsTransferFromMainWarehouseToWarehouse(data: $data) {
-    id
+  mutation CreateGoodsTransferFromMainWarehouseToWarehouse(
+    $data: CreateGoodsTransferFromMainWarehouseInput!
+  ) {
+    createGoodsTransferFromMainWarehouseToWarehouse(data: $data) {
+      id
+    }
   }
-}
 `;
 
 export interface CreateWarehouseVars {

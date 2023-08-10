@@ -10,7 +10,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
@@ -25,21 +25,84 @@ import ItemListSearch from "@/components/stock/stock-list-search";
 // import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { useSession } from "next-auth/react";
+import ProductsListSearch from "@/components/products/products-list-search";
+import Pagination from "@/components/Pagination";
 
 type Props = {};
 
-const Page = (props: Props) => {
-  const { data: sessionData } = useSession();
+export const OrderBySelector = (filter: string) => {
+  const filterType = filter.split("|")[0];
+  switch (filterType) {
+    case "name":
+      return {
+        product: {
+          name: filter.split("|")[1],
+        },
+      };
+    case "categoryName":
+      return {
+        product: {
+          category: {
+            name: filter.split("|")[1],
+          },
+        },
+      };
+  }
+};
 
+const Page = (props: Props) => {
+  const [filter, setFilter] = useState({
+    query: "",
+    filter: "name|asc",
+  });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { data: sessionData } = useSession();
+  const warehouseId = (sessionData?.user as any).warehouseId || "";
   const { data, loading, error, refetch } = useQuery<
     WarehouseStockData,
     WarehouseStockVars
   >(WAREHOUSE_STOCK, {
     variables: {
-      warehouseId: ((sessionData?.user)as any).warehouseId || "",
+      filterWarehouseStockInput: {
+        warehouse: {
+          id: warehouseId,
+        },
+      },
+      paginationInput: {
+        skip: page * rowsPerPage,
+        take: rowsPerPage,
+      },
+      orderBy: OrderBySelector(filter.filter),
     },
     fetchPolicy: "cache-and-network",
   });
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      refetch({
+        filterWarehouseStockInput: {
+          warehouse: {
+            id: warehouseId,
+          },
+          product: {
+            name: {
+              contains: filter.query,
+            },
+            serialNumber: {
+              contains: filter.query,
+            },
+          },
+        },
+        paginationInput: {
+          skip: page * rowsPerPage,
+          take: rowsPerPage,
+        },
+        orderBy: OrderBySelector(filter.filter),
+      });
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [filter, page, refetch, rowsPerPage, warehouseId]);
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -73,6 +136,7 @@ const Page = (props: Props) => {
               </Button>
             </Stack>
           </Stack>
+          <ProductsListSearch filter={filter} setFilter={setFilter} />
           {loading ? (
             <CircularProgress />
           ) : !data || error ? (
@@ -81,8 +145,14 @@ const Page = (props: Props) => {
             </Typography>
           ) : (
             <Card>
-              <ItemListSearch />
               <ItemListTable warehouseStockData={data} />
+              <Pagination
+                meta={data.warehouseStocks.meta}
+                page={page}
+                setPage={setPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
+              />
             </Card>
           )}
           {/* <Card>

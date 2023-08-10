@@ -46,7 +46,7 @@ const Page = ({ params }: Props) => {
     },
     fetchPolicy: "cache-and-network",
   });
-  console.log(data?.user?.warehouse)
+  console.log(data?.user?.warehouse);
 
   return (
     <>
@@ -100,16 +100,12 @@ const Page = ({ params }: Props) => {
                     </Avatar>
                     <Stack spacing={1}>
                       <Typography variant="h4">
-                      {data?.user.firstName} {data?.user.lastName}
-
+                        {data?.user.firstName} {data?.user.lastName}
                         {/* {customer.email} */}
                       </Typography>
                       <Stack alignItems="center" direction="row" spacing={1}>
                         <Typography variant="subtitle2">user_id:</Typography>
-                        <Chip
-                          label={params.id}
-                          size="small"
-                        />
+                        <Chip label={params.id} size="small" />
                       </Stack>
                     </Stack>
                   </Stack>
@@ -173,7 +169,7 @@ const Page = ({ params }: Props) => {
                           retailShops={data?.user.retailShop}
                           warehouses={data?.user.warehouse}
                         />
-                        <UserManagement/>
+                        <UserManagement />
 
                         {/* <CustomerPayment />
                       <CustomerEmailsSummary />

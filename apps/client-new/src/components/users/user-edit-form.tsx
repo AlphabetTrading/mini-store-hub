@@ -250,16 +250,8 @@ export const UserEditForm = ({ user }: Props) => {
 
             <Grid xs={12} md={6}>
               <TextField
-                error={
-                  formik.errors.lng &&
-                  formik.touched.lng
-                    ? true
-                    : false
-                }
-                helperText={
-                  formik.touched.lng &&
-                  formik.errors.lng
-                }
+                error={formik.errors.lng && formik.touched.lng ? true : false}
+                helperText={formik.touched.lng && formik.errors.lng}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.lng}
@@ -271,16 +263,8 @@ export const UserEditForm = ({ user }: Props) => {
             </Grid>
             <Grid xs={12} md={6}>
               <TextField
-                error={
-                  formik.errors.lat &&
-                  formik.touched.lat
-                    ? true
-                    : false
-                }
-                helperText={
-                  formik.touched.lat &&
-                  formik.errors.lat
-                }
+                error={formik.errors.lat && formik.touched.lat ? true : false}
+                helperText={formik.touched.lat && formik.errors.lat}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.lat}
