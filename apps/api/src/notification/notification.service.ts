@@ -14,7 +14,6 @@ import {
   UserRole,
 } from '@prisma/client';
 import { Notification } from './models/notification.model';
-import { CreateNotificationInput } from './dto/createNotification.dto';
 
 const firebase_private_key_b64 = Buffer.from(
   process.env.FIREBASE_PRIVATE_KEY_BASE64,
@@ -37,7 +36,12 @@ export class NotificationService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllNotifications(): Promise<Notification[]> {
-    const notifications = await this.prisma.notification.findMany();
+    const notifications = await this.prisma.notification.findMany({
+      include: {
+        notificationReads: true,
+        user: true,
+      },
+    });
     return notifications;
   }
 
@@ -91,6 +95,10 @@ export class NotificationService {
           },
         ],
       },
+      include: {
+        notificationReads: true,
+        user: true,
+      },
     });
 
     return readNotifications;
@@ -142,6 +150,10 @@ export class NotificationService {
           },
         ],
       },
+      include: {
+        notificationReads: true,
+        user: true,
+      },
     });
 
     return readNotifications;
@@ -169,6 +181,10 @@ export class NotificationService {
           },
         },
       },
+      include: {
+        notificationReads: true,
+        user: true,
+      },
     });
 
     return unreadNotifications;
@@ -179,11 +195,14 @@ export class NotificationService {
       const notification_title = payload.notification_title;
       const notification_body = payload.notification_body;
       const notification_tokens = payload.tokens;
+      const notification_id = payload.notification_id;
+
       // send notification to firebase
       await this.sendExpoNotification(
         notification_tokens,
         notification_title,
         notification_body,
+        notification_id,
       );
 
       // save notification on each users
@@ -220,6 +239,10 @@ export class NotificationService {
   async getUnreadNotifications() {
     const notifications = await this.prisma.notification.findMany({
       where: { status: true },
+      include: {
+        notificationReads: true,
+        user: true,
+      },
     });
     return notifications;
   }
@@ -241,6 +264,7 @@ export class NotificationService {
       skip,
       take,
       include: {
+        notificationReads: true,
         user: true,
       },
     });
@@ -261,7 +285,15 @@ export class NotificationService {
       throw new NotFoundException('Notification is not found');
     }
 
-    return notification;
+    return await this.prisma.notification.findUnique({
+      where: {
+        id: notificationId,
+      },
+      include: {
+        notificationReads: true,
+        user: true,
+      },
+    });
   }
 
   async getNotificationsByUserIdAndStatus(user_id: string, status: boolean) {
@@ -273,6 +305,7 @@ export class NotificationService {
         isRead: status,
       },
       include: {
+        notificationReads: true,
         user: true,
       },
     });
@@ -333,6 +366,9 @@ export class NotificationService {
       update: {
         ...data,
       },
+      include: {
+        user: true,
+      },
     });
 
     return notification_token;
@@ -381,19 +417,23 @@ export class NotificationService {
   }
 
   async getNotifications() {
-    const notifications = await this.prisma.notification.findMany();
+    const notifications = await this.prisma.notification.findMany({
+      include: {
+        notificationReads: true,
+        user: true,
+      },
+    });
     return notifications;
   }
 
   async sendPush(createNoficationInput: sendPushNotificationInput) {
     const { title, body, recipientType, recipientId } = createNoficationInput;
     try {
-      const notification = await this.prisma.notificationToken.findFirst({
+      const notificationToken = await this.prisma.notificationToken.findFirst({
         where: { user: { id: recipientId }, status: true },
       });
-      if (notification) {
-        await this.sendExpoNotification([notification.token], title, body);
-        await this.prisma.notification.create({
+      if (notificationToken) {
+        const notification = await this.prisma.notification.create({
           data: {
             title,
             body,
@@ -405,7 +445,20 @@ export class NotificationService {
               },
             },
           },
+          include: {
+            notificationReads: true,
+            user: true,
+          },
         });
+
+        await this.sendExpoNotification(
+          [notificationToken.token],
+          title,
+          body,
+          notification.id,
+        );
+
+        return notification;
       }
     } catch (error) {
       return error;
@@ -443,7 +496,12 @@ export class NotificationService {
           userId,
         },
         include: {
-          notification: true,
+          notification: {
+            include: {
+              notificationReads: true,
+              user: true,
+            },
+          },
         },
       });
       return notificationRead.notification;
@@ -456,16 +514,22 @@ export class NotificationService {
       data: {
         isRead: true,
       },
+      include: {
+        notificationReads: true,
+        user: true,
+      },
     });
   }
 
   async sendBroadcastNotification({
+    notificationId,
     title,
     body,
     recipientType,
-  }: sendPushNotificationInput): Promise<Notification> {
+  }: any): Promise<Notification> {
     const notification = await this.prisma.notification.create({
       data: {
+        id: notificationId,
         title,
         body,
         recipientType,
@@ -477,13 +541,15 @@ export class NotificationService {
   }
 
   async sendIndividualNotification({
+    notificationId,
     title,
     body,
     recipientType,
     recipientId,
-  }: sendPushNotificationInput): Promise<Notification> {
+  }: any): Promise<Notification> {
     const notification = await this.prisma.notification.create({
       data: {
+        id: notificationId,
         title,
         body,
         recipientType,
@@ -557,6 +623,7 @@ export class NotificationService {
     notificationTokens: string[],
     title: string,
     body: string,
+    notificationId: string,
   ) {
     const expo = new Expo();
     // Create the messages that you want to send to clients
@@ -577,7 +644,7 @@ export class NotificationService {
         sound: 'default',
         title: title,
         body,
-        data: { otherData: 'data' },
+        data: { notificationId },
       });
     }
     const chunks = expo.chunkPushNotifications(messages);

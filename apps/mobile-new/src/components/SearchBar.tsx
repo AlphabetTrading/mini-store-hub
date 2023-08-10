@@ -9,10 +9,12 @@ import {
 import React, { useState } from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
 
-type Props = {};
+type Props = {
+  searchPhrase: string;
+  setSearchPhrase: React.Dispatch<React.SetStateAction<string>>;
+};
 
-const SearchBar = (props: Props) => {
-  const [searchPhrase, setSearchPhrase] = useState("");
+const SearchBar = ({ searchPhrase, setSearchPhrase }: Props) => {
   const [clicked, setClicked] = useState(false);
 
   return (

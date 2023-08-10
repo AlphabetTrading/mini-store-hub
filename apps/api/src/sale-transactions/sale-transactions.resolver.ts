@@ -6,7 +6,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { FilterSaleTransactionInput } from './dto/filter-sale-transactions-input';
-import { SaleTransactionOrder } from './dto/sale-transaction-order.input';
+import { OrderBySaleTransactionInput } from './dto/sale-transaction-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationSaleTransactions } from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
@@ -28,10 +28,10 @@ export class SaleTransactionsResolver {
     })
     filterSaleTransactionInput?: FilterSaleTransactionInput,
     @Args('orderBy', {
-      type: () => SaleTransactionOrder,
+      type: () => OrderBySaleTransactionInput,
       nullable: true,
     })
-    orderBy?: SaleTransactionOrder,
+    orderBy?: OrderBySaleTransactionInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationSaleTransactions> {
@@ -56,9 +56,7 @@ export class SaleTransactionsResolver {
 
       const salesTransactions = await this.saleTransactionsService.findAll({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -89,10 +87,10 @@ export class SaleTransactionsResolver {
   async findAllByRetailShop(
     @Args('retailShopId') id: string,
     @Args('orderBy', {
-      type: () => SaleTransactionOrder,
+      type: () => OrderBySaleTransactionInput,
       nullable: true,
     })
-    orderBy?: SaleTransactionOrder,
+    orderBy?: OrderBySaleTransactionInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ) {
@@ -104,9 +102,7 @@ export class SaleTransactionsResolver {
 
     const salesTransactions = await this.saleTransactionsService.findAll({
       where,
-      orderBy: {
-        [orderBy?.field]: orderBy?.direction,
-      },
+      orderBy,
       skip: paginationInput?.skip,
       take: paginationInput?.take,
     });

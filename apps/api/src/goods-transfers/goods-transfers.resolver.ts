@@ -8,7 +8,7 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { FilterCategoryInput } from 'src/categories/dto/filter-category.input';
 import { FilterGoodsTransferInput } from './dto/filter-goods-transfer.input';
-import { GoodsTransferOrder } from './dto/goods-transfer-order.input';
+import { OrderByGoodsTransferInput } from './dto/goods-transfer-order.input';
 import { PaginationGoodsTransfer } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
@@ -26,10 +26,10 @@ export class GoodsTransfersResolver {
     })
     filterGoodsTransferInput?: FilterGoodsTransferInput,
     @Args('orderBy', {
-      type: () => GoodsTransferOrder,
+      type: () => OrderByGoodsTransferInput,
       nullable: true,
     })
-    orderBy?: GoodsTransferOrder,
+    orderBy?: OrderByGoodsTransferInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationGoodsTransfer> {
@@ -57,9 +57,7 @@ export class GoodsTransfersResolver {
 
     const goodsTransfers = await this.goodsTransfersService.findAll({
       where,
-      orderBy: {
-        [orderBy?.field]: orderBy?.direction,
-      },
+      orderBy,
       skip: paginationInput?.skip,
       take: paginationInput?.take,
     });
@@ -85,10 +83,10 @@ export class GoodsTransfersResolver {
   async findAllGoodsTransferByWarehouseId(
     @Args('warehouseId') warehouseId: string,
     @Args('orderBy', {
-      type: () => GoodsTransferOrder,
+      type: () => OrderByGoodsTransferInput,
       nullable: true,
     })
-    orderBy?: GoodsTransferOrder,
+    orderBy?: OrderByGoodsTransferInput,
 
     // add pagination
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
@@ -109,9 +107,7 @@ export class GoodsTransfersResolver {
 
     const goodsTransfers = await this.goodsTransfersService.findByWarehouseId({
       where,
-      orderBy: {
-        [orderBy?.field]: orderBy?.direction,
-      },
+      orderBy,
       skip: paginationInput?.skip,
       take: paginationInput?.take,
     });
@@ -131,8 +127,8 @@ export class GoodsTransfersResolver {
   })
   async findOutgoingGoodsTransferByWarehouseId(
     @Args('warehouseId') warehouseId: string,
-    @Args('orderBy', { type: () => GoodsTransferOrder, nullable: true })
-    orderBy?: GoodsTransferOrder,
+    @Args('orderBy', { type: () => OrderByGoodsTransferInput, nullable: true })
+    orderBy?: OrderByGoodsTransferInput,
 
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
@@ -145,9 +141,7 @@ export class GoodsTransfersResolver {
 
     const goodsTransfers = await this.goodsTransfersService.findByWarehouseId({
       where,
-      orderBy: {
-        [orderBy?.field]: orderBy?.direction,
-      },
+      orderBy,
       skip: paginationInput?.skip,
       take: paginationInput?.take,
     });
@@ -167,8 +161,8 @@ export class GoodsTransfersResolver {
   })
   async findIncomingGoodsTransferByWarehouseId(
     @Args('warehouseId') warehouseId: string,
-    @Args('orderBy', { type: () => GoodsTransferOrder, nullable: true })
-    orderBy?: GoodsTransferOrder,
+    @Args('orderBy', { type: () => OrderByGoodsTransferInput, nullable: true })
+    orderBy?: OrderByGoodsTransferInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ) {
@@ -180,9 +174,7 @@ export class GoodsTransfersResolver {
 
     const goodsTransfers = this.goodsTransfersService.findByWarehouseId({
       where,
-      orderBy: {
-        [orderBy?.field]: orderBy?.direction,
-      },
+      orderBy,
       skip: paginationInput?.skip,
       take: paginationInput?.take,
     });

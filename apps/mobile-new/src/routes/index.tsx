@@ -1,18 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, RefreshControl } from "react-native";
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import AuthStack from "./AuthStack";
-import NotificationScreen from "../screens/NotificationScreen";
 import Colors from "../constants/Colors";
 import { useAuth } from "../contexts/auth";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { useNotifications } from "../hooks/useNotifications";
 import Loading from "../components/Loading";
 import ProfileScreen from "../screens/ProfileScreen";
-import { RootStackParamList } from "../types";
+import { NotificationTabParamList, RootStackParamList } from "../types";
 import AppStack from "./AppStack";
+import NotificationDetailScreen from "../screens/Notifications/NotificationDetailScreen";
+import NotificationScreen from "../screens/Notifications/NotificationScreen";
 
 type Props = {};
 const Navigation = (props: Props) => {
@@ -62,13 +63,9 @@ function RootNavigator() {
           />
           <RootStack.Screen
             name="Notifications"
-            component={NotificationScreen}
+            component={NotificationStack}
             options={{
-              headerShown: true,
-              headerStyle: {
-                backgroundColor: Colors.light.tint,
-              },
-              headerTintColor: "#FFF",
+              headerShown: false,
             }}
           />
           <RootStack.Screen
@@ -95,6 +92,38 @@ function RootNavigator() {
     </RootStack.Navigator>
   );
 }
+
+const NotificationStackNavigator =
+  createNativeStackNavigator<NotificationTabParamList>();
+
+export const NotificationStack = () => (
+  <NotificationStackNavigator.Navigator initialRouteName="Index">
+    <NotificationStackNavigator.Screen
+      name="Index"
+      component={NotificationScreen}
+      options={({ route }: any) => ({
+        title: "Notifications",
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+        headerShown: true,
+      })}
+    />
+    <NotificationStackNavigator.Screen
+      name="NotificationDetailScreen"
+      component={NotificationDetailScreen}
+      options={({ route }: any) => ({
+        title: route?.params?.name,
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+        headerShown: true,
+      })}
+    />
+  </NotificationStackNavigator.Navigator>
+);
 
 // const InventoryStackNavigator =
 //   createNativeStackNavigator<InventoryTabParamList>();

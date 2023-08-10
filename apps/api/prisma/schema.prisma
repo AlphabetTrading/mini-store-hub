@@ -22,7 +22,7 @@ enum UserRole {
 }
 
 model User {
-  id               String  @id @default(cuid())
+  id               String  @id @default(uuid())
   firstName        String
   lastName         String
   username         String  @unique
@@ -53,7 +53,7 @@ enum RecipientType {
 }
 
 model Notification {
-  id                String             @id @default(cuid())
+  id                String             @id @default(uuid())
   title             String
   amharicTitle      String?            @map("የ ርዕስ ስም") @db.Text
   body              String
@@ -70,7 +70,7 @@ model Notification {
 }
 
 model NotificationRead {
-  id             String       @id @default(cuid())
+  id             String       @id @default(uuid())
   notificationId String
   userId         String
   notification   Notification @relation("ReadNotification", fields: [notificationId], references: [id])
@@ -81,7 +81,7 @@ model NotificationRead {
 }
 
 model NotificationToken {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   device_type String
   token       String   @unique
   status      Boolean  @default(false)
@@ -92,7 +92,7 @@ model NotificationToken {
 }
 
 model UserProfile {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String   @unique
   photoUrl  String?
   idUrl     String?
@@ -104,7 +104,7 @@ model UserProfile {
 }
 
 model Category {
-  id                 String     @id @default(cuid())
+  id                 String     @id @default(uuid())
   name               String     @unique
   amharicName        String?    @map("የ እቃ ክፍል ስም") @db.Text
   description        String
@@ -130,7 +130,7 @@ enum UnitType {
 }
 
 model Product {
-  id                String   @id @default(cuid())
+  id                String   @id @default(uuid())
   serialNumber      String
   name              String
   // amharicName field contains the title of the product in amharic character
@@ -158,7 +158,7 @@ model Product {
 }
 
 model PriceHistory {
-  id                   String                @id @default(cuid())
+  id                   String                @id @default(uuid())
   productId            String
   price                Float
   purchasedPrice       Float
@@ -170,7 +170,7 @@ model PriceHistory {
 }
 
 model Address {
-  id                      String       @id @default(cuid())
+  id                      String       @id @default(uuid())
   street                  String?
   city                    String?
   lng                     Float?
@@ -185,7 +185,7 @@ model Address {
 }
 
 model RetailShop {
-  id                  String   @id @default(cuid())
+  id                  String   @id @default(uuid())
   name                String
   amharicName         String?  @map("የስራ ቦታ ስም") @db.Text
   addressId           String?  @unique
@@ -204,7 +204,7 @@ model RetailShop {
 }
 
 model Warehouse {
-  id                 String   @id @default(cuid())
+  id                 String   @id @default(uuid())
   name               String
   amharicName        String?  @map("የስራ ቦታ ስም") @db.Text
   addressId          String?  @unique
@@ -227,7 +227,7 @@ enum TransferType {
 }
 
 model GoodsTransfer {
-  id                     String       @id @default(cuid())
+  id                     String       @id @default(uuid())
   createdAt              DateTime     @default(now())
   updatedAt              DateTime     @updatedAt
   retailShopId           String?
@@ -241,7 +241,7 @@ model GoodsTransfer {
 }
 
 model StockItem {
-  id              String        @id @default(cuid())
+  id              String        @id @default(uuid())
   goodsTransferId String
   productId       String
   product         Product?      @relation(fields: [productId], references: [id])
@@ -252,7 +252,7 @@ model StockItem {
 }
 
 model SaleTransaction {
-  id                   String                @id @default(cuid())
+  id                   String                @id @default(uuid())
   totalPrice           Float
   retailShopId         String
   retailShop           RetailShop            @relation(fields: [retailShopId], references: [id])
@@ -262,7 +262,7 @@ model SaleTransaction {
 }
 
 model SaleTransactionItem {
-  id                 String          @id @default(cuid())
+  id                 String          @id @default(uuid())
   productId          String
   product            Product         @relation(fields: [productId], references: [id])
   quantity           Float
@@ -276,7 +276,7 @@ model SaleTransactionItem {
 }
 
 model RetailShopStock {
-  id           String     @id @default(cuid())
+  id           String     @id @default(uuid())
   productId    String
   product      Product    @relation(fields: [productId], references: [id])
   warehouseId  String
@@ -292,7 +292,7 @@ model RetailShopStock {
 }
 
 model WarehouseStock {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
   productId   String
   warehouseId String
   quantity    Float
@@ -305,7 +305,7 @@ model WarehouseStock {
 }
 
 model DailyTransaction {
-  id           String     @id @default(cuid())
+  id           String     @id @default(uuid())
   retailShopId String
   date         DateTime
   totalSales   Float
@@ -315,7 +315,7 @@ model DailyTransaction {
 }
 
 model MonthlyTransaction {
-  id           String     @id @default(cuid())
+  id           String     @id @default(uuid())
   retailShopId String
   month        String
   totalSales   Float
@@ -325,7 +325,7 @@ model MonthlyTransaction {
 }
 
 model AnnualTransaction {
-  id           String     @id @default(cuid())
+  id           String     @id @default(uuid())
   retailShopId String
   year         String
   totalSales   Float

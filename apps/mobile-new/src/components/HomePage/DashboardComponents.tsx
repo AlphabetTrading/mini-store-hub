@@ -129,7 +129,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
               textTransform: "uppercase",
             }}
           >
-            Profit{" "}
+            Profit
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Text style={{ fontFamily: "InterBold", fontSize: 30 }}>
@@ -177,9 +177,11 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
               {loading ? (
                 <ActivityIndicator />
               ) : data?.totalSalesByDateAndRetailShop ? (
-                (data?.totalProfitByDateAndRetailShop /
-                  data?.totalSalesByDateAndRetailShop) *
-                100
+                (
+                  (data?.totalProfitByDateAndRetailShop /
+                    data?.totalSalesByDateAndRetailShop) *
+                  100
+                ).toFixed(2)
               ) : (
                 0
               )}

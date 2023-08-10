@@ -13,8 +13,8 @@ export class OrderByRetailShopInput {
   name?: OrderDirection;
 
   @Field(() => OrderDirection, { nullable: true })
-  address?: OrderDirection;
+  createdAt?: OrderDirection;
 
   @Field(() => OrderDirection, { nullable: true })
-  createdAt?: OrderDirection;
+  updatedAt?: OrderDirection;
 }

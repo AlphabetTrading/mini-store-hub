@@ -1,5 +1,13 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  RefreshControl,
+  ScrollView,
+  FlatList,
+} from "react-native";
+import React, { useCallback, useEffect } from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import { BaseLayout } from "../../components/BaseLayout";
@@ -7,6 +15,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_SALES_TRANSACTION_MUTATION } from "../../graphql/mutations/salesMutations";
 import { useAuth } from "../../contexts/auth";
 import * as SecureStore from "expo-secure-store";
+import { useRoute } from "@react-navigation/native";
 
 type Props = {};
 
@@ -20,23 +29,23 @@ interface checkoutItem {
 
 const CheckoutScreen = ({ navigation }: any) => {
   const { authState } = useAuth();
+  const route = useRoute<any>();
+  const [total, setTotal] = React.useState<number>(0);
   const [checkoutItems, setCheckoutItems] = React.useState<checkoutItem[]>([]);
   const [createTransaction, { data, error, loading, reset }] = useMutation(
     CREATE_SALES_TRANSACTION_MUTATION
   );
 
-  const fetchCheckoutItems = async () => {
+  const fetchCheckoutItems = useCallback(async () => {
     const items = await SecureStore.getItemAsync("checkout");
-    setCheckoutItems(JSON.parse(items ? items : ""));
     console.log(items, "Items");
+    setCheckoutItems(JSON.parse(items ? items : ""));
     // setCheckoutItems(items)
-  };
+  }, [navigation, route]);
 
   useEffect(() => {
     fetchCheckoutItems();
-  }, []);
-
-  const [total, setTotal] = React.useState<number>(0);
+  }, [fetchCheckoutItems]);
 
   const addItem = (item: checkoutItem) => {
     setCheckoutItems((prev) => [...prev, item]);
@@ -44,12 +53,30 @@ const CheckoutScreen = ({ navigation }: any) => {
   };
 
   const removeItem = async (item: checkoutItem) => {
-    setCheckoutItems((prev) =>
-      prev.filter((prevItem) => prevItem.productId !== item.productId)
-    );
+    console.log(item, checkoutItems, "delted ");
+    setCheckoutItems((prev) => {
+      const data = prev.filter((prevItem) => {
+        console.log(prevItem.productId, item.productId, "prevItem");
+        return prevItem.productId !== item.productId;
+      });
+      console.log(prev.length, data.length, "after deleting");
+      return prev;
+      // prev.filter((prevItem) => prevItem.productId !== item.productId)
+    });
     // await AsyncStorage.setItem("checkout", JSON.stringify(checkoutItems));
-    setTotal((prev) => prev - item.quantity * item.price);
+    // setTotal((prev) => prev - item.quantity * item.price);
   };
+
+  const updateCheckout = useCallback(async () => {
+    setTotal(
+      checkoutItems.reduce((prev, curr) => prev + curr.quantity * curr.price, 0)
+    );
+    SecureStore.setItemAsync("checkout", JSON.stringify(checkoutItems));
+  }, [checkoutItems]);
+
+  useEffect(() => {
+    updateCheckout();
+  }, [updateCheckout]);
 
   const clearItems = () => {
     setCheckoutItems([]);
@@ -57,7 +84,14 @@ const CheckoutScreen = ({ navigation }: any) => {
   };
 
   console.log(checkoutItems, "Checkout");
-
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchCheckoutItems();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   return (
     <BaseLayout>
       <View style={{ flex: 1 }}>
@@ -73,17 +107,26 @@ const CheckoutScreen = ({ navigation }: any) => {
             <Text style={{ marginTop: 20 }}>No items added yet</Text>
           </View>
         ) : (
-          <View
-            style={{
-              padding: 10,
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            horizontal={true}
+            contentContainerStyle={{
               flex: 1,
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "flex-end",
+              width: "100%",
               gap: 10,
+              borderColor: "#DC1616",
+              borderWidth: 10,
             }}
           >
-            {checkoutItems.map((item: checkoutItem, index: number) => {
-              return (
+            <FlatList
+              style={{ flex: 1, height: "100%" }}
+              data={checkoutItems}
+              renderItem={({ item: checkoutItem, index }) => (
                 <View
                   key={index}
                   style={{
@@ -95,6 +138,7 @@ const CheckoutScreen = ({ navigation }: any) => {
                     backgroundColor: "#FFF",
                     borderRadius: 10,
                     width: "100%",
+                    marginVertical: 5,
                   }}
                 >
                   <View
@@ -109,7 +153,7 @@ const CheckoutScreen = ({ navigation }: any) => {
                       name="minus-circle"
                       size={24}
                       color="#DC161699"
-                      onPress={() => removeItem(item)}
+                      onPress={() => removeItem(checkoutItem)}
                     />
                     <View>
                       <Text
@@ -118,13 +162,16 @@ const CheckoutScreen = ({ navigation }: any) => {
                           { fontSize: 18, fontFamily: "InterMedium" },
                         ]}
                       >
-                        {item.product.name}
+                        {checkoutItem.product.name}
                       </Text>
                       <Text style={{ fontSize: 16, fontFamily: "InterLight" }}>
-                        Unit Price: ETB {item.product.activePrice.price}
+                        Unit Price: ETB {checkoutItem.product.activePrice.price}
                       </Text>
                       <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
-                        ETB <Text>{item.price * item.quantity}</Text>
+                        ETB{" "}
+                        <Text>
+                          {checkoutItem.price * checkoutItem.quantity}
+                        </Text>
                       </Text>
                     </View>
                   </View>
@@ -154,7 +201,7 @@ const CheckoutScreen = ({ navigation }: any) => {
                       </Pressable>
                     </View>
                     <Text style={{ color: "black", fontSize: 18 }}>
-                      {item.quantity}
+                      {checkoutItem.quantity}
                     </Text>
                     <View
                       style={{
@@ -171,8 +218,10 @@ const CheckoutScreen = ({ navigation }: any) => {
                     </View>
                   </View>
                 </View>
-              );
-            })}
+              )}
+              keyExtractor={(item) => item.productId}
+            />
+
             <Text
               onPress={async () => {
                 setCheckoutItems([]);
@@ -233,7 +282,7 @@ const CheckoutScreen = ({ navigation }: any) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         )}
       </View>
       <TouchableOpacity

@@ -79,6 +79,7 @@ export class GoodsTransfersService {
   }) {
     return this.prisma.goodsTransfer.findMany({
       where,
+      orderBy,
       skip,
       take,
       include: goodsTransferInclude,

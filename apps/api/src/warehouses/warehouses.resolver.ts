@@ -6,7 +6,7 @@ import { UpdateWarehouseInput } from './dto/update-warehouse.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { FilterWarehouseInput } from './dto/filter-warehouse.input';
-import { WarehouseOrder } from './dto/warehouse-order.input';
+import { OrderByWarehouseInput } from './dto/warehouse-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationWarehouses } from 'src/common/pagination/pagination-info';
 import { Prisma, UserRole } from '@prisma/client';
@@ -26,10 +26,10 @@ export class WarehousesResolver {
     })
     filterWarehouseInput?: FilterWarehouseInput,
     @Args('orderBy', {
-      type: () => WarehouseOrder,
+      type: () => OrderByWarehouseInput,
       nullable: true,
     })
-    orderBy?: WarehouseOrder,
+    orderBy?: OrderByWarehouseInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationWarehouses> {
@@ -59,9 +59,7 @@ export class WarehousesResolver {
     try {
       const warehouses = await this.warehousesService.findAll({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });

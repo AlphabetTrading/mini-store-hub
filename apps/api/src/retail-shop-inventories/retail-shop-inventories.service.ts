@@ -171,6 +171,67 @@ export class RetailShopStockService {
     });
     return Promise.all(promises);
   }
+  async totalValuationByRetailShopId(retailShopId: string) {
+    const retailShopStock = await this.prisma.retailShopStock.findFirst({
+      where: { retailShopId },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('RetailShop stock not found');
+    }
+
+    const retailShopStocks = await this.prisma.retailShopStock.findMany({
+      where: { retailShopId },
+      include: {
+        ...retailShopStockInclude,
+        product: {
+          include: {
+            activePrice: true,
+          },
+        },
+      },
+    });
+    return retailShopStocks.reduce((acc, cur) => {
+      return acc + cur.quantity * cur.product.activePrice.price;
+    }, 0);
+  }
+
+  async totalValuationByRetailShopIdAndDate(
+    retailShopId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const retailShopStock = await this.prisma.retailShopStock.findFirst({
+      where: { retailShopId },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('RetailShop stock not found');
+    }
+
+    const retailShopStocks = await this.prisma.retailShopStock.findMany({
+      where: {
+        retailShopId,
+        createdAt: {
+          gte: new Date(startDate),
+          lte: new Date(endDate),
+        },
+      },
+      include: {
+        ...retailShopStockInclude,
+
+        product: {
+          include: {
+            activePrice: true,
+          },
+        },
+      },
+    });
+
+    return retailShopStocks.reduce((acc, cur) => {
+      return acc + cur.quantity * cur.product.activePrice.price;
+    }, 0);
+  }
 
   async update(id: string, data: UpdateRetailShopStockInput) {
     const retailShopStock = await this.prisma.retailShopStock.findUnique({

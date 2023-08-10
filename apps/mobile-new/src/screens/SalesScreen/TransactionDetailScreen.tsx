@@ -26,6 +26,7 @@ const TransactionDetailScreen = ({ route }: any) => {
       },
     }
   );
+  console.log(route.params, " is data");
   return (
     <BaseLayout>
       {loading ? (
@@ -33,6 +34,10 @@ const TransactionDetailScreen = ({ route }: any) => {
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <ActivityIndicator size="large" />
+        </View>
+      ) : !data || error ? (
+        <View>
+          <Text>Something went wrong</Text>
         </View>
       ) : (
         <View style={styles.container}>

@@ -8,8 +8,8 @@ import { PaginationProducts } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterProductInput } from './dto/filter-product.input';
 import { Prisma } from '@prisma/client';
-import { ProductOrder } from './dto/product-order.input';
 import { UpdateProductInput } from './dto/update-product.input';
+import { OrderByProductInput } from './dto/order-by-product.input';
 
 @Resolver(() => Product)
 @UseGuards(GqlAuthGuard)
@@ -24,11 +24,11 @@ export class ProductsResolver {
     })
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
-      type: () => ProductOrder,
+      type: () => OrderByProductInput,
       // type: () => OrderByProductInput,
       nullable: true,
     })
-    orderBy?: ProductOrder,
+    orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
@@ -65,9 +65,7 @@ export class ProductsResolver {
       const products = await this.productsService.findAll({
         where,
         // orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -93,10 +91,10 @@ export class ProductsResolver {
     })
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
-      type: () => ProductOrder,
+      type: () => OrderByProductInput,
       nullable: true,
     })
-    orderBy?: ProductOrder,
+    orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
@@ -133,9 +131,7 @@ export class ProductsResolver {
 
       const products = await this.productsService.findProductsByTopProfit({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -162,11 +158,11 @@ export class ProductsResolver {
     })
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
-      type: () => ProductOrder,
+      type: () => OrderByProductInput,
       // type: () => OrderByProductInput,
       nullable: true,
     })
-    orderBy?: ProductOrder,
+    orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
@@ -203,9 +199,7 @@ export class ProductsResolver {
 
       const products = await this.productsService.findProductsByTopSale({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -238,11 +232,11 @@ export class ProductsResolver {
     })
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
-      type: () => ProductOrder,
+      type: () => OrderByProductInput,
       // type: () => OrderByProductInput,
       nullable: true,
     })
-    orderBy?: ProductOrder,
+    orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
@@ -286,9 +280,7 @@ export class ProductsResolver {
 
       const products = await this.productsService.findProductsByTopSale({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
@@ -315,11 +307,11 @@ export class ProductsResolver {
     })
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
-      type: () => ProductOrder,
+      type: () => OrderByProductInput,
       // type: () => OrderByProductInput,
       nullable: true,
     })
-    orderBy?: ProductOrder,
+    orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
@@ -357,9 +349,7 @@ export class ProductsResolver {
       const products = await this.productsService.findProductsByTopSoldQuantity(
         {
           where,
-          orderBy: {
-            [orderBy?.field]: orderBy?.direction,
-          },
+          orderBy,
           skip: paginationInput?.skip,
           take: paginationInput?.take,
         },
@@ -393,11 +383,11 @@ export class ProductsResolver {
     })
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
-      type: () => ProductOrder,
+      type: () => OrderByProductInput,
       // type: () => OrderByProductInput,
       nullable: true,
     })
-    orderBy?: ProductOrder,
+    orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
@@ -442,9 +432,7 @@ export class ProductsResolver {
       const products = await this.productsService.findProductsByTopSoldQuantity(
         {
           where,
-          orderBy: {
-            [orderBy?.field]: orderBy?.direction,
-          },
+          orderBy,
           skip: paginationInput?.skip,
           take: paginationInput?.take,
         },

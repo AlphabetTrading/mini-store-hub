@@ -8,7 +8,7 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import SearchBar from "../../components/SearchBar";
@@ -20,6 +20,7 @@ type Props = {};
 
 const SelectCategory = ({ route }: any) => {
   const navigation = useNavigation();
+  const [searchPhrase, setsearchPhrase] = useState("");
   const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
   return (
     <BaseLayout style={{ padding: 10 }}>
@@ -38,7 +39,10 @@ const SelectCategory = ({ route }: any) => {
                 width: "100%",
               }}
             >
-              <SearchBar />
+              <SearchBar
+                searchPhrase={searchPhrase}
+                setSearchPhrase={setsearchPhrase}
+              />
               <View
                 style={{
                   backgroundColor: Colors.light.background,

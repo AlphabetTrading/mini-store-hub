@@ -53,7 +53,15 @@ const linking: LinkingOptions<any> = {
           },
         },
       },
-      Notifications: "notifications",
+      Notifications: {
+        initialRouteName: "index" as any,
+        screens: {
+          Index: "index",
+          NotificationDetailScreen: {
+            path: "notificationdetail/:notificationID",
+          },
+        },
+      },
       Profile: "profile",
       ForgotPassword: "forgotpassword",
       ResetPassword: { path: "resetpassword/:otp" },

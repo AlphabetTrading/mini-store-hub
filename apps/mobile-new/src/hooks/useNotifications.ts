@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 
 export const useNotifications = () => {
   const { addPushToken, setAllowsNotifications } = useUser();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation();
   const { authState } = useAuth();
   console.log(authState, "authState");
 
@@ -70,10 +70,15 @@ export const useNotifications = () => {
   const handleNotificationResponse = (
     response: Notifications.NotificationResponse
   ) => {
-    const data: { url?: string } = response.notification.request.content.data;
+    const data: { notificationId?: string } =
+      response.notification.request.content.data;
     // go to the notification url, with screen Name Notifications
+
     try {
-      navigation.navigate("Notifications");
+      navigation.navigate("Notifications", {
+        screen: "NotificationDetailScreen",
+        params: { notificationID: data.notificationId ?? "" },
+      });
       // Linking.openURL("exp://192.168.42.135:19000/notifications");
     } catch (e) {
       console.log(e);

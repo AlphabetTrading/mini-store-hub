@@ -32,7 +32,7 @@ export class Notification extends BaseModel {
   @Field(() => String, { nullable: true })
   recipientId?: string;
 
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   user?: User;
 
   @Field(() => [ReadNotification], { nullable: true })

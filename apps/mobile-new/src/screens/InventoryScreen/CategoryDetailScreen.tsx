@@ -7,8 +7,10 @@ import {
   View,
   Image,
   ActivityIndicator,
+  RefreshControl,
+  ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import SearchBar from "../../components/SearchBar";
 import { useQuery } from "@apollo/client";
@@ -20,64 +22,6 @@ import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 
-const DATA = [
-  {
-    id: "1",
-    name: "Egg",
-    imageSrc: require("../../../assets/icons/categories/egg.png"),
-  },
-  {
-    id: "2",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "3",
-    name: "Biscuit",
-    imageSrc: require("../../../assets/icons/categories/biscuit.png"),
-  },
-  {
-    id: "4",
-    name: "Oil",
-    imageSrc: require("../../../assets/icons/categories/oil.png"),
-  },
-  {
-    id: "5",
-    name: "Soft",
-    imageSrc: require("../../../assets/icons/categories/soft.png"),
-  },
-  {
-    id: "6",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "7",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "8",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-  {
-    id: "9",
-    name: "Water",
-    imageSrc: require("../../../assets/icons/categories/water.png"),
-  },
-  {
-    id: "10",
-    name: "Soft Drink",
-    imageSrc: require("../../../assets/icons/categories/soft_drink.png"),
-  },
-  {
-    id: "11",
-    name: "Milk",
-    imageSrc: require("../../../assets/icons/categories/milk.png"),
-  },
-];
-
 const CategoryDetailScreen = ({
   route,
 }: {
@@ -86,6 +30,19 @@ const CategoryDetailScreen = ({
   const navigation = useNavigation();
   const categoryID = route.params.categoryID;
   const { authState } = useAuth();
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: {
+        display: "none",
+      },
+    });
+    return () =>
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+  }, [navigation]);
+
   const { loading, data, error, refetch } = useQuery(GET_RETAIL_SHOP_PRODUCTS, {
     variables: {
       filterRetailShopStockInput: {
@@ -99,6 +56,44 @@ const CategoryDetailScreen = ({
     },
   });
 
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  const [searchPhrase, setSearchPhrase] = useState("");
+  const [filteredItems, setFilteredItems] = useState(
+    data?.retailShopStockByRetailShopId.items ?? []
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      // local search with debounce
+      setFilteredItems(
+        data?.retailShopStockByRetailShopId.items.filter(
+          (item: any) =>
+            item.product.name
+              .toLowerCase()
+              .includes(searchPhrase.toLowerCase()) ||
+            item.product.serialNumber
+              .toLowerCase()
+              .includes(searchPhrase.toLowerCase()) ||
+            item.product.amharicName
+              .toLowerCase()
+              .includes(searchPhrase.toLowerCase()) ||
+            item.product.unit.toLowerCase().includes(searchPhrase.toLowerCase())
+        ) ?? []
+      );
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchPhrase]);
+
   return (
     <BaseLayout>
       {loading ? (
@@ -108,23 +103,35 @@ const CategoryDetailScreen = ({
           <ActivityIndicator size="large" />
         </View>
       ) : (
-        <View style={styles.container}>
-          {data.retailShopStockByRetailShopId.items.length > 0 ? (
+        <ScrollView
+          contentContainerStyle={styles.container}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          horizontal={true}
+          style={{ width: "100%" }}
+        >
+          {filteredItems.length > 0 ? (
             <View
               style={{
                 backgroundColor: Colors.light.background,
                 width: "100%",
               }}
             >
-              <SearchBar />
+              <SearchBar
+                searchPhrase={searchPhrase}
+                setSearchPhrase={setSearchPhrase}
+              />
               <FlatList
-                data={data.retailShopStockByRetailShopId.items}
+                data={filteredItems}
+                key={filteredItems.id}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
                       backgroundColor: Colors.light.background,
                       marginVertical: 4,
                     }}
+                    key={item.id}
                     onPress={() =>
                       navigation.navigate("Root", {
                         screen: "InventoryRoot",
@@ -138,7 +145,6 @@ const CategoryDetailScreen = ({
                       })
                     }
                   >
-                    <Text>{JSON.stringify(item)}</Text>
                     <View
                       style={{
                         flexDirection: "row",
@@ -204,7 +210,7 @@ const CategoryDetailScreen = ({
               </Text>
             </View>
           )}
-        </View>
+        </ScrollView>
       )}
     </BaseLayout>
   );

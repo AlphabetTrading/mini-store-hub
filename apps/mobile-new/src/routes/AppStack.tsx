@@ -75,12 +75,52 @@ const CustomTabBarButton = ({ children, onPress }: any) => {
 
 const SalesStackNavigator = createNativeStackNavigator<SalesParamList>();
 
-export const SalesStack = () => (
+export const SalesStack = ({ navigation }: any) => (
   <SalesStackNavigator.Navigator initialRouteName="Index">
     <SalesStackNavigator.Screen
       name="Index"
       component={SalesScreen}
-      options={{ headerShown: false }}
+      options={{
+        title: "Sales Transactions",
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+        },
+        headerTintColor: "#FFF",
+        headerShown: true,
+        headerRight: () => (
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <AntDesign
+                name="bells"
+                color="#FFF"
+                size={24}
+                onPress={() =>
+                  navigation.navigate("Notifications", {
+                    conversationID: 1,
+                    recipientName: "",
+                  })
+                }
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: -5,
+                  right: -5,
+                  backgroundColor: "#FF0000",
+                  width: 16,
+                  height: 16,
+                  borderRadius: 12,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 8 }}>12</Text>
+              </View>
+            </View>
+            <CustomMaterialMenu />
+          </View>
+        ),
+      }}
     />
     <SalesStackNavigator.Screen
       name="TransactionDetailScreen"
@@ -337,12 +377,7 @@ const AppStack = ({ route }: any) => {
                     name="bells"
                     color="#FFF"
                     size={24}
-                    onPress={() =>
-                      navigation.navigate("Notifications", {
-                        conversationID: 1,
-                        recipientName: "",
-                      })
-                    }
+                    onPress={() => navigation.navigate("Notifications")}
                   />
                   <View
                     style={{
@@ -574,7 +609,7 @@ const AppStack = ({ route }: any) => {
           name="SalesRoot"
           options={{
             title: "Sales",
-            headerShown: true,
+            headerShown: false,
             tabBarStyle: {
               display: hideBottomTab ? "none" : "flex",
               height: 60,
@@ -722,6 +757,7 @@ const AppStack = ({ route }: any) => {
             tabBarItemStyle: {
               borderWidth: 0.5,
               borderColor: "#D3D3D3",
+              height: 60,
             },
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (

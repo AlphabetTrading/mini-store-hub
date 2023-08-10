@@ -7,7 +7,7 @@ import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { UsersService } from './users.service';
-import { UserOrder } from './dto/user-order.input';
+import { OrderByUserInput, UserOrder } from './dto/user-order.input';
 import { PaginationUser } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterUserInput } from './dto/filter-user.input';
@@ -70,10 +70,10 @@ export class UsersResolver {
     })
     filterUserInput?: FilterUserInput,
     @Args('orderBy', {
-      type: () => UserOrder,
+      type: () => OrderByUserInput,
       nullable: true,
     })
-    orderBy?: UserOrder,
+    orderBy?: OrderByUserInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ): Promise<PaginationUser> {
@@ -109,9 +109,7 @@ export class UsersResolver {
     try {
       const users = await this.usersService.getUsers({
         where,
-        orderBy: {
-          [orderBy?.field]: orderBy?.direction,
-        },
+        orderBy,
         skip: paginationInput?.skip,
         take: paginationInput?.take,
       });
