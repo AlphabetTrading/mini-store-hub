@@ -31,7 +31,7 @@ const Page = (props: Props) => {
   return (
     <Box component="main" sx={{ py: 8 }}>
       <Container maxWidth="xl">
-      {error && (
+        {error && (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
             {error.message}

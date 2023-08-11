@@ -69,7 +69,7 @@ const RetailShopCreateEditForm = (props: Props) => {
     validationSchema,
     onSubmit,
   });
-const router = useRouter();
+  const router = useRouter();
   return (
     <Box component="main" sx={{ py: 8 }}>
       <StateHandler

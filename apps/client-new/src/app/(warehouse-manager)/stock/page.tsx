@@ -30,7 +30,7 @@ import Pagination from "@/components/Pagination";
 
 type Props = {};
 
-export const OrderBySelector = (filter: string) => {
+const OrderBySelector = (filter: string) => {
   const filterType = filter.split("|")[0];
   switch (filterType) {
     case "name":

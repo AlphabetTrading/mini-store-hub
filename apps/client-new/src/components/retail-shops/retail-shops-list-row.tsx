@@ -19,20 +19,18 @@ const RetailShopsListRow = ({
   handleItemToggle,
   selected,
 }: Props) => {
-  const {data} = useSession();
+  const { data } = useSession();
   return (
     <>
       <TableRow
-      {
-        ...(data?.user as any).role=="ADMIN" && {
+        {...((data?.user as any).role == "ADMIN" && {
           component: NextLink,
           href: `/admin/retail-shops/${retailShop.id}`,
           sx: {
             textDecoration: "none",
           },
           hover: true,
-        }
-      }
+        })}
       >
         <TableCell align="left">{retailShop.name}</TableCell>
         <TableCell align="left">

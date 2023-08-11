@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import RetailShopCreateEditForm, {
   RetailShopInputValues,
 } from "@/components/retail-shops/retail-shop-create-edit-form";
@@ -26,7 +26,7 @@ const initialValues: RetailShopInputValues = {
 };
 
 const Page = (props: Props) => {
-    const router = useRouter();
+  const router = useRouter();
   const [createRetailShop, { data, error, loading }] = useMutation<
     CreateRetailShopData,
     CreateRetailShopInput

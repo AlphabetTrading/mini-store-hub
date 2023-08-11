@@ -4,7 +4,7 @@ import { User } from "./user";
 export type RetailShop = {
   id: string;
   name: string;
-  createdAt:Date;
-  retailShopManager: User
+  createdAt: Date;
+  retailShopManager: User;
   address: Address;
 };

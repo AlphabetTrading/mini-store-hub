@@ -26,6 +26,16 @@ export const useNavigationItems = () => {
           ),
         },
         {
+          title: "Categories",
+          path: "/admin/categories",
+          icon: (
+            <SvgIcon fontSize="small">
+              <AddHomeOutlinedIcon />
+            </SvgIcon>
+          ),
+        },
+
+        {
           title: "Products",
           path: "/admin/products",
           icon: (

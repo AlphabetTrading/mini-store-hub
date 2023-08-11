@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import {
   Box,
@@ -52,7 +52,7 @@ const page = ({ params }: Props) => {
         setTimeout(() => {
           reset();
         }, 3000);
-      }
+      },
     });
   };
 

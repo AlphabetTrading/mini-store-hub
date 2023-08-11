@@ -16,7 +16,6 @@ import WarehouseCreateEditForm, {
 
 type Props = {};
 
-
 const initialValues: WarehouseInputValues = {
   name: "",
   formattedAddress: "",

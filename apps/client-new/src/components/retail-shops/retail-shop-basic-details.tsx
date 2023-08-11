@@ -56,9 +56,8 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
     <StateHandler
       loading={loading || valuationLoading}
       empty={false}
-    //   error={error ? error : valuationError ? valuationError : null}
+      //   error={error ? error : valuationError ? valuationError : null}
       error={error}
-
     >
       <Card>
         <CardHeader title="Basic info" />
