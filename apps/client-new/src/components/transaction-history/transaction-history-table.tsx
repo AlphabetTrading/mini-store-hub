@@ -16,11 +16,6 @@ import {
   TransactionHistory,
   TransferType,
 } from "../../../types/transaction-history";
-import {
-  WarehouseStockData,
-  WarehouseStockVars,
-  WAREHOUSE_STOCK,
-} from "@/graphql/products/queries";
 import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
 import {
@@ -57,7 +52,7 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
       empty={transactionHistory.length === 0}
     >
       <Card>
-        <CardHeader title="Latest Outgoing Transactions" />
+        <CardHeader title="Latest Transactions" />
         <Table>
           <TableBody>
             {transactionHistory?.map((item, idx) => {

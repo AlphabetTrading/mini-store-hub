@@ -16,15 +16,6 @@ import WarehouseCreateEditForm, {
 
 type Props = {};
 
-const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-  formattedAddress: Yup.string(),
-  city: Yup.string(),
-  street: Yup.string(),
-  lat: Yup.number(),
-  lng: Yup.number(),
-  // warehouseManager: Yup.string(),
-});
 
 const initialValues: WarehouseInputValues = {
   name: "",
