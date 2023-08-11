@@ -14,30 +14,15 @@ import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
-import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
-import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import CategoriesListSearch from "@/components/categories/categories-list-search";
+import CategoriesListTable from "@/components/categories/categories-list-table";
+import { ProductsData, PRODUCTS } from "@/graphql/products/queries";
+import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
-import ProductsListSearch from "@/components/products/products-list-search";
-import ProductsListTable from "@/components/products/products-list-table";
+import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
 import Pagination from "@/components/Pagination";
 
 type Props = {};
-
-const OrderBySelector = (filter: string) => {
-  const filterType = filter.split("|")[0];
-  switch (filterType) {
-    case "name":
-      return {
-        name: filter.split("|")[1],
-      };
-    case "categoryName":
-      return {
-        category: {
-          name: filter.split("|")[1],
-        },
-      };
-  }
-};
 
 const Page = (props: Props) => {
   const [filter, setFilter] = useState({
@@ -47,13 +32,15 @@ const Page = (props: Props) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { data: sessionData } = useSession();
-  const { data, error, loading, refetch } = useQuery<ProductsData>(PRODUCTS, {
+  const { data, error, loading, refetch } = useQuery<CategoryData>(CATEGORIES, {
     variables: {
       paginationInput: {
         skip: page * rowsPerPage,
         take: rowsPerPage,
       },
-      orderBy: OrderBySelector(filter.filter),
+      orderBy: {
+        name: filter.filter.split("|")[1],
+      },
     },
     fetchPolicy: "cache-and-network",
   });
@@ -61,11 +48,11 @@ const Page = (props: Props) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       refetch({
-        filterProductInput: {
+        filterCategoryInput: {
           name: {
             contains: filter.query,
           },
-          serialNumber: {
+          description: {
             contains: filter.query,
           },
         },
@@ -73,7 +60,9 @@ const Page = (props: Props) => {
           skip: page * rowsPerPage,
           take: rowsPerPage,
         },
-        orderBy: OrderBySelector(filter.filter),
+        orderBy: {
+          name: filter.filter.split("|")[1],
+        },
       });
     }, 300);
     return () => clearTimeout(timeout);
@@ -89,13 +78,13 @@ const Page = (props: Props) => {
             alignItems="center"
           >
             <Stack spacing={1}>
-              <Typography variant="h4">Products</Typography>
+              <Typography variant="h4">Categories</Typography>
               <Breadcrumbs separator={<BreadcrumbsSeparator />}>
                 <Link component={NextLink} href={"/admin/dashboard"}>
                   Dashboard
                 </Link>
-                <Link component={NextLink} href={"/admin/products"}>
-                  Products
+                <Link component={NextLink} href={"/admin/categories"}>
+                  Categories
                 </Link>
                 <Typography>List</Typography>
               </Breadcrumbs>
@@ -104,10 +93,10 @@ const Page = (props: Props) => {
               <Button
                 variant="contained"
                 component={NextLink}
-                href={"/admin/products/create"}
+                href={"/admin/categories/create"}
                 startIcon={<AddIcon />}
               >
-                Create Product
+                Create Category
               </Button>
             </Stack>
           </Stack>
@@ -120,7 +109,7 @@ const Page = (props: Props) => {
               width: "100%",
             }}
           >
-            <ProductsListSearch filter={filter} setFilter={setFilter} />
+            <CategoriesListSearch filter={filter} setFilter={setFilter} />
             {loading ? (
               <CircularProgress />
             ) : !data || error ? (
@@ -129,9 +118,9 @@ const Page = (props: Props) => {
               </Typography>
             ) : (
               <>
-                <ProductsListTable products={data.products.items} />
+                <CategoriesListTable categories={data.categories.items} />
                 <Pagination
-                  meta={data.products.meta}
+                  meta={data.categories.meta}
                   page={page}
                   setPage={setPage}
                   rowsPerPage={rowsPerPage}

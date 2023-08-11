@@ -64,13 +64,16 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
       empty={false}
       error={error}
       // error={error ? error : valuationError ? valuationError : null}
-
     >
       <Card>
         <CardHeader title="Basic info" />
         <Divider />
         <PropertyList>
-        <PropertyListItem align={align} label="Name" value={warehouse?.name} />
+          <PropertyListItem
+            align={align}
+            label="Name"
+            value={warehouse?.name}
+          />
           <Divider />
           <PropertyListItem align={align} label="Address">
             <Typography variant="subtitle2">

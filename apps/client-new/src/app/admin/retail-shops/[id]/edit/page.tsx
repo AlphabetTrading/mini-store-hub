@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import RetailShopCreateEditForm, {
   RetailShopInputValues,
 } from "@/components/retail-shops/retail-shop-create-edit-form";
@@ -81,13 +81,13 @@ const Page = ({ params }: Props) => {
 
   return (
     <StateHandler empty={false} error={error} loading={loading}>
-    <RetailShopCreateEditForm
-      error={updateError}
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      loading={updateLoading}
-      title="Edit"
-    />
+      <RetailShopCreateEditForm
+        error={updateError}
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        loading={updateLoading}
+        title="Edit"
+      />
     </StateHandler>
   );
 };

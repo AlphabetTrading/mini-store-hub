@@ -113,27 +113,17 @@ export interface ProductsVars {
     take: number;
     skip: number;
   };
-  orderBy?: {
-    product?: {
-      name?: string;
+  orderBy: {
+    name?: string;
+    createdAt?: string;
+    category?: {
       createdAt?: string;
-      category?: {
-        createdAt?: string;
-        name?: string;
-        updatedAt?: string;
-      };
-      serialNumber?: string;
-      unit?: string;
+      name?: string;
       updatedAt?: string;
     };
-    createdAt?: string;
-    quantity?: string;
+    serialNumber?: string;
+    unit?: string;
     updatedAt?: string;
-    warehouse?: {
-      createdAt: string;
-      name: string;
-      updatedAt: string;
-    };
   };
 }
 
