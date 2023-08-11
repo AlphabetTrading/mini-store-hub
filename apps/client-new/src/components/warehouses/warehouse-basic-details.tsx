@@ -62,12 +62,16 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
     <StateHandler
       loading={loading || valuationLoading}
       empty={false}
-      error={error ? error : valuationError ? valuationError : null}
+      error={error}
+      // error={error ? error : valuationError ? valuationError : null}
+
     >
       <Card>
         <CardHeader title="Basic info" />
         <Divider />
         <PropertyList>
+        <PropertyListItem align={align} label="Name" value={warehouse?.name} />
+          <Divider />
           <PropertyListItem align={align} label="Address">
             <Typography variant="subtitle2">
               {warehouse?.address?.city}

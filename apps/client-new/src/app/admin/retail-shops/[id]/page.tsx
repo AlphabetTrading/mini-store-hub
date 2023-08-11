@@ -1,30 +1,30 @@
-"use client";
-import TransactionHistoryTable from "@/components/transaction-history/transaction-history-table";
-import WarehouseBasicDetails from "@/components/warehouses/warehouse-basic-details";
-import EditIcon from "@mui/icons-material/Edit";
+"use client"
+import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import {
   Box,
+  Link,
   Container,
   Stack,
-  SvgIcon,
   Typography,
-  Button,
-  Link,
   Breadcrumbs,
-  CircularProgress,
+  Button,
+  SvgIcon,
   Alert,
   AlertTitle,
+  CircularProgress,
 } from "@mui/material";
-import React from "react";
 import NextLink from "next/link";
-import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
+import React, { useEffect } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import RetailShopBasicDetails from "@/components/retail-shops/retail-shop-basic-details";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
-  DELETE_WAREHOUSE,
-  DeleteWarehouseVars,
-} from "@/graphql/warehouses/mutations";
+  DELETE_RETAIL_SHOP,
+  DeleteRetailShopVars,
+} from "@/graphql/retail-shops/mutations";
 import { useMutation } from "@apollo/client";
-import { WAREHOUSES } from "@/graphql/warehouses/queries";
+import { ref } from "yup";
+import { RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -33,19 +33,18 @@ type Props = {
   };
 };
 
-const Page = ({ params }: Props) => {
-  const [deleteWarehouse, { loading, error, reset }] = useMutation<
-    {},
-    DeleteWarehouseVars
-  >(DELETE_WAREHOUSE);
+const page = ({ params }: Props) => {
   const router = useRouter();
-
+  const [deleteRetailShop, { error, loading, reset }] = useMutation<
+    {},
+    DeleteRetailShopVars
+  >(DELETE_RETAIL_SHOP);
   const handleDelete = async () => {
-    await deleteWarehouse({
+    await deleteRetailShop({
       variables: {
-        deleteWarehouseId: params.id,
+        deleteRetailShopId: params.id,
       },
-      refetchQueries: [WAREHOUSES],
+      refetchQueries: [RETAIL_SHOPS],
       onCompleted(data, clientOptions) {
         router.back();
       },
@@ -53,7 +52,7 @@ const Page = ({ params }: Props) => {
         setTimeout(() => {
           reset();
         }, 3000);
-      },
+      }
     });
   };
 
@@ -72,6 +71,7 @@ const Page = ({ params }: Props) => {
             {error.message}
           </Alert>
         )}
+
         <Stack spacing={4}>
           <Stack
             direction="row"
@@ -79,13 +79,13 @@ const Page = ({ params }: Props) => {
             alignItems="center"
           >
             <Stack spacing={1}>
-              <Typography variant="h4">Warehouse</Typography>
+              <Typography variant="h4">Retail Shop</Typography>
               <Breadcrumbs separator={<BreadcrumbsSeparator />}>
                 <Link component={NextLink} href={"/admin/dashboard"}>
                   Dashboard
                 </Link>
-                <Link component={NextLink} href={"/admin/warehouses"}>
-                  Warehouse
+                <Link component={NextLink} href={"/admin/retail-shops"}>
+                  Retail Shops
                 </Link>
                 <Typography>List</Typography>
               </Breadcrumbs>
@@ -110,18 +110,18 @@ const Page = ({ params }: Props) => {
                 variant="contained"
                 component={NextLink}
                 endIcon={<SvgIcon>{<EditIcon />}</SvgIcon>}
-                href={`/admin/warehouses/${params.id}/edit`}
+                href={`/admin/retail-shops/${params.id}/edit`}
               >
                 Edit
               </Button>
             </Stack>
           </Stack>
-          <WarehouseBasicDetails warehouseId={params.id} />
-          <TransactionHistoryTable warehouseId={params.id} />
+          <RetailShopBasicDetails retailShopId={params.id} />
+          {/*<TransactionHistoryTable warehouseId={params.id} /> */}
         </Stack>
       </Container>
     </Box>
   );
 };
 
-export default Page;
+export default page;

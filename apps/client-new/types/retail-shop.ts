@@ -1,12 +1,10 @@
 import { Address } from "./address";
+import { User } from "./user";
 
 export type RetailShop = {
   id: string;
   name: string;
-  retailShopManager: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
+  createdAt:Date;
+  retailShopManager: User
   address: Address;
 };

@@ -31,7 +31,6 @@ const RetailShopsListTable = ({ retailShops }: Props) => {
         <Table sx={{ minWidth: 1200 }}>
           <TableHead>
             <TableRow>
-              <TableCell />
               <TableCell>Name</TableCell>
               <TableCell>Shop Manager</TableCell>
               <TableCell>Address</TableCell>

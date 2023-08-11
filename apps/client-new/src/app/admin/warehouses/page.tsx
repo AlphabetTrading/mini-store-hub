@@ -10,6 +10,8 @@ import {
   Link,
   CardContent,
   Card,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import NextLink from "next/link";
@@ -29,6 +31,12 @@ const Page = (props: Props) => {
   return (
     <Box component="main" sx={{ py: 8 }}>
       <Container maxWidth="xl">
+      {error && (
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            {error.message}
+          </Alert>
+        )}
         <Stack spacing={4}>
           <Stack
             direction="row"

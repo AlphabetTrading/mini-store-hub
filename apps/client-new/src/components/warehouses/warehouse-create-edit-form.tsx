@@ -78,8 +78,8 @@ const WarehouseCreateEditForm = (props: Props) => {
               <Link component={NextLink} href={"/admin/dashboard"}>
                 Dashboard
               </Link>
-              <Link component={NextLink} href={"/admin/products"}>
-                Products
+              <Link component={NextLink} href={"/admin/warehouses"}>
+                Warehouses
               </Link>
               <Typography>Create</Typography>
             </Breadcrumbs>

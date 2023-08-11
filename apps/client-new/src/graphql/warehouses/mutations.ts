@@ -86,3 +86,15 @@ export const UPDATE_WAREHOUSE = gql`
     }
   }
 `;
+
+export interface DeleteWarehouseVars {
+  deleteWarehouseId: string;
+}
+
+export const DELETE_WAREHOUSE = gql`
+  mutation DeleteWarehouse($deleteWarehouseId: String!) {
+    deleteWarehouse(id: $deleteWarehouseId) {
+      id
+    }
+  }
+`;

@@ -5,6 +5,8 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import { User } from "../../../types/user";
 import { RetailShop } from "../../../types/retail-shop";
+import NextLink from "next/link";
+import { useSession } from "next-auth/react";
 
 type Props = {
   retailShop: RetailShop;
@@ -17,24 +19,35 @@ const RetailShopsListRow = ({
   handleItemToggle,
   selected,
 }: Props) => {
+  const {data} = useSession();
   return (
     <>
-      <TableRow>
-        <TableCell>
-          <IconButton onClick={() => handleItemToggle(retailShop.id)}>
-            {selected ? <ExpandMore /> : <ChevronRightIcon />}
-          </IconButton>
-        </TableCell>
+      <TableRow
+      {
+        ...(data?.user as any).role=="ADMIN" && {
+          component: NextLink,
+          href: `/admin/retail-shops/${retailShop.id}`,
+          sx: {
+            textDecoration: "none",
+          },
+          hover: true,
+        }
+      }
+      >
         <TableCell align="left">{retailShop.name}</TableCell>
         <TableCell align="left">
           {retailShop.retailShopManager?.firstName}{" "}
           {retailShop.retailShopManager?.lastName}
         </TableCell>
         <TableCell align="left">
-          {retailShop.address?.street}, {retailShop.address?.city}
+          {retailShop.address?.street &&
+            retailShop.address?.city &&
+            (retailShop.address?.street, retailShop.address?.city)}
         </TableCell>
         <TableCell align="left">
-          {retailShop.address?.lng}, {retailShop.address?.lat}
+          {retailShop.address?.lng &&
+            retailShop.address?.lat &&
+            (retailShop.address?.lng, retailShop.address?.lat)}
         </TableCell>
       </TableRow>
     </>
