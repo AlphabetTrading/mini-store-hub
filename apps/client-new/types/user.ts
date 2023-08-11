@@ -17,7 +17,7 @@ export type User = {
 type UserProfile = {
   address?: Address;
   photoUrl?: string;
-  idUrl?:string;
+  idUrl?: string;
 };
 
 export enum UserRole {

@@ -42,7 +42,10 @@ export const TopNav = ({ onMobileNavOpen }: Props) => {
         <Stack alignItems="center" direction="row" spacing={2}>
           {!lgUp && (
             <IconButton onClick={onMobileNavOpen}>
-              <SvgIcon> <MenuIcon /></SvgIcon>
+              <SvgIcon>
+                {" "}
+                <MenuIcon />
+              </SvgIcon>
             </IconButton>
           )}
 
@@ -50,7 +53,7 @@ export const TopNav = ({ onMobileNavOpen }: Props) => {
         </Stack>
         <Stack alignItems="center" direction="row" spacing={2}>
           <IconButton onClick={() => signOut()}>
-          <LogoutIcon />
+            <LogoutIcon />
           </IconButton>
           {/* <LanguageSwitch />
           <NotificationsButton />

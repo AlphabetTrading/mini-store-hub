@@ -30,11 +30,14 @@ import {
 import { User } from "../../../types/user";
 
 type Props = {
-    onSubmit:(values: WarehouseInputValues, formikHelpers: FormikHelpers<WarehouseInputValues>) => void | Promise<any>,
-    initialValues: WarehouseInputValues,
-    loading:boolean,
-    error:ApolloError | undefined,
-    title:string
+  onSubmit: (
+    values: WarehouseInputValues,
+    formikHelpers: FormikHelpers<WarehouseInputValues>
+  ) => void | Promise<any>;
+  initialValues: WarehouseInputValues;
+  loading: boolean;
+  error: ApolloError | undefined;
+  title: string;
 };
 
 const validationSchema = Yup.object({
@@ -56,16 +59,14 @@ export interface WarehouseInputValues {
   warehouseManager: User | null;
 }
 
-
 const WarehouseCreateEditForm = (props: Props) => {
   const { onSubmit, initialValues, loading, error, title } = props;
   const router = useRouter();
-  const { data } =
-    useQuery<WarehouseManagersData>(WAREHOUSE_MANAGERS);
-    const formik = useFormik({
+  const { data } = useQuery<WarehouseManagersData>(WAREHOUSE_MANAGERS);
+  const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit
+    onSubmit,
   });
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -231,11 +232,7 @@ const WarehouseCreateEditForm = (props: Props) => {
                 >
                   Cancel
                 </Button>
-                <Button
-                  disabled={loading}
-                  type="submit"
-                  variant="contained"
-                >
+                <Button disabled={loading} type="submit" variant="contained">
                   {loading && (
                     <CircularProgress
                       sx={{

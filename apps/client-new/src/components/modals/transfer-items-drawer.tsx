@@ -39,10 +39,8 @@ const initialValues: Values = {
 };
 
 const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
-
-
   const { data: sessionData } = useSession();
-  
+
   const generateValidationSchema = (values: Values) => {
     const maxQuantity = itemsData?.warehouseStockByWarehouseId.find(
       (item) => item.product.id === values.itemId
@@ -64,7 +62,7 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
     error: itemsError,
   } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
     variables: {
-      warehouseId: ((sessionData?.user)as any).warehouseId || "",
+      warehouseId: (sessionData?.user as any).warehouseId || "",
     },
   });
 

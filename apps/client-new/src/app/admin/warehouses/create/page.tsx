@@ -26,7 +26,6 @@ const validationSchema = Yup.object({
   // warehouseManager: Yup.string(),
 });
 
-
 const initialValues: WarehouseInputValues = {
   name: "",
   formattedAddress: "",

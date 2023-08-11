@@ -8,7 +8,7 @@ type Props = {
   navigationItems: NavigationItem[];
 };
 const SIDE_NAV_WIDTH = 280;
-const SideNav = ({navigationItems}: Props) => {
+const SideNav = ({ navigationItems }: Props) => {
   const theme = useTheme();
 
   return (
@@ -42,51 +42,37 @@ const SideNav = ({navigationItems}: Props) => {
         },
       }}
     >
-
-        <Stack sx={{ height: '100%' }}>
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={2}
-            sx={{ p: 3 }}
-          >
-            <Box
-              component={NextLink}
-              href="/admin/dashboard"
-              sx={{
-                borderColor: 'var(--nav-logo-border)',
-                borderRadius: 1,
-                borderStyle: 'solid',
-                borderWidth: 1,
-                display: 'flex',
-                height: 40,
-                p: '4px',
-                width: 40
-              }}
-            >
-              {/* <Logo /> */}
-            </Box>
-            {/* <TenantSwitch sx={{ flexGrow: 1 }} /> */}
-          </Stack>
-          <Stack
-            component="nav"
-            spacing={2}
+      <Stack sx={{ height: "100%" }}>
+        <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
+          <Box
+            component={NextLink}
+            href="/admin/dashboard"
             sx={{
-              flexGrow: 1,
-              px: 2
+              borderColor: "var(--nav-logo-border)",
+              borderRadius: 1,
+              borderStyle: "solid",
+              borderWidth: 1,
+              display: "flex",
+              height: 40,
+              p: "4px",
+              width: 40,
             }}
           >
-            <SideNavSection navigationItems={navigationItems} />
-          </Stack>
- 
+            {/* <Logo /> */}
+          </Box>
+          {/* <TenantSwitch sx={{ flexGrow: 1 }} /> */}
         </Stack>
-
-
-
-
-
-
-
+        <Stack
+          component="nav"
+          spacing={2}
+          sx={{
+            flexGrow: 1,
+            px: 2,
+          }}
+        >
+          <SideNavSection navigationItems={navigationItems} />
+        </Stack>
+      </Stack>
     </Drawer>
   );
 };

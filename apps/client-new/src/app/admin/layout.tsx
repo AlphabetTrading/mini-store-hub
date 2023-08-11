@@ -3,7 +3,7 @@
 import { TopNav } from "@/layouts/vertical-layout/top-nav";
 import { useMobileNav } from "@/layouts/use-mobile-nav";
 import { MobileNav } from "@/layouts/mobile-nav";
-import {  styled, useMediaQuery } from "@mui/material";
+import { styled, useMediaQuery } from "@mui/material";
 import React from "react";
 import SideNav from "@/layouts/vertical-layout/side-nav";
 import { useNavigationItems } from "@/layouts/config";

@@ -20,7 +20,6 @@ export const WAREHOUSE_TRANSACTION_HISTORY = gql`
           id
           name
         }
-        
       }
     }
   }

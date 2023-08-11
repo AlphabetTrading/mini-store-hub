@@ -9,7 +9,7 @@ type Props = {
   open: boolean;
   navigationItems: NavigationItem[];
 };
-export const MobileNav = ({open,onClose,navigationItems}: Props) => {
+export const MobileNav = ({ open, onClose, navigationItems }: Props) => {
   const theme = useTheme();
 
   return (

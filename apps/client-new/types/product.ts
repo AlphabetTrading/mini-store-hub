@@ -1,3 +1,5 @@
+import { Meta } from "./common";
+
 export interface Product {
   id: string;
   serialNumber: string;

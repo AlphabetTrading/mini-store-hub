@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import TransactionHistoryTable from "@/components/transaction-history/transaction-history-table";
 import {

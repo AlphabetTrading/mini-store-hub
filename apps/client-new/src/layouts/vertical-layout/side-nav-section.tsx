@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { NavigationItem } from "../config";
 
 type Props = {
-  navigationItems:NavigationItem[];
+  navigationItems: NavigationItem[];
 };
 
-const SideNavSection = ({navigationItems}: Props) => {
+const SideNavSection = ({ navigationItems }: Props) => {
   const pathname = usePathname();
   return (
     <Stack component="ul" spacing={0.5} sx={{ listStyle: "none", m: 0, p: 0 }}>

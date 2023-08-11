@@ -10,13 +10,12 @@ import {
 import ItemListRow from "./stock-list-row";
 import { WarehouseStockData } from "@/graphql/products/queries";
 
-
 type Props = {
   warehouseStockData: WarehouseStockData;
 };
 
 const ItemListTable = ({ warehouseStockData }: Props) => {
-  const { warehouseStockByWarehouseId: warehouseStocks } = warehouseStockData;
+  const { warehouseStocks } = warehouseStockData;
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const handleItemToggle = (id: string) => {
     setSelectedItem((prev) => {
@@ -44,7 +43,7 @@ const ItemListTable = ({ warehouseStockData }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {warehouseStocks.map((warehouseStock, idx) => (
+            {warehouseStocks.items.map((warehouseStock, idx) => (
               <ItemListRow
                 key={idx}
                 warehouseStock={warehouseStock}

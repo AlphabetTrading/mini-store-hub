@@ -58,13 +58,11 @@ const initialValues: Values = {
 };
 
 const Page = (props: Props) => {
-
   const {
     data: categoryData,
     loading: categoryLoading,
     error: categoryError,
   } = useQuery<CategoryData>(CATEGORIES);
-
 
   const [createProduct, { data, loading, error }] = useMutation<
     CreateProductData,
@@ -76,7 +74,7 @@ const Page = (props: Props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      console.log("...")
+      console.log("...");
       await createProduct({
         variables: {
           data: {
@@ -220,11 +218,11 @@ const Page = (props: Props) => {
                         select
                       >
                         {Object.values(Unit).map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </Grid>
                   </Grid>
                 </CardContent>

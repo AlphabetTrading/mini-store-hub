@@ -27,7 +27,7 @@ const RetailShopsListTable = ({ retailShops }: Props) => {
 
   return (
     <div>
-      <Scrollbar> 
+      <Scrollbar>
         <Table sx={{ minWidth: 1200 }}>
           <TableHead>
             <TableRow>

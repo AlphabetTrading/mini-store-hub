@@ -112,7 +112,7 @@ export const AddIncomingItemModal = (props: Props) => {
               ) : (
                 <RadioGroup
                   name="itemId"
-                  sx={{ maxHeight: 325, display: "block", overflow: "auto"}}
+                  sx={{ maxHeight: 325, display: "block", overflow: "auto" }}
                   value={formik.values.itemId.toString()}
                   onChange={(event) => {
                     formik.setFieldValue("itemId", event.currentTarget.value);
@@ -127,7 +127,7 @@ export const AddIncomingItemModal = (props: Props) => {
                           alignItems: "flex-start",
                           display: "flex",
                           px: 2,
-                          py:.5,
+                          py: 0.5,
                         }}
                         variant="outlined"
                       >

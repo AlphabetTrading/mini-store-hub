@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import { User } from "../../../types/user";
+import { Meta } from "../../../types/common";
 
 export const GET_ME = gql`
   query Me {
@@ -23,12 +24,13 @@ export const GET_ME = gql`
 export interface UsersData {
   users: {
     items: User[];
+    meta: Meta;
   };
 }
 
 export const USERS = gql`
-  query Users {
-    users {
+  query Users($paginationInput: PaginationInput) {
+    users(paginationInput: $paginationInput) {
       items {
         id
         firstName
@@ -52,6 +54,11 @@ export const USERS = gql`
           name
           id
         }
+      }
+      meta {
+        limit
+        count
+        page
       }
     }
   }

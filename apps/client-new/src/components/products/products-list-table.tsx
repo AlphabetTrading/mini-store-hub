@@ -11,7 +11,6 @@ import { WarehouseStockData } from "@/graphql/products/queries";
 import ProductsListRow from "./products-list-row";
 import { Product } from "../../../types/product";
 
-
 type Props = {
   products: Product[];
 };
@@ -28,32 +27,30 @@ const ProductsListTable = ({ products }: Props) => {
   };
 
   return (
-    <div>
-      <Scrollbar>
-        <Table sx={{ minWidth: 1200 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Product Name</TableCell>
-              <TableCell>Serial Number</TableCell>
-              <TableCell>Product Category</TableCell>
-              <TableCell>Unit</TableCell>
-              <TableCell>Purchase Price</TableCell>
-              <TableCell>Selling Price</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products.map((product, idx) => (
-              <ProductsListRow
-                key={idx}
-                product={product}
-                handleItemToggle={handleItemToggle}
-                selected={product.id === selectedItem}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </Scrollbar>
+    <div style={{ overflowX: "auto" }}>
+      <Table sx={{ minWidth: 1200 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Product Name</TableCell>
+            <TableCell>Serial Number</TableCell>
+            <TableCell>Product Category</TableCell>
+            <TableCell>Unit</TableCell>
+            <TableCell>Purchase Price</TableCell>
+            <TableCell>Selling Price</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((product, idx) => (
+            <ProductsListRow
+              key={idx}
+              product={product}
+              handleItemToggle={handleItemToggle}
+              selected={product.id === selectedItem}
+            />
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
