@@ -21,7 +21,6 @@ const NotificationDetailScreen = ({ route }: any) => {
     route.params?.notificationID || ""
   );
   const { authState } = useAuth();
-  console.log(route, " iwwws data");
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -53,7 +52,6 @@ const NotificationDetailScreen = ({ route }: any) => {
   // }, [navigation]);
 
   const hasReadNotification = (data: any) => {
-    console.log(data, " is the nonoooooooo");
     return (
       data.notificationById.isRead ||
       data.notificationById?.notificationReads.filter(

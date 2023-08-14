@@ -11,8 +11,6 @@ type Props = {};
 const ProfileScreen = (props: Props) => {
   const authState = useAuth();
   const { data, loading, error, refetch } = useQuery(GET_ME_QUERY);
-  console.log(data, error, "ME");
-  console.log(authState, "AUTH");
   return (
     <BaseLayout>
       {loading ? (

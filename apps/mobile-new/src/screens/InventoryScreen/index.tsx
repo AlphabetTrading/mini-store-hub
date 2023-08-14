@@ -14,13 +14,44 @@ import { useNavigation } from "@react-navigation/native";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useQuery } from "@apollo/client";
 import { BaseLayout } from "../../components/BaseLayout";
-import SearchBar from "../../components/SearchBar";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
 const InventoryScreen = (props: Props) => {
   const navigation = useNavigation();
   const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
+
+  const { theme } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 15,
+      backgroundColor: theme.colors.background,
+    },
+    categoryItem: {
+      // backgroundColor: "#7B7B7B1A",
+      height: 80,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 15,
+      // height: 75,
+    },
+    categoryImage: {
+      justifyContent: "center",
+      alignItems: "center",
+      maxWidth: "70%",
+      maxHeight: "70%",
+    },
+    categoryText: {
+      color: theme.colors.text,
+      fontSize: 11,
+      fontFamily: "InterLight",
+    },
+  });
+
   return (
     <BaseLayout>
       {loading ? (
@@ -31,11 +62,13 @@ const InventoryScreen = (props: Props) => {
         </View>
       ) : (
         <View style={styles.container}>
-          <SearchBar />
+          {/* <SearchBar searchPhrase={""} setSearchPhrase={function (value: React.SetStateAction<string>): void {
+              throw new Error("Function not implemented.");
+            } } /> */}
           <Text
             style={{
               marginLeft: 8,
-              color: "#828282",
+              color: theme.colors.text,
               fontFamily: "InterBold",
               textTransform: "uppercase",
             }}
@@ -44,23 +77,29 @@ const InventoryScreen = (props: Props) => {
           </Text>
           <View
             style={{
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               width: "100%",
+              paddingVertical: 10,
             }}
           >
             {data.categories.items.length > 0 ? (
               <FlatList
                 data={data.categories.items}
+                keyExtractor={(item) => item.id}
+                numColumns={3}
+                ItemSeparatorComponent={() => (
+                  <View style={{ width: 10, height: 10 }} />
+                )}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
-                      backgroundColor: Colors.light.background,
+                      backgroundColor: theme.colors.primary,
                       maxWidth: "100%",
                       height: "100%",
-                      flex: 1 / 4,
+                      flex: 1 / 3,
                       alignItems: "center",
-                      margin: 8,
-                      gap: 4,
+                      marginHorizontal: 5,
+                      borderRadius: 10,
                     }}
                     onPress={() => {
                       navigation.navigate("Root", {
@@ -85,8 +124,6 @@ const InventoryScreen = (props: Props) => {
                     <Text style={styles.categoryText}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
-                keyExtractor={(item) => item.id}
-                numColumns={4}
               />
             ) : (
               <View
@@ -109,31 +146,3 @@ const InventoryScreen = (props: Props) => {
 };
 
 export default InventoryScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: Colors.light.background,
-  },
-  categoryItem: {
-    backgroundColor: "#7B7B7B1A",
-    height: 80,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 15,
-    // height: 75,
-  },
-  categoryImage: {
-    justifyContent: "center",
-    alignItems: "center",
-    maxWidth: "70%",
-    maxHeight: "70%",
-  },
-  categoryText: {
-    color: "#777777",
-    fontSize: 11,
-    fontFamily: "InterLight",
-  },
-});

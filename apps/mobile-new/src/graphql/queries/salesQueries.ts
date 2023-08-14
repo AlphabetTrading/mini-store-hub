@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const GET_SALES_TRANSACTIONS_BY_RETAIL_SHOP = gql`
-  query SaleTransactionsByRetailShop(
+  query saleTransaction(
     $retailShopId: String!
-    $orderBy: SaleTransactionOrder
+    $orderBy: OrderBySaleTransactionInput
   ) {
     saleTransactionsByRetailShop(
       retailShopId: $retailShopId

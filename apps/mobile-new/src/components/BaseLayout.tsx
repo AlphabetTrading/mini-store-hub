@@ -1,15 +1,6 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  ViewStyle,
-  Platform,
-  StatusBar,
-} from "react-native";
+import { SafeAreaView, StyleSheet, ViewStyle } from "react-native";
 
-import Loading from "./Loading";
-import { useLoading } from "../contexts/loading";
-import Colors from "../constants/Colors";
-
+import { useAppTheme } from "../contexts/preference";
 export const BaseLayout = ({
   children,
   style,
@@ -17,14 +8,14 @@ export const BaseLayout = ({
   children: any;
   style?: ViewStyle;
 }) => {
+  const { theme } = useAppTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+  });
   return (
     <SafeAreaView style={[styles.container, style]}>{children}</SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-});

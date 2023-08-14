@@ -1,10 +1,9 @@
 import { StyleSheet, Text, View, RefreshControl } from "react-native";
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import AuthStack from "./AuthStack";
-import Colors from "../constants/Colors";
 import { useAuth } from "../contexts/auth";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { useNotifications } from "../hooks/useNotifications";
@@ -14,11 +13,23 @@ import { NotificationTabParamList, RootStackParamList } from "../types";
 import AppStack from "./AppStack";
 import NotificationDetailScreen from "../screens/Notifications/NotificationDetailScreen";
 import NotificationScreen from "../screens/Notifications/NotificationScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+import { useLocalization } from "../contexts/localization";
+import { useAppTheme } from "../contexts/preference";
+import { adaptNavigationTheme } from "react-native-paper";
 
 type Props = {};
 const Navigation = (props: Props) => {
+  const { LightTheme } = adaptNavigationTheme({
+    reactNavigationLight: DefaultTheme,
+  });
+
   return (
-    <NavigationContainer linking={LinkingConfiguration} fallback={<Loading />}>
+    <NavigationContainer
+      linking={LinkingConfiguration}
+      fallback={<Loading />}
+      theme={LightTheme}
+    >
       <RootNavigator />
     </NavigationContainer>
   );
@@ -51,7 +62,8 @@ function RootNavigator() {
 
   const RootStack = createNativeStackNavigator<RootStackParamList>();
   const { authState } = useAuth();
-  console.log(authState, " is auth state");
+  const { theme } = useAppTheme();
+  const { t } = useLocalization();
   return (
     <RootStack.Navigator initialRouteName={"Root"}>
       {authState !== null ? (
@@ -66,6 +78,9 @@ function RootNavigator() {
             component={NotificationStack}
             options={{
               headerShown: false,
+              headerStyle: {
+                backgroundColor: theme.colors.primary,
+              },
             }}
           />
           <RootStack.Screen
@@ -74,7 +89,19 @@ function RootNavigator() {
             options={{
               headerShown: true,
               headerStyle: {
-                backgroundColor: Colors.light.tint,
+                backgroundColor: theme.colors.primary,
+              },
+              headerTintColor: "#FFF",
+            }}
+          />
+          <RootStack.Screen
+            name="Settings"
+            component={SettingsScreen}
+            options={{
+              headerShown: true,
+              title: t("settings"),
+              headerStyle: {
+                backgroundColor: theme.colors.primary,
               },
               headerTintColor: "#FFF",
             }}
@@ -96,34 +123,37 @@ function RootNavigator() {
 const NotificationStackNavigator =
   createNativeStackNavigator<NotificationTabParamList>();
 
-export const NotificationStack = () => (
-  <NotificationStackNavigator.Navigator initialRouteName="Index">
-    <NotificationStackNavigator.Screen
-      name="Index"
-      component={NotificationScreen}
-      options={({ route }: any) => ({
-        title: "Notifications",
-        headerStyle: {
-          backgroundColor: Colors.light.tint,
-        },
-        headerTintColor: "#FFF",
-        headerShown: true,
-      })}
-    />
-    <NotificationStackNavigator.Screen
-      name="NotificationDetailScreen"
-      component={NotificationDetailScreen}
-      options={({ route }: any) => ({
-        title: route?.params?.name,
-        headerStyle: {
-          backgroundColor: Colors.light.tint,
-        },
-        headerTintColor: "#FFF",
-        headerShown: true,
-      })}
-    />
-  </NotificationStackNavigator.Navigator>
-);
+export const NotificationStack = () => {
+  const { theme } = useAppTheme();
+  return (
+    <NotificationStackNavigator.Navigator initialRouteName="Index">
+      <NotificationStackNavigator.Screen
+        name="Index"
+        component={NotificationScreen}
+        options={({ route }: any) => ({
+          title: "Notifications",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTintColor: "#FFF",
+          headerShown: true,
+        })}
+      />
+      <NotificationStackNavigator.Screen
+        name="NotificationDetailScreen"
+        component={NotificationDetailScreen}
+        options={({ route }: any) => ({
+          title: route?.params?.name,
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTintColor: "#FFF",
+          headerShown: true,
+        })}
+      />
+    </NotificationStackNavigator.Navigator>
+  );
+};
 
 // const InventoryStackNavigator =
 //   createNativeStackNavigator<InventoryTabParamList>();

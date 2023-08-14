@@ -1,7 +1,5 @@
 import {
   ActivityIndicator,
-  FlatList,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,12 +7,12 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
 import { INSIGHTS_TYPE } from "../../types";
 import { useGetInsightsData } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
@@ -25,12 +23,11 @@ const MostSoldItems = ({
   retailShopID: string;
   insightsType: INSIGHTS_TYPE;
 }) => {
+  const { theme } = useAppTheme();
   const { data, loading, refetch, error } = useGetInsightsData(
     retailShopID,
     insightsType
   );
-
-  console.log(data, error, " -----------");
 
   return loading ? (
     <View>
@@ -45,7 +42,7 @@ const MostSoldItems = ({
           <View
             key={index}
             style={{
-              backgroundColor: "#FFF",
+              backgroundColor: theme.colors.primary,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,
@@ -53,10 +50,22 @@ const MostSoldItems = ({
               borderRadius: 6,
             }}
           >
-            <Text style={{ fontFamily: "Inter-Medium", fontSize: 16 }}>
+            <Text
+              style={{
+                fontFamily: "InterMedium",
+                fontSize: 16,
+                color: theme.colors.text,
+              }}
+            >
               {index + 1}. {item.name}
             </Text>
-            <Text style={{ fontSize: 16, fontFamily: "Inter-Medium" }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: "InterMedium",
+                color: theme.colors.text,
+              }}
+            >
               120kg
             </Text>
           </View>
@@ -77,8 +86,7 @@ const TopSellingItems = ({
     retailShopID,
     insightsType
   );
-
-  console.log(data, error, " -----------");
+  const { theme } = useAppTheme();
 
   return loading ? (
     <View>
@@ -93,7 +101,7 @@ const TopSellingItems = ({
           <View
             key={index}
             style={{
-              backgroundColor: "#FFF",
+              backgroundColor: theme.colors.primary,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,
@@ -101,10 +109,22 @@ const TopSellingItems = ({
               borderRadius: 6,
             }}
           >
-            <Text style={{ fontFamily: "Inter-Medium", fontSize: 16 }}>
+            <Text
+              style={{
+                fontFamily: "InterMedium",
+                fontSize: 16,
+                color: theme.colors.text,
+              }}
+            >
               {index + 1}. {item.name}
             </Text>
-            <Text style={{ fontSize: 16, fontFamily: "Inter-Medium" }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: "InterMedium",
+                color: theme.colors.text,
+              }}
+            >
               120kg
             </Text>
           </View>
@@ -118,6 +138,14 @@ const InsightsScreen = (props: Props) => {
   const navigation = useNavigation();
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
+  const { theme } = useAppTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 15,
+      backgroundColor: theme.colors.background,
+    },
+  });
 
   return (
     <BaseLayout>
@@ -126,7 +154,7 @@ const InsightsScreen = (props: Props) => {
           <Text
             style={{
               textTransform: "uppercase",
-              color: "#828282",
+              color: theme.colors.textSecondary,
               marginBottom: 20,
             }}
           >
@@ -154,7 +182,9 @@ const InsightsScreen = (props: Props) => {
               });
             }}
           >
-            <Text style={{ color: "#5684E0", fontFamily: "InterMedium" }}>
+            <Text
+              style={{ color: theme.colors.accent, fontFamily: "InterMedium" }}
+            >
               See More
             </Text>
           </TouchableOpacity>
@@ -162,7 +192,7 @@ const InsightsScreen = (props: Props) => {
           <Text
             style={{
               textTransform: "uppercase",
-              color: "#828282",
+              color: theme.colors.textSecondary,
               marginBottom: 20,
             }}
           >
@@ -190,7 +220,9 @@ const InsightsScreen = (props: Props) => {
               });
             }}
           >
-            <Text style={{ color: "#5684E0", fontFamily: "InterMedium" }}>
+            <Text
+              style={{ color: theme.colors.accent, fontFamily: "InterMedium" }}
+            >
               See More
             </Text>
           </TouchableOpacity>
@@ -201,11 +233,3 @@ const InsightsScreen = (props: Props) => {
 };
 
 export default InsightsScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: Colors.light.background,
-  },
-});

@@ -19,6 +19,8 @@ import { useAuth } from "../../contexts/auth";
 import { GET_RETAIL_SHOP_PRODUCTS_SIMPLE } from "../../graphql/queries/retailShopQuery";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import AsyncStorageUtils from "../../utils/async_storage";
+import { useAppTheme } from "@/src/contexts/preference";
 type Props = {};
 
 const SelectItem = () => {
@@ -26,12 +28,11 @@ const SelectItem = () => {
   const { categoryID } = route.params;
   const navigation = useNavigation();
   const [alreadySelected, setAlreadySelected] = useState<any[]>([]);
-
+  const { theme } = useAppTheme();
   const fetchCheckout = useCallback(async () => {
-    const prevCheckout = await SecureStore.getItemAsync("checkout");
-    const items = JSON.parse(prevCheckout ? prevCheckout : "");
+    // const prevCheckout = await SecureStore.getItemAsync("checkout");
+    const items = await AsyncStorageUtils.getItem("checkout");
     setAlreadySelected(items);
-    console.log("prevItems", items);
   }, [route]);
 
   useEffect(() => {
@@ -61,7 +62,10 @@ const SelectItem = () => {
         alreadySelected.filter((filterItem) => filterItem.id !== stockItem.id)
       );
     } else {
-      setAlreadySelected([...alreadySelected, stockItem]);
+      setAlreadySelected([
+        ...alreadySelected,
+        { ...stockItem, selectedQuantity: 1 },
+      ]);
     }
   };
   const [refreshing, setRefreshing] = React.useState(false);
@@ -91,14 +95,14 @@ const SelectItem = () => {
         >
           <View
             style={{
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               width: "100%",
             }}
           >
             {data.retailShopStockByRetailShopId.items.length > 0 ? (
               <View
                 style={{
-                  backgroundColor: Colors.light.background,
+                  backgroundColor: theme.colors.background,
                   width: "100%",
                 }}
               >
@@ -108,7 +112,7 @@ const SelectItem = () => {
                   renderItem={({ item, index }) => (
                     <TouchableOpacity
                       style={{
-                        backgroundColor: Colors.light.background,
+                        backgroundColor: theme.colors.background,
                         marginVertical: 4,
                       }}
                       onPress={() => {
@@ -202,11 +206,11 @@ const SelectItem = () => {
               margin: 10,
             }}
             onPress={async () => {
-              await SecureStore.setItemAsync(
-                "checkout",
-                JSON.stringify(alreadySelected)
-              );
-              console.log(await SecureStore.getItemAsync("checkout"));
+              // await SecureStore.setItemAsync(
+              //   "checkout",
+              //   JSON.stringify(alreadySelected)
+              // );
+              await AsyncStorageUtils.setItem("checkout", alreadySelected);
               navigation.navigate("Root", {
                 screen: "NewTransactionRoot",
                 params: { screen: "Index" },

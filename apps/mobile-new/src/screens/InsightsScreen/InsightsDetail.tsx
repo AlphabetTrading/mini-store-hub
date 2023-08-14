@@ -15,6 +15,7 @@ import {
   useGetInsightsDataDetail,
 } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
+import { AppTheme, useAppTheme } from "@/src/contexts/preference";
 
 const MostSoldItems = ({
   retailShopID,
@@ -27,6 +28,8 @@ const MostSoldItems = ({
     retailShopID,
     insightsType
   );
+
+  const { theme } = useAppTheme();
 
   return loading ? (
     <View>
@@ -41,7 +44,7 @@ const MostSoldItems = ({
           <View
             key={index}
             style={{
-              backgroundColor: "#FFF",
+              backgroundColor: theme.colors.primary,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,
@@ -49,10 +52,22 @@ const MostSoldItems = ({
               borderRadius: 6,
             }}
           >
-            <Text style={{ fontFamily: "Inter-Medium", fontSize: 16 }}>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontFamily: "InterMedium",
+                fontSize: 16,
+              }}
+            >
               {index + 1}. {item.name}
             </Text>
-            <Text style={{ fontSize: 16, fontFamily: "Inter-Medium" }}>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 16,
+                fontFamily: "InterMedium",
+              }}
+            >
               120kg
             </Text>
           </View>
@@ -73,8 +88,6 @@ const TopSellingItems = ({
     retailShopID,
     insightsType
   );
-
-  console.log(data, error, " -----------");
 
   return loading ? (
     <View>
@@ -97,10 +110,10 @@ const TopSellingItems = ({
               borderRadius: 6,
             }}
           >
-            <Text style={{ fontFamily: "Inter-Medium", fontSize: 16 }}>
+            <Text style={{ fontFamily: "InterMedium", fontSize: 16 }}>
               {index + 1}. {item.name}
             </Text>
-            <Text style={{ fontSize: 16, fontFamily: "Inter-Medium" }}>
+            <Text style={{ fontSize: 16, fontFamily: "InterMedium" }}>
               120kg
             </Text>
           </View>
@@ -130,6 +143,14 @@ const InsightsDetailScreen = ({
 
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
+  const { theme } = useAppTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 15,
+      backgroundColor: theme.colors.background,
+    },
+  });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -153,11 +174,3 @@ const InsightsDetailScreen = ({
 };
 
 export default InsightsDetailScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: Colors.light.background,
-  },
-});

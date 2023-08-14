@@ -11,7 +11,6 @@ export const useNotifications = () => {
   const { addPushToken, setAllowsNotifications } = useUser();
   const navigation = useNavigation();
   const { authState } = useAuth();
-  console.log(authState, "authState");
 
   const registerForPushNotificationsAsync = async (alertUser?: boolean) => {
     if (Device.isDevice) {

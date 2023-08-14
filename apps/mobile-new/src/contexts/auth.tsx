@@ -73,8 +73,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthContextProvider(props: ProviderProps) {
   const [authState, setAuthState] = useState<AuthState | null | undefined>();
-  const { loading, setLoading } = useLoading();
-  console.log(loading, " loading");
   // get user from async storage, and set it to state
   const fetchData = useCallback(async () => {
     const localState = await SecureStore.getItemAsync("login");
@@ -137,7 +135,6 @@ export function AuthContextProvider(props: ProviderProps) {
           },
         },
       });
-      console.log(res, " res");
       await SecureStore.setItemAsync("login", JSON.stringify(res.data.login));
       setAuthState(res.data.login);
       const token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -163,21 +160,18 @@ export function AuthContextProvider(props: ProviderProps) {
     device_type: string
   ) => {
     try {
-      console.log(authState, "authState");
       const client = apolloClient(authState.accessToken);
       const notificationInput = {
         device_type,
         token,
         userId: authState.user.id,
       };
-      console.log(notificationInput, "notificationInput");
       const res = await client.mutate({
         mutation: ACCEPT_NOTIFICATION_MUTATION,
         variables: {
           notificationInput,
         },
       });
-      console.log(res.data, "notification");
       return { data: res.data, error: undefined };
     } catch (error) {
       console.log(error);

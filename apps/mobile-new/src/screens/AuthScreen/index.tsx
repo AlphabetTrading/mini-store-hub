@@ -17,6 +17,7 @@ import { useAuth } from "../../contexts/auth";
 import { notifyMessage } from "../../components/Toast";
 import { StatusBar } from "expo-status-bar";
 import { useLoading } from "../../contexts/loading";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
@@ -32,12 +33,56 @@ const loginSchema = Yup.object().shape({
 
 const LoginScreen = ({ navigation }: any) => {
   const { signIn } = useAuth();
+  const { theme } = useAppTheme();
   const [viewPassword, setViewPassword] = useState(false);
   // const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const INITIAL_VALUES: FormValues = {
     userName: "",
     password: "",
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      padding: 30,
+      backgroundColor: theme.colors.background,
+    },
+    inputStyle: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.colors.primary,
+      padding: 16,
+      borderRadius: 12,
+      gap: 16,
+    },
+    inputTextStyle: {
+      flex: 1,
+      color: theme.colors.text,
+      fontSize: 18,
+      width: "100%",
+    },
+    forgotPassword: {
+      color: theme.colors.accent,
+      fontSize: 16,
+      marginTop: 30,
+      textAlign: "right",
+      textTransform: "capitalize",
+    },
+    loginButton: {
+      backgroundColor: theme.colors.primary,
+      padding: 16,
+      marginTop: 30,
+      alignItems: "center",
+      borderRadius: 6,
+    },
+    loginButtonText: {
+      fontFamily: "InterSemiBold",
+      color: theme.colors.white,
+      fontSize: 18,
+      textTransform: "uppercase",
+    },
+  });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -46,7 +91,7 @@ const LoginScreen = ({ navigation }: any) => {
 
         <Text
           style={{
-            color: "#5684E0",
+            color: theme.colors.text,
             fontSize: 48,
             fontFamily: "InterMedium",
           }}
@@ -55,7 +100,7 @@ const LoginScreen = ({ navigation }: any) => {
         </Text>
         <Text
           style={{
-            color: "#BFBFBF",
+            color: theme.colors.textSecondary,
             fontSize: 18,
             fontFamily: "InterRegular",
           }}
@@ -70,6 +115,7 @@ const LoginScreen = ({ navigation }: any) => {
             try {
               const res = await signIn(values.userName, values.password);
               if (res.error) {
+                console.log(res.error, " res ", values);
                 if (
                   res.error?.message === "Invalid Credentials" ||
                   res.error?.message ===
@@ -186,6 +232,7 @@ const LoginScreen = ({ navigation }: any) => {
               <TouchableOpacity
                 style={styles.loginButton}
                 onPress={() => handleSubmit()}
+                disabled={isSubmitting}
               >
                 <Text style={styles.loginButtonText}>
                   {isSubmitting ? <ActivityIndicator /> : "Sign In"}
@@ -200,46 +247,3 @@ const LoginScreen = ({ navigation }: any) => {
 };
 
 export default LoginScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 30,
-    backgroundColor: "#FFF",
-  },
-  inputStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F9F9F9",
-    padding: 16,
-    borderRadius: 12,
-    gap: 16,
-  },
-  inputTextStyle: {
-    flex: 1,
-    color: "#6C6C6C",
-    fontSize: 18,
-    width: "100%",
-  },
-  forgotPassword: {
-    color: "#5684E0",
-    fontSize: 16,
-    marginTop: 30,
-    textAlign: "right",
-    textTransform: "capitalize",
-  },
-  loginButton: {
-    backgroundColor: "#5684E0",
-    padding: 16,
-    marginTop: 30,
-    alignItems: "center",
-    borderRadius: 6,
-  },
-  loginButtonText: {
-    fontFamily: "InterSemiBold",
-    color: "#FFF",
-    fontSize: 18,
-    textTransform: "uppercase",
-  },
-});

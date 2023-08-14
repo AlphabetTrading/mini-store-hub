@@ -9,13 +9,21 @@ export const GET_RETAIL_SHOP_PRODUCTS_SIMPLE = gql`
     ) {
       items {
         id
+        productId
         quantity
         product {
           id
           name
           amharicName
+          serialNumber
+          unit
+          images
+          category {
+            name
+          }
           activePrice {
             price
+            purchasedPrice
           }
         }
       }
@@ -38,6 +46,10 @@ export const GET_RETAIL_SHOP_PRODUCTS = gql`
           name
           serialNumber
           unit
+          images
+          category {
+            name
+          }
           amharicName
           amharicDescription
           activePrice {
@@ -67,6 +79,9 @@ export const GET_RETAIL_SHOP_PRODUCT_DETAIL = gql`
         amharicDescription
         serialNumber
         images
+        category {
+          name
+        }
         activePrice {
           price
         }

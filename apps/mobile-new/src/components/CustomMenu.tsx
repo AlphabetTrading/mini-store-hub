@@ -1,18 +1,11 @@
-import {
-  AntDesign,
-  Entypo,
-  Feather,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
-import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
+import { View, Text, Pressable } from "react-native";
+import { Menu, MenuItem } from "react-native-material-menu";
 import { useAuth } from "../contexts/auth";
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { useLocalization } from "../contexts/localization";
+import { useAppTheme } from "../contexts/preference";
 
 type Props = {
   options: any[];
@@ -23,38 +16,48 @@ const CustomMaterialMenu = ({}: any) => {
   const [visible, setVisible] = useState(false);
   const hideMenu = () => setVisible(false);
   const navigation = useNavigation();
+  const { theme } = useAppTheme();
   // const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
+  const { t } = useLocalization();
   const showMenu = () => setVisible(true);
 
   const options = [
     {
       id: 1,
-      title: "View Profile",
-      icon: <MaterialCommunityIcons name="account" color="#FF0000" size={24} />,
+      title: t("profile"),
+      icon: (
+        <MaterialCommunityIcons
+          name="account"
+          color={theme.colors.text}
+          size={24}
+        />
+      ),
       action: () => {
         navigation.navigate("Profile");
       },
     },
     {
       id: 2,
-      title: "Settings",
-      icon: <Feather name="settings" color="#FF0000" size={24} />,
-      action: () => {},
+      title: t("settings"),
+      icon: <Feather name="settings" color={theme.colors.text} size={24} />,
+      action: () => {
+        navigation.navigate("Settings");
+      },
     },
     {
       id: 3,
-      title: "Logout",
-      icon: <MaterialCommunityIcons name="logout" color="#FF0000" size={24} />,
+      title: t("logout"),
+      icon: (
+        <MaterialCommunityIcons
+          name="logout"
+          color={theme.colors.text}
+          size={24}
+        />
+      ),
       action: async () => {
         const res = await signOut();
         navigation.reset({ index: 0, routes: [{ name: "Auth" }] });
-        console.log("logout", res);
-        // hideMenu();
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name: "Login" }],
-        // });
       },
     },
   ];
@@ -62,12 +65,16 @@ const CustomMaterialMenu = ({}: any) => {
   return (
     <View>
       <Menu
+        style={{
+          backgroundColor: theme.colors.primary,
+          elevation: 15,
+        }}
         visible={visible}
         anchor={
           <Entypo
             name="dots-three-vertical"
             size={24}
-            color="white"
+            color={theme.colors.text}
             onPress={showMenu}
             style={{ marginHorizontal: 10 }}
           />
@@ -90,8 +97,8 @@ const CustomMaterialMenu = ({}: any) => {
               {option.icon}
               <Text
                 style={{
-                  color: "red",
-                  fontFamily: "Inter-Regular",
+                  color: theme.colors.text,
+                  fontFamily: "InterRegular",
                 }}
               >
                 {option.title}

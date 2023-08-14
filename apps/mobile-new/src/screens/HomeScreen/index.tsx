@@ -4,19 +4,24 @@ import { useState } from "react";
 import { BaseLayout } from "../../components/BaseLayout";
 import { StatusBar } from "expo-status-bar";
 import DashboardComponents from "../../components/HomePage/DashboardComponents";
+// import i18n from "../../i18n";
+import { useLocalization } from "../../contexts/localization";
+import { useAppTheme } from "@/src/contexts/preference";
 export default function HomeScreen() {
+  const { theme } = useAppTheme();
+  const { t } = useLocalization();
   const filters = [
-    { id: 1, name: "daily" },
-    { id: 2, name: "weekly" },
-    { id: 3, name: "monthly" },
+    { id: "daily", name: t("daily") },
+    { id: "weekly", name: t("weekly") },
+    { id: "monthly", name: t("monthly") },
   ];
-  const [selectedFilter, setSelectedFilter] = useState("daily");
+  const [selectedFilter, setSelectedFilter] = useState(filters[0].id);
 
-  console.log("Home");
   return (
     <BaseLayout
       style={{
         position: "relative",
+        backgroundColor: theme.colors.background,
       }}
     >
       <StatusBar style="light" />
@@ -34,12 +39,12 @@ export default function HomeScreen() {
           }}
         >
           {filters.map(
-            (filter: { id: number; name: string }, index: number) => {
+            (filter: { id: string; name: string }, index: number) => {
               return (
                 <TouchableWithoutFeedback
-                  key={index}
+                  key={filter.id}
                   onPress={() => {
-                    setSelectedFilter(filter.name);
+                    setSelectedFilter(filter.id);
                   }}
                 >
                   <View
@@ -50,7 +55,9 @@ export default function HomeScreen() {
                       borderColor: "#D4D4D4",
                       paddingVertical: 8,
                       backgroundColor:
-                        selectedFilter === filter.name ? "#5684E033" : "#fff",
+                        selectedFilter === filter.id
+                          ? "#5684E033"
+                          : theme.colors.primary,
                     }}
                   >
                     <Text
@@ -58,11 +65,9 @@ export default function HomeScreen() {
                         textAlign: "center",
                         textTransform: "capitalize",
                         color:
-                          selectedFilter === filter.name
-                            ? "#5684E0"
-                            : "#6D6D6D",
+                          selectedFilter === filter.id ? "#5684E0" : "#6D6D6D",
                         fontFamily:
-                          selectedFilter === filter.name
+                          selectedFilter === filter.id
                             ? "InterSemiBold"
                             : "InterRegular",
                       }}

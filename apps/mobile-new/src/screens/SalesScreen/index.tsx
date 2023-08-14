@@ -16,24 +16,31 @@ import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
 import { format } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
 const SalesScreen = (props: Props) => {
   const navigation = useNavigation();
   const { authState } = useAuth();
+  const { theme } = useAppTheme();
   const { loading, data, error, refetch } = useQuery(
     GET_SALES_TRANSACTIONS_BY_RETAIL_SHOP,
     {
       variables: {
         retailShopId: authState?.user.retailShop[0].id,
-        orderBy: {
-          field: "createdAt",
-          direction: "desc",
-        },
       },
     }
   );
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 15,
+      backgroundColor: theme.colors.background,
+    },
+  });
+
   return (
     <BaseLayout>
       {loading ? (
@@ -43,76 +50,50 @@ const SalesScreen = (props: Props) => {
           <ActivityIndicator size="large" />
         </View>
       ) : (
-        <View style={styles.container}>
-          <View
-            style={{
-              backgroundColor: Colors.light.background,
-              width: "100%",
-            }}
-          >
-            <FlatList
-              data={data.saleTransactionsByRetailShop.items}
-              ListHeaderComponent={
-                <Text
-                  style={{
-                    marginLeft: 8,
-                    color: "#828282",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Sales
-                </Text>
-              }
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#FFF",
-                    marginVertical: 4,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    padding: 16,
-                    paddingHorizontal: 18,
-                    borderRadius: 10,
-                  }}
-                  onPress={() => {
-                    navigation.navigate("Root", {
-                      screen: "SalesRoot",
-                      params: {
-                        screen: "TransactionDetailScreen",
-                        params: {
-                          transactionID: item.id,
-                          totalPrice: item.totalPrice,
-                        },
-                      },
-                    });
-                  }}
-                >
-                  <View>
-                    <Text
-                      style={{
-                        fontFamily: "InterSemiBold",
-                        fontSize: 18,
-                        color: "#4F4F4F",
-                      }}
-                    >
-                      {format(new Date(item.createdAt), "MMM dd yyyy")}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: "InterRegular",
-                        fontSize: 14,
-                        color: "#80848A",
-                      }}
-                    >
-                      {format(new Date(item.createdAt), "pp")}
-                    </Text>
-                  </View>
-                  <View
+        data?.saleTransactionsByRetailShop && (
+          <View style={styles.container}>
+            <View
+              style={{
+                backgroundColor: theme.colors.background,
+                width: "100%",
+              }}
+            >
+              <FlatList
+                data={data.saleTransactionsByRetailShop.items}
+                ListHeaderComponent={
+                  <Text
                     style={{
+                      marginLeft: 8,
+                      color: theme.colors.text,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Sales
+                  </Text>
+                }
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: theme.colors.primary,
+                      marginVertical: 4,
                       flexDirection: "row",
-                      gap: 12,
-                      alignItems: "center",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      padding: 16,
+                      paddingHorizontal: 18,
+                      borderRadius: 10,
+                    }}
+                    onPress={() => {
+                      navigation.navigate("Root", {
+                        screen: "SalesRoot",
+                        params: {
+                          screen: "TransactionDetailScreen",
+                          params: {
+                            transactionID: item.id,
+                            totalPrice: item.totalPrice,
+                          },
+                        },
+                      });
                     }}
                   >
                     <View>
@@ -120,41 +101,65 @@ const SalesScreen = (props: Props) => {
                         style={{
                           fontFamily: "InterSemiBold",
                           fontSize: 18,
-                          color: "#4F4F4F",
+                          color: theme.colors.text,
                         }}
                       >
-                        ETB {item.totalPrice}
+                        {format(new Date(item.createdAt), "MMM dd yyyy")}
                       </Text>
                       <Text
                         style={{
                           fontFamily: "InterRegular",
                           fontSize: 14,
-                          color: "#80848A",
-                          textAlign: "right",
+                          color: theme.colors.text,
                         }}
                       >
-                        {item.saleTransactionItems?.length} Items
+                        {format(new Date(item.createdAt), "pp")}
                       </Text>
                     </View>
-                    <Entypo name="chevron-right" size={24} color="#4F4F4F" />
-                  </View>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item.id}
-            />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 12,
+                        alignItems: "center",
+                      }}
+                    >
+                      <View>
+                        <Text
+                          style={{
+                            fontFamily: "InterSemiBold",
+                            fontSize: 18,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          ETB {item.totalPrice}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "InterRegular",
+                            fontSize: 14,
+                            color: theme.colors.text,
+                            textAlign: "right",
+                          }}
+                        >
+                          {item.saleTransactionItems?.length} Items
+                        </Text>
+                      </View>
+                      <Entypo
+                        name="chevron-right"
+                        size={24}
+                        color={theme.colors.text}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
           </View>
-        </View>
+        )
       )}
     </BaseLayout>
   );
 };
 
 export default SalesScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: Colors.light.background,
-  },
-});

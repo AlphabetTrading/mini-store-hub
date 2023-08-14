@@ -17,8 +17,6 @@ export const useGetInsightsData = (
     query = GET_PRODUCTS_BY_SOLD_QUANTITY_AND_BY_RETAIL_SHOP;
   }
 
-  console.log(query, "query");
-
   return useQuery(query, {
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",

@@ -1,5 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Loading from "../components/Loading";
+import AsyncStorageUtils from "../utils/async_storage";
+import { useAppTheme } from "./preference";
 
 interface LoadingContextProps {
   loading: boolean;
@@ -17,6 +19,20 @@ export const LoadingContext = createContext<LoadingContextProps | undefined>({
 
 export const LoadingContextProvider = (props: Props) => {
   const [loading, setLoading] = useState(false);
+  const { toggleTheme, theme } = useAppTheme();
+
+  useEffect(() => {
+    const fetchTheme = async () => {
+      const savedTheme = await AsyncStorageUtils.getItem("savedTheme");
+      if (!savedTheme) {
+        await AsyncStorageUtils.setItem("savedTheme", { mode: theme.mode });
+      } else {
+        if (savedTheme.mode !== theme.mode) toggleTheme();
+      }
+    };
+
+    fetchTheme();
+  }, []);
 
   return (
     <LoadingContext.Provider value={{ loading, setLoading }}>

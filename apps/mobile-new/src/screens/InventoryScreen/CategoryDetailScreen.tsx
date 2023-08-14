@@ -11,14 +11,15 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import Colors from "../../constants/Colors";
 import SearchBar from "../../components/SearchBar";
 import { useQuery } from "@apollo/client";
-import { GET_SINGLE_CATEGORY } from "../../graphql/queries/categoryQueries";
 import { GET_RETAIL_SHOP_PRODUCTS } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
+import SearchBarComponent from "../../components/NewTransaction/SearchBar";
+import { useLocalization } from "../../contexts/localization";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
@@ -27,9 +28,11 @@ const CategoryDetailScreen = ({
 }: {
   route: { params: { categoryID: string; categoryName: string } };
 }) => {
+  const { theme } = useAppTheme();
   const navigation = useNavigation();
   const categoryID = route.params.categoryID;
   const { authState } = useAuth();
+  const { t, locale } = useLocalization();
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
@@ -37,6 +40,7 @@ const CategoryDetailScreen = ({
         display: "none",
       },
     });
+
     return () =>
       navigation.getParent()?.setOptions({
         tabBarStyle: undefined,
@@ -94,6 +98,34 @@ const CategoryDetailScreen = ({
     return () => clearTimeout(timeout);
   }, [searchPhrase]);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      // padding: 15,
+      backgroundColor: theme.colors.background,
+    },
+    categoryItem: {
+      backgroundColor: "#7B7B7B1A",
+      height: 80,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 15,
+      // height: 75,
+    },
+    categoryImage: {
+      justifyContent: "center",
+      alignItems: "center",
+      maxWidth: "70%",
+      maxHeight: "70%",
+    },
+    categoryText: {
+      color: theme.colors.text,
+      fontSize: 11,
+      fontFamily: "InterLight",
+    },
+  });
+
   return (
     <BaseLayout>
       {loading ? (
@@ -103,32 +135,38 @@ const CategoryDetailScreen = ({
           <ActivityIndicator size="large" />
         </View>
       ) : (
-        <ScrollView
-          contentContainerStyle={styles.container}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          horizontal={true}
-          style={{ width: "100%" }}
-        >
+        <View style={{ width: "100%" }}>
+          <SearchBarComponent
+            onChangeText={(text) => {
+              setSearchPhrase(text);
+            }}
+            value={searchPhrase}
+          />
+          {/* <SearchBar
+              searchPhrase={searchPhrase}
+              setSearchPhrase={setSearchPhrase}
+            /> */}
           {filteredItems.length > 0 ? (
             <View
               style={{
-                backgroundColor: Colors.light.background,
+                backgroundColor: theme.colors.background,
                 width: "100%",
               }}
             >
-              <SearchBar
-                searchPhrase={searchPhrase}
-                setSearchPhrase={setSearchPhrase}
-              />
               <FlatList
+                contentContainerStyle={styles.container}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
                 data={filteredItems}
                 key={filteredItems.id}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
-                      backgroundColor: Colors.light.background,
+                      backgroundColor: theme.colors.background,
                       marginVertical: 4,
                     }}
                     key={item.id}
@@ -148,7 +186,9 @@ const CategoryDetailScreen = ({
                     <View
                       style={{
                         flexDirection: "row",
-                        backgroundColor: "#FFF",
+                        // backgroundColor: "#FFF",
+                        backgroundColor: theme.colors.primary,
+
                         width: "100%",
                         padding: 10,
                         paddingVertical: 15,
@@ -159,7 +199,9 @@ const CategoryDetailScreen = ({
                       <View
                         style={{
                           borderRadius: 100,
-                          backgroundColor: "#F0F0F0",
+                          // backgroundColor: "#F0F0F0",
+                          backgroundColor: theme.colors.background,
+
                           width: 60,
                           height: 60,
                         }}
@@ -167,17 +209,25 @@ const CategoryDetailScreen = ({
                       {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
                       <View style={{ flex: 1, gap: 5 }}>
                         <Text
-                          style={{ fontSize: 18, fontFamily: "InterMedium" }}
+                          style={{
+                            color: theme.colors.text,
+                            fontSize: 18,
+                            fontFamily: "InterMedium",
+                          }}
                         >
-                          {item.product.name}
+                          {/* {item.product.name} */}
+                          {locale === "en"
+                            ? item.product.name
+                            : item.product.amharicName}
                         </Text>
                         <Text
                           style={{
                             fontFamily: "InterRegular",
-                            color: "#80848A",
+                            // color: "#80848A",
+                            color: theme.colors.text,
                           }}
                         >
-                          Quantity: {item.quantity}
+                          {t("quantity")}: {item.quantity}
                         </Text>
                       </View>
                       <Text
@@ -186,10 +236,21 @@ const CategoryDetailScreen = ({
                           fontSize: 18,
                           fontFamily: "InterMedium",
                           alignSelf: "flex-end",
-                          color: "#626262",
+                          // color: "#626262",
+                          color: theme.colors.text,
                         }}
                       >
-                        ETB 35
+                        {locale === "en"
+                          ? `${
+                              item.product.activePrice
+                                ? item.product.activePrice.price
+                                : 29
+                            } ${t("etb")}`
+                          : `${t("etb")} ${
+                              item.product.activePrice
+                                ? item.product.activePrice.price
+                                : 29
+                            } `}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -205,43 +266,21 @@ const CategoryDetailScreen = ({
                 alignItems: "center",
               }}
             >
-              <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+              <Text
+                style={{
+                  color: theme.colors.text,
+                  fontSize: 18,
+                  fontFamily: "InterMedium",
+                }}
+              >
                 No Items Found
               </Text>
             </View>
           )}
-        </ScrollView>
+        </View>
       )}
     </BaseLayout>
   );
 };
 
 export default CategoryDetailScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // padding: 15,
-    backgroundColor: Colors.light.background,
-  },
-  categoryItem: {
-    backgroundColor: "#7B7B7B1A",
-    height: 80,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 15,
-    // height: 75,
-  },
-  categoryImage: {
-    justifyContent: "center",
-    alignItems: "center",
-    maxWidth: "70%",
-    maxHeight: "70%",
-  },
-  categoryText: {
-    color: "#777777",
-    fontSize: 11,
-    fontFamily: "InterLight",
-  },
-});

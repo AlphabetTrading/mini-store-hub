@@ -13,12 +13,14 @@ import { GET_RETAIL_SHOP_PRODUCT_DETAIL } from "../../graphql/queries/retailShop
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
 import { format } from "date-fns";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
 const ItemDetailScreen = ({ route }: any) => {
   const { itemID } = route.params;
   const { authState } = useAuth();
+  const { theme } = useAppTheme();
   const { loading, data, error, refetch } = useQuery(
     GET_RETAIL_SHOP_PRODUCT_DETAIL,
     {
@@ -28,6 +30,15 @@ const ItemDetailScreen = ({ route }: any) => {
       },
     }
   );
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 15,
+      backgroundColor: theme.colors.background,
+      gap: 5,
+    },
+  });
 
   return (
     <BaseLayout>
@@ -42,7 +53,7 @@ const ItemDetailScreen = ({ route }: any) => {
           <Text
             style={{
               marginLeft: 8,
-              color: "#828282",
+              color: theme.colors.textSecondary,
               fontFamily: "InterBold",
               textTransform: "uppercase",
             }}
@@ -51,7 +62,8 @@ const ItemDetailScreen = ({ route }: any) => {
           </Text>
           <View
             style={{
-              backgroundColor: "#FFF",
+              // backgroundColor: "#FFF",
+              backgroundColor: theme.colors.primary,
               width: "100%",
               justifyContent: "center",
               alignItems: "flex-start",
@@ -64,7 +76,9 @@ const ItemDetailScreen = ({ route }: any) => {
             <Text
               style={{
                 width: "100%",
-                color: "#80848A",
+                // color: "#80848A",
+                color: theme.colors.text,
+
                 fontFamily: "InterRegular",
                 fontSize: 14,
               }}
@@ -78,7 +92,9 @@ const ItemDetailScreen = ({ route }: any) => {
             <Text
               style={{
                 width: "100%",
-                color: "#2B2C2E",
+                // color: "#2B2C2E",
+                color: theme.colors.text,
+
                 fontFamily: "InterSemiBold",
                 fontSize: 18,
               }}
@@ -92,7 +108,9 @@ const ItemDetailScreen = ({ route }: any) => {
             <Text
               style={{
                 width: "100%",
-                color: "#80848A",
+                // color: "#80848A",
+                color: theme.colors.text,
+
                 fontFamily: "InterRegular",
                 fontSize: 14,
               }}
@@ -104,7 +122,9 @@ const ItemDetailScreen = ({ route }: any) => {
           <Text
             style={{
               marginLeft: 8,
-              color: "#828282",
+              // color: "#828282",
+              color: theme.colors.text,
+
               fontFamily: "InterBold",
               textTransform: "uppercase",
             }}
@@ -113,7 +133,6 @@ const ItemDetailScreen = ({ route }: any) => {
           </Text>
           <View
             style={{
-              backgroundColor: Colors.light.background,
               width: "100%",
             }}
           >
@@ -125,7 +144,9 @@ const ItemDetailScreen = ({ route }: any) => {
               renderItem={({ item, index }) => (
                 <View
                   style={{
-                    backgroundColor: "#FFF",
+                    // backgroundColor: "#FFF",
+                    backgroundColor: theme.colors.primary,
+
                     marginVertical: 4,
                   }}
                 >
@@ -141,7 +162,7 @@ const ItemDetailScreen = ({ route }: any) => {
                     <Text
                       style={{
                         width: 120,
-                        color: "#80848A",
+                        color: theme.colors.text,
                         fontFamily: "InterRegular",
                         fontSize: 16,
                       }}
@@ -172,7 +193,8 @@ const ItemDetailScreen = ({ route }: any) => {
                       </Svg>
                       <Text
                         style={{
-                          color: "#2B2C2E",
+                          // color: "#2B2C2E",
+                          color: theme.colors.text,
                           width: "100%",
                           textAlign: "right",
                           fontFamily: "InterMedium",
@@ -195,12 +217,3 @@ const ItemDetailScreen = ({ route }: any) => {
 };
 
 export default ItemDetailScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: Colors.light.background,
-    gap: 5,
-  },
-});
