@@ -85,13 +85,14 @@ export const lightTheme = {
     textSecondary: "#959595", // Secondary text color
     disabled: "rgba(0, 0, 0, 0.38)", // Disabled elements color
     placeholder: "rgba(0, 0, 0, 0.54)", // Placeholder text color
-    background: "#F8F9FA",
-    tint: tintColorLight,
+    background: "#FFF",
+    tint: "#5684E0",
     tabIconDefault: "#ccc",
-    tabIconSelected: tintColorLight,
+    tabIconSelected: "#5684E0",
     border: "#E3E3E3",
     notification: "#FF80AB",
     white: "#fff",
+    cardBackground: "#F8F9FA",
   },
 };
 
@@ -112,9 +113,10 @@ export const DarkTheme = {
     placeholder: "rgba(255, 255, 255, 0.54)", // Placeholder text color
     tint: "#FEFEFE",
     tabIconDefault: "#ccc",
-    tabIconSelected: tintColorDark,
+    tabIconSelected: "#212121",
     border: "#E3E3E3",
     notification: "#FF80AB",
     white: "#fff",
+    cardBackground: "#212121",
   },
 };

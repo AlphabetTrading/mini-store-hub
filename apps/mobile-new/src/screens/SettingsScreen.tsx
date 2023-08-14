@@ -1,6 +1,7 @@
 // SettingsScreen.js
 import React, { useState } from "react";
-import { View, Text } from "react-native"; // Import Picker for language selection
+import { View } from "react-native"; // Import Picker for language selection
+import { Text } from "react-native-paper";
 import AsyncStorageUtils from "../utils/async_storage";
 import { Picker } from "@react-native-picker/picker";
 import { useLocalization } from "../contexts/localization";

@@ -42,7 +42,7 @@ const AddTransactionItemsScreen = () => {
 
   const fetchCheckout = useCallback(async () => {
     const items = await AsyncStorageUtils.getItem("checkout");
-    setAlreadySelected(items);
+    if (items) setAlreadySelected(items);
   }, [route]);
 
   useEffect(() => {
@@ -91,27 +91,31 @@ const AddTransactionItemsScreen = () => {
   }, [selectedCategory]);
 
   const selectItem = (stockItem: any) => {
-    if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
-      setAlreadySelected(
-        alreadySelected.filter((filterItem) => filterItem.id !== stockItem.id)
-      );
-    } else {
-      setAlreadySelected([
-        ...alreadySelected,
-        { ...stockItem, selectedQuantity: 1 },
-      ]);
+    if (alreadySelected) {
+      if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
+        setAlreadySelected(
+          alreadySelected.filter((filterItem) => filterItem.id !== stockItem.id)
+        );
+      } else {
+        setAlreadySelected([
+          ...alreadySelected,
+          { ...stockItem, selectedQuantity: 1 },
+        ]);
+      }
     }
   };
   const updateItem = (stockItem: any) => {
-    if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
-      setAlreadySelected((prev) =>
-        prev.map((item) => {
-          if (item.id === stockItem.id) {
-            return stockItem;
-          }
-          return item;
-        })
-      );
+    if (alreadySelected) {
+      if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
+        setAlreadySelected((prev) =>
+          prev.map((item) => {
+            if (item.id === stockItem.id) {
+              return stockItem;
+            }
+            return item;
+          })
+        );
+      }
     }
   };
 
@@ -226,10 +230,11 @@ const AddTransactionItemsScreen = () => {
                       onRefresh={onRefresh}
                     />
                   }
-                  data={filteredProducts.sort(
-                    (a, b) =>
-                      alreadySelected.findIndex((i) => i.id === b.id) -
-                      alreadySelected.findIndex((i) => i.id === a.id)
+                  data={filteredProducts.sort((a, b) =>
+                    alreadySelected
+                      ? alreadySelected.findIndex((i) => i.id === b.id) -
+                        alreadySelected.findIndex((i) => i.id === a.id)
+                      : 1
                   )}
                   ItemSeparatorComponent={() => (
                     <View

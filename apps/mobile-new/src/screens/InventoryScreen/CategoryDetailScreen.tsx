@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "@/src/contexts/preference";
+import { Avatar } from "react-native-paper";
 
 type Props = {};
 
@@ -187,7 +188,7 @@ const CategoryDetailScreen = ({
                       style={{
                         flexDirection: "row",
                         // backgroundColor: "#FFF",
-                        backgroundColor: theme.colors.primary,
+                        backgroundColor: theme.colors.cardBackground,
 
                         width: "100%",
                         padding: 10,
@@ -196,16 +197,10 @@ const CategoryDetailScreen = ({
                         gap: 16,
                       }}
                     >
-                      <View
-                        style={{
-                          borderRadius: 100,
-                          // backgroundColor: "#F0F0F0",
-                          backgroundColor: theme.colors.background,
-
-                          width: 60,
-                          height: 60,
-                        }}
-                      ></View>
+                      <Avatar.Image
+                        source={{ uri: "https://picsum.photos/200" }}
+                        size={60}
+                      />
                       {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
                       <View style={{ flex: 1, gap: 5 }}>
                         <Text

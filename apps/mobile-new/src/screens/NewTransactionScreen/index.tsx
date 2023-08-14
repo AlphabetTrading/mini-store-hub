@@ -21,6 +21,7 @@ const CheckoutScreen = () => {
   const { theme } = useAppTheme();
   const fetchCheckoutItems = useCallback(async () => {
     const items = await AsyncStorageUtils.getItem("checkout");
+    if(items)
     setCheckoutItems(items);
   }, [navigation, route]);
 

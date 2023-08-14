@@ -63,7 +63,7 @@ const ItemDetailScreen = ({ route }: any) => {
           <View
             style={{
               // backgroundColor: "#FFF",
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               width: "100%",
               justifyContent: "center",
               alignItems: "flex-start",
@@ -145,7 +145,7 @@ const ItemDetailScreen = ({ route }: any) => {
                 <View
                   style={{
                     // backgroundColor: "#FFF",
-                    backgroundColor: theme.colors.primary,
+                    backgroundColor: theme.colors.cardBackground,
 
                     marginVertical: 4,
                   }}

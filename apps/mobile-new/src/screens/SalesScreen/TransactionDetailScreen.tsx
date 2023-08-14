@@ -69,7 +69,7 @@ const TransactionDetailScreen = ({ route }: any) => {
             </Text>
             <View
               style={{
-                backgroundColor: theme.colors.primary,
+                backgroundColor: theme.colors.cardBackground,
                 borderRadius: 6,
                 padding: 20,
                 marginTop: 12,

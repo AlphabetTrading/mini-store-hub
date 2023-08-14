@@ -28,7 +28,7 @@ type Props = {
 };
 
 const CategoryList = (props: Props) => {
-  const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
+  const { data } = useQuery(GET_CATEGORIES);
   const { theme } = useAppTheme();
   const [categories, setCategories] = useState<CategoryType[]>([]);
 
@@ -52,7 +52,7 @@ const CategoryList = (props: Props) => {
       color: "#FFF",
     },
     inactive: {
-      backgroundColor: theme.colors.primary,
+      backgroundColor: theme.colors.cardBackground,
       color: theme.colors.text,
     },
   });

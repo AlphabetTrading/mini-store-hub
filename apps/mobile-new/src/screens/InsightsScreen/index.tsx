@@ -42,7 +42,7 @@ const MostSoldItems = ({
           <View
             key={index}
             style={{
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,
@@ -101,7 +101,7 @@ const TopSellingItems = ({
           <View
             key={index}
             style={{
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,

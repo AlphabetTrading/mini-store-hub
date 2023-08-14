@@ -11,7 +11,6 @@ import { Card, Avatar } from "react-native-paper";
 import { useAppTheme } from "@/src/contexts/preference";
 import { Entypo } from "@expo/vector-icons";
 import { CheckoutItem } from "./TransactionItem";
-
 type Props = {
   item: CheckoutItem;
   selectItem: (item: any) => void;
@@ -26,7 +25,8 @@ const SingleProductItemCard = ({
   updateItem,
 }: Props) => {
   const { theme } = useAppTheme();
-  const isSelected = alreadySelected.some((i) => i.id === item.id);
+  const isSelected =
+    alreadySelected && alreadySelected.some((i) => i.id === item.id);
   const [productItem, setProductItem] = useState<CheckoutItem>({
     ...item,
     selectedQuantity: 1,
@@ -40,7 +40,7 @@ const SingleProductItemCard = ({
     <Card
       style={[
         {
-          backgroundColor: theme.colors.primary,
+          backgroundColor: theme.colors.cardBackground,
           borderRadius: 10,
         },
         isSelected && {
@@ -57,7 +57,7 @@ const SingleProductItemCard = ({
           style={[
             {
               flexDirection: "row",
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               width: "100%",
               height: 80,
               alignItems: "center",
@@ -200,9 +200,11 @@ const SingleProductItemCard = ({
             <View
               style={{
                 flexDirection: "row",
+                gap: 5,
+                alignItems: "center",
               }}
             >
-              <Avatar.Image source={{ uri: "/assets/images/profile.png" }} />
+              <Avatar.Image source={{ uri: "https://picsum.com/200" }} />
               <View style={{ flex: 1, gap: 5 }}>
                 <Text
                   style={{
@@ -229,6 +231,8 @@ const SingleProductItemCard = ({
                   fontFamily: "InterMedium",
                   alignSelf: "flex-end",
                   color: theme.colors.text,
+                  textAlignVertical: "center",
+                  textAlign: "center",
                 }}
               >
                 ETB {item.product.activePrice.price}

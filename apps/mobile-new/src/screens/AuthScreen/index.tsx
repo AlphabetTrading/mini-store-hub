@@ -1,14 +1,7 @@
-import { Alert, Linking, Platform } from "react-native";
+import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+
 import React, { useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";

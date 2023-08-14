@@ -136,7 +136,7 @@ const TransactionItem = ({
             alignItems: "center",
             flexDirection: "row",
             justifyContent: "space-between",
-            backgroundColor: theme.colors.primary,
+            backgroundColor: theme.colors.cardBackground,
             borderRadius: 10,
             width: "100%",
             height: "100%",

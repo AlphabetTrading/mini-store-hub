@@ -176,5 +176,9 @@
   "yearly": "Annual",
   "goodMorning": "Good Morning",
   "goodAfternoon": "Good Afternoon",
-  "goodEvening": "Good Evening"
+  "goodEvening": "Good Evening",
+  "saleDate": "",
+  "revenue": "Total Revenue",
+  "profit": "Total Profit",
+  "lightMode": "Light Mode"
 }

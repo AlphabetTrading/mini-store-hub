@@ -93,7 +93,7 @@ const InventoryScreen = (props: Props) => {
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
-                      backgroundColor: theme.colors.primary,
+                      backgroundColor: theme.colors.cardBackground,
                       maxWidth: "100%",
                       height: "100%",
                       flex: 1 / 3,

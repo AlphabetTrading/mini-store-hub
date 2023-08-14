@@ -74,7 +74,7 @@ const SalesScreen = (props: Props) => {
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
-                      backgroundColor: theme.colors.primary,
+                      backgroundColor: theme.colors.cardBackground,
                       marginVertical: 4,
                       flexDirection: "row",
                       justifyContent: "space-between",
