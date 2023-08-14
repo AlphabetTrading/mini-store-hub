@@ -4,41 +4,41 @@ import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
 async function main() {
-  // await prisma.annualTransaction.deleteMany();
-  // await prisma.dailyTransaction.deleteMany();
-  // await prisma.monthlyTransaction.deleteMany();
-  // await prisma.address.deleteMany();
-  // await prisma.notificationToken.deleteMany();
-  // await prisma.notificationRead.deleteMany();
-  // await prisma.notification.deleteMany();
-  // await prisma.userProfile.deleteMany();
-  // await prisma.user.deleteMany();
-  // await prisma.saleTransactionItem.deleteMany();
-  // await prisma.saleTransaction.deleteMany();
-  // await prisma.priceHistory.deleteMany();
-  // await prisma.goodsTransfer.deleteMany();
-  // await prisma.stockItem.deleteMany();
+  await prisma.annualTransaction.deleteMany();
+  await prisma.dailyTransaction.deleteMany();
+  await prisma.monthlyTransaction.deleteMany();
+  await prisma.address.deleteMany();
+  await prisma.notificationToken.deleteMany();
+  await prisma.notificationRead.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.userProfile.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.saleTransactionItem.deleteMany();
+  await prisma.saleTransaction.deleteMany();
+  await prisma.priceHistory.deleteMany();
+  await prisma.stockItem.deleteMany();
+  await prisma.goodsTransfer.deleteMany();
   await prisma.warehouseStock.deleteMany();
-  // await prisma.retailShopStock.deleteMany();
-  // await prisma.warehouse.deleteMany();
-  // await prisma.retailShop.deleteMany();
-  // await prisma.product.deleteMany();
-  // await prisma.category.deleteMany();
+  await prisma.retailShopStock.deleteMany();
+  await prisma.warehouse.deleteMany();
+  await prisma.retailShop.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.category.deleteMany();
 
   console.log('Seeding...');
 
-  // await seedUserModels();
-  // await seedUserProfile();
-  // await seedCategories();
-  // await seedProducts();
-  // await seedPriceHistory();
-  // await seedWarehouses();
-  // await seedRetailShops();
+  await seedUserModels();
+  await seedUserProfile();
+  await seedCategories();
+  await seedProducts();
+  await seedPriceHistory();
+  await seedWarehouses();
+  await seedRetailShops();
   await seedWarehouseStocks();
-  // await seedRetailshopStocks();
-  // await seedGoodsTransfers();
-  // await seedSaleTransactions();
-  // await seedNotifications();
+  await seedRetailshopStocks();
+  await seedGoodsTransfers();
+  await seedSaleTransactions();
+  await seedNotifications();
 }
 
 async function seedUserModels() {
@@ -684,7 +684,7 @@ async function seedWarehouseStocks() {
     try {
       await prisma.warehouseStock.createMany({
         data: [
-          ...Array.from({ length: 30 }, () => ({
+          ...Array.from({ length: 5 }, () => ({
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
@@ -695,7 +695,7 @@ async function seedWarehouseStocks() {
     try {
       await prisma.warehouseStock.createMany({
         data: [
-          ...Array.from({ length: 30 }, () => ({
+          ...Array.from({ length: 5 }, () => ({
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
@@ -703,6 +703,43 @@ async function seedWarehouseStocks() {
         ],
       });
     } catch (error) {}
+    try {
+      await prisma.warehouseStock.createMany({
+        data: [
+          ...Array.from({ length: 5 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {}
+    try {
+      await prisma.warehouseStock.createMany({
+        data: [
+          ...Array.from({ length: 5 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    try {
+      await prisma.warehouseStock.createMany({
+        data: [
+          ...Array.from({ length: 30 }, () => ({
+            productId: products[randomInt(0, products.length - 1)].id,
+            warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
+            quantity: randomInt(0, 30),
+          })),
+        ],
+      });
+    } catch (error) {
+      console.error(error);
+    }
     try {
       await prisma.warehouseStock.createMany({
         data: [

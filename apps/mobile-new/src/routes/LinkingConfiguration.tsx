@@ -21,6 +21,7 @@ const linking: LinkingOptions<any> = {
             initialRouteName: "index" as any,
             screens: {
               Index: "index",
+              AddTransactionItems: "addtransactionitems",
               SelectItem: "selectitem",
               SelectCategory: "selectcategory",
               Checkout: "checkout",
@@ -49,6 +50,7 @@ const linking: LinkingOptions<any> = {
             screens: {
               Account: "account",
               Settings: "settings",
+              Profile: "profile",
             },
           },
         },
@@ -63,6 +65,7 @@ const linking: LinkingOptions<any> = {
         },
       },
       Profile: "profile",
+      Settings: "settings",
       ForgotPassword: "forgotpassword",
       ResetPassword: { path: "resetpassword/:otp" },
       SignIn: "signin",

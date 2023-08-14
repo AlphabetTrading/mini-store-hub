@@ -21,6 +21,7 @@ export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthTabParamList> | undefined;
   Notifications: NavigatorScreenParams<NotificationTabParamList> | undefined;
   Profile: undefined;
+  Settings: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
@@ -60,6 +61,7 @@ export type NotificationTabParamList = {
 
 export type NewTransactionParamList = {
   Index: undefined;
+  AddTransactionItems: undefined;
   SelectItem: { categoryID: string };
   SelectCategory: undefined;
 };
@@ -72,6 +74,7 @@ export type SalesParamList = {
 export type AccountTabParamList = {
   Account: undefined;
   Settings: undefined;
+  Profile: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

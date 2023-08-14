@@ -31,8 +31,6 @@ const NotificationScreen = (props: Props) => {
     authState?.user?.id || ""
   );
 
-  if (data) console.log(data.allNotificationsByUserId, " is data");
-
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {

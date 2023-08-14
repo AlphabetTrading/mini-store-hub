@@ -8,10 +8,10 @@ import {
 } from "react-native";
 import React from "react";
 import { BaseLayout } from "../../components/BaseLayout";
-import Colors from "../../constants/Colors";
 import { useQuery } from "@apollo/client";
 import { GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP } from "../../graphql/queries/salesQueries";
 import { format } from "date-fns";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
@@ -26,7 +26,22 @@ const TransactionDetailScreen = ({ route }: any) => {
       },
     }
   );
-  console.log(route.params, " is data");
+
+  const { theme } = useAppTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 15,
+      backgroundColor: theme.colors.background,
+      gap: 12,
+    },
+    totalStyle: {
+      color: theme.colors.textSecondary,
+
+      fontFamily: "InterBold",
+      fontSize: 20,
+    },
+  });
   return (
     <BaseLayout>
       {loading ? (
@@ -45,8 +60,8 @@ const TransactionDetailScreen = ({ route }: any) => {
             <Text
               style={{
                 marginLeft: 8,
-                color: "#828282",
-                fontFamily: "Inter-Bold",
+                color: theme.colors.text,
+                fontFamily: "InterBold",
                 textTransform: "uppercase",
               }}
             >
@@ -54,7 +69,7 @@ const TransactionDetailScreen = ({ route }: any) => {
             </Text>
             <View
               style={{
-                backgroundColor: "#FFF",
+                backgroundColor: theme.colors.primary,
                 borderRadius: 6,
                 padding: 20,
                 marginTop: 12,
@@ -62,8 +77,8 @@ const TransactionDetailScreen = ({ route }: any) => {
             >
               <Text
                 style={{
-                  color: "#80848A",
-                  fontFamily: "Inter-Medium",
+                  color: theme.colors.text,
+                  fontFamily: "InterMedium",
                   fontSize: 14,
                 }}
               >
@@ -71,8 +86,8 @@ const TransactionDetailScreen = ({ route }: any) => {
               </Text>
               <Text
                 style={{
-                  color: "#2B2C2E",
-                  fontFamily: "Inter-Medium",
+                  color: theme.colors.text,
+                  fontFamily: "InterMedium",
                   fontSize: 20,
                 }}
               >
@@ -80,8 +95,8 @@ const TransactionDetailScreen = ({ route }: any) => {
               </Text>
               <Text
                 style={{
-                  color: "#80848A",
-                  fontFamily: "Inter-Medium",
+                  color: theme.colors.text,
+                  fontFamily: "InterMedium",
                   fontSize: 14,
                 }}
               >
@@ -95,8 +110,8 @@ const TransactionDetailScreen = ({ route }: any) => {
               style={{
                 marginLeft: 8,
                 marginVertical: 20,
-                color: "#828282",
-                fontFamily: "Inter-Bold",
+                color: theme.colors.text,
+                fontFamily: "InterBold",
                 textTransform: "uppercase",
               }}
             >
@@ -109,7 +124,9 @@ const TransactionDetailScreen = ({ route }: any) => {
                     key={data.id}
                     style={{
                       flexDirection: "row",
-                      backgroundColor: "#FFF",
+                      // backgroundColor: "#FFF",
+                      backgroundColor: theme.colors.background,
+
                       width: "100%",
                       padding: 20,
                       paddingVertical: 15,
@@ -121,12 +138,21 @@ const TransactionDetailScreen = ({ route }: any) => {
                   >
                     <View style={{ flex: 1, gap: 5 }}>
                       <Text
-                        style={{ fontSize: 18, fontFamily: "Inter-SemiBold" }}
+                        style={{
+                          color: theme.colors.text,
+
+                          fontSize: 18,
+                          fontFamily: "InterSemiBold",
+                        }}
                       >
                         {data.product.name}
                       </Text>
                       <Text
-                        style={{ fontFamily: "Inter-Light", color: "#80848A" }}
+                        style={{
+                          color: theme.colors.text,
+
+                          fontFamily: "InterLight",
+                        }}
                       >
                         Quantity: {data.quantity}
                       </Text>
@@ -135,9 +161,10 @@ const TransactionDetailScreen = ({ route }: any) => {
                       style={{
                         width: 80,
                         fontSize: 18,
-                        fontFamily: "Inter-Bold",
+                        fontFamily: "InterBold",
                         alignSelf: "flex-end",
-                        color: "#626262",
+                        // color: "#626262",
+                        color: theme.colors.text,
                       }}
                     >
                       ETB {data.subTotal}
@@ -150,7 +177,8 @@ const TransactionDetailScreen = ({ route }: any) => {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                backgroundColor: "#5684E033",
+                // backgroundColor: "#5684E033",
+                backgroundColor: theme.colors.background,
                 padding: 20,
                 borderRadius: 6,
                 marginTop: 20,
@@ -167,17 +195,3 @@ const TransactionDetailScreen = ({ route }: any) => {
 };
 
 export default TransactionDetailScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: Colors.light.background,
-    gap: 12,
-  },
-  totalStyle: {
-    color: "#5684E0",
-    fontFamily: "Inter-Bold",
-    fontSize: 20,
-  },
-});

@@ -15,6 +15,9 @@ export const LOGIN_MUTATION = gql`
         retailShop {
           id
         }
+        userProfile {
+          photoUrl
+        }
       }
     }
   }
@@ -44,6 +47,34 @@ export const RESET_PASSWORD_MUTATION = gql`
       accessToken
       message
       success
+    }
+  }
+`;
+
+export const GET_ME_QUERY = gql`
+  query Me {
+    me {
+      id
+      firstName
+      lastName
+      amharicFirstName
+      amharicFirstName
+      phone
+      username
+      retailShop {
+        id
+      }
+      notificationTokens {
+        id
+        token
+      }
+      userProfile {
+        address {
+          street
+        }
+        idUrl
+        photoUrl
+      }
     }
   }
 `;

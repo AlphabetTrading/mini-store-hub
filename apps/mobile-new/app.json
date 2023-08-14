@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,7 +16,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
     },
     "android": {
       "package": "com.kalmad99.mobile",
@@ -25,17 +28,28 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "intentFilters": [{
-        "action": "VIEW",
-        "data": [
-          {
-            "scheme": "com.kalmad99.mobile"
-          },
-            { "scheme": "http", "host": "exp://192.168.42.135:19000" },
-            { "scheme": "https", "host": "exp://192.168.42.135:19000" }
-        ],
-        "category": ["BROWSABLE", "DEFAULT"]
-    }]
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "com.kalmad99.mobile"
+            },
+            {
+              "scheme": "http",
+              "host": "exp://192.168.42.135:19000"
+            },
+            {
+              "scheme": "https",
+              "host": "exp://192.168.42.135:19000"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -44,6 +58,16 @@
       "eas": {
         "projectId": "2fa6b5a7-f577-465e-a177-18e218351aca"
       }
+    },
+    "plugins": [
+      "expo-localization"
+    ],
+    "locales": {
+      "en": "./src/locales/en.json",
+      "am": "./src/locales/am.json"
+    },
+    "experiments": {
+      "tsconfigPaths": true
     }
   }
 }

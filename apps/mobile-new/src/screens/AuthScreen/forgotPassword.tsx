@@ -25,7 +25,6 @@ const forgotPasswordSchema = Yup.object().shape({
 
 const ForgotPasswordScreen = ({ navigation, route }: any) => {
   const { forgotPassword } = useAuth();
-  console.log(route.params);
   const username = route.params?.username ?? "";
 
   const INITIAL_VALUES: FormValues = {
@@ -50,7 +49,6 @@ const ForgotPasswordScreen = ({ navigation, route }: any) => {
         initialValues={INITIAL_VALUES}
         validationSchema={forgotPasswordSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          console.log(values, username);
           setSubmitting(true);
           try {
             // const res = await forgotPassword(values.OTP, username);

@@ -8,19 +8,61 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
-
+import { useAppTheme } from "../contexts/preference";
+import { Searchbar } from "react-native-paper";
 type Props = {
   searchPhrase: string;
   setSearchPhrase: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const SearchBar = ({ searchPhrase, setSearchPhrase }: Props) => {
+const SearchBarComp = ({ searchPhrase, setSearchPhrase }: Props) => {
   const [clicked, setClicked] = useState(false);
+
+  const { theme } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    input: {
+      fontSize: 16,
+      fontFamily: "InterRegular",
+      marginLeft: 10,
+      flex: 1,
+      color: theme.colors.text,
+      // placeholderTextColor: theme.colors.text,
+    },
+    searchBar__clicked: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 12,
+      margin: 10,
+      // marginLeft: 20,
+      marginRight: 5,
+      backgroundColor: theme.colors.primary,
+      borderWidth: 1,
+      color: theme.colors.text,
+
+      borderRadius: 6,
+    },
+    searchBar__unclicked: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 12,
+      margin: 10,
+      // marginHorizontal: 20,
+      backgroundColor: theme.colors.primary,
+      borderWidth: 1,
+      color: theme.colors.text,
+
+      borderRadius: 6,
+    },
+  });
 
   return (
     <View
       style={{
         flexDirection: "row",
+        width: "100%",
         alignItems: "center",
       }}
     >
@@ -32,10 +74,10 @@ const SearchBar = ({ searchPhrase, setSearchPhrase }: Props) => {
         <Feather
           name="search"
           size={20}
-          color="black"
+          color={theme.colors.text}
           style={{ marginLeft: 1 }}
         />
-        <TextInput
+        <Searchbar
           style={styles.input}
           placeholder="Search"
           value={searchPhrase}
@@ -71,36 +113,4 @@ const SearchBar = ({ searchPhrase, setSearchPhrase }: Props) => {
   );
 };
 
-export default SearchBar;
-
-const styles = StyleSheet.create({
-  input: {
-    fontSize: 16,
-    fontFamily: "InterRegular",
-    marginLeft: 10,
-    flex: 1,
-  },
-  searchBar__clicked: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    margin: 10,
-    // marginLeft: 20,
-    marginRight: 5,
-    backgroundColor: "#FFF",
-    borderWidth: 1,
-    borderRadius: 6,
-  },
-  searchBar__unclicked: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    margin: 10,
-    // marginHorizontal: 20,
-    backgroundColor: "#FFF",
-    borderWidth: 1,
-    borderRadius: 6,
-  },
-});
+export default SearchBarComp;
