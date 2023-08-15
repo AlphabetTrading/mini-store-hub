@@ -44,6 +44,10 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
     WarehouseToWarehouse: "success",
     WarehouseToRetailShop: "error",
   };
+  const statusTextMap = {
+    WarehouseToWarehouse: "Incoming Goods",
+    WarehouseToRetailShop: "Outgoing Goods",
+  };
 
   return (
     <StateHandler
@@ -59,7 +63,6 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
               const day: string = dayjs(item?.createdAt).format("DD");
               const month: string = dayjs(item?.createdAt).format("MMM");
               const time: string = dayjs(item?.createdAt).format("hh:mm A");
-              const color = statusMap[item.transferType];
 
               return (
                 <TableRow key={idx}>
@@ -91,7 +94,10 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
                     </Box>
                   </TableCell>
                   <TableCell align="right">
-                    <CustomChip label={item.transferType} status={color} />
+                    <CustomChip
+                      label={statusTextMap[item.transferType]}
+                      status={statusMap[item.transferType]}
+                    />
                   </TableCell>
                 </TableRow>
               );

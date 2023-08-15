@@ -42,7 +42,7 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
   const { data: sessionData } = useSession();
 
   const generateValidationSchema = (values: Values) => {
-    const maxQuantity = itemsData?.warehouseStockByWarehouseId.find(
+    const maxQuantity = itemsData?.warehouseStocks.items.find(
       (item) => item.product.id === values.itemId
     )?.quantity as number;
     let errors: any = {};
@@ -62,7 +62,11 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
     error: itemsError,
   } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
     variables: {
-      warehouseId: (sessionData?.user as any).warehouseId || "",
+      filterWarehouseStockInput: {
+        warehouse: {
+          id:  (sessionData?.user as any).warehouseId || "",
+        }
+      }
     },
   });
 
@@ -72,7 +76,7 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
       return generateValidationSchema(values);
     },
     onSubmit: (values, helpers) => {
-      const item: StockItem = itemsData?.warehouseStockByWarehouseId.find(
+      const item: StockItem = itemsData?.warehouseStocks.items.find(
         (i) => i.product.id === values.itemId
       ) as StockItem;
 
@@ -126,7 +130,7 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
                   </div>
                 </Alert>
               ) : (
-                itemsData?.warehouseStockByWarehouseId?.map((item, idx) => (
+                itemsData?.warehouseStocks.items?.map((item, idx) => (
                   <Paper
                     key={idx}
                     sx={{
@@ -142,14 +146,16 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
                       key={idx}
                       label={
                         <Box sx={{ ml: 2 }}>
+                          <Stack direction="row" gap={1}>
                           <Typography variant="subtitle2">
                             {item.product.name}
                           </Typography>
-                          <Typography variant="subtitle2">
-                            {item.quantity}
-                          </Typography>
                           <Typography color="text.secondary" variant="body2">
-                            {item.product.serialNumber}
+                            {`(${item.product.serialNumber})`}
+                          </Typography>
+                          </Stack>
+                          <Typography color="text.secondary" variant="body2">
+                            {`Quantity: ${item.quantity}`}
                           </Typography>
                         </Box>
                       }
@@ -160,7 +166,6 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
               )}
             </Stack>
           </Card>
-          {JSON.stringify(formik.errors.quantity, null, 2)}
           <TextField
             error={
               formik.errors.quantity && formik.touched.quantity ? true : false

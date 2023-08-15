@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import ItemListRow from "./stock-list-row";
 import { WarehouseStockData } from "@/graphql/products/queries";
+import { StockItem } from "../../../types/product";
 
 type Props = {
-  warehouseStockData: WarehouseStockData;
+  warehouseStocks: StockItem[];
 };
 
-const ItemListTable = ({ warehouseStockData }: Props) => {
-  const { warehouseStocks } = warehouseStockData;
+const ItemListTable = ({ warehouseStocks }: Props) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const handleItemToggle = (id: string) => {
     setSelectedItem((prev) => {
@@ -43,7 +43,7 @@ const ItemListTable = ({ warehouseStockData }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {warehouseStocks.items.map((warehouseStock, idx) => (
+            {warehouseStocks.map((warehouseStock, idx) => (
               <ItemListRow
                 key={idx}
                 warehouseStock={warehouseStock}

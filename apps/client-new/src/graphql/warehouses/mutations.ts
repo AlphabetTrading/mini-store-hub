@@ -2,12 +2,10 @@ import { gql } from "@apollo/client";
 
 export interface RegisterIncomingStockVars {
   data: {
-    goods: [
-      {
-        productId: string;
-        quantity: number;
-      }
-    ];
+    goods: {
+      productId: string;
+      quantity: number;
+    }[];
     destinationWarehouseId: string;
   };
 }

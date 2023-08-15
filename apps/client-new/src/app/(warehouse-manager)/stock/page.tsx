@@ -20,13 +20,12 @@ import {
   WarehouseStockData,
   WarehouseStockVars,
 } from "@/graphql/products/queries";
-// import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import ItemListSearch from "@/components/stock/stock-list-search";
-// import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { useSession } from "next-auth/react";
 import ProductsListSearch from "@/components/products/products-list-search";
 import Pagination from "@/components/Pagination";
+import StateHandler from "@/components/state-handler";
+
 
 type Props = {};
 
@@ -119,7 +118,7 @@ const Page = (props: Props) => {
                 <Link component={NextLink} href={"/dashboard"}>
                   Dashboard
                 </Link>
-                <Link component={NextLink} href={"/dashboard"}>
+                <Link component={NextLink} href={"/stock"}>
                   Stock
                 </Link>
                 <Typography>List</Typography>
@@ -137,24 +136,25 @@ const Page = (props: Props) => {
             </Stack>
           </Stack>
           <ProductsListSearch filter={filter} setFilter={setFilter} />
-          {loading ? (
-            <CircularProgress />
-          ) : !data || error ? (
-            <Typography variant="h4">
-              Failed to fetch {JSON.stringify(error)}
-            </Typography>
-          ) : (
+          <StateHandler
+            error={error}
+            loading={loading}
+            empty={data?.warehouseStocks.items.length == 0}
+          >
             <Card>
-              <ItemListTable warehouseStockData={data} />
+              <ItemListTable warehouseStocks={data?.warehouseStocks.items||[]} />
               <Pagination
-                meta={data.warehouseStocks.meta}
+                meta={
+                  data?.warehouseStocks
+                    .meta
+                }
                 page={page}
                 setPage={setPage}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
               />
             </Card>
-          )}
+          </StateHandler>
           {/* <Card>
             <ItemListSearch/>
             <ItemListTable warehouseItemsData={data!} />

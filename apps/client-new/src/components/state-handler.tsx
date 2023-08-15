@@ -1,3 +1,4 @@
+import { Alert, AlertTitle, Box, CircularProgress } from "@mui/material";
 import React from "react";
 
 type Props = {
@@ -9,13 +10,27 @@ type Props = {
 
 const StateHandler = (props: Props) => {
   if (props.loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ pb: 4, pt: 2 }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
   if (props.error) {
-    return <div>Error {props.error.message}</div>;
+    return (
+      <Alert color="error">
+        <AlertTitle>Error</AlertTitle>
+        {props.error.message}
+      </Alert>
+    );
   }
   if (props.empty) {
-    return <div>Empty</div>;
+    return <div>No Records</div>;
   }
   return <>{props.children}</>;
 };

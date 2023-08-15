@@ -1,6 +1,7 @@
 import { ButtonBase, Box, SvgIconProps } from "@mui/material";
 import { title } from "process";
 import React from "react";
+import NextLink from "next/link";
 
 export type SideNavProps = {
   disabled?: boolean;
@@ -32,6 +33,7 @@ const SideNavItem = (props: SideNavProps) => {
             backgroundColor: "var(--nav-item-hover-bg)",
           },
         }}
+        component={NextLink}
         href={props.path}
       >
         <Box
