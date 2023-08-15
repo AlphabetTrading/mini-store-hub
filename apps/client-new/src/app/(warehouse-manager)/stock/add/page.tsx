@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   Divider,
   Input,
@@ -35,27 +36,28 @@ import {
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
+import { StockItem } from "../../../../../types/product";
 
 type Props = {};
 
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
   const [modalOpen, setModalOpen] = useState(false);
-  const [items, setItems] = useState<any>([]);
+  const [selectedStockItems, setSelectedStockItems] = useState<StockItem[]>([]);
   const [registerIncomingStock, { data, loading }] = useMutation<
     RegisterIncomingStockData,
     RegisterIncomingStockVars
   >(REGISTER_INCOMING_STOCK);
   const router = useRouter();
 
-  const handleAddItem = (item: any) => {
-    setItems((prev: any) => {
+  const handleAddItem = (item: StockItem) => {
+    setSelectedStockItems((prev: StockItem[]) => {
       return [...prev, item];
     });
   };
 
   const handleRemoveItem = (id: string) => {
-    setItems((prev: any) => {
+    setSelectedStockItems((prev: any) => {
       return prev.filter((item: any) => item.id !== id);
     });
   };
@@ -64,8 +66,8 @@ const Page = (props: Props) => {
     await registerIncomingStock({
       variables: {
         data: {
-          goods: items.map((item: any) => {
-            return { productId: item.selectedItem.id, quantity: item.quantity };
+          goods: selectedStockItems.map((item: StockItem) => {
+            return { productId: item.product.id, quantity: item.quantity };
           }),
           destinationWarehouseId: (sessionData?.user as any).warehouseId || "",
         },
@@ -85,6 +87,7 @@ const Page = (props: Props) => {
       <AddIncomingItemModal
         open={modalOpen}
         handleAddItem={handleAddItem}
+        selectedStockItems = {selectedStockItems}
         handleClose={() => setModalOpen(false)}
       />
       <Box component="main" sx={{ py: 8 }}>
@@ -101,8 +104,8 @@ const Page = (props: Props) => {
                   <Link component={NextLink} href={"/dashboard"}>
                     Dashboard
                   </Link>
-                  <Link component={NextLink} href={"/items"}>
-                    Items
+                  <Link component={NextLink} href={"/stock"}>
+                    Stock
                   </Link>
                   <Typography>Register Incoming Items</Typography>
                 </Breadcrumbs>
@@ -130,36 +133,32 @@ const Page = (props: Props) => {
                 </SvgIcon>
                 <Input disableUnderline placeholder="Search by product name" />
               </Stack>
-              <Scrollbar>
-                <Table sx={{ minWidth: 1200 }}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Product Name</TableCell>
-                      <TableCell>Serial Number</TableCell>
-                      <TableCell>Categroy</TableCell>
-                      <TableCell>Quantity</TableCell>
-                      <TableCell>Purchased Price</TableCell>
-                      <TableCell>Selling Price</TableCell>
-                      <TableCell>Action</TableCell>
+              <Table sx={{ minWidth: 1200 }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Product Name</TableCell>
+                    <TableCell>Serial Number</TableCell>
+                    <TableCell>Categroy</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Purchased Price</TableCell>
+                    <TableCell>Selling Price</TableCell>
+                    <TableCell>Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {selectedStockItems.map((item: StockItem, idx: number) => (
+                    <TableRow key={idx}>
+                      <TableCell>{item.product.name}</TableCell>
+                      <TableCell>{item.product.serialNumber}</TableCell>
+                      <TableCell>{item.product.category.name}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.product.activePrice?.purchasedPrice}</TableCell>
+                      <TableCell>{item.product.activePrice?.price}</TableCell>
+                      <TableCell>{item.product.activePrice?.price}</TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {items.map((item: any, idx: number) => (
-                      <TableRow key={idx}>
-                        <TableCell>{item.selectedItem.name}</TableCell>
-                        <TableCell>{item.selectedItem.serialNumber}</TableCell>
-                        <TableCell>{item.selectedItem.category.name}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell>
-                          {item.activePrice?.purchasedPrice}
-                        </TableCell>
-                        <TableCell>{item.activePrice?.price}</TableCell>
-                        <TableCell>{item.activePrice?.price}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Scrollbar>
+                  ))}
+                </TableBody>
+              </Table>
             </Card>
             <Stack justifyContent="flex-start" direction="row">
               <Button
@@ -167,6 +166,12 @@ const Page = (props: Props) => {
                 onClick={() => handleRegisterStock()}
                 variant="contained"
               >
+                {loading && (
+                  <CircularProgress
+                    sx={{ mr: 1, color: "neutral.500" }}
+                    size={16}
+                  />
+                )}
                 Regsiter
               </Button>
             </Stack>

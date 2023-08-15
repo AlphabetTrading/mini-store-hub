@@ -1,13 +1,11 @@
-import React from "react";
+import React from 'react'
 
-type Props = {};
+type Props = {}
 
 const Loading = (props: Props) => {
   return (
-    <div>
-      <h1 className="text-center text-3xl font-bold">Loading...</h1>
-    </div>
-  );
-};
+    <div>Loadingjgjgjvggjkffgvnb</div>
+  )
+}
 
-export default Loading;
+export default Loading

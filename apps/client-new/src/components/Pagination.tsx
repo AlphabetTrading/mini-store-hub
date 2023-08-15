@@ -3,7 +3,7 @@ import React from "react";
 import { Meta } from "../../types/common";
 
 type Props = {
-  meta: Meta;
+  meta: Meta | undefined;
   page: number;
   rowsPerPage: number;
   setPage: (page: number) => void;
@@ -27,7 +27,7 @@ const Pagination = ({
   return (
     <TablePagination
       component="div"
-      count={meta.count}
+      count={meta?.count || 0}
       onPageChange={handlePageChange}
       onRowsPerPageChange={handleChangeRowsPerPage}
       page={page}

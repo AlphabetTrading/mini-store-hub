@@ -16,6 +16,7 @@ import {
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { RetailShopsData, RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
+import StateHandler from "../state-handler";
 
 type Props = {
   setSelectedRetailShop: React.Dispatch<React.SetStateAction<string | null>>;
@@ -28,64 +29,53 @@ const RetailShopsList = ({
 }: Props) => {
   const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS);
   const retailShops = data?.retailShops.items;
-  return loading ? (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      sx={{ pb: 4, pt: 2 }}
+  return (
+    <StateHandler
+      loading={loading}
+      error={error}
+      empty={data?.retailShops.items.length === 0}
     >
-      <CircularProgress />
-    </Box>
-  ) : !data || error ? (
-    <Alert severity="error">
-      <div>
-        <Typography color="inherit" variant="subtitle2">
-          {error?.message}
-        </Typography>
-      </div>
-    </Alert>
-  ) : (
-    <Box sx={{ p: 3 }}>
-      <form onSubmit={(event) => event.preventDefault()}>
-        <Stack
-          component={RadioGroup}
-          onChange={(event) => {
-            setSelectedRetailShop(event.currentTarget.value);
-          }}
-          spacing={3}
-          value={selectedRetailShop?.toString() || ""}
-        >
-          {retailShops?.map((retailShop, idx) => (
-            <Paper
-              key={idx}
-              sx={{
-                alignItems: "flex-start",
-                display: "flex",
-                p: 2,
-              }}
-              variant="outlined"
-            >
-              <FormControlLabel
-                control={<Radio />}
+      <Box sx={{ p: 3, overflow: "auto" }} maxHeight={320}>
+        <form onSubmit={(event) => event.preventDefault()}>
+          <Stack
+            component={RadioGroup}
+            onChange={(event) => {
+              setSelectedRetailShop(event.currentTarget.value);
+            }}
+            spacing={3}
+            value={selectedRetailShop?.toString() || ""}
+          >
+            {retailShops?.map((retailShop, idx) => (
+              <Paper
                 key={idx}
-                label={
-                  <Box sx={{ ml: 2 }}>
-                    <Typography variant="subtitle2">
-                      {retailShop.name}
-                    </Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {`${retailShop.retailShopManager?.firstName} ${retailShop.retailShopManager?.lastName}`}
-                    </Typography>
-                  </Box>
-                }
-                value={retailShop.id}
-              />
-            </Paper>
-          ))}
-        </Stack>
-      </form>
-    </Box>
+                sx={{
+                  alignItems: "flex-start",
+                  display: "flex",
+                  p: 2,
+                }}
+                variant="outlined"
+              >
+                <FormControlLabel
+                  control={<Radio />}
+                  key={idx}
+                  label={
+                    <Box sx={{ ml: 2 }}>
+                      <Typography variant="subtitle2">
+                        {retailShop.name}
+                      </Typography>
+                      <Typography color="text.secondary" variant="body2">
+                        {`${retailShop.retailShopManager?.firstName} ${retailShop.retailShopManager?.lastName}`}
+                      </Typography>
+                    </Box>
+                  }
+                  value={retailShop.id}
+                />
+              </Paper>
+            ))}
+          </Stack>
+        </form>
+      </Box>
+    </StateHandler>
   );
 };
 

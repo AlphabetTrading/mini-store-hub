@@ -18,6 +18,7 @@ import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import { RETAIL_SHOPS, RetailShopsData } from "@/graphql/retail-shops/queries";
 import RetailShopsListSearch from "@/components/retail-shops/retail-shops-list-search";
 import RetailShopsListTable from "@/components/retail-shops/retail-shops-list-table";
+import StateHandler from "@/components/state-handler";
 
 type Props = {};
 
@@ -46,18 +47,13 @@ const Page = (props: Props) => {
               </Breadcrumbs>
             </Stack>
           </Stack>
-          {loading ? (
-            <CircularProgress />
-          ) : !data || error ? (
-            <Typography variant="h4">
-              Failed to fetch {JSON.stringify(error)}
-            </Typography>
-          ) : (
-            <Card>
-              <RetailShopsListSearch />
-              <RetailShopsListTable retailShops={data.retailShops.items} />
-            </Card>
-          )}
+
+          <StateHandler loading={loading} error={error} empty={data?.retailShops.items.length===0}>
+          <Card>
+            <RetailShopsListSearch />
+            <RetailShopsListTable retailShops={data?.retailShops.items || []} />
+          </Card>
+          </StateHandler>
           {/* <Card>
             <ItemListSearch/>
             <ItemListTable warehouseItemsData={data!} />

@@ -1,5 +1,5 @@
 import { Box, ButtonBase, SvgIconProps } from "@mui/material";
-import Link from "next/link";
+import NextLink from "next/link";
 import React from "react";
 
 export type TopNavProps = {
@@ -32,7 +32,7 @@ const TopNavItem = (props: TopNavProps) => {
             backgroundColor: "var(--nav-item-hover-bg)",
           },
         }}
-        component={Link}
+        component={NextLink}
         href={props.path}
       >
         {props.icon && (

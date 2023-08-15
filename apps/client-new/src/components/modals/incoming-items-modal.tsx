@@ -29,11 +29,14 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
+import { Product, StockItem } from "../../../types/product";
+import StateHandler from "../state-handler";
 
 type Props = {
   open: boolean;
   handleClose: () => void;
-  handleAddItem: (item: any) => void;
+  handleAddItem: (stockItem: StockItem) => void;
+  selectedStockItems: StockItem[];
 };
 interface Values {
   itemId: string;
@@ -51,20 +54,24 @@ const validationSchema = Yup.object({
 });
 
 export const AddIncomingItemModal = (props: Props) => {
-  const { open, handleClose, handleAddItem } = props;
+  const { open, handleClose, handleAddItem, selectedStockItems } = props;
   const { data, loading, error } = useQuery<ProductsData>(PRODUCTS);
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      const selectedItem = data?.products.items.find(
+      const selectedProduct: Product = data?.products.items.find(
         (item) => item.id === values.itemId
-      );
-      handleAddItem({ selectedItem, quantity: values.quantity });
+      ) as Product;
+      handleAddItem({ product: selectedProduct, quantity: values.quantity });
       handleClose();
+      helpers.resetForm();
     },
   });
+  const existingProductIds = selectedStockItems.map(
+    (selected) => selected.product.id
+  );
 
   return (
     <Modal
@@ -101,70 +108,70 @@ export const AddIncomingItemModal = (props: Props) => {
                 <Input disableUnderline placeholder="Search by product name" />
               </Stack>
               <Divider />
-
-              {loading ? (
-                <CircularProgress />
-              ) : error || !data ? (
-                <Alert severity="error">
-                  <AlertTitle>Error</AlertTitle>
-                  This is an error alert — <strong>check it out!</strong>
-                </Alert>
-              ) : (
+              <StateHandler
+                loading={loading}
+                error={error}
+                empty={data?.products.items.length === 0}
+              >
                 <RadioGroup
                   name="itemId"
-                  sx={{ maxHeight: 325, display: "block", overflow: "auto" }}
+                  sx={{ maxHeight: 300, display: "block", overflow: "auto" }}
                   value={formik.values.itemId.toString()}
                   onChange={(event) => {
                     formik.setFieldValue("itemId", event.currentTarget.value);
                   }}
                 >
-                  {[...data?.products.items].map((item, idx) => {
-                    const isDisabled = false;
-                    return (
-                      <Paper
-                        key={idx}
-                        sx={{
-                          alignItems: "flex-start",
-                          display: "flex",
-                          px: 2,
-                          py: 0.5,
-                        }}
-                        variant="outlined"
-                      >
-                        <FormControlLabel
-                          control={<Radio />}
-                          disabled={isDisabled}
-                          label={
-                            <Box sx={{ ml: 2 }}>
-                              <Typography
-                                sx={{
-                                  color: isDisabled
-                                    ? "action.disabled"
-                                    : "text.primary",
-                                }}
-                                variant="subtitle2"
-                              >
-                                {item.name}
-                              </Typography>
-                              <Typography
-                                sx={{
-                                  color: isDisabled
-                                    ? "action.disabled"
-                                    : "text.secondary",
-                                }}
-                                variant="body2"
-                              >
-                                {item.serialNumber}
-                              </Typography>
-                            </Box>
-                          }
-                          value={item.id}
-                        />
-                      </Paper>
-                    );
-                  })}
+                  {data?.products.items
+                    .filter(
+                      (product) => !existingProductIds.includes(product.id)
+                    )
+                    .map((item, idx) => {
+                      const isDisabled = false;
+                      return (
+                        <Paper
+                          key={idx}
+                          sx={{
+                            alignItems: "flex-start",
+                            display: "flex",
+                            px: 2,
+                            py: 0.5,
+                          }}
+                          variant="outlined"
+                        >
+                          <FormControlLabel
+                            control={<Radio />}
+                            disabled={isDisabled}
+                            label={
+                              <Box sx={{ ml: 2 }}>
+                                <Typography
+                                  sx={{
+                                    color: isDisabled
+                                      ? "action.disabled"
+                                      : "text.primary",
+                                  }}
+                                  variant="subtitle2"
+                                >
+                                  {item.name}
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    color: isDisabled
+                                      ? "action.disabled"
+                                      : "text.secondary",
+                                  }}
+                                  variant="body2"
+                                >
+                                  {item.serialNumber}
+                                </Typography>
+                              </Box>
+                            }
+                            value={item.id}
+                          />
+                        </Paper>
+                      );
+                    })}
                 </RadioGroup>
-              )}
+              </StateHandler>
             </Card>
 
             <TextField
@@ -179,7 +186,9 @@ export const AddIncomingItemModal = (props: Props) => {
                 formik.touched.quantity && formik.errors.quantity ? true : false
               }
             />
-            <Button type="submit">Add</Button>
+            <Button variant="contained" type="submit">
+              Add
+            </Button>
           </Stack>
         </Paper>
       </form>

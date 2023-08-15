@@ -20,6 +20,7 @@ import {
   RETAIL_SHOP_MANAGERS,
   RetailShopManagersData,
 } from "@/graphql/retail-shop-managers/queries";
+import StateHandler from "@/components/state-handler";
 
 type Props = {};
 
@@ -49,18 +50,15 @@ const Page = (props: Props) => {
               </Breadcrumbs>
             </Stack>
           </Stack>
-          {loading ? (
-            <CircularProgress />
-          ) : !data || error ? (
-            <Typography variant="h4">
-              Failed to fetch {JSON.stringify(error)}
-            </Typography>
-          ) : (
+          <StateHandler loading={loading} error={error} empty={data?.retailShopManagers.length===0}>
             <Card>
               <ManagersListSearch />
-              <ManagersListTable retailShopManagers={data.retailShopManagers} />
+              <ManagersListTable
+                retailShopManagers={data?.retailShopManagers || []}
+              />
             </Card>
-          )}
+          </StateHandler>
+
           {/* <Card>
             <ItemListSearch/>
             <ItemListTable warehouseItemsData={data!} />

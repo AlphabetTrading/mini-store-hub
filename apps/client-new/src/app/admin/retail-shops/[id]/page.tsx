@@ -33,7 +33,7 @@ type Props = {
   };
 };
 
-const page = ({ params }: Props) => {
+const Page = ({ params }: Props) => {
   const router = useRouter();
   const [deleteRetailShop, { error, loading, reset }] = useMutation<
     {},
@@ -124,4 +124,4 @@ const page = ({ params }: Props) => {
   );
 };
 
-export default page;
+export default Page;

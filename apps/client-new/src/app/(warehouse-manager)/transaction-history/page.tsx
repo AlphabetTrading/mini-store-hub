@@ -42,12 +42,9 @@ const Page = (props: Props) => {
               </Breadcrumbs>
             </Stack>
           </Stack>
-          <Card>
-            <CardHeader title="Latest Transactions" />
-            <TransactionHistoryTable
-              warehouseId={(sessionData?.user as any).warehouseId || ""}
-            />
-          </Card>
+          <TransactionHistoryTable
+            warehouseId={(sessionData?.user as any).warehouseId || ""}
+          />
         </Stack>
       </Container>
     </Box>
