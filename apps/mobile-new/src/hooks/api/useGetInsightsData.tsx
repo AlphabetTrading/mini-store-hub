@@ -3,7 +3,7 @@ import {
   GET_PRODUCTS_BY_SOLD_QUANTITY_AND_BY_RETAIL_SHOP,
   GET_PRODUCTS_BY_TOP_SELL_AND_BY_RETAIL_SHOP,
 } from "../../graphql/queries/insightsQueries";
-import { INSIGHTS_TYPE } from "../../types";
+import { INSIGHTS_TYPE } from "@/src/types/types";
 
 export const useGetInsightsData = (
   retailShopId: string,

@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "../screens/AuthScreen";
 import ForgotPasswordScreen from "../screens/AuthScreen/forgotPassword";
 import ResetPasswordScreen from "../screens/AuthScreen/resetPassword";
-import { AuthTabParamList } from "../types";
+import { AuthTabParamList } from "../types/types";
 
 type Props = {};
 

@@ -17,6 +17,7 @@ import { useAuth } from "../../contexts/auth";
 import { format } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
 import { useAppTheme } from "@/src/contexts/preference";
+import { useLocalization } from "@/src/contexts/localization";
 
 type Props = {};
 
@@ -29,6 +30,9 @@ const SalesScreen = (props: Props) => {
     {
       variables: {
         retailShopId: authState?.user.retailShop[0].id,
+        orderBy: {
+          createdAt: "desc",
+        },
       },
     }
   );
@@ -40,7 +44,7 @@ const SalesScreen = (props: Props) => {
       backgroundColor: theme.colors.background,
     },
   });
-
+  const { t } = useLocalization();
   return (
     <BaseLayout>
       {loading ? (
@@ -68,13 +72,13 @@ const SalesScreen = (props: Props) => {
                       textTransform: "uppercase",
                     }}
                   >
-                    Sales
+                    {t("sales")}
                   </Text>
                 }
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
-                      backgroundColor: theme.colors.primary,
+                      backgroundColor: theme.colors.cardBackground,
                       marginVertical: 4,
                       flexDirection: "row",
                       justifyContent: "space-between",

@@ -24,19 +24,12 @@ export const GET_NOTIFICATIONS = gql`
 `;
 
 export const GET_UNREAD_NOTIFICATIONS = gql`
-  query UnreadNotifications($userId: String!) {
-    unreadNotifications(userId: $userId) {
-      amharicBody
-      amharicTitle
-      body
-      createdAt
+  query UnreadNotificationsByUserId($userId: String!) {
+    unreadNotificationsByUserId(userId: $userId) {
       id
-      status
-      title
-      updatedAt
-      notificationReads {
+      recipientId
+      user {
         id
-        userId
       }
     }
   }

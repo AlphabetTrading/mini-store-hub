@@ -69,7 +69,7 @@ const TransactionDetailScreen = ({ route }: any) => {
             </Text>
             <View
               style={{
-                backgroundColor: theme.colors.primary,
+                backgroundColor: theme.colors.cardBackground,
                 borderRadius: 6,
                 padding: 20,
                 marginTop: 12,
@@ -118,10 +118,10 @@ const TransactionDetailScreen = ({ route }: any) => {
               Items
             </Text>
             {data.saleTransaction.saleTransactionItems.map(
-              (data: any, index: number) => {
+              (saleTransactionItem: any, index: number) => {
                 return (
                   <View
-                    key={data.id}
+                    key={saleTransactionItem.id}
                     style={{
                       flexDirection: "row",
                       // backgroundColor: "#FFF",
@@ -145,7 +145,7 @@ const TransactionDetailScreen = ({ route }: any) => {
                           fontFamily: "InterSemiBold",
                         }}
                       >
-                        {data.product.name}
+                        {saleTransactionItem.product.name}
                       </Text>
                       <Text
                         style={{
@@ -154,7 +154,7 @@ const TransactionDetailScreen = ({ route }: any) => {
                           fontFamily: "InterLight",
                         }}
                       >
-                        Quantity: {data.quantity}
+                        Quantity: {saleTransactionItem.quantity}
                       </Text>
                     </View>
                     <Text
@@ -167,7 +167,7 @@ const TransactionDetailScreen = ({ route }: any) => {
                         color: theme.colors.text,
                       }}
                     >
-                      ETB {data.subTotal}
+                      ETB {saleTransactionItem.subTotal}
                     </Text>
                   </View>
                 );

@@ -9,13 +9,13 @@ import {
 import React, { useEffect } from "react";
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
-import { INSIGHTS_TYPE } from "../../types";
 import {
   useGetInsightsData,
   useGetInsightsDataDetail,
 } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
 import { AppTheme, useAppTheme } from "@/src/contexts/preference";
+import { INSIGHTS_TYPE } from "@/src/types/types";
 
 const MostSoldItems = ({
   retailShopID,

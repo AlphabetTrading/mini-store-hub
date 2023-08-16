@@ -5,13 +5,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
   ActivityIndicator,
   RefreshControl,
-  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import SearchBar from "../../components/SearchBar";
 import { useQuery } from "@apollo/client";
 import { GET_RETAIL_SHOP_PRODUCTS } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
@@ -20,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "@/src/contexts/preference";
+import { Avatar } from "react-native-paper";
 
 type Props = {};
 
@@ -47,6 +45,9 @@ const CategoryDetailScreen = ({
       });
   }, [navigation]);
 
+  const [searchPhrase, setSearchPhrase] = useState("");
+  const [filteredItems, setFilteredItems] = useState<any[]>([]);
+
   const { loading, data, error, refetch } = useQuery(GET_RETAIL_SHOP_PRODUCTS, {
     variables: {
       filterRetailShopStockInput: {
@@ -57,6 +58,10 @@ const CategoryDetailScreen = ({
         },
         retailShopId: authState?.user.retailShop[0].id,
       },
+    },
+    onCompleted: (data) => {
+      console.log(data);
+      setFilteredItems(data?.retailShopStockByRetailShopId.items ?? []);
     },
   });
 
@@ -69,11 +74,6 @@ const CategoryDetailScreen = ({
       setRefreshing(false);
     }, 2000);
   }, []);
-
-  const [searchPhrase, setSearchPhrase] = useState("");
-  const [filteredItems, setFilteredItems] = useState(
-    data?.retailShopStockByRetailShopId.items ?? []
-  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -128,6 +128,13 @@ const CategoryDetailScreen = ({
 
   return (
     <BaseLayout>
+      <SearchBarComponent
+        onChangeText={(text) => {
+          setSearchPhrase(text);
+        }}
+        value={searchPhrase}
+        placeholder={t("searchHere")}
+      />
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -136,16 +143,6 @@ const CategoryDetailScreen = ({
         </View>
       ) : (
         <View style={{ width: "100%" }}>
-          <SearchBarComponent
-            onChangeText={(text) => {
-              setSearchPhrase(text);
-            }}
-            value={searchPhrase}
-          />
-          {/* <SearchBar
-              searchPhrase={searchPhrase}
-              setSearchPhrase={setSearchPhrase}
-            /> */}
           {filteredItems.length > 0 ? (
             <View
               style={{
@@ -162,7 +159,8 @@ const CategoryDetailScreen = ({
                   />
                 }
                 data={filteredItems}
-                key={filteredItems.id}
+                // key={filteredItems.id}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
@@ -187,7 +185,7 @@ const CategoryDetailScreen = ({
                       style={{
                         flexDirection: "row",
                         // backgroundColor: "#FFF",
-                        backgroundColor: theme.colors.primary,
+                        backgroundColor: theme.colors.cardBackground,
 
                         width: "100%",
                         padding: 10,
@@ -196,16 +194,10 @@ const CategoryDetailScreen = ({
                         gap: 16,
                       }}
                     >
-                      <View
-                        style={{
-                          borderRadius: 100,
-                          // backgroundColor: "#F0F0F0",
-                          backgroundColor: theme.colors.background,
-
-                          width: 60,
-                          height: 60,
-                        }}
-                      ></View>
+                      <Avatar.Image
+                        source={{ uri: "https://picsum.photos/200" }}
+                        size={60}
+                      />
                       {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
                       <View style={{ flex: 1, gap: 5 }}>
                         <Text
@@ -255,7 +247,6 @@ const CategoryDetailScreen = ({
                     </View>
                   </TouchableOpacity>
                 )}
-                keyExtractor={(item) => item.id}
               />
             </View>
           ) : (

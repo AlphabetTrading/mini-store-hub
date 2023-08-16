@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
+import { Text, TouchableRipple } from "react-native-paper";
 import { Path, Svg } from "react-native-svg";
 import { useState } from "react";
 import { BaseLayout } from "../../components/BaseLayout";
@@ -57,15 +58,16 @@ export default function HomeScreen() {
                       backgroundColor:
                         selectedFilter === filter.id
                           ? "#5684E033"
-                          : theme.colors.primary,
+                          : theme.colors.cardBackground,
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         textTransform: "capitalize",
-                        color:
-                          selectedFilter === filter.id ? "#5684E0" : "#6D6D6D",
+                        color: theme.colors.text,
+                        // color:
+                        //   selectedFilter === filter.id ? "#5684E0" : "#6D6D6D",
                         fontFamily:
                           selectedFilter === filter.id
                             ? "InterSemiBold"

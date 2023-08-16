@@ -5,6 +5,10 @@ export const CREATE_SALES_TRANSACTION_MUTATION = gql`
     createSaleTransaction(data: $data) {
       id
       totalPrice
+      createdAt
+      saleTransactionItems {
+        id
+      }
     }
   }
 `;

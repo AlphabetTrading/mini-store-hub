@@ -29,7 +29,7 @@ const CustomMaterialMenu = ({}: any) => {
       icon: (
         <MaterialCommunityIcons
           name="account"
-          color={theme.colors.text}
+          color={theme.colors.tint}
           size={24}
         />
       ),
@@ -40,7 +40,7 @@ const CustomMaterialMenu = ({}: any) => {
     {
       id: 2,
       title: t("settings"),
-      icon: <Feather name="settings" color={theme.colors.text} size={24} />,
+      icon: <Feather name="settings" color={theme.colors.tint} size={24} />,
       action: () => {
         navigation.navigate("Settings");
       },
@@ -51,7 +51,7 @@ const CustomMaterialMenu = ({}: any) => {
       icon: (
         <MaterialCommunityIcons
           name="logout"
-          color={theme.colors.text}
+          color={theme.colors.tint}
           size={24}
         />
       ),
@@ -66,7 +66,7 @@ const CustomMaterialMenu = ({}: any) => {
     <View>
       <Menu
         style={{
-          backgroundColor: theme.colors.primary,
+          backgroundColor: theme.colors.cardBackground,
           elevation: 15,
         }}
         visible={visible}
@@ -74,7 +74,7 @@ const CustomMaterialMenu = ({}: any) => {
           <Entypo
             name="dots-three-vertical"
             size={24}
-            color={theme.colors.text}
+            color={theme.colors.white}
             onPress={showMenu}
             style={{ marginHorizontal: 10 }}
           />
@@ -97,7 +97,7 @@ const CustomMaterialMenu = ({}: any) => {
               {option.icon}
               <Text
                 style={{
-                  color: theme.colors.text,
+                  color: theme.colors.tint,
                   fontFamily: "InterRegular",
                 }}
               >

@@ -21,21 +21,21 @@ const SearchBarComponent = (props: SearchBarComponentProps) => {
   return (
     <View style={styles.view}>
       <Searchbar
-        theme={{
-          colors: {
-            primary: theme.colors.primary,
-            text: theme.colors.text,
-            placeholder: theme.colors.white,
-            background: theme.colors.background,
-          },
-        }}
+        // theme={{
+        //   colors: {
+        //     primary: theme.colors.cardBackground,
+        //     text: theme.colors.text,
+        //     placeholder: theme.colors.white,
+        //     background: theme.colors.background,
+        //   },
+        // }}
         // inputContainerStyle={{ backgroundColor: "#fff", padding: 5 }}
         // containerStyle={{
         //   backgroundColor: theme.colors.background,
         //   borderWidth: 0,
         // }}
         style={{
-          backgroundColor: theme.colors.primary,
+          backgroundColor: theme.colors.cardBackground,
           borderWidth: 0,
           color: theme.colors.text,
         }}

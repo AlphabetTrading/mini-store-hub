@@ -11,6 +11,7 @@ Table User {
   password String [not null]
   amharicFirstName String
   amharicLastName String
+  gender Gender [not null, default: 'MALE']
   role UserRole [not null, default: 'USER']
   isActive Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
@@ -82,6 +83,7 @@ Table Category {
   description String [not null]
   amharicDescription String
   parentId String
+  images String[] [not null]
   parent Category
   subcategories Category [not null]
   createdAt DateTime [default: `now()`, not null]
@@ -125,6 +127,8 @@ Table PriceHistory {
   activeProduct Product
   product Product [not null]
   saleTransactionItems SaleTransactionItem [not null]
+  retailShopStockId String
+  retailShopStockItem RetailShopStock
 }
 
 Table Address {
@@ -238,6 +242,8 @@ Table RetailShopStock {
   updatedAt DateTime [not null]
   retailShop RetailShop [not null]
   retailShopId String [not null]
+  activePriceId String [unique]
+  activePrice PriceHistory
 
   indexes {
     (productId, retailShopId) [unique]
@@ -249,6 +255,7 @@ Table WarehouseStock {
   productId String [not null]
   warehouseId String [not null]
   quantity Float [not null]
+  maxQuantity Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   warehouse Warehouse [not null]
@@ -287,6 +294,11 @@ Table AnnualTransaction {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   retailShop RetailShop [not null]
+}
+
+Enum Gender {
+  FEMALE
+  MALE
 }
 
 Enum UserRole {
@@ -369,6 +381,8 @@ Ref: RetailShopStock.productId > Product.id
 Ref: RetailShopStock.warehouseId > Warehouse.id
 
 Ref: RetailShopStock.retailShopId > RetailShop.id
+
+Ref: RetailShopStock.activePriceId - PriceHistory.id
 
 Ref: WarehouseStock.warehouseId > Warehouse.id
 

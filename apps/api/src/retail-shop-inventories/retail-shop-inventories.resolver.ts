@@ -13,6 +13,7 @@ import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationRetailShopStocks } from 'src/common/pagination/pagination-info';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { StockValuation } from 'src/common/models/stockValuation.model';
 
 @Resolver(() => RetailShopStock)
 @UseGuards(GqlAuthGuard)
@@ -63,15 +64,16 @@ export class RetailShopStockResolver {
       ],
     };
     try {
-      const products = await this.retailShopStockService.findByRetailShopId({
-        where,
-        orderBy,
-        skip: paginationInput?.skip,
-        take: paginationInput?.take,
-      });
+      const warehouseStocks =
+        await this.retailShopStockService.findByRetailShopId({
+          where,
+          orderBy,
+          skip: paginationInput?.skip,
+          take: paginationInput?.take,
+        });
       const count = await this.retailShopStockService.count(where);
       return {
-        items: products,
+        items: warehouseStocks,
         meta: {
           page: paginationInput?.skip,
           limit: paginationInput?.take,
@@ -79,7 +81,7 @@ export class RetailShopStockResolver {
         },
       };
     } catch (e) {
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading warehouseStocks!');
     }
   }
 
@@ -127,30 +129,68 @@ export class RetailShopStockResolver {
     return this.retailShopStockService.findOne(retailShopStockId);
   }
 
-  @Query(() => Float, {
+  @Query(() => StockValuation, {
     name: 'totalValuationByRetailShopId',
   })
   async totalValuationByRetailShopId(
     @Args('retailShopId') retailShopId: string,
-  ): Promise<number> {
+  ): Promise<{
+    totalValuation: number;
+    totalQuantity: number;
+    count: number;
+  }> {
     return this.retailShopStockService.totalValuationByRetailShopId(
       retailShopId,
     );
   }
 
-  @Query(() => Float, {
+  @Query(() => StockValuation, {
     name: 'totalValuationByRetailShopIdAndDate',
   })
   async totalValuationByRetailShopIdAndDate(
     @Args('retailShopId') retailShopId: string,
     @Args('startDate') startDate: string,
     @Args('endDate') endDate: string,
-  ): Promise<number> {
+  ): Promise<{
+    totalValuation: number;
+    totalQuantity: number;
+    count: number;
+  }> {
     return this.retailShopStockService.totalValuationByRetailShopIdAndDate(
       retailShopId,
       startDate,
       endDate,
     );
+  }
+
+  @Query(() => PaginationRetailShopStocks, {
+    name: 'findLowStockByRetailShopId',
+  })
+  async findLowStockByRetailShopId(
+    @Args('retailShopId') retailShopId: string,
+    @Args('percentage', { type: () => Float, nullable: true })
+    percentage: number = 10,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const warehouseStocks = await this.retailShopStockService.findLowStockItems(
+      {
+        retailShopId,
+        percentage,
+        skip: paginationInput?.skip,
+        take: paginationInput?.take,
+      },
+    );
+
+    const count = await this.retailShopStockService.count({});
+    return {
+      items: warehouseStocks,
+      meta: {
+        page: paginationInput?.skip,
+        limit: paginationInput?.take,
+        count,
+      },
+    };
   }
 
   @Mutation(() => RetailShopStock)

@@ -1,50 +1,25 @@
-import {
-  InsightsTabParamList,
-  InventoryTabParamList,
-  NewTransactionParamList,
-  RootTabParamList,
-  SalesParamList,
-} from "../types";
-import {
-  Dimensions,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { RootTabParamList } from "../types/types";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import Svg, { Path, G, Defs, ClipPath, Rect } from "react-native-svg";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabItem from "../components/TabItem";
-import {
-  AntDesign,
-  Ionicons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import CustomMaterialMenu from "../components/CustomMenu";
 import HomeScreen from "../screens/HomeScreen";
-import InsightsScreen from "../screens/InsightsScreen";
 import {
   getFocusedRouteNameFromRoute,
   useNavigation,
 } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import SalesScreen from "../screens/SalesScreen";
-import TransactionDetailScreen from "../screens/SalesScreen/TransactionDetailScreen";
-import InventoryScreen from "../screens/InventoryScreen";
-import CategoryDetailScreen from "../screens/InventoryScreen/CategoryDetailScreen";
-import ItemDetailScreen from "../screens/InventoryScreen/ItemDetailScreen";
-import CheckoutScreen from "../screens/NewTransactionScreen";
-import SelectItemScreen from "../screens/NewTransactionScreen/SelectItemScreen";
-import SelectCategoryScreen from "../screens/NewTransactionScreen/SelectCategoryScreen";
 import useKeyboard from "../hooks/useKeyboard";
-import InsightsDetailScreen from "../screens/InsightsScreen/InsightsDetail";
-import AddTransactionItemsScreen from "../screens/NewTransactionScreen/AddTransactionItemsScreen";
 import { useLocalization } from "../contexts/localization";
 import GreetingsComponent from "../components/HomePage/GreetingsComponent";
 import { useAppTheme } from "../contexts/preference";
+import { InventoryStack } from "../navigations/InventoryStack";
+import { NewTransactionStack } from "../navigations/NewTransactionStack";
+import { SalesStack } from "../navigations/SalesStack";
+import { InsightsStack } from "../navigations/InsightsStack";
+import NotificationIconComp from "../components/NotificationIconComp";
 
 type Props = {};
 
@@ -73,293 +48,6 @@ const CustomTabBarButton = ({ children, onPress }: any) => {
         {children}
       </View>
     </Pressable>
-  );
-};
-
-const SalesStackNavigator = createNativeStackNavigator<SalesParamList>();
-
-export const SalesStack = ({ navigation }: any) => {
-  const { theme } = useAppTheme();
-  return (
-    <SalesStackNavigator.Navigator initialRouteName="Index">
-      <SalesStackNavigator.Screen
-        name="Index"
-        component={SalesScreen}
-        options={{
-          title: "Sales Transactions",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-          headerShown: true,
-          headerRight: () => (
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                <AntDesign
-                  name="bells"
-                  color="#FFF"
-                  size={24}
-                  onPress={() =>
-                    navigation.navigate("Notifications", {
-                      conversationID: 1,
-                      recipientName: "",
-                    })
-                  }
-                />
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: -5,
-                    right: -5,
-                    backgroundColor: theme.colors.background,
-                    width: 16,
-                    height: 16,
-                    borderRadius: 12,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 8 }}>12</Text>
-                </View>
-              </View>
-              <CustomMaterialMenu />
-            </View>
-          ),
-        }}
-      />
-      <SalesStackNavigator.Screen
-        name="TransactionDetailScreen"
-        component={TransactionDetailScreen}
-        options={({ route }: any) => ({
-          title: route?.params?.name,
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        })}
-      />
-    </SalesStackNavigator.Navigator>
-  );
-};
-
-const InventoryStackNavigator =
-  createNativeStackNavigator<InventoryTabParamList>();
-
-export const InventoryStack = ({ navigation }: any) => {
-  const { theme } = useAppTheme();
-  return (
-    <InventoryStackNavigator.Navigator initialRouteName="Index">
-      <InventoryStackNavigator.Screen
-        name="Index"
-        component={InventoryScreen}
-        options={{
-          title: "Inventory",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-          headerShown: true,
-          headerRight: () => (
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                <AntDesign
-                  name="bells"
-                  color={theme.colors.text}
-                  size={24}
-                  onPress={() =>
-                    navigation.navigate("Notifications", {
-                      conversationID: 1,
-                      recipientName: "",
-                    })
-                  }
-                />
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: -5,
-                    right: -5,
-                    backgroundColor: theme.colors.notification,
-                    width: 16,
-                    height: 16,
-                    borderRadius: 12,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 8 }}>12</Text>
-                </View>
-              </View>
-              <CustomMaterialMenu />
-            </View>
-          ),
-        }}
-      />
-      <InventoryStackNavigator.Screen
-        name="CategoryDetailScreen"
-        component={CategoryDetailScreen}
-        options={({ route }: any) => ({
-          title: route?.params?.categoryName,
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        })}
-      />
-      <InventoryStackNavigator.Screen
-        name="ItemDetailScreen"
-        component={ItemDetailScreen}
-        options={({ route }: any) => ({
-          title: route?.params?.itemName,
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        })}
-      />
-    </InventoryStackNavigator.Navigator>
-  );
-};
-
-const InsightsStackNavigator =
-  createNativeStackNavigator<InsightsTabParamList>();
-
-export const InsightsStack = ({ navigation }: any) => {
-  const { theme } = useAppTheme();
-  return (
-    <InsightsStackNavigator.Navigator initialRouteName="Index">
-      <InsightsStackNavigator.Screen
-        name="Index"
-        component={InsightsScreen}
-        options={{
-          title: "Insights",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-          headerShown: true,
-          headerRight: () => (
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                <AntDesign
-                  name="bells"
-                  color={theme.colors.text}
-                  size={24}
-                  onPress={() =>
-                    navigation.navigate("Notifications", {
-                      conversationID: 1,
-                      recipientName: "",
-                    })
-                  }
-                />
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: -5,
-                    right: -5,
-                    backgroundColor: theme.colors.primary,
-                    width: 16,
-                    height: 16,
-                    borderRadius: 12,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 8 }}>12</Text>
-                </View>
-              </View>
-              <CustomMaterialMenu />
-            </View>
-          ),
-        }}
-      />
-      <InsightsStackNavigator.Screen
-        name="InsightsDetailScreen"
-        component={InsightsDetailScreen}
-        options={({ route }: any) => ({
-          title: route?.params?.categoryName,
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        })}
-      />
-    </InsightsStackNavigator.Navigator>
-  );
-};
-
-const NewTransactionStackNavigator =
-  createNativeStackNavigator<NewTransactionParamList>();
-
-export const NewTransactionStack = ({ navigation, route }: any) => {
-  const { theme } = useAppTheme();
-
-  return (
-    <NewTransactionStackNavigator.Navigator
-      initialRouteName="Index"
-      screenOptions={{
-        animation: "fade",
-        animationDuration: 5000,
-      }}
-    >
-      <NewTransactionStackNavigator.Screen
-        name="Index"
-        component={CheckoutScreen}
-        options={{
-          title: "Add New Transaction",
-          animation: "fade",
-          headerLeft: () => {
-            return (
-              <View style={{ marginRight: 25 }}>
-                <Ionicons
-                  onPress={() => navigation.goBack()}
-                  name="arrow-back"
-                  size={24}
-                  color="white"
-                />
-              </View>
-            );
-          },
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        }}
-        // options={{ headerShown: false }}
-      />
-      <NewTransactionStackNavigator.Screen
-        name="AddTransactionItems"
-        component={AddTransactionItemsScreen}
-        options={{
-          title: "Select Items",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        }}
-      />
-      <NewTransactionStackNavigator.Screen
-        name="SelectItem"
-        component={SelectItemScreen}
-        options={{
-          title: "Select Items",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        }}
-      />
-      <NewTransactionStackNavigator.Screen
-        name="SelectCategory"
-        component={SelectCategoryScreen}
-        options={{
-          title: "Select Category",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: "#FFF",
-        }}
-      />
-    </NewTransactionStackNavigator.Navigator>
   );
 };
 
@@ -400,29 +88,7 @@ const AppStack = ({ route }: any) => {
             headerTintColor: theme.colors.white,
             headerRight: () => (
               <View style={{ flexDirection: "row" }}>
-                <View>
-                  <AntDesign
-                    name="bells"
-                    color="#FFF"
-                    size={24}
-                    onPress={() => navigation.navigate("Notifications")}
-                  />
-                  <View
-                    style={{
-                      position: "absolute",
-                      bottom: -5,
-                      right: -5,
-                      backgroundColor: "#FF0000",
-                      width: 16,
-                      height: 16,
-                      borderRadius: 12,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={{ color: "white", fontSize: 8 }}>12</Text>
-                  </View>
-                </View>
+                <NotificationIconComp />
                 <CustomMaterialMenu />
               </View>
             ),
@@ -445,13 +111,13 @@ const AppStack = ({ route }: any) => {
             tabBarItemStyle: {
               borderWidth: 0.5,
               borderColor: "#D3D3D3",
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
             },
             tabBarIconStyle: {
               paddingVertical: 0,
             },
-            tabBarActiveBackgroundColor: theme.colors.primary,
-            tabBarActiveTintColor: "#FFFFFF",
+            tabBarActiveBackgroundColor: theme.colors.cardBackground,
+            tabBarActiveTintColor: theme.colors.tint,
             // tabBarInactiveTintColor: theme.colors.tint,
             tabBarHideOnKeyboard: true,
             tabBarInactiveTintColor: "#828282",
@@ -468,7 +134,7 @@ const AppStack = ({ route }: any) => {
               backgroundColor: theme.colors.primary,
             },
             tabBarStyle: {
-              backgroundColor: theme.colors.primary,
+              // backgroundColor: theme.colors.tint,
               display: hideBottomTab ? "none" : "flex",
               height: 60,
             },
@@ -477,7 +143,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Home"
+                name={t("home")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 15 15" fill="none">
                     <Path
@@ -536,7 +202,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Inventory"
+                name={t("inventory")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <Path
@@ -589,7 +255,7 @@ const AppStack = ({ route }: any) => {
               zIndex: 20,
               display: hideBottomTab ? "none" : "flex",
             },
-            title: "New Transaction",
+            title: t("addNewTransaction"),
 
             headerShown: false,
             headerStyle: {},
@@ -643,7 +309,7 @@ const AppStack = ({ route }: any) => {
         <BottomTab.Screen
           name="SalesRoot"
           options={{
-            title: "Sales",
+            title: t("sales"),
             headerShown: false,
             tabBarStyle: {
               display: hideBottomTab ? "none" : "flex",
@@ -653,7 +319,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Sales"
+                name={t("sales")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <Path
@@ -788,7 +454,7 @@ const AppStack = ({ route }: any) => {
         <BottomTab.Screen
           name="Insights"
           options={{
-            title: "Insights",
+            title: t("insights"),
             // tabBarItemStyle: {
             //   borderWidth: 0.5,
             //   borderColor: "#D3D3D3",
@@ -803,7 +469,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Insights"
+                name={t("insights")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <Path

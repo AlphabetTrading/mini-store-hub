@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Address {
+  amharicFormattedAddress: String
   city: String
 
   """Identifies the date and time when the object was created."""
@@ -159,6 +160,7 @@ input CreateUserInput {
   amharicFirstName: String
   amharicLastName: String
   firstName: String
+  gender: Gender
   lastName: String
   password: String!
   phone: String!
@@ -242,6 +244,7 @@ input FilterProductInput {
   name: StringFilter
   retailShop: FilterRetailShopInput
   serialNumber: StringFilter
+  warehouse: FilterWarehouseInput
 }
 
 input FilterRetailShopInput {
@@ -302,6 +305,12 @@ type ForgotPasswordResponse {
 
   """Password Reset"""
   success: Boolean!
+}
+
+"""User role"""
+enum Gender {
+  FEMALE
+  MALE
 }
 
 type Goods {
@@ -366,6 +375,7 @@ type Mutation {
   acceptNotification(notificationInput: CreateNotificationTokenInput!): NotificationToken!
   activateUser(userId: String!): User!
   changePassword(data: ChangePasswordInput!): User!
+  changeUserPassword(newPassword: String!, userId: String!): User!
   createBulkRetailShopStock(data: CreateBulkRetailShopStockInput!): [RetailShopStock!]!
   createBulkWarehouseStock(data: CreateBulkWarehouseStockInput!): [WarehouseStock!]!
   createCategory(data: CreateCategoryInput!): Category!
@@ -642,12 +652,16 @@ type Query {
   category(id: String!): Category!
   findGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findIncomingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
+  findLowStockByRetailShopId(paginationInput: PaginationInput, percentage: Float, retailShopId: String!): PaginationRetailShopStocks!
+  findLowStockByWarehouseId(paginationInput: PaginationInput, percentage: Float, warehouseId: String!): [WarehouseStock!]!
   findOutgoingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
   findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
+  findProductsBySoldQuantityAndWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
   findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
   findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
   findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
+  findProductsByTopSellAndByWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
   getAllNotifications: [Notification!]!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
@@ -699,10 +713,10 @@ type Query {
   totalSoldQuantityByRetailShop(retailShopId: String!): Float!
   totalSoldQuantityByRetailShopAndByDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSoldQuantityByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
-  totalValuationByRetailShopId(retailShopId: String!): Float!
-  totalValuationByRetailShopIdAndDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
-  totalValuationByWarehouseId(warehouseId: String!): Float!
-  totalValuationByWarehouseIdAndDate(endDate: String!, startDate: String!, warehouseId: String!): Float!
+  totalValuationByRetailShopId(retailShopId: String!): StockValuation!
+  totalValuationByRetailShopIdAndDate(endDate: String!, retailShopId: String!, startDate: String!): StockValuation!
+  totalValuationByWarehouseId(warehouseId: String!): StockValuation!
+  totalValuationByWarehouseIdAndDate(endDate: String!, startDate: String!, warehouseId: String!): StockValuation!
   unreadNotificationsByUserId(userId: String!): [Notification!]!
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: OrderByUserInput, paginationInput: PaginationInput): PaginationUser!
@@ -836,6 +850,19 @@ type StockItem {
   updatedAt: DateTime!
 }
 
+type StockValuation {
+  count: Float
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  totalQuantity: Float
+  totalValuation: Float
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
 input StringFilter {
   contains: String
   endsWith: String
@@ -940,10 +967,11 @@ input UpdateUserInput {
   amharicFirstName: String
   amharicLastName: String
   firstName: String
+  gender: Gender
   lastName: String
   password: String
   phone: String
-  role: UserRole!
+  role: UserRole
   userProfile: UpdateUserProfileInput
   username: String
 }
@@ -978,7 +1006,9 @@ type User {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   firstName: String
+  gender: Gender!
   id: ID!
+  isActive: Boolean!
   lastName: String
   notificationTokens: [NotificationToken!]
   notifications: [Notification!]
@@ -1040,6 +1070,7 @@ type WarehouseStock {
   createdAt: DateTime!
   goodsTransfers: [GoodsTransfer!]
   id: ID!
+  maxQuantity: Float!
   product: Product
   productId: String!
   quantity: Float!

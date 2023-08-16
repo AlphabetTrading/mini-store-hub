@@ -12,6 +12,7 @@ export const GET_PRODUCTS_BY_TOP_SELL_AND_BY_RETAIL_SHOP = gql`
       items {
         id
         name
+        amharicName
         unit
         serialNumber
       }
@@ -36,6 +37,7 @@ export const GET_PRODUCTS_BY_SOLD_QUANTITY_AND_BY_RETAIL_SHOP = gql`
       items {
         id
         name
+        amharicName
         unit
         serialNumber
       }

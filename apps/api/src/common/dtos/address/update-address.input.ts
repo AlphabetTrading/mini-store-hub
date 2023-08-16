@@ -1,7 +1,4 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
-import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
-import { UserProfile } from 'src/user-profile/models/userProfile.model';
-import { Warehouse } from 'src/warehouses/models/warehouse.model';
 
 @InputType()
 export class UpdateAddressInput {

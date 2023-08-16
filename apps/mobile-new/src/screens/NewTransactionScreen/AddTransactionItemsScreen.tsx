@@ -2,17 +2,12 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { SafeAreaView } from "react-native";
 import { SearchBar } from "react-native-screens";
-import { AntDesign, Entypo } from "@expo/vector-icons";
-import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
@@ -21,17 +16,22 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorageUtils from "../../utils/async_storage";
 import { FAB } from "react-native-paper";
 
-import CategoryList, {
-  CategoryType,
-} from "../../components/NewTransaction/CategoryList";
+import CategoryList from "../../components/NewTransaction/CategoryList";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { Button } from "@rneui/base";
 import { useAppTheme } from "@/src/contexts/preference";
 import SingleProductItemCard from "@/src/components/NewTransaction/SingleProductItemCard";
+import { Category } from "@/src/types/models";
+import { useLocalization } from "@/src/contexts/localization";
 
-const AllCategory: CategoryType = {
+const AllCategory: Category = {
   id: "afasfiahsofa",
   name: "ALL",
+  amharicDescription: "ሁሉም",
+  amharicName: "ሁሉም",
+  createdAt: "",
+  updatedAt: "",
+  description: "",
 };
 
 const AddTransactionItemsScreen = () => {
@@ -39,10 +39,11 @@ const AddTransactionItemsScreen = () => {
   const navigation = useNavigation();
   const [alreadySelected, setAlreadySelected] = useState<any[]>([]);
   const { theme } = useAppTheme();
+  const { t } = useLocalization();
 
   const fetchCheckout = useCallback(async () => {
     const items = await AsyncStorageUtils.getItem("checkout");
-    setAlreadySelected(items);
+    if (items) setAlreadySelected(items);
   }, [route]);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const AddTransactionItemsScreen = () => {
   const { authState } = useAuth();
   const [searchPhrase, setSearchPhrase] = useState("");
   const [selectedCategory, setSelectedCategory] =
-    useState<CategoryType>(AllCategory);
+    useState<Category>(AllCategory);
 
   const { loading, data, error, refetch } = useQuery(
     GET_RETAIL_SHOP_PRODUCTS_SIMPLE,
@@ -91,27 +92,31 @@ const AddTransactionItemsScreen = () => {
   }, [selectedCategory]);
 
   const selectItem = (stockItem: any) => {
-    if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
-      setAlreadySelected(
-        alreadySelected.filter((filterItem) => filterItem.id !== stockItem.id)
-      );
-    } else {
-      setAlreadySelected([
-        ...alreadySelected,
-        { ...stockItem, selectedQuantity: 1 },
-      ]);
+    if (alreadySelected) {
+      if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
+        setAlreadySelected(
+          alreadySelected.filter((filterItem) => filterItem.id !== stockItem.id)
+        );
+      } else {
+        setAlreadySelected([
+          ...alreadySelected,
+          { ...stockItem, selectedQuantity: 1 },
+        ]);
+      }
     }
   };
   const updateItem = (stockItem: any) => {
-    if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
-      setAlreadySelected((prev) =>
-        prev.map((item) => {
-          if (item.id === stockItem.id) {
-            return stockItem;
-          }
-          return item;
-        })
-      );
+    if (alreadySelected) {
+      if (alreadySelected.some((item: any) => item.id === stockItem.id)) {
+        setAlreadySelected((prev) =>
+          prev.map((item) => {
+            if (item.id === stockItem.id) {
+              return stockItem;
+            }
+            return item;
+          })
+        );
+      }
     }
   };
 
@@ -170,12 +175,13 @@ const AddTransactionItemsScreen = () => {
       right: 0,
       bottom: 0,
       borderRadius: 32,
+      backgroundColor: theme.colors.primary,
     },
   });
   return (
     <BaseLayout>
       <SearchBarComponent
-        placeholder="Type Here..."
+        placeholder={t("searchHere")}
         onChangeText={(text: string) => {
           setSearchPhrase(text);
         }}
@@ -217,7 +223,7 @@ const AddTransactionItemsScreen = () => {
                   width: "100%",
                 }}
               >
-                <SearchBar />
+                {/* <SearchBar /> */}
                 <FlatList
                   contentContainerStyle={styles.container}
                   refreshControl={
@@ -226,10 +232,11 @@ const AddTransactionItemsScreen = () => {
                       onRefresh={onRefresh}
                     />
                   }
-                  data={filteredProducts.sort(
-                    (a, b) =>
-                      alreadySelected.findIndex((i) => i.id === b.id) -
-                      alreadySelected.findIndex((i) => i.id === a.id)
+                  data={filteredProducts.sort((a, b) =>
+                    alreadySelected
+                      ? alreadySelected.findIndex((i) => i.id === b.id) -
+                        alreadySelected.findIndex((i) => i.id === a.id)
+                      : 1
                   )}
                   ItemSeparatorComponent={() => (
                     <View
@@ -305,6 +312,7 @@ const AddTransactionItemsScreen = () => {
             style={styles.fab}
             size="medium"
             customSize={64}
+            color={theme.colors.white}
             onPress={async () => {
               await AsyncStorageUtils.setItem("checkout", alreadySelected);
               navigation.navigate("Root", {

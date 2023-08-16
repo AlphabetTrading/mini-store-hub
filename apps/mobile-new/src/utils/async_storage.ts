@@ -13,7 +13,7 @@ const setItem = async (key: any, value: any) => {
 const getItem = async (key: any) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    return jsonValue !== null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
     return null;

@@ -1,4 +1,4 @@
-import { PrismaClient, TransferType, UnitType } from '@prisma/client';
+import { Gender, PrismaClient, TransferType, UnitType } from '@prisma/client';
 import { randomInt } from 'crypto';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
@@ -50,6 +50,9 @@ async function seedUserModels() {
           firstName: 'John',
           lastName: 'Doe',
           phone: '+251929876540',
+          amharicFirstName: 'ጆን',
+          amharicLastName: 'ዶኤ',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'ADMIN',
@@ -59,6 +62,9 @@ async function seedUserModels() {
           firstName: 'Jane',
           lastName: 'Doe',
           phone: '+251929876541',
+          amharicFirstName: 'ጃን',
+          amharicLastName: 'ዶኤ',
+          gender: Gender.FEMALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'WAREHOUSE_MANAGER',
@@ -68,6 +74,9 @@ async function seedUserModels() {
           firstName: 'George',
           lastName: 'Thomas',
           phone: '+251929876542',
+          amharicFirstName: 'ጆርጂ',
+          amharicLastName: 'ቶማስ',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'RETAIL_SHOP_MANAGER',
@@ -77,6 +86,10 @@ async function seedUserModels() {
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           phone: faker.phone.number(),
+          // generate random amharic name
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'WAREHOUSE_MANAGER',
@@ -86,6 +99,9 @@ async function seedUserModels() {
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'WAREHOUSE_MANAGER',
@@ -95,6 +111,9 @@ async function seedUserModels() {
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'RETAIL_SHOP_MANAGER',
@@ -104,6 +123,9 @@ async function seedUserModels() {
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'RETAIL_SHOP_MANAGER',
@@ -113,6 +135,9 @@ async function seedUserModels() {
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'WAREHOUSE_MANAGER',
@@ -121,6 +146,9 @@ async function seedUserModels() {
           username: faker.internet.userName(),
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
           phone: faker.phone.number(),
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
@@ -145,6 +173,9 @@ async function seedUserProfile() {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         phone: faker.phone.number(),
+        amharicFirstName: 'አማርኛ ስም',
+        amharicLastName: 'አማርኛ የአባት ስም',
+        gender: Gender.MALE,
         password:
           '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
         role: 'WAREHOUSE_MANAGER',
@@ -158,6 +189,7 @@ async function seedUserProfile() {
                 lat: faker.location.latitude(),
                 lng: faker.location.longitude(),
                 formattedAddress: faker.location.secondaryAddress(),
+                amharicFormattedAddress: 'አማርኛ አገር በአማርኛ አገር በአማርኛ አገር',
               },
             },
           },
@@ -185,6 +217,7 @@ async function seedCategories() {
           name: 'Home & Kitchen',
           amharicName: 'ቤት እና የቤት መድብሎች',
           description: 'All the latest home & kitchen products',
+          amharicDescription: 'ሁሉም የቤት እና የቤት መድብሎች እቃዎች',
         },
         {
           name: 'Sports',
@@ -242,13 +275,13 @@ async function seedCategories() {
         subcategories: {
           create: [
             {
-              name: faker.commerce.productName(),
+              name: 'Laptops',
               amharicName: 'ላፕቶፕቶች',
               description: 'Laptops',
               amharicDescription: 'ላፕቶፕቶች',
             },
             {
-              name: faker.commerce.productName(),
+              name: 'Mobile Phones',
               amharicName: 'ሞባይል ፎንሎች',
               description: 'Mobile Phones',
               amharicDescription: 'ሞባይል ፎንሎች',
@@ -593,10 +626,10 @@ async function seedRetailShops() {
     });
     await prisma.retailShop.createMany({
       data: [
-        { name: faker.company.name() },
-        { name: faker.company.name() },
-        { name: faker.company.name() },
-        { name: faker.company.name() },
+        { name: faker.company.name(), amharicName: 'የሚከተለው የስራ ቦታ' },
+        { name: faker.company.name(), amharicName: 'የሚከተለው የስራ ቦታ' },
+        { name: faker.company.name(), amharicName: 'የሚከተለው የስራ ቦታ' },
+        { name: faker.company.name(), amharicName: 'የሚከተለው የስራ ቦታ' },
         {
           name: faker.company.name(),
           amharicName: 'የሚከተለው የስራ ቦታ',
@@ -626,6 +659,7 @@ async function seedWarehouses() {
             lat: faker.location.latitude(),
             lng: faker.location.longitude(),
             formattedAddress: faker.location.secondaryAddress(),
+            amharicFormattedAddress: 'የሚከተለው የስራ ቦታ',
           },
         },
       },
@@ -651,6 +685,7 @@ async function seedWarehouses() {
             lat: faker.location.latitude(),
             lng: faker.location.longitude(),
             formattedAddress: faker.location.secondaryAddress(),
+            amharicFormattedAddress: 'የሚከተለው የስራ ቦታ',
           },
         },
       },
@@ -688,6 +723,7 @@ async function seedWarehouseStocks() {
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
+            maxQuantity: 50,
           })),
         ],
       });
@@ -699,6 +735,7 @@ async function seedWarehouseStocks() {
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
+            maxQuantity: 50,
           })),
         ],
       });
@@ -710,6 +747,7 @@ async function seedWarehouseStocks() {
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
+            maxQuantity: 50,
           })),
         ],
       });
@@ -721,6 +759,7 @@ async function seedWarehouseStocks() {
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
+            maxQuantity: 50,
           })),
         ],
       });
@@ -734,6 +773,7 @@ async function seedWarehouseStocks() {
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
+            maxQuantity: 50,
           })),
         ],
       });
@@ -747,6 +787,7 @@ async function seedWarehouseStocks() {
             productId: products[randomInt(0, products.length - 1)].id,
             warehouseId: warehouses[randomInt(0, warehouses.length - 1)].id,
             quantity: randomInt(0, 30),
+            maxQuantity: 50,
           })),
         ],
       });

@@ -5,8 +5,7 @@ import {
   HideField,
 } from '@nestjs/graphql';
 
-import { UserRole } from '@prisma/client';
-import { Address } from 'src/common/models/address.model';
+import { UserRole, Gender } from '@prisma/client';
 import { BaseModel } from 'src/common/models/base.model';
 import { Notification } from 'src/notification/models/notification.model';
 import { NotificationToken } from 'src/notification/models/notification_token.model';
@@ -16,6 +15,11 @@ import { Warehouse } from 'src/warehouses/models/warehouse.model';
 
 registerEnumType(UserRole, {
   name: 'UserRole',
+  description: 'User role',
+});
+
+registerEnumType(Gender, {
+  name: 'Gender',
   description: 'User role',
 });
 
@@ -38,6 +42,12 @@ export class User extends BaseModel {
 
   @Field(() => String, { nullable: true })
   phone?: string;
+
+  @Field(() => Boolean)
+  isActive: boolean;
+
+  @Field(() => Gender)
+  gender: Gender;
 
   @Field(() => UserRole)
   role: UserRole;

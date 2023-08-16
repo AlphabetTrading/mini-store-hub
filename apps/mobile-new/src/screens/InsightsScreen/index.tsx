@@ -9,10 +9,11 @@ import {
 import React from "react";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
-import { INSIGHTS_TYPE } from "../../types";
 import { useGetInsightsData } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
 import { useAppTheme } from "@/src/contexts/preference";
+import { INSIGHTS_TYPE } from "@/src/types/types";
+import { useLocalization } from "@/src/contexts/localization";
 
 type Props = {};
 
@@ -29,6 +30,8 @@ const MostSoldItems = ({
     insightsType
   );
 
+  const { locale } = useLocalization();
+
   return loading ? (
     <View>
       <ActivityIndicator />
@@ -36,13 +39,13 @@ const MostSoldItems = ({
   ) : error ? (
     <Text>Error Try Again</Text>
   ) : (
-    data.findProductsBySoldQuantityAndRetailShop.items.map(
+    data?.findProductsBySoldQuantityAndRetailShop.items.map(
       (item: any, index: number) => {
         return (
           <View
             key={index}
             style={{
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,
@@ -50,23 +53,35 @@ const MostSoldItems = ({
               borderRadius: 6,
             }}
           >
+            <View>
+              <Text
+                style={{
+                  fontFamily: "InterMedium",
+                  fontSize: 16,
+                  color: theme.colors.text,
+                }}
+              >
+                {index + 1}.
+                {locale.includes("en") ? item.name : item.amharicName}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "InterMedium",
+                  fontSize: 14,
+                  color: theme.colors.text,
+                }}
+              >
+                in-{item.unit}
+              </Text>
+            </View>
             <Text
               style={{
-                fontFamily: "InterMedium",
                 fontSize: 16,
+                fontFamily: "InterMedium",
                 color: theme.colors.text,
               }}
             >
-              {index + 1}. {item.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: "InterMedium",
-                color: theme.colors.text,
-              }}
-            >
-              120kg
+              {item.serialNumber}
             </Text>
           </View>
         );
@@ -87,7 +102,8 @@ const TopSellingItems = ({
     insightsType
   );
   const { theme } = useAppTheme();
-
+  const { t, locale } = useLocalization();
+  console.log(data?.findProductsByTopSellAndByRetailShop.items, " is the data");
   return loading ? (
     <View>
       <ActivityIndicator />
@@ -101,7 +117,7 @@ const TopSellingItems = ({
           <View
             key={index}
             style={{
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,
@@ -109,23 +125,35 @@ const TopSellingItems = ({
               borderRadius: 6,
             }}
           >
+            <View>
+              <Text
+                style={{
+                  fontFamily: "InterMedium",
+                  fontSize: 16,
+                  color: theme.colors.text,
+                }}
+              >
+                {index + 1}.{" "}
+                {locale.includes("en") ? item.name : item.amharicName}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "InterMedium",
+                  fontSize: 14,
+                  color: theme.colors.text,
+                }}
+              >
+                in-{item.unit}
+              </Text>
+            </View>
             <Text
               style={{
-                fontFamily: "InterMedium",
                 fontSize: 16,
+                fontFamily: "InterMedium",
                 color: theme.colors.text,
               }}
             >
-              {index + 1}. {item.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: "InterMedium",
-                color: theme.colors.text,
-              }}
-            >
-              120kg
+              {item.serialNumber}
             </Text>
           </View>
         );
@@ -139,6 +167,7 @@ const InsightsScreen = (props: Props) => {
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
   const { theme } = useAppTheme();
+  const { t } = useLocalization();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -158,7 +187,7 @@ const InsightsScreen = (props: Props) => {
               marginBottom: 20,
             }}
           >
-            Most Sold Items
+            {t("mostSoldItems")}
           </Text>
           <MostSoldItems
             retailShopID={retailShopID}
@@ -185,7 +214,7 @@ const InsightsScreen = (props: Props) => {
             <Text
               style={{ color: theme.colors.accent, fontFamily: "InterMedium" }}
             >
-              See More
+              {t("seeMore")}
             </Text>
           </TouchableOpacity>
 
@@ -196,7 +225,7 @@ const InsightsScreen = (props: Props) => {
               marginBottom: 20,
             }}
           >
-            Most Revenue by item
+            {t("mostRevenue")}
           </Text>
           <TopSellingItems
             retailShopID={retailShopID}
@@ -223,7 +252,7 @@ const InsightsScreen = (props: Props) => {
             <Text
               style={{ color: theme.colors.accent, fontFamily: "InterMedium" }}
             >
-              See More
+              {t("seeMore")}
             </Text>
           </TouchableOpacity>
         </View>

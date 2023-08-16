@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import {
   GET_NOTIFICATION_DETAIL,
+  GET_UNREAD_NOTIFICATIONS,
   GET_USERS_NOTIFICATIONS,
 } from "../../graphql/queries/notificationQueries";
 
@@ -20,6 +21,16 @@ export const useGetSingleNotification = (notificationId: string) => {
     errorPolicy: "all",
     variables: {
       notificationById: notificationId,
+    },
+  });
+};
+
+export const useGetUnreadNotificationsCount = (userId: string) => {
+  return useQuery(GET_UNREAD_NOTIFICATIONS, {
+    notifyOnNetworkStatusChange: true,
+    errorPolicy: "all",
+    variables: {
+      userId,
     },
   });
 };

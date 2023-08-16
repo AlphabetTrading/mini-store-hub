@@ -9,7 +9,7 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { useNotifications } from "../hooks/useNotifications";
 import Loading from "../components/Loading";
 import ProfileScreen from "../screens/ProfileScreen";
-import { NotificationTabParamList, RootStackParamList } from "../types";
+import { NotificationTabParamList, RootStackParamList } from "../types/types";
 import AppStack from "./AppStack";
 import NotificationDetailScreen from "../screens/Notifications/NotificationDetailScreen";
 import NotificationScreen from "../screens/Notifications/NotificationScreen";
@@ -87,6 +87,7 @@ function RootNavigator() {
             name="Profile"
             component={ProfileScreen}
             options={{
+              title: t("profile"),
               headerShown: true,
               headerStyle: {
                 backgroundColor: theme.colors.primary,
@@ -125,13 +126,14 @@ const NotificationStackNavigator =
 
 export const NotificationStack = () => {
   const { theme } = useAppTheme();
+  const { t } = useLocalization();
   return (
     <NotificationStackNavigator.Navigator initialRouteName="Index">
       <NotificationStackNavigator.Screen
         name="Index"
         component={NotificationScreen}
         options={({ route }: any) => ({
-          title: "Notifications",
+          title: t("notifications"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

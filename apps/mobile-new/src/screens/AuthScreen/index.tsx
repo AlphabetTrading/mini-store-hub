@@ -1,14 +1,12 @@
-import { Alert, Linking, Platform } from "react-native";
-
+import { ActivityIndicator, Text } from "react-native-paper";
 import {
-  ActivityIndicator,
   SafeAreaView,
   StyleSheet,
-  Text,
-  TextInput,
   TouchableOpacity,
   View,
+  TextInput,
 } from "react-native";
+
 import React, { useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Formik } from "formik";
@@ -16,7 +14,6 @@ import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { notifyMessage } from "../../components/Toast";
 import { StatusBar } from "expo-status-bar";
-import { useLoading } from "../../contexts/loading";
 import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
@@ -51,7 +48,7 @@ const LoginScreen = ({ navigation }: any) => {
     inputStyle: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: theme.colors.primary,
+      backgroundColor: theme.colors.cardBackground,
       padding: 16,
       borderRadius: 12,
       gap: 16,
@@ -91,7 +88,7 @@ const LoginScreen = ({ navigation }: any) => {
 
         <Text
           style={{
-            color: theme.colors.text,
+            color: theme.colors.tint,
             fontSize: 48,
             fontFamily: "InterMedium",
           }}
@@ -235,7 +232,11 @@ const LoginScreen = ({ navigation }: any) => {
                 disabled={isSubmitting}
               >
                 <Text style={styles.loginButtonText}>
-                  {isSubmitting ? <ActivityIndicator /> : "Sign In"}
+                  {isSubmitting ? (
+                    <ActivityIndicator color={theme.colors.white} />
+                  ) : (
+                    "Sign In"
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>

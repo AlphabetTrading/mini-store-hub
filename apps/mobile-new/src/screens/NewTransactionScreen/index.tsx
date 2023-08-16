@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {
   useIsFocused,
   useNavigation,
@@ -21,12 +21,42 @@ const CheckoutScreen = () => {
   const { theme } = useAppTheme();
   const fetchCheckoutItems = useCallback(async () => {
     const items = await AsyncStorageUtils.getItem("checkout");
-    setCheckoutItems(items);
+    if (items) setCheckoutItems(items);
   }, [navigation, route]);
 
   useEffect(() => {
     fetchCheckoutItems();
   }, [fetchCheckoutItems, isFocused]);
+
+  const styles = StyleSheet.create({
+    itemTextStyle: {
+      textTransform: "capitalize",
+    },
+    itemSeparator: {
+      flex: 1,
+      height: 5,
+    },
+    fab: {
+      position: "absolute",
+      margin: 16,
+      right: 0,
+      bottom: 0,
+      borderRadius: 32,
+      backgroundColor: theme.colors.primary,
+    },
+  });
+
+  const updateCheckout = useCallback(async () => {
+    if (checkoutItems.length > 0) {
+      AsyncStorageUtils.setItem("checkout", checkoutItems);
+    } else {
+      AsyncStorageUtils.removeItem("checkout");
+    }
+  }, [checkoutItems]);
+
+  useEffect(() => {
+    updateCheckout();
+  }, [updateCheckout]);
 
   return (
     <BaseLayout>
@@ -69,6 +99,8 @@ const CheckoutScreen = () => {
         style={styles.fab}
         size="medium"
         customSize={64}
+        color={theme.colors.white}
+        rippleColor={theme.colors.primary}
         onPress={async () => {
           navigation.navigate("Root", {
             screen: "NewTransactionRoot",
@@ -104,20 +136,3 @@ const CheckoutScreen = () => {
 };
 
 export default CheckoutScreen;
-
-const styles = StyleSheet.create({
-  itemTextStyle: {
-    textTransform: "capitalize",
-  },
-  itemSeparator: {
-    flex: 1,
-    height: 5,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    borderRadius: 32,
-  },
-});
