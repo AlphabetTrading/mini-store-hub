@@ -15,6 +15,7 @@ import {
   Tabs,
   Typography,
   Unstable_Grid2 as Grid,
+  Breadcrumbs,
 } from "@mui/material";
 import { UserBasicDetails } from "@/components/users/user-basic-details";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,6 +26,8 @@ import { USER, UserData, UserVars } from "@/graphql/users/queries";
 import StateHandler from "@/components/state-handler";
 import UserRoleResponsibility from "@/components/users/user-role-responsibility";
 import UserManagement from "@/components/users/user-management";
+import UserOtherDetails from "@/components/users/user-other-detils";
+import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 
 const tabs = [
   { label: "Details", value: "details" },
@@ -46,7 +49,7 @@ const Page = ({ params }: Props) => {
     },
     fetchPolicy: "cache-and-network",
   });
-  console.log(data?.user?.warehouse);
+  console.log(data?.user);
 
   return (
     <>
@@ -60,8 +63,8 @@ const Page = ({ params }: Props) => {
         >
           <Container maxWidth="xl">
             <Stack spacing={4}>
-              <Stack spacing={4}>
-                <div>
+              <Stack spacing={2}>
+                {/* <div>
                   <Link
                     color="text.primary"
                     component={NextLink}
@@ -72,12 +75,22 @@ const Page = ({ params }: Props) => {
                     }}
                     underline="hover"
                   >
-                    {/* <SvgIcon sx={{ mr: 1 }}>
+                    <SvgIcon sx={{ mr: 1 }}>
                     <ArrowLeftIcon />
-                  </SvgIcon> */}
+                  </SvgIcon> 
                     <Typography variant="subtitle2">Users</Typography>
                   </Link>
-                </div>
+                </div> */}
+                <Breadcrumbs separator={<BreadcrumbsSeparator />}>
+                  <Link component={NextLink} href={"/admin/dashboard"}>
+                    Dashboard
+                  </Link>
+                  <Link component={NextLink} href={"/admin/users"}>
+                    Users
+                  </Link>
+                  <Typography>details</Typography>
+                </Breadcrumbs>
+
                 <Stack
                   alignItems="flex-start"
                   direction={{
@@ -89,7 +102,7 @@ const Page = ({ params }: Props) => {
                 >
                   <Stack alignItems="center" direction="row" spacing={2}>
                     <Avatar
-                      // src={customer.avatar}
+                      src={data?.user.userProfile?.photoUrl}
                       sx={{
                         height: 64,
                         width: 64,
@@ -111,7 +124,7 @@ const Page = ({ params }: Props) => {
                   </Stack>
                   <Stack alignItems="center" direction="row" spacing={2}>
                     <Button
-                      color="inherit"
+                      // color="inherit"
                       component={NextLink}
                       endIcon={
                         <SvgIcon>
@@ -119,18 +132,9 @@ const Page = ({ params }: Props) => {
                         </SvgIcon>
                       }
                       href={`/admin/users/${data?.user.id}/edit`}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      endIcon={
-                        <SvgIcon>
-                          <ExpandMoreIcon />
-                        </SvgIcon>
-                      }
                       variant="contained"
                     >
-                      Actions
+                      Edit
                     </Button>
                   </Stack>
                 </Stack>
@@ -169,11 +173,14 @@ const Page = ({ params }: Props) => {
                           retailShops={data?.user.retailShop}
                           warehouses={data?.user.warehouse}
                         />
-                        <UserManagement />
-
-                        {/* <CustomerPayment />
-                      <CustomerEmailsSummary />
-                      <CustomerDataManagement /> */}
+                        <UserOtherDetails
+                        address={data?.user.userProfile?.address}
+                          idUrl={data?.user.userProfile?.idUrl}
+                        />
+                        <UserManagement
+                          isActive={data?.user ? data?.user.isActive : true}
+                          userId={data?.user.id || ""}
+                        />
                       </Stack>
                     </Grid>
                   </Grid>

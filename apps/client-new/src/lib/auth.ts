@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
             variables: {
               data: {
                 password: credentials.password,
-                username: credentials.username,
+                phone: credentials.phone,
               },
             },
           });

@@ -76,20 +76,26 @@ export const USER = gql`
     user(id: $userId) {
       id
       firstName
+      amharicFirstName
       lastName
+      amharicLastName
       createdAt
       phone
       role
       username
+      isActive
+      gender
       userProfile {
         address {
           city
           formattedAddress
+          amharicFormattedAddress
           lat
           lng
           street
         }
-        # photoUrl
+        photoUrl
+        idUrl
       }
       retailShop {
         id

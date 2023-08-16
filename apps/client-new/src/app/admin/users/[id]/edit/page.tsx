@@ -2,18 +2,19 @@
 import {
   Avatar,
   Box,
+  Breadcrumbs,
   Chip,
   Container,
   Link,
   Stack,
-  SvgIcon,
   Typography,
 } from "@mui/material";
 import { UserEditForm } from "@/components/users/user-edit-form";
 import { UserData, UserVars, USER } from "@/graphql/users/queries";
 import { useQuery } from "@apollo/client";
 import StateHandler from "@/components/state-handler";
-
+import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
+import NextLink from 'next/link';
 type Props = {
   params: {
     id: string;
@@ -38,21 +39,15 @@ const Page = ({ params }: Props) => {
         <Container maxWidth="lg">
           <Stack spacing={4}>
             <Stack spacing={4}>
-              <div>
-                <Link
-                  color="text.primary"
-                  //   component={RouterLink}
-                  //   href={paths.dashboard.customers.index}
-                  sx={{
-                    alignItems: "center",
-                    display: "inline-flex",
-                  }}
-                  underline="hover"
-                >
-                  <SvgIcon sx={{ mr: 1 }}>{/* <ArrowLeftIcon /> */}</SvgIcon>
-                  <Typography variant="subtitle2">Users</Typography>
+              <Breadcrumbs separator={<BreadcrumbsSeparator />}>
+                <Link component={NextLink} href={"/admin/dashboard"}>
+                  Dashboard
                 </Link>
-              </div>
+                <Link component={NextLink} href={"/admin/users"}>
+                  Users
+                </Link>
+                <Typography>Edit</Typography>
+              </Breadcrumbs>
               <Stack
                 alignItems="flex-start"
                 direction={{

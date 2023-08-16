@@ -27,7 +27,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@apollo/client";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { useState } from "react";
 import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
 import { Product, StockItem } from "../../../types/product";
 import StateHandler from "../state-handler";
