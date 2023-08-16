@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { $Enums, Gender, UserRole } from '@prisma/client';
 import { CreateUserInput } from './create-user.input';
 import { InputType, Field, PartialType } from '@nestjs/graphql';
 import { UpdateUserProfileInput } from 'src/user-profile/dto/update-user-profile.input';
@@ -14,6 +14,9 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
   @Field(() => String, { nullable: true })
   username?: string;
 
+  @Field(() => Gender, { nullable: true })
+  gender?: Gender;
+
   @Field(() => String, { nullable: true })
   firstName?: string;
 
@@ -26,6 +29,6 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
   @Field(() => String, { nullable: true })
   phone?: string;
 
-  @Field(() => UserRole)
-  role: UserRole;
+  @Field(() => UserRole, { nullable: true })
+  role?: UserRole;
 }

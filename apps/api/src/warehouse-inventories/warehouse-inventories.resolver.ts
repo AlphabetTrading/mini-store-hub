@@ -14,6 +14,7 @@ import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationWarehouseStocks } from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
 import { OrderByWarehouseStockInput } from './dto/order-by-warehouse-stock.input';
+import { StockValuation } from 'src/common/models/stockValuation.model';
 
 @Resolver(() => WarehouseStock)
 @UseGuards(GqlAuthGuard)
@@ -84,28 +85,64 @@ export class WarehouseStockResolver {
     return this.warehouseStockService.findByWarehouseId(warehouseId);
   }
 
-  @Query(() => Float, {
+  @Query(() => StockValuation, {
     name: 'totalValuationByWarehouseId',
   })
   async totalValuationByWarehouseId(
     @Args('warehouseId') warehouseId: string,
-  ): Promise<number> {
+  ): Promise<{
+    totalQuantity: number;
+    totalValuation: number;
+    count: number;
+  }> {
     return this.warehouseStockService.totalValuationByWarehouseId(warehouseId);
   }
 
-  @Query(() => Float, {
+  @Query(() => StockValuation, {
     name: 'totalValuationByWarehouseIdAndDate',
   })
   async totalValuationByWarehouseIdAndDate(
     @Args('warehouseId') warehouseId: string,
     @Args('startDate') startDate: string,
     @Args('endDate') endDate: string,
-  ): Promise<number> {
+  ): Promise<{
+    totalQuantity: number;
+    totalValuation: number;
+    count: number;
+  }> {
     return this.warehouseStockService.totalValuationByWarehouseIdAndDate(
       warehouseId,
       startDate,
       endDate,
     );
+  }
+
+  @Query(() => [WarehouseStock], {
+    name: 'findLowStockByWarehouseId',
+  })
+  async findLowStockByWarehouseId(
+    @Args('warehouseId') warehouseId: string,
+    @Args('percentage', { type: () => Float, nullable: true })
+    percentage: number = 10,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const warehouseStocks = await this.warehouseStockService.findLowStockItems({
+      warehouseId,
+      percentage,
+      skip: paginationInput?.skip,
+      take: paginationInput?.take,
+    });
+
+    const count = await this.warehouseStockService.count({});
+    return {
+      items: warehouseStocks,
+      meta: {
+        page: paginationInput?.skip,
+        limit: paginationInput?.take,
+        count,
+      },
+    };
   }
 
   @Mutation(() => WarehouseStock)

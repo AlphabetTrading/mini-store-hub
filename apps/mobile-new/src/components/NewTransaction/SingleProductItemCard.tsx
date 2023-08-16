@@ -11,6 +11,7 @@ import { Card, Avatar } from "react-native-paper";
 import { useAppTheme } from "@/src/contexts/preference";
 import { Entypo } from "@expo/vector-icons";
 import { CheckoutItem } from "./TransactionItem";
+import { notifyMessage } from "../Toast";
 type Props = {
   item: CheckoutItem;
   selectItem: (item: any) => void;
@@ -37,31 +38,39 @@ const SingleProductItemCard = ({
   }, [productItem]);
 
   return (
-    <Card
+    <TouchableOpacity
+      onPress={() => {
+        if (productItem.quantity === 0) {
+          notifyMessage("Sorry the Item is Out of Stock!");
+        } else {
+          selectItem(productItem);
+        }
+      }}
       style={[
         {
-          backgroundColor: theme.colors.cardBackground,
           borderRadius: 10,
-        },
-        isSelected && {
-          borderWidth: 0.5,
-          borderColor: theme.colors.accent,
+          width: "100%",
         },
       ]}
     >
-      <Card.Content>
-        <TouchableOpacity
-          onPress={() => {
-            selectItem(productItem);
-          }}
+      <Card
+        style={[
+          {
+            // backgroundColor: theme.colors.cardBackground,
+            borderRadius: 10,
+          },
+          isSelected && {
+            borderWidth: 0.5,
+            borderColor: theme.colors.accent,
+          },
+        ]}
+      >
+        <Card.Content
           style={[
             {
               flexDirection: "row",
               backgroundColor: theme.colors.cardBackground,
-              width: "100%",
-              height: 80,
               alignItems: "center",
-              gap: 16,
             },
           ]}
         >
@@ -118,7 +127,7 @@ const SingleProductItemCard = ({
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    gap: 10,
+                    gap: 5,
                   }}
                 >
                   <View
@@ -204,7 +213,7 @@ const SingleProductItemCard = ({
                 alignItems: "center",
               }}
             >
-              <Avatar.Image source={{ uri: "https://picsum.com/200" }} />
+              <Avatar.Image source={{ uri: "https://picsum.photos/200" }} />
               <View style={{ flex: 1, gap: 5 }}>
                 <Text
                   style={{
@@ -239,9 +248,9 @@ const SingleProductItemCard = ({
               </Text>
             </View>
           )}
-        </TouchableOpacity>
-      </Card.Content>
-    </Card>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
   );
 };
 

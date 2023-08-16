@@ -15,6 +15,9 @@ export class WarehouseStock extends BaseModel {
   @Field(() => Float)
   quantity: number;
 
+  @Field(() => Float)
+  maxQuantity: number;
+
   @Field(() => Warehouse, { nullable: true })
   warehouse?: Warehouse;
 

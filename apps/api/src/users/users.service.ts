@@ -147,6 +147,17 @@ export class UsersService {
     });
   }
 
+  async changePasswordByAdmin(userId: string, newPassword: string) {
+    const hashedPassword = await this.passwordService.hashPassword(newPassword);
+
+    return this.prisma.user.update({
+      data: {
+        password: hashedPassword,
+      },
+      where: { id: userId },
+    });
+  }
+
   async getUsers({
     skip,
     take,

@@ -182,6 +182,7 @@ export class RetailShopStockService {
 
     const retailShopStocks = await this.prisma.retailShopStock.findMany({
       where: { retailShopId },
+
       include: {
         ...retailShopStockInclude,
         product: {
@@ -191,9 +192,15 @@ export class RetailShopStockService {
         },
       },
     });
-    return retailShopStocks.reduce((acc, cur) => {
-      return acc + cur.quantity * cur.product.activePrice.price;
-    }, 0);
+    return {
+      totalValuation: retailShopStocks.reduce((acc, cur) => {
+        return acc + cur.quantity * cur.product.activePrice.price;
+      }, 0),
+      totalQuantity: retailShopStocks.reduce((acc, cur) => {
+        return acc + cur.quantity;
+      }, 0),
+      count: retailShopStocks.length,
+    };
   }
 
   async totalValuationByRetailShopIdAndDate(
@@ -228,9 +235,56 @@ export class RetailShopStockService {
       },
     });
 
-    return retailShopStocks.reduce((acc, cur) => {
-      return acc + cur.quantity * cur.product.activePrice.price;
-    }, 0);
+    return {
+      totalValuation: retailShopStocks.reduce((acc, cur) => {
+        return acc + cur.quantity * cur.product.activePrice.price;
+      }, 0),
+      count: retailShopStocks.length,
+      totalQuantity: retailShopStocks.reduce((acc, cur) => {
+        return acc + cur.quantity;
+      }, 0),
+    };
+  }
+
+  async findLowStockItems({
+    retailShopId,
+    percentage,
+    skip,
+    take,
+  }: {
+    skip?: number;
+    take?: number;
+    retailShopId: string;
+    percentage: number;
+  }) {
+    const retailShopStock = await this.prisma.retailShopStock.findFirst({
+      where: { retailShopId },
+    });
+
+    if (!retailShopStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
+    const retailShopStocks = await this.prisma.retailShopStock.findMany({
+      where: {
+        retailShopId,
+        quantity: {
+          lte: retailShopStock.maxQuantity * (percentage / 100),
+        },
+      },
+      include: {
+        ...retailShopStockInclude,
+        product: {
+          include: {
+            activePrice: true,
+          },
+        },
+      },
+      skip,
+      take,
+    });
+
+    return retailShopStocks;
   }
 
   async update(id: string, data: UpdateRetailShopStockInput) {

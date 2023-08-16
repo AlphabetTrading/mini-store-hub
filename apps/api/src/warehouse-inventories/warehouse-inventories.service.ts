@@ -106,9 +106,15 @@ export class WarehouseStockService {
         },
       },
     });
-    return warehouseStocks.reduce((acc, cur) => {
-      return acc + cur.quantity * cur.product.activePrice.price;
-    }, 0);
+    return {
+      totalValuation: warehouseStocks.reduce((acc, cur) => {
+        return acc + cur.quantity * cur.product.activePrice.price;
+      }, 0),
+      totalQuantity: warehouseStocks.reduce((acc, cur) => {
+        return acc + cur.quantity;
+      }, 0),
+      count: warehouseStocks.length,
+    };
   }
 
   async totalValuationByWarehouseIdAndDate(
@@ -143,13 +149,67 @@ export class WarehouseStockService {
       },
     });
 
-    return warehouseStocks.reduce((acc, cur) => {
-      return acc + cur.quantity * cur.product.activePrice.price;
-    }, 0);
+    return {
+      totalValuation: warehouseStocks.reduce((acc, cur) => {
+        return acc + cur.quantity * cur.product.activePrice.price;
+      }, 0),
+      totalQuantity: warehouseStocks.reduce((acc, cur) => {
+        return acc + cur.quantity;
+      }, 0),
+      count: warehouseStocks.length,
+    };
+  }
+
+  // find low stock items based on the percentage of the max quantity, and the current quantity
+
+  async findLowStockItems({
+    warehouseId,
+    percentage,
+    skip,
+    take,
+  }: {
+    skip?: number;
+    take?: number;
+    warehouseId: string;
+    percentage: number;
+  }) {
+    const warehouseStock = await this.prisma.warehouseStock.findFirst({
+      where: { warehouseId },
+    });
+
+    if (!warehouseStock) {
+      throw new Error('Warehouse stock not found');
+    }
+
+    const warehouseStocks = await this.prisma.warehouseStock.findMany({
+      where: {
+        warehouseId,
+        quantity: {
+          lte: warehouseStock.maxQuantity * (percentage / 100),
+        },
+      },
+      include: {
+        ...warehouseStockIncludeObject,
+        product: {
+          include: {
+            activePrice: true,
+          },
+        },
+      },
+      skip,
+      take,
+    });
+
+    return warehouseStocks;
   }
 
   async create(data: CreateWarehouseStockInput) {
-    return this.prisma.warehouseStock.create({ data });
+    return this.prisma.warehouseStock.create({
+      data: {
+        ...data,
+        maxQuantity: data.quantity || 0,
+      },
+    });
   }
 
   async createMany(data: CreateBulkWarehouseStockInput) {
@@ -166,11 +226,13 @@ export class WarehouseStockService {
           quantity: {
             increment: good.quantity,
           },
+          maxQuantity: good.quantity,
         },
         create: {
           productId: good.productId,
           warehouseId: data.warehouseId,
           quantity: good.quantity,
+          maxQuantity: good.quantity,
         },
       });
     });

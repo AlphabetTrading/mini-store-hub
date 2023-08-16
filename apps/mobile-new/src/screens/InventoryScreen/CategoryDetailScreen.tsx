@@ -5,13 +5,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
   ActivityIndicator,
   RefreshControl,
-  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import SearchBar from "../../components/SearchBar";
 import { useQuery } from "@apollo/client";
 import { GET_RETAIL_SHOP_PRODUCTS } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
@@ -48,6 +45,9 @@ const CategoryDetailScreen = ({
       });
   }, [navigation]);
 
+  const [searchPhrase, setSearchPhrase] = useState("");
+  const [filteredItems, setFilteredItems] = useState<any[]>([]);
+
   const { loading, data, error, refetch } = useQuery(GET_RETAIL_SHOP_PRODUCTS, {
     variables: {
       filterRetailShopStockInput: {
@@ -58,6 +58,10 @@ const CategoryDetailScreen = ({
         },
         retailShopId: authState?.user.retailShop[0].id,
       },
+    },
+    onCompleted: (data) => {
+      console.log(data);
+      setFilteredItems(data?.retailShopStockByRetailShopId.items ?? []);
     },
   });
 
@@ -70,11 +74,6 @@ const CategoryDetailScreen = ({
       setRefreshing(false);
     }, 2000);
   }, []);
-
-  const [searchPhrase, setSearchPhrase] = useState("");
-  const [filteredItems, setFilteredItems] = useState(
-    data?.retailShopStockByRetailShopId.items ?? []
-  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -129,6 +128,13 @@ const CategoryDetailScreen = ({
 
   return (
     <BaseLayout>
+      <SearchBarComponent
+        onChangeText={(text) => {
+          setSearchPhrase(text);
+        }}
+        value={searchPhrase}
+        placeholder={t("searchHere")}
+      />
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -137,16 +143,6 @@ const CategoryDetailScreen = ({
         </View>
       ) : (
         <View style={{ width: "100%" }}>
-          <SearchBarComponent
-            onChangeText={(text) => {
-              setSearchPhrase(text);
-            }}
-            value={searchPhrase}
-          />
-          {/* <SearchBar
-              searchPhrase={searchPhrase}
-              setSearchPhrase={setSearchPhrase}
-            /> */}
           {filteredItems.length > 0 ? (
             <View
               style={{
@@ -163,7 +159,8 @@ const CategoryDetailScreen = ({
                   />
                 }
                 data={filteredItems}
-                key={filteredItems.id}
+                // key={filteredItems.id}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     style={{
@@ -250,7 +247,6 @@ const CategoryDetailScreen = ({
                     </View>
                   </TouchableOpacity>
                 )}
-                keyExtractor={(item) => item.id}
               />
             </View>
           ) : (

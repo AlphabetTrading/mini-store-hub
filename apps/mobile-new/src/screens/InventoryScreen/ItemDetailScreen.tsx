@@ -5,15 +5,16 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Path, Svg } from "react-native-svg";
-import Colors from "../../constants/Colors";
 import { useQuery } from "@apollo/client";
 import { GET_RETAIL_SHOP_PRODUCT_DETAIL } from "../../graphql/queries/retailShopQuery";
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
 import { format } from "date-fns";
 import { useAppTheme } from "@/src/contexts/preference";
+import { PriceHistory } from "@/src/types/models";
+import { useLocalization } from "@/src/contexts/localization";
 
 type Props = {};
 
@@ -21,12 +22,19 @@ const ItemDetailScreen = ({ route }: any) => {
   const { itemID } = route.params;
   const { authState } = useAuth();
   const { theme } = useAppTheme();
+  const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
   const { loading, data, error, refetch } = useQuery(
     GET_RETAIL_SHOP_PRODUCT_DETAIL,
     {
       variables: {
         productId: itemID,
         retailShopId: authState?.user.retailShop[0].id,
+      },
+
+      onCompleted: (data) => {
+        setPriceHistory(
+          data.retailShopStockByProductIdAndByRetailShopId.product.priceHistory
+        );
       },
     }
   );
@@ -39,7 +47,7 @@ const ItemDetailScreen = ({ route }: any) => {
       gap: 5,
     },
   });
-
+  const { t } = useLocalization();
   return (
     <BaseLayout>
       {loading ? (
@@ -58,7 +66,7 @@ const ItemDetailScreen = ({ route }: any) => {
               textTransform: "uppercase",
             }}
           >
-            Detail
+            {t("detail")}
           </Text>
           <View
             style={{
@@ -83,7 +91,7 @@ const ItemDetailScreen = ({ route }: any) => {
                 fontSize: 14,
               }}
             >
-              Item #
+              {t("item")} #
               {
                 data.retailShopStockByProductIdAndByRetailShopId.product
                   .serialNumber
@@ -102,8 +110,8 @@ const ItemDetailScreen = ({ route }: any) => {
               {
                 data.retailShopStockByProductIdAndByRetailShopId.product
                   .priceHistory[0]?.price
-              }
-              ETB
+              }{" "}
+              {t("etb")}
             </Text>
             <Text
               style={{
@@ -115,7 +123,7 @@ const ItemDetailScreen = ({ route }: any) => {
                 fontSize: 14,
               }}
             >
-              Quantity:{" "}
+              {t("quantity")}:{" "}
               {data.retailShopStockByProductIdAndByRetailShopId.quantity}
             </Text>
           </View>
@@ -129,7 +137,7 @@ const ItemDetailScreen = ({ route }: any) => {
               textTransform: "uppercase",
             }}
           >
-            Price History
+            {t("priceHistory")}
           </Text>
           <View
             style={{
@@ -137,10 +145,7 @@ const ItemDetailScreen = ({ route }: any) => {
             }}
           >
             <FlatList
-              data={
-                data.retailShopStockByProductIdAndByRetailShopId.product
-                  .priceHistory
-              }
+              data={priceHistory}
               renderItem={({ item, index }) => (
                 <View
                   style={{
@@ -207,7 +212,7 @@ const ItemDetailScreen = ({ route }: any) => {
                   </View>
                 </View>
               )}
-              keyExtractor={(item) => item.id}
+              // keyExtractor={(_, index) => index}
             />
           </View>
         </View>

@@ -1,5 +1,5 @@
 import { InputType, Field, HideField } from '@nestjs/graphql';
-import { UserRole } from '@prisma/client';
+import { Gender, UserRole } from '@prisma/client';
 import { IsNotEmpty, MinLength } from 'class-validator';
 import { CreateUserProfileInput } from 'src/user-profile/dto/create-user-profile.input';
 
@@ -19,6 +19,9 @@ export class CreateUserInput {
 
   @Field(() => String, { nullable: true })
   amharicLastName?: string;
+
+  @Field(() => Gender, { nullable: true })
+  gender?: Gender;
 
   @Field(() => String)
   phone: string;

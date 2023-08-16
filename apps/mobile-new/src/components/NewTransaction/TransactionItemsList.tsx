@@ -1,15 +1,6 @@
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import React from "react";
 import TransactionItem, { CheckoutItem } from "./TransactionItem";
-import { useAppTheme } from "@/src/contexts/preference";
 
 const TransactionItemsList = ({
   checkoutItems,
@@ -20,7 +11,6 @@ const TransactionItemsList = ({
   fetchCheckoutItems: any;
   setCheckoutItems: any;
 }) => {
-  const { theme } = useAppTheme();
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);

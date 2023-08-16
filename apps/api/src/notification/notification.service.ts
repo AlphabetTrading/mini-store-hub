@@ -175,10 +175,8 @@ export class NotificationService {
 
     const unreadNotifications = await this.prisma.notification.findMany({
       where: {
-        NOT: {
-          id: {
-            in: notificationIds,
-          },
+        id: {
+          notIn: notificationIds,
         },
       },
       include: {

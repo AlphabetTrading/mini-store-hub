@@ -9,7 +9,6 @@ import {
 import React, { useRef } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
-import { withSpring } from "react-native-reanimated";
 import { useAppTheme } from "@/src/contexts/preference";
 
 export interface CheckoutItem {
@@ -102,6 +101,44 @@ const TransactionItem = ({
         </RectButton>
       </View>
     );
+  };
+
+  const handleQuantityChange = (change: number) => () => {
+    setCheckoutItems((prev: CheckoutItem[]) => {
+      return prev.map((item) => {
+        console.log(
+          item.productId,
+          checkoutItem.productId,
+          item.selectedQuantity,
+          checkoutItem.selectedQuantity,
+          checkoutItem.quantity,
+          item.quantity
+        );
+        if (item.productId === checkoutItem.productId) {
+          if (change === -1) {
+            () => {
+              return {
+                ...item,
+                selectedQuantity: Math.max(
+                  0,
+                  checkoutItem.selectedQuantity - 1
+                ),
+              };
+            };
+          } else {
+            return {
+              ...item,
+              selectedQuantity: Math.min(
+                checkoutItem.selectedQuantity + 1,
+                checkoutItem.quantity
+              ),
+            };
+          }
+        } else {
+          return item;
+        }
+      });
+    });
   };
   return (
     <View
@@ -203,25 +240,7 @@ const TransactionItem = ({
                 borderRadius: 4,
               }}
             >
-              <Pressable
-                onPress={() => {
-                  setCheckoutItems((prev: CheckoutItem[]) => {
-                    return prev.map((item) => {
-                      if (item.productId === checkoutItem.productId) {
-                        return {
-                          ...item,
-                          selectedQuantity: Math.max(
-                            0,
-                            checkoutItem.selectedQuantity - 1
-                          ),
-                        };
-                      } else {
-                        return item;
-                      }
-                    });
-                  });
-                }}
-              >
+              <Pressable onPress={handleQuantityChange(-1)}>
                 <Entypo name="minus" size={24} color={theme.colors.text} />
               </Pressable>
             </View>
@@ -237,25 +256,7 @@ const TransactionItem = ({
                 borderRadius: 4,
               }}
             >
-              <Pressable
-                onPress={() => {
-                  setCheckoutItems((prev: CheckoutItem[]) => {
-                    return prev.map((item) => {
-                      if (item.productId === checkoutItem.productId) {
-                        return {
-                          ...item,
-                          selectedQuantity: Math.min(
-                            checkoutItem.selectedQuantity + 1,
-                            checkoutItem.quantity
-                          ),
-                        };
-                      } else {
-                        return item;
-                      }
-                    });
-                  });
-                }}
-              >
+              <Pressable onPress={handleQuantityChange(1)}>
                 <Entypo name="plus" size={24} color={theme.colors.text} />
               </Pressable>
             </View>

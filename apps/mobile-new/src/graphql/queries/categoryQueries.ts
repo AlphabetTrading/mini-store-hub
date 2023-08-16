@@ -30,6 +30,7 @@ export const GET_SINGLE_CATEGORY = gql`
         id
         description
       }
+      subcategories
       updatedAt
       createdAt
     }

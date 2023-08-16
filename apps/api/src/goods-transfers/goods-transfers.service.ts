@@ -218,12 +218,12 @@ export class GoodsTransfersService {
             where: {
               productId_warehouseId: {
                 productId: good.productId,
-                warehouseId: destinationWarehouseId,
+                warehouseId: sourceWarehouseId,
               },
             },
             data: {
               quantity: {
-                increment: good.quantity,
+                decrement: good.quantity,
               },
             },
           });
@@ -235,25 +235,42 @@ export class GoodsTransfersService {
             );
           }
 
-          await tx.warehouseStock.upsert({
+          const destinationStock = await tx.warehouseStock.findUnique({
             where: {
               productId_warehouseId: {
                 productId: good.productId,
-                warehouseId: sourceWarehouseId,
-              },
-            },
-            create: {
-              quantity: good.quantity,
-              productId: good.productId,
-              warehouseId: sourceWarehouseId,
-            },
-            update: {
-              quantity: {
-                decrement: good.quantity,
+                warehouseId: destinationWarehouseId,
               },
             },
           });
+
+          if (destinationStock) {
+            await tx.warehouseStock.update({
+              where: {
+                productId_warehouseId: {
+                  productId: good.productId,
+                  warehouseId: destinationWarehouseId,
+                },
+              },
+              data: {
+                quantity: {
+                  increment: good.quantity,
+                },
+                maxQuantity: destinationStock.quantity + good.quantity,
+              },
+            });
+          } else {
+            await tx.warehouseStock.create({
+              data: {
+                quantity: good.quantity,
+                productId: good.productId,
+                warehouseId: destinationWarehouseId,
+                maxQuantity: good.quantity,
+              },
+            });
+          }
         }
+
         return await this.prisma.goodsTransfer.create({
           data: {
             goods: {
@@ -319,24 +336,40 @@ export class GoodsTransfersService {
     try {
       return await this.prisma.$transaction(async (tx) => {
         for (const good of goods) {
-          await tx.warehouseStock.upsert({
+          const currentStock = await tx.warehouseStock.findUnique({
             where: {
               productId_warehouseId: {
                 productId: good.productId,
                 warehouseId: destinationWarehouseId,
               },
             },
-            create: {
-              quantity: good.quantity,
-              productId: good.productId,
-              warehouseId: destinationWarehouseId,
-            },
-            update: {
-              quantity: {
-                increment: good.quantity,
-              },
-            },
           });
+
+          if (!currentStock) {
+            await tx.warehouseStock.create({
+              data: {
+                quantity: good.quantity,
+                productId: good.productId,
+                warehouseId: destinationWarehouseId,
+                maxQuantity: good.quantity,
+              },
+            });
+          } else {
+            await tx.warehouseStock.update({
+              where: {
+                productId_warehouseId: {
+                  productId: good.productId,
+                  warehouseId: destinationWarehouseId,
+                },
+              },
+              data: {
+                quantity: {
+                  increment: good.quantity,
+                },
+                maxQuantity: currentStock.quantity + good.quantity,
+              },
+            });
+          }
         }
 
         // create goods transfer in main warehouse
@@ -403,7 +436,7 @@ export class GoodsTransfersService {
     try {
       return await this.prisma.$transaction(async (tx) => {
         for (const good of goods) {
-          const currentStock = await this.prisma.warehouseStock.update({
+          const currentStock = await tx.warehouseStock.update({
             where: {
               productId_warehouseId: {
                 productId: good.productId,
@@ -424,29 +457,41 @@ export class GoodsTransfersService {
             );
           }
 
-          await this.prisma.retailShopStock.upsert({
+          const retailShopStock = await tx.retailShopStock.findUnique({
             where: {
               productId_retailShopId: {
-                retailShopId: retailShopId,
                 productId: good.productId,
-              },
-            },
-            create: {
-              quantity: good.quantity,
-              productId: good.productId,
-              retailShopId: retailShopId,
-              warehouseId: sourceWarehouseId,
-              maxQuantity: good.quantity,
-            },
-            update: {
-              quantity: {
-                increment: good.quantity,
-              },
-              maxQuantity: {
-                increment: good.quantity,
+                retailShopId: retailShopId,
               },
             },
           });
+
+          if (!retailShopStock) {
+            await tx.retailShopStock.create({
+              data: {
+                quantity: good.quantity,
+                productId: good.productId,
+                retailShopId: retailShopId,
+                warehouseId: sourceWarehouseId,
+                maxQuantity: good.quantity,
+              },
+            });
+          } else {
+            await tx.retailShopStock.update({
+              where: {
+                productId_retailShopId: {
+                  productId: good.productId,
+                  retailShopId: retailShopId,
+                },
+              },
+              data: {
+                quantity: {
+                  increment: good.quantity,
+                },
+                maxQuantity: retailShopStock.quantity + good.quantity,
+              },
+            });
+          }
         }
       });
     } catch (error) {
@@ -490,7 +535,7 @@ export class GoodsTransfersService {
     try {
       return await this.prisma.$transaction(async (tx) => {
         for (const good of goods) {
-          const currentStock = await this.prisma.warehouseStock.update({
+          const currentStock = await tx.warehouseStock.update({
             where: {
               productId_warehouseId: {
                 productId: good.productId,
@@ -511,7 +556,7 @@ export class GoodsTransfersService {
             );
           }
 
-          await this.prisma.warehouseStock.update({
+          await tx.warehouseStock.update({
             where: {
               productId_warehouseId: {
                 productId: good.productId,

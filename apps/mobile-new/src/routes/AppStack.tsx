@@ -1,4 +1,4 @@
-import { RootTabParamList } from "../types";
+import { RootTabParamList } from "../types/types";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import Svg, { Path, G, Defs, ClipPath, Rect } from "react-native-svg";
@@ -143,7 +143,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Home"
+                name={t("home")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 15 15" fill="none">
                     <Path
@@ -202,7 +202,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Inventory"
+                name={t("inventory")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <Path
@@ -255,7 +255,7 @@ const AppStack = ({ route }: any) => {
               zIndex: 20,
               display: hideBottomTab ? "none" : "flex",
             },
-            title: "New Transaction",
+            title: t("addNewTransaction"),
 
             headerShown: false,
             headerStyle: {},
@@ -309,7 +309,7 @@ const AppStack = ({ route }: any) => {
         <BottomTab.Screen
           name="SalesRoot"
           options={{
-            title: "Sales",
+            title: t("sales"),
             headerShown: false,
             tabBarStyle: {
               display: hideBottomTab ? "none" : "flex",
@@ -319,7 +319,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Sales"
+                name={t("sales")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <Path
@@ -454,7 +454,7 @@ const AppStack = ({ route }: any) => {
         <BottomTab.Screen
           name="Insights"
           options={{
-            title: "Insights",
+            title: t("insights"),
             // tabBarItemStyle: {
             //   borderWidth: 0.5,
             //   borderColor: "#D3D3D3",
@@ -469,7 +469,7 @@ const AppStack = ({ route }: any) => {
               <TabItem
                 color={color}
                 focused={focused}
-                name="Insights"
+                name={t("insights")}
                 svg={
                   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <Path

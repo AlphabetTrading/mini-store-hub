@@ -6,14 +6,15 @@ import CheckoutScreen from "../screens/NewTransactionScreen";
 import AddTransactionItemsScreen from "../screens/NewTransactionScreen/AddTransactionItemsScreen";
 import SelectCategoryScreen from "../screens/NewTransactionScreen/SelectCategoryScreen";
 import SelectItemScreen from "../screens/NewTransactionScreen/SelectItemScreen";
-import { NewTransactionParamList } from "../types";
+import { NewTransactionParamList } from "../types/types";
+import { useLocalization } from "../contexts/localization";
 
 const NewTransactionStackNavigator =
   createNativeStackNavigator<NewTransactionParamList>();
 
 export const NewTransactionStack = ({ navigation, route }: any) => {
   const { theme } = useAppTheme();
-
+  const { t } = useLocalization();
   return (
     <NewTransactionStackNavigator.Navigator
       initialRouteName="Index"
@@ -62,7 +63,7 @@ export const NewTransactionStack = ({ navigation, route }: any) => {
         name="SelectItem"
         component={SelectItemScreen}
         options={{
-          title: "Select Items",
+          title: t("selectItems"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },
@@ -73,7 +74,7 @@ export const NewTransactionStack = ({ navigation, route }: any) => {
         name="SelectCategory"
         component={SelectCategoryScreen}
         options={{
-          title: "Select Category",
+          title: t("selectCategory"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

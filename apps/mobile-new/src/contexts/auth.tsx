@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import * as Notifications from "expo-notifications";
 import * as SecureStore from "expo-secure-store";
-import { apolloClient } from "../graphql/apolloClient";
+import { apolloClient, apolloClientWithNoToken } from "../graphql/apolloClient";
 
 import {
   FORGOT_PASSWORD_MUTATION,
@@ -125,7 +125,7 @@ export function AuthContextProvider(props: ProviderProps) {
     password: string
   ): Promise<SignInResponse> => {
     try {
-      const client = apolloClient(null, null);
+      const client = apolloClientWithNoToken();
       const res = await client.mutate({
         mutation: LOGIN_MUTATION,
         variables: {
@@ -187,7 +187,7 @@ export function AuthContextProvider(props: ProviderProps) {
    */
   const forgotPassword = async (OTP: string, username: string) => {
     try {
-      const client = apolloClient(null, null);
+      const client = apolloClientWithNoToken();
       const res = await client.mutate({
         mutation: FORGOT_PASSWORD_MUTATION,
         variables: {
@@ -212,7 +212,7 @@ export function AuthContextProvider(props: ProviderProps) {
 
   const resetPassword = async (newPassword: string, username: string) => {
     try {
-      const client = apolloClient(null, null);
+      const client = apolloClientWithNoToken();
       const res = await client.mutate({
         mutation: RESET_PASSWORD_MUTATION,
         variables: {

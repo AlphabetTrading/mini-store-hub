@@ -57,6 +57,15 @@ export class UsersResolver {
     );
   }
 
+  @HasRoles('ADMIN')
+  @Mutation(() => User)
+  async changeUserPassword(
+    @Args('userId') userId: string,
+    @Args('newPassword') newPassword: string,
+  ) {
+    return this.usersService.changePasswordByAdmin(userId, newPassword);
+  }
+
   @Query(() => User)
   async user(@Args('id') id: string) {
     return this.usersService.getUser(id);

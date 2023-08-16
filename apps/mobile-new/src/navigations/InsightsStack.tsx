@@ -5,22 +5,24 @@ import CustomMaterialMenu from "../components/CustomMenu";
 import { useAppTheme } from "../contexts/preference";
 import InsightsScreen from "../screens/InsightsScreen";
 import InsightsDetailScreen from "../screens/InsightsScreen/InsightsDetail";
-import { InsightsTabParamList } from "../types";
+import { InsightsTabParamList } from "../types/types";
 import { Text } from "react-native-paper";
 import NotificationIconComp from "../components/NotificationIconComp";
+import { useLocalization } from "../contexts/localization";
 
 const InsightsStackNavigator =
   createNativeStackNavigator<InsightsTabParamList>();
 
 export const InsightsStack = ({ navigation }: any) => {
   const { theme } = useAppTheme();
+  const { t } = useLocalization();
   return (
     <InsightsStackNavigator.Navigator initialRouteName="Index">
       <InsightsStackNavigator.Screen
         name="Index"
         component={InsightsScreen}
         options={{
-          title: "Insights",
+          title: t("insights"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

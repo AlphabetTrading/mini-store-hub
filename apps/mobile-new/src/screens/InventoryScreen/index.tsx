@@ -15,6 +15,7 @@ import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useQuery } from "@apollo/client";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useAppTheme } from "@/src/contexts/preference";
+import { useLocalization } from "@/src/contexts/localization";
 
 type Props = {};
 
@@ -52,6 +53,7 @@ const InventoryScreen = (props: Props) => {
     },
   });
 
+  const { t } = useLocalization();
   return (
     <BaseLayout>
       {loading ? (
@@ -73,7 +75,7 @@ const InventoryScreen = (props: Props) => {
               textTransform: "uppercase",
             }}
           >
-            Categories
+            {t("categories")}
           </Text>
           <View
             style={{
@@ -82,9 +84,9 @@ const InventoryScreen = (props: Props) => {
               paddingVertical: 10,
             }}
           >
-            {data.categories.items.length > 0 ? (
+            {data?.categories.items.length > 0 ? (
               <FlatList
-                data={data.categories.items}
+                data={data?.categories.items}
                 keyExtractor={(item) => item.id}
                 numColumns={3}
                 ItemSeparatorComponent={() => (

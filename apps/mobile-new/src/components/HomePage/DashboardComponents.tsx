@@ -13,6 +13,7 @@ import { useGetSalesData } from "../../hooks/api/useGetDashboardData";
 import { Skeleton } from "@rneui/base";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "@/src/contexts/preference";
+import { formatNumber } from "@/src/utils/numbers";
 
 type DashboardComponentsProps = {
   selectedFilter: string;
@@ -83,7 +84,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             {loading ? (
               <ActivityIndicator />
             ) : (
-              data?.totalSoldProductsByRetailShopAndDate
+              formatNumber(data?.totalSoldProductsByRetailShopAndDate)
             )}
           </Text>
           <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">
@@ -136,7 +137,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             {loading ? (
               <ActivityIndicator />
             ) : (
-              data?.totalSalesByDateAndRetailShop
+              formatNumber(data?.totalSalesByDateAndRetailShop)
             )}
           </Text>
           <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">
@@ -183,7 +184,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             {loading ? (
               <ActivityIndicator />
             ) : (
-              data?.totalProfitByDateAndRetailShop
+              formatNumber(data?.totalProfitByDateAndRetailShop)
             )}
           </Text>
           <Svg width="32" height="32" viewBox="0 0 14 14" fill="none">

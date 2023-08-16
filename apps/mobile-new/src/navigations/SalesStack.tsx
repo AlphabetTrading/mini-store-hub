@@ -5,21 +5,23 @@ import CustomMaterialMenu from "../components/CustomMenu";
 import { useAppTheme } from "../contexts/preference";
 import SalesScreen from "../screens/SalesScreen";
 import TransactionDetailScreen from "../screens/SalesScreen/TransactionDetailScreen";
-import { SalesParamList } from "../types";
+import { SalesParamList } from "../types/types";
 import { Text } from "react-native-paper";
 import NotificationIconComp from "../components/NotificationIconComp";
+import { useLocalization } from "../contexts/localization";
 
 const SalesStackNavigator = createNativeStackNavigator<SalesParamList>();
 
 export const SalesStack = ({ navigation }: any) => {
   const { theme } = useAppTheme();
+  const { t } = useLocalization();
   return (
     <SalesStackNavigator.Navigator initialRouteName="Index">
       <SalesStackNavigator.Screen
         name="Index"
         component={SalesScreen}
         options={{
-          title: "Sales Transactions",
+          title: t("sales"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

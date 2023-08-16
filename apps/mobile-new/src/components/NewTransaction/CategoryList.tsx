@@ -1,42 +1,39 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
-import Colors from "../../constants/Colors";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useAppTheme } from "@/src/contexts/preference";
+import { Category } from "@/src/types/models";
+import { useLocalization } from "@/src/contexts/localization";
 
-export type CategoryType = {
-  amharicDescription?: string;
-  amharicName?: string;
-  createdAt?: string;
-  description?: string;
-  id: string;
-  name: string;
-  parentId?: string;
-  updatedAt?: string;
-};
-
-const AllCategory: CategoryType = {
+const AllCategory: Category = {
   id: "afasfiahsofa",
   name: "ALL",
+  amharicDescription: "ሁሉም",
+  amharicName: "ሁሉም",
+  createdAt: "",
+  updatedAt: "",
+  description: "",
 };
 
 type Props = {
-  selectedCategory: CategoryType;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<CategoryType>>;
+  selectedCategory: Category;
+  setSelectedCategory: React.Dispatch<React.SetStateAction<Category>>;
 };
 
 const CategoryList = (props: Props) => {
-  const { data } = useQuery(GET_CATEGORIES);
   const { theme } = useAppTheme();
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-
-  useEffect(() => {
-    if (data && data.categories.items.length > 0) {
+  const { t, locale } = useLocalization();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const { error, loading } = useQuery(GET_CATEGORIES, {
+    onCompleted: (data) => {
       setCategories([AllCategory, ...data.categories.items]);
-    }
-  }, [data]);
+    },
+    onError: (e: any) => {
+      console.log(error, "is the error");
+    },
+  });
 
   const selectCategory = (category: any) => {
     props.setSelectedCategory(category);
@@ -107,7 +104,7 @@ const CategoryList = (props: Props) => {
               style={[
                 {
                   fontSize: 16,
-                  fontWeight: "bold",
+                  fontWeight: "500",
                   color: "#000",
                 },
                 {
@@ -118,7 +115,7 @@ const CategoryList = (props: Props) => {
                 },
               ]}
             >
-              {item.name}
+              {locale.includes("en") ? item.name : item.amharicName}
             </Text>
           </Pressable>
         )}

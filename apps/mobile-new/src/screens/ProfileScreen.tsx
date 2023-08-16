@@ -5,12 +5,24 @@ import Colors from "../constants/Colors";
 import { GET_ME_QUERY } from "../graphql/queries/userQueries";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../contexts/auth";
+import { useLocalization } from "../contexts/localization";
+import { useAppTheme } from "../contexts/preference";
 
 type Props = {};
 
 const ProfileScreen = (props: Props) => {
   const authState = useAuth();
   const { data, loading, error, refetch } = useQuery(GET_ME_QUERY);
+  const { t, locale } = useLocalization();
+  const { theme } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: theme.colors.background,
+    },
+  });
   return (
     <BaseLayout>
       {loading ? (
@@ -53,12 +65,12 @@ const ProfileScreen = (props: Props) => {
               fontFamily: "InterBold",
             }}
           >
-            Full Name
+            {t("fullName")}
           </Text>
           <View
             style={{
               width: "100%",
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
               borderColor: "#5684E080",
@@ -89,7 +101,7 @@ const ProfileScreen = (props: Props) => {
           <View
             style={{
               width: "100%",
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
               borderColor: "#5684E080",
@@ -120,7 +132,7 @@ const ProfileScreen = (props: Props) => {
           <View
             style={{
               width: "100%",
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
               borderColor: "#5684E080",
@@ -152,7 +164,7 @@ const ProfileScreen = (props: Props) => {
           <View
             style={{
               width: "100%",
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
               borderColor: "#5684E080",
@@ -184,7 +196,7 @@ const ProfileScreen = (props: Props) => {
           <View
             style={{
               width: "100%",
-              backgroundColor: Colors.light.background,
+              backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
               borderColor: "#5684E080",
@@ -210,11 +222,3 @@ const ProfileScreen = (props: Props) => {
 };
 
 export default ProfileScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: Colors.light.background,
-  },
-});
