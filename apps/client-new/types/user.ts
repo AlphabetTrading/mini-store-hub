@@ -6,6 +6,8 @@ export type User = {
   id: string;
   firstName: string;
   lastName: string;
+  amharicFirstName: string;
+  amharicLastName: string;
   username: string;
   phone: string;
   role: UserRole;
@@ -13,6 +15,9 @@ export type User = {
   userProfile?: UserProfile;
   warehouse: Warehouse[];
   retailShop: RetailShop[];
+  password?: string;
+  gender: Gender;
+  isActive:boolean
 };
 type UserProfile = {
   address?: Address;
@@ -25,4 +30,8 @@ export enum UserRole {
   RETAIL_SHOP_MANAGER = "RETAIL_SHOP_MANAGER",
   USER = "USER",
   WAREHOUSE_MANAGER = "WAREHOUSE_MANAGER",
+}
+export enum Gender {
+  FEMALE = "FEMALE",
+  MALE = "MALE",
 }

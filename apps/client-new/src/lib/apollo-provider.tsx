@@ -9,9 +9,10 @@ import {
 } from "@apollo/experimental-nextjs-app-support/ssr";
 import { setContext } from "@apollo/client/link/context";
 import { API_URL } from "@/constants/urls";
+import { createUploadLink } from "apollo-upload-client";
 
 function makeClient() {
-  const httpLink = new HttpLink({
+  const httpLink = createUploadLink({
     uri: API_URL,
   });
 
@@ -21,6 +22,7 @@ function makeClient() {
       headers: {
         ...headers,
         authorization: `Bearer ${data.accessToken}`,
+        "Apollo-Require-Preflight": "true",
       },
     };
   });

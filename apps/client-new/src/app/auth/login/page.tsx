@@ -24,8 +24,17 @@ interface Values {
   password: string;
 }
 const validationSchema = Yup.object({
-  phoneNumber: Yup.string().required("Username is required"),
-  password: Yup.string().max(255).required("Password is required"),
+  // phoneNumber: Yup.string().matches(
+  //   /^(09|07)\d{8}$/,
+  //   "Phone number must start with 09 or 07 and have 10 digits"
+  // ),
+  phoneNumber: Yup.string().required("Phone number is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters long")
+    .matches(
+      /^(?=.*[a-zA-Z])(?=.*\d)/,
+      "Password must contain at least one letter and one number"
+    ),
 });
 const initialValues: Values = {
   phoneNumber: "",
@@ -45,12 +54,12 @@ const Login = (props: Props) => {
       helpers.setSubmitting(true);
       const res = await signIn("credentials", {
         redirect: false,
-        username: values.phoneNumber,
+        phone: values.phoneNumber,
         password: values.password,
         callbackUrl,
       });
 
-      // console.log(res);
+      console.log(res);
       if (!res?.error) {
         redirect(callbackUrl);
       } else {
@@ -91,7 +100,7 @@ const Login = (props: Props) => {
                 helperText={
                   formik.touched.phoneNumber && formik.errors.phoneNumber
                 }
-                label="Username"
+                label="Phone Number"
                 name="phoneNumber"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
