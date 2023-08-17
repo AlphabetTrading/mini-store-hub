@@ -31,12 +31,12 @@ import { useMutation } from "@apollo/client";
 import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
 import { Unit } from "../../../../../types/product";
+import { Category } from "../../../../../types/categories";
 import {
-  CREATE_CATEGORY,
   CreateCategoryData,
   CreateCategoryVars,
+  CREATE_CATEGORY,
 } from "@/graphql/categories/mutations";
-import { Category } from "../../../../../types/categories";
 
 type Props = {};
 

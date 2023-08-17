@@ -57,7 +57,10 @@ const validationSchema = Yup.object({
   amharicFirstName: Yup.string().required("First name is required"),
   amharicLastName: Yup.string().required("Last name is required"),
   role: Yup.string().required("Role is required"),
-  phoneNumber: Yup.string().matches(/^(09|07)\d{8}$/, 'Phone number must start with 09 or 07 and have 10 digits'),
+  phoneNumber: Yup.string().matches(
+    /^(09|07)\d{8}$/,
+    "Phone number must start with 09 or 07 and have 10 digits"
+  ),
   username: Yup.string().required("Username is required"),
 });
 

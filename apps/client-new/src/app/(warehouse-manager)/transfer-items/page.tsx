@@ -130,7 +130,6 @@ const Page = (props: Props) => {
                 </Card>
               </Grid>
               <Grid item xs={12} md={4}>
-                
                 <Card>
                   <CardHeader title="Retail Shops" />
                   <RetailShopsList

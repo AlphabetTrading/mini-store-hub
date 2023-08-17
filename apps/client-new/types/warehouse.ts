@@ -1,5 +1,5 @@
 import { Address } from "./address";
-import { StockItem } from "./product";
+import { Product, StockItem, Unit } from "./product";
 import { User } from "./user";
 
 export interface Warehouse {
@@ -9,4 +9,10 @@ export interface Warehouse {
   warehouseManager: User;
   createdAt: Date;
   warehouseStock: StockItem[];
+}
+
+export interface LowStockItemsWarehouse {
+  product: Product;
+  quantity: number;
+  maxQuantity: number;
 }

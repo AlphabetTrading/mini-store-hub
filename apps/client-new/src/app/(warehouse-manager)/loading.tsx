@@ -4,9 +4,7 @@ import React from "react";
 type Props = {};
 
 const Loading = (props: Props) => {
-  return (
-     <LinearProgress />
-  );
+  return <LinearProgress />;
 };
 
 export default Loading;

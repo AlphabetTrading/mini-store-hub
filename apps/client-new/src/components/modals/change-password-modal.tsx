@@ -56,8 +56,7 @@ const validationSchema = Yup.object({
 const ChangePassword = (props: Props) => {
   const { open, handleClose, userId } = props;
 
-
-  const [updatePassword, { error, reset,loading }] = useMutation<
+  const [updatePassword, { error, reset, loading }] = useMutation<
     {},
     ChangeUserPasswordVars
   >(CHANGE_PASSWORD);
@@ -101,7 +100,7 @@ const ChangePassword = (props: Props) => {
             px: 4,
           }}
         >
-          <Stack height="100%" justifyContent="center" spacing={2}> 
+          <Stack height="100%" justifyContent="center" spacing={2}>
             <Typography variant="h6">Change Password</Typography>
 
             {/* <FormControl sx={{ m: 1 }} fullWidth variant="outlined">
@@ -148,9 +147,11 @@ const ChangePassword = (props: Props) => {
               onBlur={formik.handleBlur}
               value={formik.values.password}
               helperText={formik.touched.password && formik.errors.password}
-              error={formik.touched.password && formik.errors.password ? true : false}
+              error={
+                formik.touched.password && formik.errors.password ? true : false
+              }
             />
-        
+
             <Button
               disabled={loading}
               fullWidth

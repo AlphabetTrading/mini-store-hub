@@ -30,7 +30,7 @@ const UserManagement = ({ isActive, userId }: Props) => {
     deactivateAccount,
     { error: deactivateError, loading: deactivateLoading },
   ] = useMutation<{}, ToggleUserVars>(DEACTIVATE_USER);
-console.log(isActive)
+  console.log(isActive);
   const router = useRouter();
 
   return (

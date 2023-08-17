@@ -87,7 +87,7 @@ const Page = (props: Props) => {
       <AddIncomingItemModal
         open={modalOpen}
         handleAddItem={handleAddItem}
-        selectedStockItems = {selectedStockItems}
+        selectedStockItems={selectedStockItems}
         handleClose={() => setModalOpen(false)}
       />
       <Box component="main" sx={{ py: 8 }}>
@@ -152,7 +152,9 @@ const Page = (props: Props) => {
                       <TableCell>{item.product.serialNumber}</TableCell>
                       <TableCell>{item.product.category.name}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.product.activePrice?.purchasedPrice}</TableCell>
+                      <TableCell>
+                        {item.product.activePrice?.purchasedPrice}
+                      </TableCell>
                       <TableCell>{item.product.activePrice?.price}</TableCell>
                       <TableCell>{item.product.activePrice?.price}</TableCell>
                     </TableRow>

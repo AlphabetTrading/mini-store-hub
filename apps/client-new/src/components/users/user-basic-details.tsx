@@ -43,7 +43,6 @@ export const UserBasicDetails = ({ user }: Props) => {
 
           <PropertyListItem divider label="Phone" value={user?.phone} />
           <PropertyListItem divider label="Username" value={user?.username} />
-
         </PropertyList>
         <CardActions>
           <Button onClick={() => setOpen(true)} size="small">

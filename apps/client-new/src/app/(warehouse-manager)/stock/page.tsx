@@ -26,7 +26,6 @@ import ProductsListSearch from "@/components/products/products-list-search";
 import Pagination from "@/components/Pagination";
 import StateHandler from "@/components/state-handler";
 
-
 type Props = {};
 
 const OrderBySelector = (filter: string) => {
@@ -142,12 +141,11 @@ const Page = (props: Props) => {
             empty={data?.warehouseStocks.items.length == 0}
           >
             <Card>
-              <ItemListTable warehouseStocks={data?.warehouseStocks.items||[]} />
+              <ItemListTable
+                warehouseStocks={data?.warehouseStocks.items || []}
+              />
               <Pagination
-                meta={
-                  data?.warehouseStocks
-                    .meta
-                }
+                meta={data?.warehouseStocks.meta}
                 page={page}
                 setPage={setPage}
                 rowsPerPage={rowsPerPage}
