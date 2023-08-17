@@ -29,7 +29,7 @@ type Props = {
 };
 
 const FileDropZone = ({ file, setFile }: Props) => {
-  console.log(file)
+  console.log(file);
   const onDrop = useCallback((acceptedFiles: any) => {
     setFile(acceptedFiles[0]);
   }, []);
@@ -84,7 +84,6 @@ const FileDropZone = ({ file, setFile }: Props) => {
                 width: 64,
               }}
             >
-              
               <SvgIcon>
                 <UploadFileIcon />
               </SvgIcon>
@@ -126,7 +125,7 @@ const FileDropZone = ({ file, setFile }: Props) => {
               }}
             >
               <ListItemIcon>
-              <img src={file} width={50} />
+                <img src={file} width={50} />
                 <img src="/assets/icons/file.svg" width={50} />
               </ListItemIcon>
               <ListItemText

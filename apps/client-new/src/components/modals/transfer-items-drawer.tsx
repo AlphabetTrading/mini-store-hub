@@ -64,9 +64,9 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
     variables: {
       filterWarehouseStockInput: {
         warehouse: {
-          id:  (sessionData?.user as any).warehouseId || "",
-        }
-      }
+          id: (sessionData?.user as any).warehouseId || "",
+        },
+      },
     },
   });
 
@@ -147,12 +147,12 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
                       label={
                         <Box sx={{ ml: 2 }}>
                           <Stack direction="row" gap={1}>
-                          <Typography variant="subtitle2">
-                            {item.product.name}
-                          </Typography>
-                          <Typography color="text.secondary" variant="body2">
-                            {`(${item.product.serialNumber})`}
-                          </Typography>
+                            <Typography variant="subtitle2">
+                              {item.product.name}
+                            </Typography>
+                            <Typography color="text.secondary" variant="body2">
+                              {`(${item.product.serialNumber})`}
+                            </Typography>
                           </Stack>
                           <Typography color="text.secondary" variant="body2">
                             {`Quantity: ${item.quantity}`}

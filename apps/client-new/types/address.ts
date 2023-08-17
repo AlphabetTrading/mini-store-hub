@@ -4,5 +4,5 @@ export type Address = {
   lat?: number;
   lng?: number;
   formattedAddress?: string;
-  amharicFormattedAddress?:string;
+  amharicFormattedAddress?: string;
 };

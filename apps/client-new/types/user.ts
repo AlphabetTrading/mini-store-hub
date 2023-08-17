@@ -17,7 +17,7 @@ export type User = {
   retailShop: RetailShop[];
   password?: string;
   gender: Gender;
-  isActive:boolean
+  isActive: boolean;
 };
 type UserProfile = {
   address?: Address;

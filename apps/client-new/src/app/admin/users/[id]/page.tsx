@@ -174,7 +174,7 @@ const Page = ({ params }: Props) => {
                           warehouses={data?.user.warehouse}
                         />
                         <UserOtherDetails
-                        address={data?.user.userProfile?.address}
+                          address={data?.user.userProfile?.address}
                           idUrl={data?.user.userProfile?.idUrl}
                         />
                         <UserManagement

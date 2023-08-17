@@ -88,9 +88,9 @@ export const DEACTIVATE_USER = gql`
 `;
 
 export const ACTIVATE_USER = gql`
-mutation ActivateUser($userId: String!) {
-  activateUser(userId: $userId) {
-    id
+  mutation ActivateUser($userId: String!) {
+    activateUser(userId: $userId) {
+      id
+    }
   }
-}
-`
+`;

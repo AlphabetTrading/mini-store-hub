@@ -48,11 +48,17 @@ const Page = (props: Props) => {
             </Stack>
           </Stack>
 
-          <StateHandler loading={loading} error={error} empty={data?.retailShops.items.length===0}>
-          <Card>
-            <RetailShopsListSearch />
-            <RetailShopsListTable retailShops={data?.retailShops.items || []} />
-          </Card>
+          <StateHandler
+            loading={loading}
+            error={error}
+            empty={data?.retailShops.items.length === 0}
+          >
+            <Card>
+              <RetailShopsListSearch />
+              <RetailShopsListTable
+                retailShops={data?.retailShops.items || []}
+              />
+            </Card>
           </StateHandler>
           {/* <Card>
             <ItemListSearch/>

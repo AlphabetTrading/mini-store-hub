@@ -22,7 +22,7 @@ const StatCard = ({ imgSrc }: Props) => {
               4,763
             </Typography>
             <Stack direction="row" spacing={0}>
-              <ExpandMore color="error"  />
+              <ExpandMore color="error" />
               <Typography color="error" variant="body2">
                 12%
               </Typography>

@@ -14,7 +14,7 @@ import { UserData, UserVars, USER } from "@/graphql/users/queries";
 import { useQuery } from "@apollo/client";
 import StateHandler from "@/components/state-handler";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import NextLink from 'next/link';
+import NextLink from "next/link";
 type Props = {
   params: {
     id: string;

@@ -50,7 +50,11 @@ const Page = (props: Props) => {
               </Breadcrumbs>
             </Stack>
           </Stack>
-          <StateHandler loading={loading} error={error} empty={data?.retailShopManagers.length===0}>
+          <StateHandler
+            loading={loading}
+            error={error}
+            empty={data?.retailShopManagers.length === 0}
+          >
             <Card>
               <ManagersListSearch />
               <ManagersListTable
