@@ -6,6 +6,10 @@ import { StockIcon } from "@/components/icons/stock";
 import { RetailShopsIcon } from "@/components/icons/retail-shops";
 import { TransferItemsIcon } from "@/components/icons/transfer-items";
 import { TransactionHistoryIcon } from "@/components/icons/transaction-history";
+import ProductsIcon from "@/icons/products-icon";
+import UsersIcon from "@/icons/users-icon";
+import BarChartIcon from "@/icons/barchart-icon";
+import WarehouseIcon from "@/icons/warehouse-icon";
 export interface NavigationItem {
   title: string;
   path: string;
@@ -21,7 +25,7 @@ export const useNavigationItems = () => {
           path: "/admin/dashboard",
           icon: (
             <SvgIcon fontSize="small">
-              <AddHomeOutlinedIcon />
+              <BarChartIcon />
             </SvgIcon>
           ),
         },
@@ -40,7 +44,7 @@ export const useNavigationItems = () => {
           path: "/admin/products",
           icon: (
             <SvgIcon fontSize="small">
-              <AddHomeOutlinedIcon />
+              <ProductsIcon />
             </SvgIcon>
           ),
         },
@@ -49,7 +53,7 @@ export const useNavigationItems = () => {
           path: "/admin/users",
           icon: (
             <SvgIcon fontSize="small">
-              <AddHomeOutlinedIcon />
+              <UsersIcon />
             </SvgIcon>
           ),
         },
@@ -65,6 +69,15 @@ export const useNavigationItems = () => {
         {
           title: "Warehouses",
           path: "/admin/warehouses",
+          icon: (
+            <SvgIcon fontSize="small">
+              <AddHomeOutlinedIcon />
+            </SvgIcon>
+          ),
+        },
+        {
+          title: "Notifications",
+          path: "/admin/notifications",
           icon: (
             <SvgIcon fontSize="small">
               <AddHomeOutlinedIcon />
