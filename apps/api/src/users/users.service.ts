@@ -204,6 +204,19 @@ export class UsersService {
     return user;
   }
 
+  async getUserByPhone(phone: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { phone },
+      include: userIncludeObject,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
   async deleteUser(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },

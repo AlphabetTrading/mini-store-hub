@@ -1,11 +1,7 @@
-// totalValuation: Float;
-// totalQuantity: Float;
-// count: Float;import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { Field, Float, ObjectType } from '@nestjs/graphql';
-import { BaseModel } from 'src/common/models/base.model';
 
 @ObjectType()
-export class StockValuation extends BaseModel {
+export class StockValuation {
   @Field(() => Float, { nullable: true })
   totalValuation?: number;
 

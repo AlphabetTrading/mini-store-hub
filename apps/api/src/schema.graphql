@@ -355,7 +355,7 @@ scalar JWT
 
 input LoginInput {
   password: String!
-  username: String!
+  phone: String!
 }
 
 type MonthlyTransaction {
@@ -653,7 +653,7 @@ type Query {
   findGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findIncomingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findLowStockByRetailShopId(paginationInput: PaginationInput, percentage: Float, retailShopId: String!): PaginationRetailShopStocks!
-  findLowStockByWarehouseId(paginationInput: PaginationInput, percentage: Float, warehouseId: String!): [WarehouseStock!]!
+  findLowStockByWarehouseId(paginationInput: PaginationInput, percentage: Float, warehouseId: String!): PaginationWarehouseStocks!
   findOutgoingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
   findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
@@ -852,15 +852,8 @@ type StockItem {
 
 type StockValuation {
   count: Float
-
-  """Identifies the date and time when the object was created."""
-  createdAt: DateTime!
-  id: ID!
   totalQuantity: Float
   totalValuation: Float
-
-  """Identifies the date and time when the object was last updated."""
-  updatedAt: DateTime!
 }
 
 input StringFilter {

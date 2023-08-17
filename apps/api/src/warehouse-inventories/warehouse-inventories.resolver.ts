@@ -9,7 +9,6 @@ import { UpdateWarehouseStockInput } from './dto/update-warehouse-inventory.inpu
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { FilterWarehouseStockInput } from './dto/filter-warehouse-stock.input';
-import { WarehouseStockOrder } from './dto/warehouse-stock-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { PaginationWarehouseStocks } from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
@@ -73,6 +72,63 @@ export class WarehouseStockResolver {
     }
   }
 
+  // find all warehouse stocks by goods transfer amount
+  // @Query(() => PaginationWarehouseStocks, {
+  //   name: 'warehouseStocksByGoodsTransferAmount',
+  // })
+  // async warehouseStocksByGoodsTransferAmount(
+  //   @Args('filterWarehouseStockInput', {
+  //     type: () => FilterWarehouseStockInput,
+  //     nullable: true,
+  //   })
+  //   filterWarehouseStockInput?: FilterWarehouseStockInput,
+  //   @Args('orderBy', {
+  //     type: () => OrderByWarehouseStockInput,
+  //     nullable: true,
+  //   })
+  //   orderBy?: OrderByWarehouseStockInput,
+  //   @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+  //   paginationInput?: PaginationInput,
+  // ): Promise<PaginationWarehouseStocks> {
+  //   const where: Prisma.WarehouseStockWhereInput = {
+  //     AND: [
+  //       {
+  //         id: filterWarehouseStockInput?.id,
+  //       },
+  //       {
+  //         warehouse: filterWarehouseStockInput?.warehouse,
+  //       },
+  //       {
+  //         product: filterWarehouseStockInput?.product,
+  //       },
+  //       {
+  //         createdAt: filterWarehouseStockInput?.createdAt,
+  //       },
+  //     ],
+  //   };
+  //   try {
+  //     const warehouseStocks = await this.warehouseStockService.findAllByGoodsTransferAmount(
+  //       {
+  //         where,
+  //         orderBy,
+  //         skip: paginationInput?.skip,
+  //         take: paginationInput?.take,
+  //       },
+  //     );
+  //     const count = await this.warehouseStockService.count(where);
+  //     return {
+  //       items: warehouseStocks,
+  //       meta: {
+  //         page: paginationInput?.skip,
+  //         limit: paginationInput?.take,
+  //         count,
+  //       },
+  //     };
+  //   } catch (e) {
+  //     throw new BadRequestException('Error loading products!');
+  //   }
+  // }
+
   @Query(() => WarehouseStock, { name: 'warehouseStock' })
   async WarehouseStock(@Args('id') id: string) {
     return this.warehouseStockService.findOne(id);
@@ -117,7 +173,7 @@ export class WarehouseStockResolver {
     );
   }
 
-  @Query(() => [WarehouseStock], {
+  @Query(() => PaginationWarehouseStocks, {
     name: 'findLowStockByWarehouseId',
   })
   async findLowStockByWarehouseId(

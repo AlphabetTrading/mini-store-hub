@@ -121,13 +121,13 @@ export class AuthService {
     }
   }
 
-  async login(username: string, password: string): Promise<Token> {
+  async login(phone: string, password: string): Promise<Token> {
     // make case insensitive
 
-    const user = await this.prisma.user.findUnique({ where: { username } });
+    const user = await this.prisma.user.findUnique({ where: { phone } });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${username}`);
+      throw new NotFoundException(`No user found for email: ${phone}`);
     }
 
     const passwordValid = await this.passwordService.validatePassword(
