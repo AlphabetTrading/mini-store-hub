@@ -23,7 +23,7 @@ export class AuthResolver {
 
   @Mutation(() => Auth)
   async signup(@Args('data') data: SignupInput) {
-    data.username = data.username.toLowerCase();
+    data.phone = data.phone.toLowerCase();
     const { accessToken, refreshToken } = await this.auth.createUser(data);
     return {
       accessToken,
@@ -32,9 +32,9 @@ export class AuthResolver {
   }
 
   @Mutation(() => Auth)
-  async login(@Args('data') { username, password }: LoginInput) {
+  async login(@Args('data') { phone, password }: LoginInput) {
     const { accessToken, refreshToken } = await this.auth.login(
-      username.toLowerCase(),
+      phone.toLowerCase(),
       password,
     );
 

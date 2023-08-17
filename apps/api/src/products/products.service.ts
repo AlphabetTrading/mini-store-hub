@@ -114,6 +114,53 @@ export class ProductsService {
     return products;
   }
 
+  async findProductsByTopGoodsTransfer({
+    skip,
+    take,
+    where,
+    orderBy,
+  }: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy,
+      where: {
+        goods: {
+          every: {
+            goodsTransfer: {
+              sourceWarehouseId: '124',
+            },
+          },
+        },
+      },
+      include: {
+        goods: {
+          where: {},
+        },
+      },
+    });
+
+    products.sort((a, b) => {
+      const totalGoodsTransferA = a.goods.reduce(
+        (acc, t) => acc + t.quantity,
+        0,
+      );
+      const totalGoodsTransferB = b.goods.reduce(
+        (acc, t) => acc + t.quantity,
+        0,
+      );
+
+      return totalGoodsTransferB - totalGoodsTransferA;
+    });
+
+    if (take) return products.slice(skip * take, (skip + 1) * take);
+
+    return products;
+  }
+
   async findProductsByTopProfit({
     skip,
     take,

@@ -86,6 +86,57 @@ export class WarehouseStockService {
     });
   }
 
+  async find({ sourceWarehouseId }: { sourceWarehouseId: string }) {
+    // sort by the amount of goods transfered
+
+    const warehouseStocks = await this.prisma.goodsTransfer.findMany({
+      include: {
+        ...warehouseStockIncludeObject,
+        goods: {
+          include: {
+            product: {
+              include: {
+                activePrice: true,
+              },
+            },
+          },
+        },
+      },
+      where: {
+        sourceWarehouseId,
+      },
+    });
+
+    const sortedGoodsTransfer = warehouseStocks.sort((a, b) => {
+      return (
+        a.goods.reduce((acc, cur) => {
+          return acc + cur.product.activePrice.price * cur.quantity;
+        }, 0) -
+        b.goods.reduce((acc, cur) => {
+          return acc + cur.product.activePrice.price * cur.quantity;
+        }, 0)
+      );
+    });
+
+    return sortedGoodsTransfer.map((goodsTransfer) => {
+      return {
+        ...goodsTransfer,
+        goods: goodsTransfer.goods.map((good) => {
+          return {
+            ...good,
+            product: {
+              ...good.product,
+              activePrice: {
+                ...good.product.activePrice,
+                price: good.product.activePrice.price * good.quantity,
+              },
+            },
+          };
+        }),
+      };
+    });
+  }
+
   async totalValuationByWarehouseId(warehouseId: string) {
     const warehouseStock = await this.prisma.warehouseStock.findFirst({
       where: { warehouseId },

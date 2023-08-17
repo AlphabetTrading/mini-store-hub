@@ -314,7 +314,6 @@ export class ProductsResolver {
     filterProductInput?: FilterProductInput,
     @Args('orderBy', {
       type: () => OrderByProductInput,
-      // type: () => OrderByProductInput,
       nullable: true,
     })
     orderBy?: OrderByProductInput,
