@@ -140,6 +140,7 @@ export const PRODUCTS = gql`
     ) {
       items {
         name
+        amharicName
         id
         priceHistory {
           createdAt
@@ -151,6 +152,7 @@ export const PRODUCTS = gql`
         serialNumber
         unit
         description
+        amharicDescription
         category {
           id
           name

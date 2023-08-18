@@ -68,6 +68,11 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
             label="Name"
             value={retailShop?.name}
           />
+          <PropertyListItem
+            align={align}
+            label="ስም"
+            value={retailShop?.amharicName}
+          />
           <Divider />
 
           <PropertyListItem align={align} label="Address">
@@ -79,6 +84,9 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
             </Typography>
             <Typography color="text.secondary" variant="body2">
               {retailShop?.address?.formattedAddress}
+            </Typography>
+            <Typography color="text.secondary" variant="body2">
+              {retailShop?.address?.amharicFormattedAddress}
             </Typography>
           </PropertyListItem>
           <Divider />

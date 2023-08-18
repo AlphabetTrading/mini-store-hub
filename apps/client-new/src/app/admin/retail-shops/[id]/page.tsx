@@ -87,7 +87,7 @@ const Page = ({ params }: Props) => {
                 <Link component={NextLink} href={"/admin/retail-shops"}>
                   Retail Shops
                 </Link>
-                <Typography>List</Typography>
+                <Typography>Detail</Typography>
               </Breadcrumbs>
             </Stack>
             <Stack alignItems="center" direction="row" spacing={2}>

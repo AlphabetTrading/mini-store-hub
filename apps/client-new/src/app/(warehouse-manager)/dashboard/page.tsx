@@ -33,6 +33,7 @@ import {
   GetTotalWarehouseValuationData,
   GetTotalWarehouseValuationVars,
 } from "@/graphql/warehouse-managers/queries";
+import StateHandler from "@/components/state-handler";
 
 type Props = {};
 
@@ -80,16 +81,11 @@ const Page = (props: Props) => {
   );
 
   const pageLoading = stockDistributionLoading || lowStockLoading || loading;
+  const pageError = stockDistributionError || lowStockError || error;
+
   return (
     <Box component="main" sx={{ height: "100%" }}>
-      {pageLoading ? (
-        <Container
-          maxWidth="xl"
-          sx={{ height: "100%", backgroundColor: "red" }}
-        >
-          <CircularProgress />
-        </Container>
-      ) : (
+      <StateHandler loading={pageLoading} error={pageError} empty={false}>
         <Container maxWidth="xl" sx={{ paddingY: 2 }}>
           <Card>
             <CardHeader title="Warehouse Statistics" />
@@ -267,7 +263,7 @@ const Page = (props: Props) => {
           </Grid>
           {/* <Typography variant="h6">Warehouse Statistics</Typography> */}
         </Container>
-      )}
+      </StateHandler>
     </Box>
   );
 };

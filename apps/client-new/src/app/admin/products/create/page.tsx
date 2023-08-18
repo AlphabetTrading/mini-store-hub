@@ -36,9 +36,11 @@ type Props = {};
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
+  amharicName: Yup.string(),
   unit: Yup.string().required("Unit is required"),
   // serialNumber: Yup.string().required("Serial number is required"),
   description: Yup.string().required("Description is required"),
+  amharicDescription: Yup.string(),
   category: Yup.string().required("Category is required"),
 });
 
@@ -46,14 +48,18 @@ interface Values {
   unit: string;
   serialNumber: string;
   name: string;
+  amharicName: string;
   description: string;
+  amharicDescription: string;
   category: string;
 }
 const initialValues: Values = {
   unit: "",
   serialNumber: "",
   name: "",
+  amharicName: "",
   description: "",
+  amharicDescription: "",
   category: "",
 };
 
@@ -79,8 +85,10 @@ const Page = (props: Props) => {
         variables: {
           data: {
             name: values.name,
+            amharicName: values.amharicName,
             categoryId: values.category,
             description: values.description,
+            amharicDescription: values.amharicDescription,
             unit: values.unit,
           },
         },

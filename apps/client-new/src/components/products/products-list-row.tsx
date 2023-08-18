@@ -47,21 +47,27 @@ interface Values {
   unit: string;
   serialNumber: string;
   name: string;
+  amharicName: string;
   description: string;
+  amharicDescription: string;
   category: string;
 }
 const initialValues: Values = {
   unit: "",
   serialNumber: "",
   name: "",
+  amharicName: "",
   description: "",
+  amharicDescription: "",
   category: "",
 };
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
+  amharicName: Yup.string(),
   unit: Yup.string().required("Unit is required"),
   serialNumber: Yup.string().required("Serial number is required"),
   description: Yup.string().required("Description is required"),
+  amharicDescription: Yup.string(),
   category: Yup.string().required("Category is required"),
 });
 
@@ -90,7 +96,9 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
     unit: product.unit,
     serialNumber: product.serialNumber,
     name: product.name,
+    amharicName: product.amharicName,
     description: product.description,
+    amharicDescription: product.amharicDescription,
     category: product.category.id,
   };
   const formik = useFormik({
@@ -103,7 +111,9 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
           data: {
             categoryId: values.category,
             name: values.name,
+            amharicName: values.amharicName,
             description: values.description,
+            amharicDescription: values.amharicDescription,
             unit: values.unit,
           },
         },
@@ -159,7 +169,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
             <form onSubmit={formik.handleSubmit}>
               <CardContent>
                 <Grid container spacing={3}>
-                  <Grid item md={6} xs={12}>
+                  <Grid item md={8} xs={12}>
                     <Typography variant="h6">Basic details</Typography>
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={3}>
@@ -202,6 +212,25 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                         <TextField
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
+                          value={formik.values.amharicName}
+                          helperText={
+                            formik.touched.amharicName &&
+                            formik.errors.amharicName
+                          }
+                          error={
+                            formik.touched.amharicName &&
+                            Boolean(formik.errors.amharicName)
+                          }
+                          defaultValue={product.amharicName}
+                          fullWidth
+                          label="ስም"
+                          name="amharicName"
+                        />
+                      </Grid>
+                      <Grid item md={6} xs={12}>
+                        <TextField
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.category}
                           helperText={
                             formik.touched.category && formik.errors.category
@@ -223,9 +252,52 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                           ))}
                         </TextField>
                       </Grid>
+                      <Grid item md={6} xs={12}>
+                        <TextField
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.description}
+                          helperText={
+                            formik.touched.description &&
+                            formik.errors.description
+                          }
+                          error={
+                            formik.touched.description &&
+                            Boolean(formik.errors.description)
+                          }
+                          defaultValue={product.description}
+                          fullWidth
+                          multiline
+                          rows={4}
+                          label="Description"
+                          name="description"
+                        />
+                      </Grid>
+
+                      <Grid item md={6} xs={12}>
+                        <TextField
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.amharicDescription}
+                          helperText={
+                            formik.touched.amharicDescription &&
+                            formik.errors.amharicDescription
+                          }
+                          error={
+                            formik.touched.amharicDescription &&
+                            Boolean(formik.errors.amharicDescription)
+                          }
+                          defaultValue={product.amharicDescription}
+                          fullWidth
+                          multiline
+                          rows={4}
+                          label="ዝርዝር መግለጫ"
+                          name="amharicDescription"
+                        />
+                      </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item md={6} xs={12}>
+                  <Grid item md={4} xs={12}>
                     <Typography variant="h6">Pricing and Details</Typography>
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={0}>

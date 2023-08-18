@@ -3,10 +3,12 @@ import { gql } from "@apollo/client";
 export interface CreateRetailShopInput {
   data: {
     name: string;
+    amharicName: string;
     retailShopManagerId: string;
     address: {
       city: string;
       formattedAddress: string;
+      amharicFormattedAddress: string;
       lat: number;
       lng: number;
       street: string;
@@ -35,8 +37,10 @@ export interface UpdateRetailShopVars {
       lng: number;
       street: string;
       formattedAddress: string;
+      amharicFormattedAddress: string;
     };
     name: string;
+    amharicName: string;
     retailShopManagerId: string;
   };
   updateRetailShopId: string;

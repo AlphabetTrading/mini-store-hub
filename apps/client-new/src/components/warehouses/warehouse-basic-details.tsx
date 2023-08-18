@@ -18,6 +18,11 @@ import {
 } from "@/graphql/warehouses/queries";
 import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
+import {
+  GET_TOTAL_VALUATION_OF_WAREHOUSE,
+  GetTotalWarehouseValuationData,
+  GetTotalWarehouseValuationVars,
+} from "@/graphql/warehouse-managers/queries";
 
 type Props = {
   warehouseId: string;
@@ -41,17 +46,15 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
     data: valuationData,
     error: valuationError,
     loading: valuationLoading,
-  } = useQuery<WarehouseValuationData, WarehouseValuationVars>(
-    WAREHOUSE_VALUATION,
+  } = useQuery<GetTotalWarehouseValuationData, GetTotalWarehouseValuationVars>(
+    GET_TOTAL_VALUATION_OF_WAREHOUSE,
     {
       variables: {
-        endDate: endDate.toString(),
-        startDate: startDate.toString(),
         warehouseId: warehouseId,
       },
     }
   );
-  const valuation = valuationData?.totalValuationByWarehouseId;
+  const valuation = valuationData?.totalValuationByWarehouseId.totalValuation;
 
   const warehouse = data?.warehouse;
 
@@ -74,6 +77,12 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
             label="Name"
             value={warehouse?.name}
           />
+          <PropertyListItem
+            align={align}
+            label="ስም"
+            value={warehouse?.amharicName}
+          />
+
           <Divider />
           <PropertyListItem align={align} label="Address">
             <Typography variant="subtitle2">
@@ -85,6 +94,9 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
             <Typography color="text.secondary" variant="body2">
               {warehouse?.address?.formattedAddress}
             </Typography>
+            <Typography color="text.secondary" variant="body2">
+              {warehouse?.address?.amharicFormattedAddress}
+            </Typography>
           </PropertyListItem>
           <Divider />
           <PropertyListItem align={align} label="ID" value={warehouse?.id} />
@@ -92,7 +104,7 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
           <PropertyListItem
             align={align}
             label="Warehouse Value"
-            value={`ETB ${valuation?.toLocaleString("en-US")}`}
+            value={`ETB ${valuation ? valuation?.toLocaleString("en-US") : 0}`}
           />
           <Divider />
           <PropertyListItem

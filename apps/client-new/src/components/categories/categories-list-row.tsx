@@ -191,7 +191,25 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                           name="name"
                         />
                       </Grid>
-                      <Grid item md={6} xs={12}></Grid>
+                      <Grid item md={6} xs={12}>
+                        <TextField
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.amharicName}
+                          helperText={
+                            formik.touched.amharicName &&
+                            formik.errors.amharicName
+                          }
+                          error={
+                            formik.touched.amharicName &&
+                            Boolean(formik.errors.amharicName)
+                          }
+                          // defaultValue={formik.values.name}
+                          fullWidth
+                          label="ስም"
+                          name="amharicName"
+                        />
+                      </Grid>
                       <Grid item md={6} xs={12}>
                         <TextField
                           error={
@@ -212,6 +230,28 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                           value={formik.values.description}
+                        />
+                      </Grid>
+                      <Grid item md={6} xs={12}>
+                        <TextField
+                          error={
+                            !!(
+                              formik.touched.amharicDescription &&
+                              formik.errors.amharicDescription
+                            )
+                          }
+                          multiline
+                          rows={4}
+                          fullWidth
+                          helperText={
+                            formik.touched.amharicDescription &&
+                            formik.errors.amharicDescription
+                          }
+                          label="ዝርዝር መግለጫ"
+                          name="amharicDescription"
+                          onBlur={formik.handleBlur}
+                          onChange={formik.handleChange}
+                          value={formik.values.amharicDescription}
                         />
                       </Grid>
                     </Grid>

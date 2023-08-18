@@ -41,7 +41,9 @@ type Props = {
 
 export interface RetailShopInputValues {
   name: string;
+  amharicName: string;
   formattedAddress: string;
+  amharicFormattedAddress: string;
   city: string;
   street: string;
   lat: number;
@@ -50,7 +52,9 @@ export interface RetailShopInputValues {
 }
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
+  amharicName: Yup.string().required(),
   formattedAddress: Yup.string(),
+  amharicFormattedAddress: Yup.string(),
   city: Yup.string(),
   street: Yup.string(),
   lat: Yup.number(),
@@ -88,7 +92,9 @@ const RetailShopCreateEditForm = (props: Props) => {
                 <Link component={NextLink} href={"/admin/retail-shops"}>
                   Retail Shops
                 </Link>
-                <Typography>Create</Typography>
+                <Typography>
+                  {formik.values.name ? "Edit" : "Create"}
+                </Typography>
               </Breadcrumbs>
             </Stack>
             <form onSubmit={formik.handleSubmit}>
@@ -116,6 +122,24 @@ const RetailShopCreateEditForm = (props: Props) => {
                             onChange={formik.handleChange}
                             value={formik.values.name}
                           />
+                          <TextField
+                            error={
+                              !!(
+                                formik.touched.amharicName &&
+                                formik.errors.amharicName
+                              )
+                            }
+                            fullWidth
+                            helperText={
+                              formik.touched.amharicName &&
+                              formik.errors.amharicName
+                            }
+                            label="የሱቅ ስም"
+                            name="amharicName"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            value={formik.values.amharicName}
+                          />
                           <Autocomplete
                             value={formik.values.retailShopManager}
                             onChange={(event: any, newValue: User | null) => {
@@ -124,7 +148,9 @@ const RetailShopCreateEditForm = (props: Props) => {
                                 newValue
                               );
                             }}
-                            getOptionLabel={(option) => option.firstName}
+                            getOptionLabel={(option) =>
+                              option.firstName + " " + option.lastName
+                            }
                             options={data?.retailShopManagers || []}
                             sx={{ width: 300 }}
                             renderInput={(params: any) => (
@@ -209,6 +235,25 @@ const RetailShopCreateEditForm = (props: Props) => {
                             onChange={formik.handleChange}
                             value={formik.values.formattedAddress}
                           />
+                          <TextField
+                            error={
+                              !!(
+                                formik.touched.amharicFormattedAddress &&
+                                formik.errors.amharicFormattedAddress
+                              )
+                            }
+                            fullWidth
+                            helperText={
+                              formik.touched.amharicFormattedAddress &&
+                              formik.errors.amharicFormattedAddress
+                            }
+                            label="ዝርዝር አድራሻ"
+                            name="amharicFormattedAddress"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            value={formik.values.amharicFormattedAddress}
+                          />
+
                           <TextField
                             error={!!(formik.touched.lat && formik.errors.lat)}
                             fullWidth

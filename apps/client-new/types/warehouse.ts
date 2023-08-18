@@ -5,6 +5,7 @@ import { User } from "./user";
 export interface Warehouse {
   id: string;
   name: string;
+  amharicName: string;
   address?: Address;
   warehouseManager: User;
   createdAt: Date;

@@ -49,7 +49,6 @@ const Page = ({ params }: Props) => {
     },
     fetchPolicy: "cache-and-network",
   });
-  console.log(data?.user);
 
   return (
     <>
@@ -88,7 +87,7 @@ const Page = ({ params }: Props) => {
                   <Link component={NextLink} href={"/admin/users"}>
                     Users
                   </Link>
-                  <Typography>details</Typography>
+                  <Typography>Detail</Typography>
                 </Breadcrumbs>
 
                 <Stack

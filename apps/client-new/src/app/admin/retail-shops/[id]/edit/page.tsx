@@ -44,10 +44,13 @@ const Page = ({ params }: Props) => {
 
   const initialValues: RetailShopInputValues = {
     city: data?.retailShop?.address?.city || "",
+    amharicFormattedAddress:
+      data?.retailShop?.address?.amharicFormattedAddress || "",
     formattedAddress: data?.retailShop?.address?.formattedAddress || "",
     lat: data?.retailShop?.address?.lat || 0,
     lng: data?.retailShop?.address?.lng || 0,
     name: data?.retailShop?.name || "",
+    amharicName: data?.retailShop?.amharicName || "",
     street: data?.retailShop?.address?.street || "",
     retailShopManager: data?.retailShop?.retailShopManager || null,
   };
@@ -61,10 +64,12 @@ const Page = ({ params }: Props) => {
         updateRetailShopId: params.id,
         data: {
           name: values.name,
+          amharicName: values.amharicName,
           retailShopManagerId: values.retailShopManager?.id || "",
           address: {
             city: values.city,
             formattedAddress: values.formattedAddress,
+            amharicFormattedAddress: values.amharicFormattedAddress,
             lat: values.lat,
             lng: values.lng,
             street: values.street,

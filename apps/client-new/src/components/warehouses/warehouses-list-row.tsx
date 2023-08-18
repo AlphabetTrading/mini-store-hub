@@ -17,7 +17,9 @@ const WarehousesListRow = ({ warehouse }: Props) => {
     >
       <TableCell>{warehouse?.name}</TableCell>
       <TableCell>
-        {`${warehouse?.warehouseManager?.firstName} ${warehouse?.warehouseManager?.lastName}`}
+        {warehouse?.warehouseManager
+          ? `${warehouse?.warehouseManager?.firstName} ${warehouse?.warehouseManager?.lastName}`
+          : "-"}
       </TableCell>
       <TableCell>{warehouse?.address?.formattedAddress}</TableCell>
     </TableRow>

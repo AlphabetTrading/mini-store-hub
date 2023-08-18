@@ -32,9 +32,9 @@ const ProductsListTable = ({ products }: Props) => {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Product Name</TableCell>
+            <TableCell>Name</TableCell>
             <TableCell>Serial Number</TableCell>
-            <TableCell>Product Category</TableCell>
+            <TableCell>Category</TableCell>
             <TableCell>Unit</TableCell>
             <TableCell>Purchase Price</TableCell>
             <TableCell>Selling Price</TableCell>
