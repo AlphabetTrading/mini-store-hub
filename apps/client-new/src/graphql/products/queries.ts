@@ -101,19 +101,19 @@ export interface ProductsData {
 }
 
 export interface ProductsVars {
-  filterProductInput: {
-    name: {
+  filterProductInput?: {
+    name?: {
       contains: string;
     };
-    serialNumber: {
+    serialNumber?: {
       contains: string;
     };
   };
-  paginationInput: {
-    take: number;
-    skip: number;
+  paginationInput?: {
+    take?: number;
+    skip?: number;
   };
-  orderBy: {
+  orderBy?: {
     name?: string;
     createdAt?: string;
     category?: {
