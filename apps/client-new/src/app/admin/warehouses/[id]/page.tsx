@@ -47,7 +47,7 @@ const Page = ({ params }: Props) => {
       },
       refetchQueries: [WAREHOUSES],
       onCompleted(data, clientOptions) {
-        router.back();
+        router.replace("/admin/warehouses");
       },
       onError(error) {
         setTimeout(() => {
@@ -87,7 +87,7 @@ const Page = ({ params }: Props) => {
                 <Link component={NextLink} href={"/admin/warehouses"}>
                   Warehouse
                 </Link>
-                <Typography>List</Typography>
+                <Typography>Detail</Typography>
               </Breadcrumbs>
             </Stack>
             <Stack alignItems="center" direction="row" spacing={2}>

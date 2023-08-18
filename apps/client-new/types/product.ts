@@ -5,7 +5,9 @@ export interface Product {
   serialNumber: string;
   unit: Unit;
   name: string;
+  amharicName: string;
   description: string;
+  amharicDescription: string;
   category: { id: string; name: string };
   activePrice: PriceHistory;
   priceHistory: PriceHistory[];

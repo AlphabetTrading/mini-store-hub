@@ -29,10 +29,12 @@ export const REGISTER_INCOMING_STOCK = gql`
 export interface CreateWarehouseVars {
   data: {
     name: string;
+    amharicName?: string;
     warehouseManagerId?: string;
     address?: {
       city?: string;
       formattedAddress?: string;
+      amharicFormattedAddress?: string;
       lat?: number;
       lng?: number;
       street?: string;
@@ -58,11 +60,13 @@ export interface UpdateWarehouseVars {
     address: {
       city: string;
       formattedAddress: string;
+      amharicFormattedAddress?: string;
       lat: number;
       lng: number;
       street: string;
     };
     name: string;
+    amharicName?: string;
     warehouseManagerId: string;
   };
   updateWarehouseId: string;

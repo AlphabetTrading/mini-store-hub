@@ -24,19 +24,15 @@ export const UserBasicDetails = ({ user }: Props) => {
         <PropertyList>
           <PropertyListItem
             divider
-            label="First name"
+            label="First Name"
             value={user?.firstName}
           />
-          <PropertyListItem
-            divider
-            label="First name (Amh)"
-            value={user?.amharicFirstName}
-          />
+          <PropertyListItem divider label="ስም" value={user?.amharicFirstName} />
 
-          <PropertyListItem divider label="Last name" value={user?.lastName} />
+          <PropertyListItem divider label="Last Name" value={user?.lastName} />
           <PropertyListItem
             divider
-            label="Last name (Amh)"
+            label="የአባት ስም"
             value={user?.amharicLastName}
           />
           <PropertyListItem divider label="Gender" value={user?.gender} />

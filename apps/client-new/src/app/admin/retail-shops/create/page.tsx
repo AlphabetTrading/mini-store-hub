@@ -17,7 +17,9 @@ type Props = {};
 
 const initialValues: RetailShopInputValues = {
   name: "",
+  amharicName: "",
   formattedAddress: "",
+  amharicFormattedAddress: "",
   city: "",
   street: "",
   lat: 0,
@@ -40,9 +42,11 @@ const Page = (props: Props) => {
       variables: {
         data: {
           name: values.name,
+          amharicName: values.amharicName,
           retailShopManagerId: values.retailShopManager?.id || "",
           address: {
             city: values.city,
+            amharicFormattedAddress: values.amharicFormattedAddress,
             formattedAddress: values.formattedAddress,
             lat: values.lat,
             lng: values.lng,

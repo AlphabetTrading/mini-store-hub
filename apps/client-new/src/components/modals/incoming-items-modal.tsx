@@ -27,9 +27,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@apollo/client";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
+import {
+  PRODUCTS,
+  ProductVars,
+  ProductsData,
+} from "@/graphql/products/queries";
 import { Product, StockItem } from "../../../types/product";
 import StateHandler from "../state-handler";
+import { useEffect, useState } from "react";
 
 type Props = {
   open: boolean;
@@ -53,8 +58,10 @@ const validationSchema = Yup.object({
 });
 
 export const AddIncomingItemModal = (props: Props) => {
+  const [query, setQuery] = useState("");
+
   const { open, handleClose, handleAddItem, selectedStockItems } = props;
-  const { data, loading, error } = useQuery<ProductsData>(PRODUCTS);
+  const { data, loading, error, refetch } = useQuery<ProductsData>(PRODUCTS);
 
   const formik = useFormik({
     initialValues,
@@ -71,6 +78,22 @@ export const AddIncomingItemModal = (props: Props) => {
   const existingProductIds = selectedStockItems.map(
     (selected) => selected.product.id
   );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      refetch({
+        filterProductInput: {
+          name: {
+            contains: query,
+          },
+          // serialNumber: {
+          //   contains: query,
+          // },
+        },
+      });
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [query, refetch]);
 
   return (
     <Modal
@@ -104,7 +127,14 @@ export const AddIncomingItemModal = (props: Props) => {
                 <SvgIcon>
                   <SearchIcon />
                 </SvgIcon>
-                <Input disableUnderline placeholder="Search by product name" />
+                <Input
+                  disableUnderline
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                  }}
+                  placeholder="Search by product name"
+                />
               </Stack>
               <Divider />
               <StateHandler

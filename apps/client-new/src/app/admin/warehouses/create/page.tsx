@@ -18,7 +18,9 @@ type Props = {};
 
 const initialValues: WarehouseInputValues = {
   name: "",
+  amharicName: "",
   formattedAddress: "",
+  amharicFormattedAddress: "",
   city: "",
   street: "",
   lat: 0,
@@ -41,9 +43,11 @@ const Page = (props: Props) => {
       variables: {
         data: {
           name: values.name,
+          amharicName: values.amharicName,
           warehouseManagerId: values?.warehouseManager?.id || "",
           address: {
             formattedAddress: values.formattedAddress,
+            amharicFormattedAddress: values.amharicFormattedAddress,
             city: values.city,
             street: values.street,
             lat: values.lat,

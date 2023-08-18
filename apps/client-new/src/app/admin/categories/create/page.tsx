@@ -250,7 +250,9 @@ const Page = (props: Props) => {
                 justifyContent="flex-end"
                 spacing={1}
               >
-                <Button color="inherit">Cancel</Button>
+                <Button color="inherit" onClick={() => router.back()}>
+                  Cancel
+                </Button>
                 <Button disabled={loading} type="submit" variant="contained">
                   {loading && (
                     <CircularProgress

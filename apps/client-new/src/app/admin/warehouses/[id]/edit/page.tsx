@@ -43,9 +43,12 @@ const Page = ({ params }: Props) => {
   const initialValues: WarehouseInputValues = {
     city: data?.warehouse?.address?.city || "",
     formattedAddress: data?.warehouse?.address?.formattedAddress || "",
+    amharicFormattedAddress:
+      data?.warehouse?.address?.amharicFormattedAddress || "",
     lat: data?.warehouse?.address?.lat || 0,
     lng: data?.warehouse?.address?.lng || 0,
     name: data?.warehouse?.name || "",
+    amharicName: data?.warehouse?.amharicName || "",
     street: data?.warehouse?.address?.street || "",
     warehouseManager: data?.warehouse?.warehouseManager || null,
   };
@@ -60,11 +63,13 @@ const Page = ({ params }: Props) => {
           address: {
             city: values.city,
             formattedAddress: values.formattedAddress,
+            amharicFormattedAddress: values.amharicFormattedAddress,
             lat: values.lat,
             lng: values.lng,
             street: values.street,
           },
           name: values.name,
+          amharicName: values.amharicName,
           warehouseManagerId: values?.warehouseManager?.id || "",
         },
         updateWarehouseId: params.id,

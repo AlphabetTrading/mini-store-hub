@@ -40,6 +40,7 @@ export const RETAIL_SHOP = gql`
     retailShop(id: $retailShopId) {
       id
       name
+      amharicName
       createdAt
       address {
         id
@@ -47,6 +48,7 @@ export const RETAIL_SHOP = gql`
         lng
         street
         formattedAddress
+        amharicFormattedAddress
         city
       }
       retailShopManager {

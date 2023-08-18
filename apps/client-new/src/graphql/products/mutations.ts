@@ -2,8 +2,10 @@ import { gql } from "@apollo/client";
 
 export interface CreateProductVars {
   data: {
+    amharicDescription?: string;
     description: string;
     name: string;
+    amharicName?: string;
     unit: string;
     categoryId: string;
   };
@@ -26,8 +28,10 @@ export interface UpdateProductVars {
   data: {
     activePriceId?: string;
     categoryId?: string;
+    amharicDescription?: string;
     description?: string;
     unit?: string;
+    amharicName?: string;
     name?: string;
   };
 }

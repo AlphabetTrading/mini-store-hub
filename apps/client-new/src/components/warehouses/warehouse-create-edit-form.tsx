@@ -42,7 +42,9 @@ type Props = {
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
+  amharicName: Yup.string(),
   formattedAddress: Yup.string(),
+  amharicFormattedAddress: Yup.string(),
   city: Yup.string(),
   street: Yup.string(),
   lat: Yup.number(),
@@ -51,7 +53,9 @@ const validationSchema = Yup.object({
 
 export interface WarehouseInputValues {
   name: string;
+  amharicName: string;
   formattedAddress: string;
+  amharicFormattedAddress: string;
   city: string;
   street: string;
   lat: number;
@@ -62,7 +66,9 @@ export interface WarehouseInputValues {
 const WarehouseCreateEditForm = (props: Props) => {
   const { onSubmit, initialValues, loading, error, title } = props;
   const router = useRouter();
-  const { data } = useQuery<WarehouseManagersData>(WAREHOUSE_MANAGERS);
+  const { data } = useQuery<WarehouseManagersData>(WAREHOUSE_MANAGERS, {
+    fetchPolicy: "cache-and-network",
+  });
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -81,7 +87,7 @@ const WarehouseCreateEditForm = (props: Props) => {
               <Link component={NextLink} href={"/admin/warehouses"}>
                 Warehouses
               </Link>
-              <Typography>Create</Typography>
+              <Typography>{formik.values.name ? "Edit" : "Create"}</Typography>
             </Breadcrumbs>
           </Stack>
           <form onSubmit={formik.handleSubmit}>
@@ -105,12 +111,33 @@ const WarehouseCreateEditForm = (props: Props) => {
                           onChange={formik.handleChange}
                           value={formik.values.name}
                         />
+                        <TextField
+                          error={
+                            !!(
+                              formik.touched.amharicName &&
+                              formik.errors.amharicName
+                            )
+                          }
+                          fullWidth
+                          helperText={
+                            formik.touched.amharicName &&
+                            formik.errors.amharicName
+                          }
+                          label="የመጋዘኑ ስም"
+                          name="amharicName"
+                          onBlur={formik.handleBlur}
+                          onChange={formik.handleChange}
+                          value={formik.values.amharicName}
+                        />
+
                         <Autocomplete
                           value={formik.values.warehouseManager}
                           onChange={(event: any, newValue: User | null) => {
                             formik.setFieldValue("warehouseManager", newValue);
                           }}
-                          getOptionLabel={(option) => option.firstName}
+                          getOptionLabel={(option) =>
+                            option.firstName + " " + option.lastName
+                          }
                           options={data?.warehouseManagers || []}
                           sx={{ width: 300 }}
                           renderInput={(params: any) => (
@@ -190,6 +217,24 @@ const WarehouseCreateEditForm = (props: Props) => {
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                           value={formik.values.formattedAddress}
+                        />
+                        <TextField
+                          error={
+                            !!(
+                              formik.touched.amharicFormattedAddress &&
+                              formik.errors.amharicFormattedAddress
+                            )
+                          }
+                          fullWidth
+                          helperText={
+                            formik.touched.amharicFormattedAddress &&
+                            formik.errors.amharicFormattedAddress
+                          }
+                          label="ዝርዝር አድራሻ"
+                          name="amharicFormattedAddress"
+                          onBlur={formik.handleBlur}
+                          onChange={formik.handleChange}
+                          value={formik.values.amharicFormattedAddress}
                         />
                         <TextField
                           error={!!(formik.touched.lat && formik.errors.lat)}

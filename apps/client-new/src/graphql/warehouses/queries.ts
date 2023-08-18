@@ -43,6 +43,7 @@ export const WAREHOUSE = gql`
     warehouse(id: $warehouseId) {
       id
       name
+      amharicName
       createdAt
       address {
         lat
@@ -50,10 +51,12 @@ export const WAREHOUSE = gql`
         street
         city
         formattedAddress
+        amharicFormattedAddress
       }
       warehouseManager {
         id
         firstName
+        lastName
       }
     }
   }
