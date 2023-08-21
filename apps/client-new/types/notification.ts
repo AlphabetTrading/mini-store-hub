@@ -13,4 +13,7 @@ export interface Notification {
   createdAt: Date;
   recipientType: RecipientType;
   recipientId?: string;
+  notificationReads: {
+    userId: string;
+  }[];
 }

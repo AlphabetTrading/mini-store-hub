@@ -1,20 +1,8 @@
 import { gql } from "@apollo/client";
 import { Notification } from "../../../types/notification";
 
-export const NOTIFICATIONS = gql`
-  query Query($userId: String!) {
-    allNotificationsByUserId(userId: $userId) {
-      id
-      body
-      title
-      isRead
-      createdAt
-    }
-  }
-`;
-
-export interface NotificationData{
-    getAllNotifications:Notification[]
+export interface AllNotificationData {
+  getAllNotifications: Notification[];
 }
 export const ALL_NOTIFICATIONS = gql`
   query GetAllNotifications {
@@ -25,6 +13,34 @@ export const ALL_NOTIFICATIONS = gql`
       recipientType
       recipientId
       id
+      isRead
+      notificationReads {
+        userId
+      }
+    }
+  }
+`;
+
+export interface NotificationByUserIdVars {
+  userId: string;
+}
+export interface NotificationByUserIdData {
+  allNotificationsByUserId: Notification[];
+}
+
+export const NOTIFICATIONS_BY_USERID = gql`
+  query AllNotificationsByUserId($userId: String!) {
+    allNotificationsByUserId(userId: $userId) {
+      id
+      isRead
+      recipientId
+      recipientType
+      title
+      body
+      createdAt
+      notificationReads {
+        userId
+      }
     }
   }
 `;

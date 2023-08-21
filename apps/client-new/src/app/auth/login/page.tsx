@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   FormHelperText,
   Link,
   Stack,
@@ -132,7 +133,16 @@ const Login = (props: Props) => {
               type="submit"
               variant="contained"
             >
-              {formik.isSubmitting ? "Loading..." : "Log In"}
+              {formik.isSubmitting && (
+                <CircularProgress
+                  size={16}
+                  sx={{
+                    mr: 1,
+                    color: "neutral.500",
+                  }}
+                />
+              )}
+              Log In
             </Button>
           </form>
         </CardContent>

@@ -18,3 +18,30 @@ export const SEND_NOTIFICATION = gql`
     }
   }
 `;
+
+export interface MarkNotificationAsReadVars {
+  notificationId: string;
+  userId: string;
+}
+
+export interface MarkNotificationAsReadData {
+  markNotificationAsRead: {
+    id: string;
+    isRead:boolean;
+    notificationReads :{
+      userId:string
+    }[]
+  };
+}
+
+export const MARK_NOTIFICATION_AS_READ = gql`
+  mutation MarkNotificationAsRead($notificationId: String!, $userId: String!) {
+    markNotificationAsRead(notificationId: $notificationId, userId: $userId) {
+      id
+      isRead
+      notificationReads {
+        userId
+      }
+    }
+  }
+`;

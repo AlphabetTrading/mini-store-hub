@@ -47,6 +47,7 @@ const SideNavItem = (props: SideNavProps) => {
             ...(props.active && {
               color: "var(--nav-item-icon-active-color)",
             }),
+            pl:1
           }}
         >
           {props.icon}

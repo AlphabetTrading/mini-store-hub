@@ -1,11 +1,10 @@
 import { common } from "@mui/material/colors";
 import { alpha } from "@mui/material/styles";
-import { error, info, neutral, success, warning } from "../colors";
+import { error, info, neutral, success, warning,indigo } from "../colors";
 import { getPrimary } from "../utils";
 
 export const createPalette = (config: any) => {
   const { colorPreset, contrast } = config;
-
   return {
     action: {
       active: neutral[500],
@@ -34,7 +33,7 @@ export const createPalette = (config: any) => {
     neutral800: neutral[800],
     neutral900: neutral[900],
     neutral,
-
+    indigo,
     primary: getPrimary(colorPreset),
     success,
     text: {
