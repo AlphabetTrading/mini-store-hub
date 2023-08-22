@@ -40,8 +40,9 @@ const StatMenu = ({ options, timeFrame, setTimeFrame }: Props) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {options.map((option) => (
+        {options.map((option,idx) => (
           <MenuItem
+          key={idx}
             onClick={() => {
               setTimeFrame(option);
               handleClose();

@@ -9,7 +9,7 @@ import React, { useState } from "react";
 type Props = {};
 const options = ["Today's", "This week's", "This month's", "All time"];
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const [timeFrame, setTimeFrame] = useState(options[0]);
   return (
     <Box component="main">
@@ -67,4 +67,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

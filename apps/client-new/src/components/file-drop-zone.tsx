@@ -1,13 +1,8 @@
-import { UPLOAD_FILE, UploadFileData } from "@/graphql/file/mutations";
-import { useMutation } from "@apollo/client";
-import { PhotoCamera } from "@mui/icons-material";
 import {
   Alert,
   AlertTitle,
   Avatar,
   Box,
-  Button,
-  Container,
   IconButton,
   List,
   ListItem,
