@@ -6,17 +6,27 @@ export const LOGIN_MUTATION = gql`
       accessToken
       refreshToken
       user {
-        id
+        amharicFirstName
+        amharicLastName
         firstName
         lastName
-        username
+        gender
+        isActive
         phone
-        role
+        username
+
+        userProfile {
+          photoUrl
+          idUrl
+          address {
+            street
+          }
+        }
         retailShop {
           id
         }
-        userProfile {
-          photoUrl
+        warehouse {
+          id
         }
       }
     }

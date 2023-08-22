@@ -49,8 +49,6 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
     {
       onCompleted: async (data, clientOptions) => {
         if (data) {
-          console.log(data, " data");
-
           const { id, totalPrice } = data.createSaleTransaction;
           setCheckoutItems([]);
           navigation.navigate("Root", {
@@ -67,7 +65,6 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
               },
             },
           });
-          console.log("data is ", loading);
         }
       },
     }

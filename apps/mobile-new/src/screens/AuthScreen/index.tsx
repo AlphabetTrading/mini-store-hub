@@ -15,26 +15,28 @@ import { useAuth } from "../../contexts/auth";
 import { notifyMessage } from "../../components/Toast";
 import { StatusBar } from "expo-status-bar";
 import { useAppTheme } from "@/src/contexts/preference";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 
 interface FormValues {
-  userName: string;
+  phone: string;
   password: string;
 }
 
 const loginSchema = Yup.object().shape({
-  userName: Yup.string().required("Required"),
+  phone: Yup.string().required("Required"),
   password: Yup.string().required("Required"),
 });
 
-const LoginScreen = ({ navigation }: any) => {
+const LoginScreen = ({}: any) => {
+  const navigation = useNavigation();
   const { signIn } = useAuth();
   const { theme } = useAppTheme();
   const [viewPassword, setViewPassword] = useState(false);
   // const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const INITIAL_VALUES: FormValues = {
-    userName: "",
+    phone: "",
     password: "",
   };
 
@@ -110,24 +112,22 @@ const LoginScreen = ({ navigation }: any) => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              const res = await signIn(values.userName, values.password);
+              console.log(values);
+              const res = await signIn(values.phone, values.password);
               if (res.error) {
-                console.log(res.error, " res ", values);
+                notifyMessage("Error: " + res.error?.message);
                 if (
                   res.error?.message === "Invalid Credentials" ||
                   res.error?.message ===
-                    "No user found for email: " + values.userName
+                    "No user found for phone: " + values.phone
                 ) {
                   notifyMessage("Invalid Credentials Please try again");
                 } else {
-                  notifyMessage("Network Error Please try again");
+                  notifyMessage(res.error?.message, true);
                 }
                 return;
               }
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Root" }],
-              });
+              return res.data;
             } catch (e) {
               console.log(e);
               notifyMessage("Network Error Please try again");
@@ -149,21 +149,22 @@ const LoginScreen = ({ navigation }: any) => {
                 <Text
                   style={{ color: "#6C6C6C", fontSize: 14, marginBottom: 4 }}
                 >
-                  Username
+                  Phone Number
                 </Text>
                 <View style={styles.inputStyle}>
                   <AntDesign name="user" size={20} color="#5684E0" />
                   <TextInput
+                    keyboardType="phone-pad"
                     style={styles.inputTextStyle}
-                    placeholder="Enter Username"
+                    placeholder="Enter Phone Number"
                     placeholderTextColor="#6C6C6C66"
-                    value={values.userName}
-                    onChangeText={handleChange("userName")}
+                    value={values.phone}
+                    onChangeText={handleChange("phone")}
                   />
                 </View>
-                {errors.userName && (
+                {errors.phone && (
                   <Text style={{ color: "red", fontSize: 10, marginTop: 4 }}>
-                    Username is required
+                    Phone Number is required
                   </Text>
                 )}
               </View>
@@ -212,13 +213,12 @@ const LoginScreen = ({ navigation }: any) => {
               </View>
               <Text
                 onPress={() => {
-                  if (values.userName) {
+                  if (values.phone) {
                     navigation.navigate("ForgotPassword", {
-                      screen: "ForgotPassword",
-                      username: values.userName,
+                      phone: values.phone,
                     });
                   } else {
-                    notifyMessage("Enter your Username");
+                    notifyMessage("Enter your Phone Number");
                   }
                 }}
                 style={styles.forgotPassword}

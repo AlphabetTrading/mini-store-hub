@@ -22,11 +22,11 @@ const CheckoutScreen = () => {
   const fetchCheckoutItems = useCallback(async () => {
     const items = await AsyncStorageUtils.getItem("checkout");
     if (items) setCheckoutItems(items);
-  }, [navigation, route]);
+  }, [navigation, route, isFocused]);
 
   useEffect(() => {
     fetchCheckoutItems();
-  }, [fetchCheckoutItems, isFocused]);
+  }, [fetchCheckoutItems]);
 
   const styles = StyleSheet.create({
     itemTextStyle: {

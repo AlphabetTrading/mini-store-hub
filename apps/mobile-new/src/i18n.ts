@@ -18,26 +18,4 @@ i18n.enableFallback = true;
 // To see the fallback mechanism uncomment the line below to force the app to use the Japanese language.
 i18n.locale = "en";
 
-// how to use it
-// import i18n from './i18n';
-// i18n.t('greeting');
-// i18n.t('greeting', {locale: 'fr'});
-// i18n.t('greeting', {locale: 'en'});
-// i18n.t('greeting', {locale: 'am'});
-// i18n.t('greeting', {locale: 'am', name: 'John'});
-
 export default i18n;
-
-// import {I18nManager} from 'react-native';
-// import memoize from 'lodash.memoize';
-
-// export const DEFAULT_LANGUAGE = 'en';
-
-// export const translationGetters = {
-//   // lazy requires (metro bundler does not support symlinks)
-//   en: () => require("./locales/en.json"),
-//   am: () => require("./locales/am.json"),
-// };
-
-// export const translate = memoize(
-//     (key, config) => I18n.(key, config),

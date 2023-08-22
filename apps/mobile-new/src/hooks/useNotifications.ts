@@ -1,6 +1,6 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Alert, Linking, Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import { openSettings } from "expo-linking";
 
 import { useUser } from "./useUser";
@@ -12,7 +12,9 @@ export const useNotifications = () => {
   const navigation = useNavigation();
   const { authState } = useAuth();
 
-  const registerForPushNotificationsAsync = async (alertUser?: boolean) => {
+  const registerForPushNotificationsAsync = async (
+    alertUser?: boolean
+  ): Promise<any> => {
     if (Device.isDevice) {
       if (!authState) return;
       const { status: existingStatus } =

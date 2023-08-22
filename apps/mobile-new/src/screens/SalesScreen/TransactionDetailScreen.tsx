@@ -12,11 +12,13 @@ import { useQuery } from "@apollo/client";
 import { GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP } from "../../graphql/queries/salesQueries";
 import { format } from "date-fns";
 import { useAppTheme } from "@/src/contexts/preference";
+import { useLocalization } from "@/src/contexts/localization";
 
 type Props = {};
 
 const TransactionDetailScreen = ({ route }: any) => {
   const { transactionID, totalPrice } = route.params;
+  const { t } = useLocalization();
 
   const { data, loading, refetch, error } = useQuery(
     GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP,
@@ -65,7 +67,7 @@ const TransactionDetailScreen = ({ route }: any) => {
                 textTransform: "uppercase",
               }}
             >
-              Details
+              {t("details")}
             </Text>
             <View
               style={{
@@ -82,7 +84,7 @@ const TransactionDetailScreen = ({ route }: any) => {
                   fontSize: 14,
                 }}
               >
-                {data.saleTransaction.saleTransactionItems?.length} Items
+                {data.saleTransaction.saleTransactionItems?.length} {t("items")}
               </Text>
               <Text
                 style={{

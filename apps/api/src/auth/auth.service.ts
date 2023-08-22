@@ -122,12 +122,11 @@ export class AuthService {
   }
 
   async login(phone: string, password: string): Promise<Token> {
-    // make case insensitive
-
     const user = await this.prisma.user.findUnique({ where: { phone } });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${phone}`);
+      console.log('No users found');
+      throw new NotFoundException(`No user found for phone: ${phone}`);
     }
 
     const passwordValid = await this.passwordService.validatePassword(
@@ -136,12 +135,15 @@ export class AuthService {
     );
 
     if (!passwordValid) {
+      console.log('Invalid Credentials');
       throw new BadRequestException('Invalid Credentials');
     }
 
-    return this.generateTokens({
+    const res = await this.generateTokens({
       userId: user.id,
     });
+    console.log('res', res);
+    return res;
   }
 
   validateUser(userId: string): Promise<User> {

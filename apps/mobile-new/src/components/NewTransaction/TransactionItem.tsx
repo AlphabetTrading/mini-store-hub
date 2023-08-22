@@ -106,14 +106,6 @@ const TransactionItem = ({
   const handleQuantityChange = (change: number) => () => {
     setCheckoutItems((prev: CheckoutItem[]) => {
       return prev.map((item) => {
-        console.log(
-          item.productId,
-          checkoutItem.productId,
-          item.selectedQuantity,
-          checkoutItem.selectedQuantity,
-          checkoutItem.quantity,
-          item.quantity
-        );
         if (item.productId === checkoutItem.productId) {
           if (change === -1) {
             () => {

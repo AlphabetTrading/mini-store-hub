@@ -1,8 +1,11 @@
 {
   "welcome": "እንኳን ደህና መጡ",
-  "goodMorning": "እንደምን አደሩ",
-  "goodAfternoon": "እንደምን ዋሉ",
-  "goodEvening": "አንደምን አመሻችሁ",
+  "goodMorningM": "እንደምን አደርክ",
+  "goodMorningF": "እንደምን አደርሽ",
+  "goodAfternoonM": "እንደምን ዋልክ",
+  "goodAfternoonF": "እንደምን ዋልሽ",
+  "goodEveningM": "አንደምን አመሸህ",
+  "goodEveningF": "አንደምን አመሸሽ",
   "login": "ግባ",
   "register": "ይመዝገቡ",
   "email": "ኢሜል",
@@ -285,5 +288,9 @@
   "removeAllItems": "ሁሉንም እቃዎችን አጥፋ",
   "proceedToCheckout": "ወደ ክፍያ ይመለሱ",
   "submitting": "ይህንን ይጫኑ...",
-  "addNewTranasaction": "አዲስ ይገባ"
+  "addNewTranasaction": "አዲስ ይገባ",
+  "lowStockItems": "በዝቅተኛ መጠን ያሉ እቃዎች",
+  "noLowStockItems": "በዝቅተኛ መጠን የሚገኙ እቃዎች የሉም",
+  "transactionDetail": "የሽያጭ ዝርዝር",
+  "items": "እቃዎች"
 }

@@ -20,6 +20,8 @@ import { NewTransactionStack } from "../navigations/NewTransactionStack";
 import { SalesStack } from "../navigations/SalesStack";
 import { InsightsStack } from "../navigations/InsightsStack";
 import NotificationIconComp from "../components/NotificationIconComp";
+import AppbarRightAction from "../components/AppbarRightAction";
+import HomeStack from "../navigations/HomeStack";
 
 type Props = {};
 
@@ -71,13 +73,12 @@ const AppStack = ({ route }: any) => {
   return (
     <View
       style={{
-        // height: Dimensions.get("window").height,
         flex: 1,
         width: "100%",
       }}
     >
       <BottomTab.Navigator
-        initialRouteName="Index"
+        initialRouteName="HomeRoot"
         screenOptions={(props) => {
           // headerTintColor: "#fff",
           return {
@@ -86,35 +87,17 @@ const AppStack = ({ route }: any) => {
               backgroundColor: theme.colors.primary,
             },
             headerTintColor: theme.colors.white,
-            headerRight: () => (
-              <View style={{ flexDirection: "row" }}>
-                <NotificationIconComp />
-                <CustomMaterialMenu />
-              </View>
-            ),
+            headerRight: () => <AppbarRightAction />,
             keyboardHidesTabBar: true,
-            tabBarLabelStyle: {
-              fontFamily: "InterRegular",
-              fontSize: 10,
-              // borderWidth: 2,
-              // borderColor: "#ff0000",
-            },
-            // tabBarItemStyle: {
-            //   borderWidth: 0.5,
-            //   borderColor: "#D3D3D3",
-            // },
-            tabBarShowLabel: false,
             tabBarStyle: {
               display: hideBottomTab ? "none" : "flex",
               height: 60,
             },
+            tabBarShowLabel: false,
             tabBarItemStyle: {
               borderWidth: 0.5,
               borderColor: "#D3D3D3",
               backgroundColor: theme.colors.cardBackground,
-            },
-            tabBarIconStyle: {
-              paddingVertical: 0,
             },
             tabBarActiveBackgroundColor: theme.colors.cardBackground,
             tabBarActiveTintColor: theme.colors.tint,
@@ -125,16 +108,16 @@ const AppStack = ({ route }: any) => {
         }}
       >
         <BottomTab.Screen
-          name="Index"
+          name="HomeRoot"
           options={{
             // title: t("welcome"),
             headerTitle: () => <GreetingsComponent />,
-            headerShown: true,
+            headerShown: false,
+            tabBarShowLabel: false,
             headerStyle: {
               backgroundColor: theme.colors.primary,
             },
             tabBarStyle: {
-              // backgroundColor: theme.colors.tint,
               display: hideBottomTab ? "none" : "flex",
               height: 60,
             },
@@ -184,20 +167,22 @@ const AppStack = ({ route }: any) => {
               />
             ),
           }}
-          component={HomeScreen}
+          component={HomeStack}
         />
         <BottomTab.Screen
           name="InventoryRoot"
           options={{
             title: "Inventory",
             headerShown: false,
+            tabBarShowLabel: false,
+            headerStyle: {
+              backgroundColor: theme.colors.primary,
+            },
             tabBarStyle: {
               display: hideBottomTab ? "none" : "flex",
               height: 60,
             },
-            tabBarLabelStyle: {
-              borderWidth: 1,
-            },
+            headerTintColor: "#FFF",
             tabBarIcon: ({ color, focused }) => (
               <TabItem
                 color={color}
@@ -256,11 +241,12 @@ const AppStack = ({ route }: any) => {
               display: hideBottomTab ? "none" : "flex",
             },
             title: t("addNewTransaction"),
-
             headerShown: false,
-            headerStyle: {},
             tabBarShowLabel: false,
-            tabBarHideOnKeyboard: true,
+            headerStyle: {
+              backgroundColor: theme.colors.primary,
+            },
+            headerTintColor: "#FFF",
             tabBarIcon: ({ color, focused }) => (
               <View
                 style={{

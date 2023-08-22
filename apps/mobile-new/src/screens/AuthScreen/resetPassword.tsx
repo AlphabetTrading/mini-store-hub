@@ -12,8 +12,9 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { Entypo } from "@expo/vector-icons";
-import { StackActions } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import { useAppTheme } from "@/src/contexts/preference";
 
 type Props = {};
 
@@ -29,15 +30,83 @@ const resetPasswordSchema = Yup.object().shape({
   confirm: Yup.string().oneOf([Yup.ref("password")], "Passwords must match"),
 });
 
-const ResetPasswordScreen = ({ navigation, route }: any) => {
+const ResetPasswordScreen = ({ route }: any) => {
   const { resetPassword } = useAuth();
-  const username = route.params?.username ?? "";
+  const phone = route.params?.phone ?? "";
+  const token = route.params?.token ?? "";
   const [viewPassword, setViewPassword] = useState(false);
+  const navigation = useNavigation();
 
   const INITIAL_VALUES: FormValues = {
     password: "",
     confirm: "",
   };
+
+  const { theme } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      padding: 30,
+      backgroundColor: theme.colors.background,
+    },
+    inputStyle: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.colors.cardBackground,
+      padding: 16,
+      borderRadius: 12,
+      gap: 16,
+    },
+    inputTextStyle: {
+      flex: 1,
+      color: theme.colors.text,
+      fontSize: 18,
+      width: "100%",
+    },
+    forgotPassword: {
+      color: theme.colors.accent,
+      fontSize: 16,
+      marginTop: 30,
+      textAlign: "right",
+      textTransform: "capitalize",
+    },
+    loginButton: {
+      backgroundColor: theme.colors.primary,
+      padding: 16,
+      marginTop: 30,
+      alignItems: "center",
+      borderRadius: 6,
+    },
+    loginButtonText: {
+      fontFamily: "InterSemiBold",
+      color: theme.colors.white,
+      fontSize: 18,
+      textTransform: "uppercase",
+    },
+
+    resetPassword: {
+      color: theme.colors.accent,
+      fontSize: 16,
+      marginTop: 30,
+      textAlign: "right",
+      textTransform: "capitalize",
+    },
+    resetPasswordButton: {
+      backgroundColor: theme.colors.primary,
+      padding: 16,
+      marginTop: 30,
+      alignItems: "center",
+      borderRadius: 6,
+    },
+    resetPasswordButtonText: {
+      fontFamily: "InterSemiBold",
+      color: theme.colors.white,
+      fontSize: 18,
+      textTransform: "uppercase",
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,12 +128,17 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
           try {
-            const res = await resetPassword(values.password, username);
-            // navigation.dispatch(StackActions.replace("Login"));
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "SignIn" }],
-            });
+            const res = await resetPassword(values.password, phone);
+            navigation.dispatch(StackActions.replace("SignIn"));
+
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [
+            //     {
+            //       name: "SignIn",
+            //     },
+            //   ],
+            // });
           } catch (e) {
             console.log(e);
           }
@@ -167,46 +241,3 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
 };
 
 export default ResetPasswordScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 30,
-    backgroundColor: "#FFF",
-  },
-  inputStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F9F9F9",
-    padding: 16,
-    borderRadius: 12,
-    gap: 16,
-  },
-  inputTextStyle: {
-    flex: 1,
-    color: "#6C6C6C",
-    fontSize: 18,
-    width: "100%",
-  },
-  resetPassword: {
-    color: "#5684E0",
-    fontSize: 16,
-    marginTop: 30,
-    textAlign: "right",
-    textTransform: "capitalize",
-  },
-  resetPasswordButton: {
-    backgroundColor: "#5684E0",
-    padding: 16,
-    marginTop: 30,
-    alignItems: "center",
-    borderRadius: 6,
-  },
-  resetPasswordButtonText: {
-    fontFamily: "InterSemiBold",
-    color: "#FFF",
-    fontSize: 18,
-    textTransform: "uppercase",
-  },
-});
