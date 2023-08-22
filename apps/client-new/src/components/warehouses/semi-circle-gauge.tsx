@@ -1,4 +1,5 @@
 import { Box, Container, useTheme } from "@mui/material";
+import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import React from "react";
 const Chart = dynamic(() => import("react-apexcharts"), {
@@ -62,7 +63,7 @@ const SemiCircleGauge = ({ value }: Props) => {
 
   return (
     <Chart
-      options={chartOptions}
+      options={chartOptions as any}
       series={chartSeries}
       height={250}
       width={250}
