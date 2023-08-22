@@ -8,7 +8,7 @@ export type SideNavProps = {
   active?: boolean;
   icon: React.ReactElement<SvgIconProps>;
   title: string;
-  label?: string;
+  label?: React.ReactNode;
   path: string;
 };
 
@@ -47,6 +47,7 @@ const SideNavItem = (props: SideNavProps) => {
             ...(props.active && {
               color: "var(--nav-item-icon-active-color)",
             }),
+            pl:1
           }}
         >
           {props.icon}

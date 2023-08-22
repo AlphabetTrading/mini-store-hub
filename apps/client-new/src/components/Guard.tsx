@@ -5,7 +5,8 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@/theme";
 import type { Metadata } from "next";
-import { PaletteColor, PaletteColorOptions } from "@mui/material";
+import { PaletteOptions } from "@mui/material/styles/createPalette";
+import { CircularProgress, Stack } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ declare module "@mui/material/styles" {
     neutral800: string;
     neutral900: string;
     neutral: string[];
+    indigo: Palette["primary"];
   }
   interface PaletteOptions {
     neutral50: string;
@@ -40,6 +42,7 @@ declare module "@mui/material/styles" {
     neutral700: string;
     neutral800: string;
     neutral: string[];
+    indigo: PaletteOptions["primary"];
   }
   interface PaletteColor {
     alpha4: string;
@@ -87,7 +90,17 @@ interface GuardProps {
 const Guard = ({ excludedRoutes, children }: GuardProps) => {
   const pathname = usePathname();
   const { data, status } = useSession();
-  if (status === "loading") return <h1>Loading</h1>;
+  if (status === "loading")
+    return (
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ width: 1, height: "100vh" }}
+      >
+        <CircularProgress />
+      </Stack>
+    );
 
   if (status === "unauthenticated" && !excludedRoutes?.includes(pathname)) {
     redirect("/auth/login");

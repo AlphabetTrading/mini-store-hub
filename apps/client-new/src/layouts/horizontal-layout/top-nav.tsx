@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { NavigationItem } from "../config";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { NotificationsButton } from "@/components/notification/notification-button";
 
 type Props = {
   onMobileNav: () => void;
@@ -100,7 +101,7 @@ export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
         </Stack>
         <Stack alignItems="center" direction="row" spacing={2}>
           {/* <LanguageSwitch /> */}
-          {/* <NotificationsButton /> */}
+          <NotificationsButton />
           {/* <ContactsButton /> */}
           {/* <AccountButton /> */}
           <IconButton onClick={() => signOut()}>

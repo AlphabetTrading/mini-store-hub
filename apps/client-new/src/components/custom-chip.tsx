@@ -3,24 +3,36 @@ import React from "react";
 
 type Props = {
   label: string;
-  status: string;
+  status?: string;
 };
 
 const CustomChip = ({ label, status }: Props) => {
-  const state = { status };
-  //state is 'error' or 'success'
   return (
     <Chip
       label={label}
       sx={{
-        backgroundColor: (theme) =>
-          status === "success"
-            ? theme.palette.success.alpha12
-            : theme.palette.error.alpha12,
-        color: (theme) =>
-          status === "success"
-            ? theme.palette.success.main
-            : theme.palette.error.main,
+        width: "fit-content",
+        backgroundColor: (theme) => {
+          switch (status) {
+            case "success":
+              return theme.palette.success.alpha12;
+            case "error":
+              return theme.palette.error.alpha12;
+            default:
+              return theme.palette.indigo.alpha12;
+          }
+        },
+
+        color: (theme) => {
+          switch (status) {
+            case "success":
+              return theme.palette.success.main;
+            case "error":
+              return theme.palette.error.main;
+            default:
+              return theme.palette.indigo.main;
+          }
+        },
       }}
     />
   );
