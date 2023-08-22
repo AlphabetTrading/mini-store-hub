@@ -8,7 +8,7 @@ export type SideNavProps = {
   active?: boolean;
   icon: React.ReactElement<SvgIconProps>;
   title: string;
-  label?: string;
+  label?: React.ReactNode;
   path: string;
 };
 

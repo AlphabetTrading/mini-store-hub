@@ -28,7 +28,7 @@ import { Notification } from "../../../../types/notification";
 
 type Props = {};
 
-const tabs = ["All", "My Notifications"];
+const tabs = ["My Notifications","Others"];
 
 const Page = (props: Props) => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -65,12 +65,11 @@ const Page = (props: Props) => {
   return (
     <>
       <NotificationDetails
-      isMyNotification={currentTab === 1}
+        isMyNotification={currentTab === 1}
         handleClose={() => {
           setOpen(false);
           setNotification(null);
         }}
-
         open={open}
         notification={notification}
       />
@@ -101,29 +100,29 @@ const Page = (props: Props) => {
             ))}
           </Tabs>
           <Divider />
-          {currentTab === 0 && (
+          {currentTab === 1 && (
             <StateHandler
               loading={loadingAll}
               error={errorAll}
               empty={dataAll?.getAllNotifications.length === 0}
             >
               <NotificationsList
-              isMyNotification={false}
-                notifications={dataAll?.getAllNotifications || []}
+                isMyNotification={false}
+                notifications={[...dataAll?.getAllNotifications || []].reverse()}
                 setNotification={setNotification}
                 setOpen={setOpen}
               />
             </StateHandler>
           )}
-          {currentTab === 1 && (
+          {currentTab === 0 && (
             <StateHandler
               loading={loading}
               error={error}
               empty={data?.allNotificationsByUserId.length === 0}
             >
               <NotificationsList
-              isMyNotification={true}
-                notifications={data?.allNotificationsByUserId || []}
+                isMyNotification={true}
+                notifications={[...data?.allNotificationsByUserId || []].reverse()}
                 setNotification={setNotification}
                 setOpen={setOpen}
               />

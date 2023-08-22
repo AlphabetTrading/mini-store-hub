@@ -1,9 +1,9 @@
-import { SvgIcon } from "@mui/material";
+import { Chip, SvgIcon } from "@mui/material";
 import AddHomeOutlinedIcon from "@mui/icons-material/AddHomeOutlined";
 import { useMemo } from "react";
 import { RetailShopManagerIcon } from "@/components/icons/retail-shop-manager";
 import { RetailShopsIcon } from "@/components/icons/retail-shops";
-import  TransferItemsIcon  from "@/icons/transfer-items-icon";
+import TransferItemsIcon from "@/icons/transfer-items-icon";
 import TransactionHistoryIcon from "@/icons/transaction-history-icon";
 import ProductsIcon from "@/icons/products-icon";
 import UsersIcon from "@/icons/users-icon";
@@ -17,6 +17,7 @@ export interface NavigationItem {
   title: string;
   path: string;
   icon: React.ReactElement;
+  chip?: (count: number) => React.ReactElement;
 }
 
 export const useNavigationItems = () => {
@@ -86,6 +87,10 @@ export const useNavigationItems = () => {
               <NotificationIcon />
             </SvgIcon>
           ),
+          chip: (count: number) =>
+            count === 0 ? <></> : (
+              <Chip color="primary" label={count} size="small" />
+            ),
         },
       ],
       warehouseManager: [
@@ -101,9 +106,11 @@ export const useNavigationItems = () => {
         {
           title: "Retail Shop Managers",
           path: "/retail-shop-managers",
-          icon: <SvgIcon fontSize="small">
-            <UsersIcon/>
-          </SvgIcon>,
+          icon: (
+            <SvgIcon fontSize="small">
+              <UsersIcon />
+            </SvgIcon>
+          ),
         },
         {
           title: "Stock",
@@ -126,9 +133,11 @@ export const useNavigationItems = () => {
         {
           title: "Transfer Items",
           path: "/transfer-items",
-          icon: <SvgIcon fontSize="small">
-            <TransferItemsIcon/>
-          </SvgIcon>,
+          icon: (
+            <SvgIcon fontSize="small">
+              <TransferItemsIcon />
+            </SvgIcon>
+          ),
         },
         {
           title: "Transaction History",

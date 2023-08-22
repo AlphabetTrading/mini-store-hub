@@ -28,6 +28,7 @@ import {
   SendNotificationVars,
 } from "@/graphql/notifications/mutations";
 import { RecipientType } from "../../../types/notification";
+import { ALL_NOTIFICATIONS, NOTIFICATIONS_BY_USERID } from "@/graphql/notifications/queries";
 type Props = {
   onClose: () => void;
   open: boolean;
@@ -88,6 +89,11 @@ export const NotificationComposer = ({ onClose, open }: Props) => {
             recipientType: values.recipientType!,
           },
         },
+        onCompleted: () => {
+          formikHelpers.resetForm();
+          onClose();
+        },
+        refetchQueries: [NOTIFICATIONS_BY_USERID,ALL_NOTIFICATIONS],
       });
     },
   });
