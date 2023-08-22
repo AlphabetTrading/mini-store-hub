@@ -156,6 +156,7 @@ export class GoodsTransfersService {
         }
         return await tx.goodsTransfer.create({
           data: {
+            transferType: data.transferType,
             goods: {
               createMany: {
                 data: goods,
@@ -273,6 +274,7 @@ export class GoodsTransfersService {
 
         return await this.prisma.goodsTransfer.create({
           data: {
+            transferType: data.transferType,
             goods: {
               createMany: {
                 data: goods,

@@ -18,30 +18,33 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  Auth: NavigatorScreenParams<AuthTabParamList> | undefined;
   Notifications: NavigatorScreenParams<NotificationTabParamList> | undefined;
   Profile: undefined;
   Settings: undefined;
+  SignIn: undefined;
+  ForgotPassword: { phone: string };
+  ResetPassword: { token: string; phone: string };
+  NotFound: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
 
 export type AuthTabParamList = {
-  Index: undefined;
-  ForgotPassword: undefined;
-  ResetPassword: { token: string };
+  SignIn: undefined;
+  ForgotPassword: { phone: string };
+  ResetPassword: { token: string; phone: string };
 };
 
 export type RootTabParamList = {
-  Index: undefined;
+  HomeRoot: NavigatorScreenParams<HomeTabParamList> | undefined;
   InventoryRoot: NavigatorScreenParams<InventoryTabParamList> | undefined;
   NewTransactionRoot:
     | NavigatorScreenParams<NewTransactionParamList>
     | undefined;
   SalesRoot: NavigatorScreenParams<SalesParamList> | undefined;
-  Insights: NavigatorScreenParams<InsightsTabParamList> | undefined;
-  Account: NavigatorScreenParams<AccountTabParamList> | undefined;
+  InsightsRoot: NavigatorScreenParams<InsightsTabParamList> | undefined;
+  AccountRoot: NavigatorScreenParams<AccountTabParamList> | undefined;
 };
 export type InventoryTabParamList = {
   Index: undefined;
@@ -52,6 +55,11 @@ export type InventoryTabParamList = {
 export type InsightsTabParamList = {
   Index: undefined;
   InsightsDetailScreen: { insightsID: INSIGHTS_TYPE };
+};
+
+export type HomeTabParamList = {
+  Index: undefined;
+  HomeDetailScreen: { itemID: string; itemName: string };
 };
 
 export type NotificationTabParamList = {
@@ -82,6 +90,12 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >;
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 export const enum INSIGHTS_TYPE {
   MOST_SOLD_ITEMS = "MOST_SOLD_ITEMS",

@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   Image,
   StyleSheet,
   FlatList,
@@ -9,7 +8,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React from "react";
-import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useQuery } from "@apollo/client";
@@ -50,10 +48,11 @@ const InventoryScreen = (props: Props) => {
       color: theme.colors.text,
       fontSize: 11,
       fontFamily: "InterLight",
+      textAlign: "center",
     },
   });
 
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
   return (
     <BaseLayout>
       {loading ? (
@@ -110,7 +109,9 @@ const InventoryScreen = (props: Props) => {
                           screen: "CategoryDetailScreen",
                           params: {
                             categoryID: item.id,
-                            categoryName: item.name,
+                            categoryName: locale.includes("en")
+                              ? item.name
+                              : item.amharicName,
                           },
                         },
                       });
@@ -123,7 +124,9 @@ const InventoryScreen = (props: Props) => {
                         source={require("../../../assets/icons/categories/egg.png")}
                       />
                     </View>
-                    <Text style={styles.categoryText}>{item.name}</Text>
+                    <Text style={styles.categoryText}>
+                      {locale === "en" ? item.name : item.amharicName}
+                    </Text>
                   </TouchableOpacity>
                 )}
               />

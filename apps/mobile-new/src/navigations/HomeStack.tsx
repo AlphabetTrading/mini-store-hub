@@ -1,45 +1,47 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAppTheme } from "../contexts/preference";
-import InsightsScreen from "../screens/InsightsScreen";
-import InsightsDetailScreen from "../screens/InsightsScreen/InsightsDetail";
-import { InsightsTabParamList } from "../types/types";
+import HomeScreen from "../screens/HomeScreen";
+import { HomeTabParamList } from "../types/types";
 import { useLocalization } from "../contexts/localization";
 import AppbarRightAction from "../components/AppbarRightAction";
+import GreetingsComponent from "../components/HomePage/GreetingsComponent";
+import ItemDetailScreen from "../screens/InventoryScreen/ItemDetailScreen";
 
-const InsightsStackNavigator =
-  createNativeStackNavigator<InsightsTabParamList>();
+const HomeStackNavigator = createNativeStackNavigator<HomeTabParamList>();
 
-export const InsightsStack = ({ navigation }: any) => {
+export const HomeStack = ({ navigation }: any) => {
   const { theme } = useAppTheme();
   const { t } = useLocalization();
   return (
-    <InsightsStackNavigator.Navigator initialRouteName="Index">
-      <InsightsStackNavigator.Screen
+    <HomeStackNavigator.Navigator initialRouteName="Index">
+      <HomeStackNavigator.Screen
         name="Index"
-        component={InsightsScreen}
+        component={HomeScreen}
         options={{
-          title: t("insights"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },
           headerTintColor: "#FFF",
           headerShown: true,
+          headerTitle(props) {
+            return <GreetingsComponent />;
+          },
           headerRight: () => <AppbarRightAction />,
         }}
       />
-      <InsightsStackNavigator.Screen
-        name="InsightsDetailScreen"
-        component={InsightsDetailScreen}
+      <HomeStackNavigator.Screen
+        name="HomeDetailScreen"
+        component={ItemDetailScreen}
         options={({ route }: any) => ({
-          title: route?.params?.categoryName,
+          title: route?.params?.itemName,
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },
           headerTintColor: "#FFF",
         })}
       />
-    </InsightsStackNavigator.Navigator>
+    </HomeStackNavigator.Navigator>
   );
 };
 
-export default InsightsStack;
+export default HomeStack;

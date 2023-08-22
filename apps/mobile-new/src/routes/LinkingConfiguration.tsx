@@ -1,14 +1,30 @@
 import { LinkingOptions } from "@react-navigation/native";
 import * as Linking from "expo-linking";
+import { RootStackParamList } from "../types/types";
 
-const linking: LinkingOptions<any> = {
+const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.createURL("/")],
   config: {
     screens: {
+      // Auth: {
+      //   initialRouteName: "index" as any,
+      //   screens: {
+      //     Index: "index",
+      //     SignUp: "signup",
+      //     ForgotPassword: "forgotpassword",
+      //     ResetPassword: { path: "resetpassword/:otp" },
+      //   },
+      // },
       Root: {
         initialRouteName: "index" as any,
         screens: {
-          Index: "index",
+          HomeRoot: {
+            initialRouteName: "index" as any,
+            screens: {
+              Index: "index",
+              HomeDetailScreen: { path: "home/:itemID" },
+            },
+          },
           InventoryRoot: {
             initialRouteName: "index" as any,
             screens: {
@@ -17,7 +33,7 @@ const linking: LinkingOptions<any> = {
               ItemDetailScreen: { path: "itemdetail/:itemID" },
             },
           },
-          NewTransaction: {
+          NewTransactionRoot: {
             initialRouteName: "index" as any,
             screens: {
               Index: "index",
@@ -27,7 +43,7 @@ const linking: LinkingOptions<any> = {
               Checkout: "checkout",
             },
           },
-          Sales: {
+          SalesRoot: {
             initialRouteName: "index" as any,
             screens: {
               Index: "index",
@@ -36,7 +52,7 @@ const linking: LinkingOptions<any> = {
               },
             },
           },
-          Insights: {
+          InsightsRoot: {
             initialRouteName: "index" as any,
             screens: {
               Index: "index",
@@ -66,9 +82,10 @@ const linking: LinkingOptions<any> = {
       },
       Profile: "profile",
       Settings: "settings",
-      ForgotPassword: "forgotpassword",
-      ResetPassword: { path: "resetpassword/:otp" },
       SignIn: "signin",
+      ForgotPassword: { path: "forgotpassword/:phone" },
+      ResetPassword: { path: "resetpassword/:otp" },
+
       NotFound: "*",
     },
   },

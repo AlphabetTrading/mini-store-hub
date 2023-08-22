@@ -1,11 +1,10 @@
-import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
-import { Menu, MenuItem } from "react-native-material-menu";
 import { useAuth } from "../contexts/auth";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useLocalization } from "../contexts/localization";
 import { useAppTheme } from "../contexts/preference";
+import { Divider, Menu } from "react-native-paper";
 
 type Props = {
   options: any[];
@@ -17,97 +16,88 @@ const CustomMaterialMenu = ({}: any) => {
   const hideMenu = () => setVisible(false);
   const navigation = useNavigation();
   const { theme } = useAppTheme();
-  // const navigation = useNavigation<NavigationProp<ParamListBase>>();
-
   const { t } = useLocalization();
   const showMenu = () => setVisible(true);
-
-  const options = [
-    {
-      id: 1,
-      title: t("profile"),
-      icon: (
-        <MaterialCommunityIcons
-          name="account"
-          color={theme.colors.tint}
-          size={24}
-        />
-      ),
-      action: () => {
-        navigation.navigate("Profile");
-      },
-    },
-    {
-      id: 2,
-      title: t("settings"),
-      icon: <Feather name="settings" color={theme.colors.tint} size={24} />,
-      action: () => {
-        navigation.navigate("Settings");
-      },
-    },
-    {
-      id: 3,
-      title: t("logout"),
-      icon: (
-        <MaterialCommunityIcons
-          name="logout"
-          color={theme.colors.tint}
-          size={24}
-        />
-      ),
-      action: async () => {
-        const res = await signOut();
-        navigation.reset({ index: 0, routes: [{ name: "Auth" }] });
-      },
-    },
-  ];
-
   return (
-    <View>
-      <Menu
-        style={{
-          backgroundColor: theme.colors.cardBackground,
-          elevation: 15,
+    <Menu
+      visible={visible}
+      onDismiss={hideMenu}
+      contentStyle={{
+        backgroundColor: theme.colors.cardBackground,
+      }}
+      anchor={
+        // <IconButton
+        //   icon="dots-vertical"
+        //   iconColor={theme.colors.white}
+        //   size={26}
+        //   onPress={showMenu}
+        // />
+        <MaterialCommunityIcons
+          name="dots-vertical"
+          color={theme.colors.white}
+          size={28}
+          onPress={showMenu}
+        />
+      }
+    >
+      <Menu.Item
+        onPress={() => {
+          navigation.navigate("Profile");
+          hideMenu();
         }}
-        visible={visible}
-        anchor={
-          <Entypo
-            name="dots-three-vertical"
+        leadingIcon={(props) => (
+          <MaterialCommunityIcons
+            name="account"
+            color={theme.colors.tint}
             size={24}
-            color={theme.colors.white}
-            onPress={showMenu}
-            style={{ marginHorizontal: 10 }}
           />
-        }
-        onRequestClose={hideMenu}
-      >
-        {options.map((option, index) => (
-          <MenuItem onPress={hideMenu} key={index}>
-            <Pressable
-              key={index}
-              style={{
-                flexDirection: "row",
-                paddingVertical: 10,
-                gap: 5,
-              }}
-              onPress={(e: any) => {
-                option.action();
-              }}
-            >
-              {option.icon}
-              <Text
-                style={{
-                  color: theme.colors.tint,
-                  fontFamily: "InterRegular",
-                }}
-              >
-                {option.title}
-              </Text>
-            </Pressable>
-          </MenuItem>
-        ))}
-      </Menu>
-    </View>
+        )}
+        title={t("profile")}
+        titleStyle={{
+          color: theme.colors.tint,
+        }}
+      />
+      <Menu.Item
+        onPress={() => {
+          navigation.navigate("Settings");
+          hideMenu();
+        }}
+        title={t("settings")}
+        titleStyle={{
+          color: theme.colors.tint,
+        }}
+        leadingIcon={(props) => (
+          <Feather name="settings" color={theme.colors.tint} size={24} />
+        )}
+      />
+      <Divider />
+      <Menu.Item
+        onPress={async () => {
+          try {
+            signOut();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "SignIn" }],
+              })
+            );
+          } catch (error) {
+            console.log(error, " error");
+          }
+        }}
+        title={t("logout")}
+        titleStyle={{
+          color: theme.colors.tint,
+        }}
+        leadingIcon={(props) => (
+          <MaterialCommunityIcons
+            name="logout"
+            color={theme.colors.tint}
+            size={24}
+          />
+        )}
+      />
+    </Menu>
   );
 };
 

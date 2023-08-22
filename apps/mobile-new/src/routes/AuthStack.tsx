@@ -11,9 +11,9 @@ type Props = {};
 const AuthStack = (props: Props) => {
   const Stack = createNativeStackNavigator<AuthTabParamList>();
   return (
-    <Stack.Navigator initialRouteName="Index">
+    <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen
-        name="Index"
+        name="SignIn"
         component={LoginScreen}
         options={{ headerShown: false }}
       />

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { SearchBar } from "@rneui/themed";
 import { View, Text, StyleSheet } from "react-native";
 import { useAppTheme } from "@/src/contexts/preference";
 import { Searchbar } from "react-native-paper";

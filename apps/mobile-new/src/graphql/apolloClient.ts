@@ -7,27 +7,9 @@ import {
 import { RetryLink } from "@apollo/client/link/retry";
 import jwtDecode from "jwt-decode";
 
-// const authLink = setContext(async () => {
-//   let token = localStorage.getItem('JWT_Token')
-//   const { exp } = jwtDecode(token)
-//   // Refresh the token a minute early to avoid latency issues
-//   const expirationTime = (exp * 1000) - 60000
-//   if (Date.now() >= expirationTime) {
-//     token = await refreshToken()
-//     // set LocalStorage here based on response;
-//   }
-//   return {
-//     // you can set your headers directly here based on the new token/old token
-//     headers: {
-//       ...
-//     }
-//   }
-// })
-
-const BASE_URL =
+export const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
   "https://mini-store-hub-api.onrender.com/graphql";
-
 const retryLink = new RetryLink({
   delay: {
     initial: 300,
@@ -114,7 +96,7 @@ export const apolloClientWithNoToken = () => {
   const cache = new InMemoryCache();
 
   const client = new ApolloClient({
-    link: ApolloLink.from([link]),
+    link: ApolloLink.from([retryLink, link]),
     cache,
   });
 

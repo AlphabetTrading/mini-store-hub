@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useAuth } from "../../contexts/auth";
@@ -45,7 +45,12 @@ const NotificationScreen = (props: Props) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
       {loading ? (
         <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: 300,
+          }}
         >
           <ActivityIndicator size="large" />
         </View>
@@ -82,7 +87,7 @@ const NotificationScreen = (props: Props) => {
                 key={item.id}
                 style={{
                   width: "100%",
-                  backgroundColor: hasReadNotification ? "#EFEFEF80" : "#FFF",
+                  backgroundColor: !hasReadNotification ? "#EFEFEF80" : "#FFF",
                 }}
                 onPress={() => {
                   navigation.navigate("Notifications", {

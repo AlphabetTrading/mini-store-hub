@@ -14,7 +14,7 @@ import {
   useGetInsightsDataDetail,
 } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
-import { AppTheme, useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "@/src/contexts/preference";
 import { INSIGHTS_TYPE } from "@/src/types/types";
 
 const MostSoldItems = ({
@@ -42,9 +42,9 @@ const MostSoldItems = ({
       (item: any, index: number) => {
         return (
           <View
-            key={index}
+            key={item.id}
             style={{
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.cardBackground,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 20,

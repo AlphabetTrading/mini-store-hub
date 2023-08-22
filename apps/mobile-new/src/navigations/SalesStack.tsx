@@ -9,6 +9,7 @@ import { SalesParamList } from "../types/types";
 import { Text } from "react-native-paper";
 import NotificationIconComp from "../components/NotificationIconComp";
 import { useLocalization } from "../contexts/localization";
+import AppbarRightAction from "../components/AppbarRightAction";
 
 const SalesStackNavigator = createNativeStackNavigator<SalesParamList>();
 
@@ -27,19 +28,14 @@ export const SalesStack = ({ navigation }: any) => {
           },
           headerTintColor: "#FFF",
           headerShown: true,
-          headerRight: () => (
-            <View style={{ flexDirection: "row" }}>
-              <NotificationIconComp />
-              <CustomMaterialMenu />
-            </View>
-          ),
+          headerRight: () => <AppbarRightAction />,
         }}
       />
       <SalesStackNavigator.Screen
         name="TransactionDetailScreen"
         component={TransactionDetailScreen}
         options={({ route }: any) => ({
-          title: route?.params?.name,
+          title: t("transactionDetail"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

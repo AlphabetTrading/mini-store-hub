@@ -7,8 +7,12 @@ import React, {
 } from "react";
 import * as Notifications from "expo-notifications";
 import * as SecureStore from "expo-secure-store";
-import { apolloClient, apolloClientWithNoToken } from "../graphql/apolloClient";
-
+import {
+  BASE_URL,
+  apolloClient,
+  apolloClientWithNoToken,
+} from "../graphql/apolloClient";
+import Constants from "expo-constants";
 import {
   FORGOT_PASSWORD_MUTATION,
   LOGIN_MUTATION,
@@ -18,8 +22,18 @@ import {
   ACCEPT_NOTIFICATION_MUTATION,
   REMOVE_NOTIFICATION_MUTATION,
 } from "../graphql/mutations/notificationMutations";
-import { useLoading } from "./loading";
 import Loading from "../components/Loading";
+import { print } from "graphql";
+
+interface Address {
+  street: string;
+}
+
+interface UserProfile {
+  photoUrl: string;
+  idUrl: string;
+  address: Address;
+}
 
 interface AuthState {
   accessToken: string;
@@ -28,9 +42,13 @@ interface AuthState {
     id: string;
     firstName: string;
     lastName: string;
+    amharicFirstName: string;
+    amharicLastName: string;
+    gender: string;
     username: string;
     phone: string;
     role: string;
+    userProfile?: UserProfile;
     retailShop: any[];
     allowsNotifications: boolean;
     notification_token?: string;
@@ -47,10 +65,12 @@ interface SignOutResponse {
   data: {} | undefined;
 }
 
+type AuthStateType = AuthState | null | undefined;
+
 interface AuthContextValue {
-  signIn: (e: string, p: string) => Promise<SignInResponse>;
+  signIn: (phone: string, password: string) => Promise<SignInResponse>;
   signOut: () => Promise<SignOutResponse>;
-  authState: AuthState | undefined | null;
+  authState: AuthStateType;
   setAuthState: React.Dispatch<
     React.SetStateAction<AuthState | null | undefined>
   >;
@@ -59,8 +79,8 @@ interface AuthContextValue {
     token: string,
     device_type: string
   ) => Promise<any>;
-  forgotPassword: (OTP: string, username: string) => Promise<any>;
-  resetPassword: (newPassword: string, username: string) => Promise<any>;
+  forgotPassword: (OTP: string, phne: string) => Promise<any>;
+  resetPassword: (newPassword: string, phne: string) => Promise<any>;
 }
 
 // Define the Provider component
@@ -91,6 +111,58 @@ export function AuthContextProvider(props: ProviderProps) {
 
   /**
    *
+   * @param phone
+   * @param password
+   * @returns
+   */
+  const login = async (
+    phone: string,
+    password: string
+  ): Promise<SignInResponse> => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: print(LOGIN_MUTATION),
+        variables: {
+          data: {
+            phone,
+            password,
+          },
+        },
+      }),
+    };
+    try {
+      const res = await fetch(
+        "https://mini-store-hub-api.onrender.com/graphql/",
+        requestOptions
+      );
+      const data = await res.json();
+      if (data.errors) {
+        console.log(data.errors, " res.errors");
+        return { data: undefined, error: new Error("Invalid Credentials") };
+      }
+      await SecureStore.setItemAsync("login", JSON.stringify(data.data.login));
+      setAuthState(data.data.login);
+      const token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: Constants.expoConfig?.extra?.eas?.projectId,
+        })
+      ).data;
+      await updateNotificationToken(data.data.login, token, "android");
+      return { data: data.data.login, error: undefined };
+    } catch (error) {
+      console.log(error, " is the error");
+      setAuthState(null);
+      return { error: error as Error, data: undefined };
+    }
+  };
+
+  /**
+   *
    * @returns
    */
   const logout = async (): Promise<SignOutResponse> => {
@@ -111,39 +183,7 @@ export function AuthContextProvider(props: ProviderProps) {
       return { error, data: undefined };
     } finally {
       setAuthState(null);
-    }
-  };
-
-  /**
-   *
-   * @param username
-   * @param password
-   * @returns
-   */
-  const login = async (
-    username: string,
-    password: string
-  ): Promise<SignInResponse> => {
-    try {
-      const client = apolloClientWithNoToken();
-      const res = await client.mutate({
-        mutation: LOGIN_MUTATION,
-        variables: {
-          data: {
-            username: username,
-            password: password,
-          },
-        },
-      });
-      await SecureStore.setItemAsync("login", JSON.stringify(res.data.login));
-      setAuthState(res.data.login);
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
-      await updateNotificationToken(res.data.login, token, "android");
-      return { data: res.data.login, error: undefined };
-    } catch (error) {
-      console.log(error, " is the error");
-      setAuthState(null);
-      return { error: error as Error, data: undefined };
+      return { error: undefined, data: true };
     }
   };
 
@@ -183,16 +223,16 @@ export function AuthContextProvider(props: ProviderProps) {
   /***
    * forgot password
    * @param OTP
-   * @param username
+   * @param phone
    */
-  const forgotPassword = async (OTP: string, username: string) => {
+  const forgotPassword = async (OTP: string, phone: string) => {
     try {
       const client = apolloClientWithNoToken();
       const res = await client.mutate({
         mutation: FORGOT_PASSWORD_MUTATION,
         variables: {
           data: {
-            username,
+            phone,
           },
         },
       });
@@ -206,18 +246,18 @@ export function AuthContextProvider(props: ProviderProps) {
   /***
    * reset password
    * @param newPassword
-   * @param username
+   * @param phone
    * @returns
    */
 
-  const resetPassword = async (newPassword: string, username: string) => {
+  const resetPassword = async (newPassword: string, phone: string) => {
     try {
       const client = apolloClientWithNoToken();
       const res = await client.mutate({
         mutation: RESET_PASSWORD_MUTATION,
         variables: {
           data: {
-            username,
+            phone,
           },
         },
       });

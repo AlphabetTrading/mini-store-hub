@@ -103,7 +103,6 @@ const TopSellingItems = ({
   );
   const { theme } = useAppTheme();
   const { t, locale } = useLocalization();
-  console.log(data?.findProductsByTopSellAndByRetailShop.items, " is the data");
   return loading ? (
     <View>
       <ActivityIndicator />

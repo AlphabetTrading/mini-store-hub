@@ -14,11 +14,10 @@ import { useAuth } from "../../contexts/auth";
 import { GET_RETAIL_SHOP_PRODUCTS_SIMPLE } from "../../graphql/queries/retailShopQuery";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorageUtils from "../../utils/async_storage";
-import { FAB } from "react-native-paper";
+import { Button, FAB } from "react-native-paper";
 
 import CategoryList from "../../components/NewTransaction/CategoryList";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
-import { Button } from "@rneui/base";
 import { useAppTheme } from "@/src/contexts/preference";
 import SingleProductItemCard from "@/src/components/NewTransaction/SingleProductItemCard";
 import { Category } from "@/src/types/models";

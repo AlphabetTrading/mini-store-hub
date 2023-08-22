@@ -216,5 +216,9 @@
   "removeAll": "Remove All",
   "proceedToCheckout": "Proceed to Checkout",
   "submitting": "Submitting...",
-  "addNewTranasaction": "Add New Transaction"
+  "addNewTranasaction": "Add New Transaction",
+  "lowStockItems": "Low Stock Items",
+  "noLowStockItems": "No Low Stock Items",
+  "transactionDetail": "Transaction Detail",
+  "items": "Items"
 }

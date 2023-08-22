@@ -1,17 +1,24 @@
-node_modules/
+node\*modules/
 .env
 .env.\*
 android/
+apps/api
+apps/client
+apps/client-new
+apps/mobile
+
+
+<!-- apps/mobile-new/.expo -->
 
 .expo/
 dist/
 npm-debug.\*
-_.jks
+\*.jks
 _.p8
 _.p12
 _.key
 _.mobileprovision
-_.orig.\*
+\_.orig.\*
 web-build/
 
 # macOS
@@ -23,5 +30,7 @@ web-build/
 .metro-health-check\*
 
 # Dependency directories should be ignored by git
+
+<!-- google-services.json -->
 
 dist/

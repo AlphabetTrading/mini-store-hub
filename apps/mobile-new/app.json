@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "mobile-new",
+    "name": "Mini Store",
     "scheme": "com.kalmad99.mobile",
     "slug": "mobile-new",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,13 +19,16 @@
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true
+      },
+      "runtimeVersion": {
+        "policy": "appVersion"
       }
     },
     "android": {
       "package": "com.kalmad99.mobile",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "intentFilters": [
@@ -34,14 +37,6 @@
           "data": [
             {
               "scheme": "com.kalmad99.mobile"
-            },
-            {
-              "scheme": "http",
-              "host": "exp://192.168.42.135:19000"
-            },
-            {
-              "scheme": "https",
-              "host": "exp://192.168.42.135:19000"
             }
           ],
           "category": [
@@ -49,10 +44,11 @@
             "DEFAULT"
           ]
         }
-      ]
+      ],
+      "runtimeVersion": "1.0.0"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/favicon.png"
     },
     "extra": {
       "eas": {
@@ -68,6 +64,13 @@
     },
     "experiments": {
       "tsconfigPaths": true
+    },
+    "notification": {
+      "icon": "./assets/images/icon.png",
+      "color": "#ee8172"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/2fa6b5a7-f577-465e-a177-18e218351aca"
     }
   }
 }

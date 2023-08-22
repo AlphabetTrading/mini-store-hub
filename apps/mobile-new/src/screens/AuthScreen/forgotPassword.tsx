@@ -12,6 +12,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { StatusBar } from "expo-status-bar";
+import { useAppTheme } from "@/src/contexts/preference";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 
@@ -23,13 +25,58 @@ const forgotPasswordSchema = Yup.object().shape({
   OTP: Yup.string().required("Required"),
 });
 
-const ForgotPasswordScreen = ({ navigation, route }: any) => {
+const ForgotPasswordScreen = ({ route }: any) => {
+  const navigation = useNavigation();
   const { forgotPassword } = useAuth();
-  const username = route.params?.username ?? "";
+  const phone = route.params?.phone ?? "";
 
   const INITIAL_VALUES: FormValues = {
     OTP: "",
   };
+  const { theme } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      padding: 30,
+      backgroundColor: theme.colors.background,
+    },
+    inputStyle: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.colors.cardBackground,
+      padding: 16,
+      borderRadius: 12,
+      gap: 16,
+    },
+    inputTextStyle: {
+      flex: 1,
+      color: theme.colors.text,
+      fontSize: 18,
+      width: "100%",
+    },
+    forgotPassword: {
+      color: theme.colors.accent,
+      fontSize: 16,
+      marginTop: 30,
+      textAlign: "right",
+      textTransform: "capitalize",
+    },
+    forgotPasswordButton: {
+      backgroundColor: theme.colors.primary,
+      padding: 16,
+      marginTop: 30,
+      alignItems: "center",
+      borderRadius: 6,
+    },
+    forgotPasswordButtonText: {
+      fontFamily: "InterSemiBold",
+      color: theme.colors.white,
+      fontSize: 18,
+      textTransform: "uppercase",
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -51,11 +98,17 @@ const ForgotPasswordScreen = ({ navigation, route }: any) => {
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
           try {
-            // const res = await forgotPassword(values.OTP, username);
-            // navigation.reset("ResetPassword", { username });
             navigation.reset({
               index: 0,
-              routes: [{ name: "ResetPassword", params: { username } }],
+              routes: [
+                {
+                  name: "ResetPassword",
+                  params: {
+                    phone,
+                    token: values.OTP,
+                  },
+                },
+              ],
             });
           } catch (e) {
             console.log(e, "error");
@@ -98,46 +151,3 @@ const ForgotPasswordScreen = ({ navigation, route }: any) => {
 };
 
 export default ForgotPasswordScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 30,
-    backgroundColor: "#FFF",
-  },
-  inputStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F9F9F9",
-    padding: 16,
-    borderRadius: 12,
-    gap: 16,
-  },
-  inputTextStyle: {
-    flex: 1,
-    color: "#6C6C6C",
-    fontSize: 18,
-    width: "100%",
-  },
-  forgotPassword: {
-    color: "#5684E0",
-    fontSize: 16,
-    marginTop: 30,
-    textAlign: "right",
-    textTransform: "capitalize",
-  },
-  forgotPasswordButton: {
-    backgroundColor: "#5684E0",
-    padding: 16,
-    marginTop: 30,
-    alignItems: "center",
-    borderRadius: 6,
-  },
-  forgotPasswordButtonText: {
-    fontFamily: "InterSemiBold",
-    color: "#FFF",
-    fontSize: 18,
-    textTransform: "uppercase",
-  },
-});

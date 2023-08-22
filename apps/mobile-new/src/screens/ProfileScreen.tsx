@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image, ActivityIndicator } from "react-native";
 import React from "react";
 import { BaseLayout } from "../components/BaseLayout";
-import Colors from "../constants/Colors";
 import { GET_ME_QUERY } from "../graphql/queries/userQueries";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../contexts/auth";

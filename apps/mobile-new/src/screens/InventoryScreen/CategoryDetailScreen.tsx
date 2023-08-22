@@ -60,7 +60,6 @@ const CategoryDetailScreen = ({
       },
     },
     onCompleted: (data) => {
-      console.log(data);
       setFilteredItems(data?.retailShopStockByRetailShopId.items ?? []);
     },
   });
@@ -175,7 +174,9 @@ const CategoryDetailScreen = ({
                           screen: "ItemDetailScreen",
                           params: {
                             itemID: item.product.id,
-                            itemName: item.product.name,
+                            itemName: locale.includes("en")
+                              ? item.product.name
+                              : item.product.amharicName,
                           },
                         },
                       })

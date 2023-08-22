@@ -25,3 +25,5 @@ web-build/
 
 # Dependency directories should be ignored by git
 google-services.json
+
+dist/

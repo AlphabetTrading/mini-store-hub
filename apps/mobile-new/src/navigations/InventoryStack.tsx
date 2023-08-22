@@ -10,6 +10,7 @@ import { InventoryTabParamList } from "../types/types";
 import { Text } from "react-native-paper";
 import NotificationIconComp from "../components/NotificationIconComp";
 import { useLocalization } from "../contexts/localization";
+import AppbarRightAction from "../components/AppbarRightAction";
 
 const InventoryStackNavigator =
   createNativeStackNavigator<InventoryTabParamList>();
@@ -31,12 +32,7 @@ export const InventoryStack = ({ navigation }: any) => {
           },
           headerTintColor: "#FFF",
           headerShown: true,
-          headerRight: () => (
-            <View style={{ flexDirection: "row" }}>
-              <NotificationIconComp />
-              <CustomMaterialMenu />
-            </View>
-          ),
+          headerRight: () => <AppbarRightAction />,
         }}
       />
       <InventoryStackNavigator.Screen

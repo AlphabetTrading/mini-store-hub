@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useGetSingleNotification } from "../../hooks/api/useGetNotificationsData";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,11 +15,13 @@ import { format } from "date-fns";
 import { useMutation } from "@apollo/client";
 import { MARK_NOTIFICATION_AS_READ } from "../../graphql/queries/notificationQueries";
 import { useAuth } from "../../contexts/auth";
+import { useLocalization } from "@/src/contexts/localization";
 
-const NotificationDetailScreen = ({ route }: any) => {
+const NotificationDetailScreen = ({ route, navigation }: any) => {
   const { data, loading, error, refetch } = useGetSingleNotification(
     route.params?.notificationID || ""
   );
+  const { t, locale } = useLocalization();
   const { authState } = useAuth();
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -41,15 +43,30 @@ const NotificationDetailScreen = ({ route }: any) => {
     },
   ] = useMutation(MARK_NOTIFICATION_AS_READ);
 
-  // useEffect(() => {
-  //   navigation.getParent()?.setOptions({
-  //     headerShown: false,
-  //   });
-  //   return () =>
-  //     navigation.getParent()?.setOptions({
-  //       headerShown: false,
-  //     });
-  // }, [navigation]);
+  useEffect(() => {
+    // navigation.getParent()?.setOptions({
+    //   headerShown: false,
+    // });
+    // return () =>
+    //   navigation.getParent()?.setOptions({
+    //     headerShown: false,
+    //   });
+    if (data)
+      navigation.setOptions({
+        title: locale.includes("en")
+          ? data.notificationById?.title
+          : data.notificationById?.amharicTitle ?? data.notificationById?.title,
+        headerStyle: {
+          backgroundColor: "#5684E0",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+          maxWidth: 200,
+          overflow: "hidden",
+        },
+      });
+  }, [navigation, data]);
 
   const hasReadNotification = (data: any) => {
     return (
@@ -112,7 +129,7 @@ const NotificationDetailScreen = ({ route }: any) => {
                     await markNotificationAsRead({
                       variables: {
                         notificationId: route.params?.notificationID,
-                        userId: authState?.user.id || "",
+                        userId: authState?.user.id ?? "",
                       },
                     });
 
@@ -145,7 +162,10 @@ const NotificationDetailScreen = ({ route }: any) => {
                       fontSize: 20,
                     }}
                   >
-                    {data.notificationById?.title}
+                    {locale.includes("en")
+                      ? data.notificationById?.title
+                      : data.notificationById?.amharicTitle ??
+                        data.notificationById?.title}
                   </Text>
                   <Text style={{ fontFamily: "InterMedium", fontSize: 14 }}>
                     {format(
@@ -155,7 +175,10 @@ const NotificationDetailScreen = ({ route }: any) => {
                   </Text>
                 </View>
                 <Text style={{ fontFamily: "InterLight", fontSize: 16 }}>
-                  {data.notificationById?.body}
+                  {locale.includes("en")
+                    ? data.notificationById?.body
+                    : data.notificationById?.amharicBody ??
+                      data.notificationById?.body}
                 </Text>
               </View>
             </View>
