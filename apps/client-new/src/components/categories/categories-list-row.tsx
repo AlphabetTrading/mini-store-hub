@@ -46,6 +46,7 @@ import {
   UPDATE_CATEGORY,
 } from "@/graphql/categories/mutations";
 import dayjs from "dayjs";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {
   category: Category;
@@ -96,6 +97,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
       },
       refetchQueries: [CATEGORIES],
       onCompleted: () => {
+        showAlert("removed a", "category");
         handleItemToggle(category.id);
       },
     });
@@ -126,6 +128,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
         refetchQueries: [CATEGORIES],
         onCompleted: () => {
           formikHelpers.resetForm();
+          showAlert("edited a", "category");
           handleItemToggle(category.id);
         },
       });

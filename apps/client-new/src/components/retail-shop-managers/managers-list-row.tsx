@@ -13,9 +13,9 @@ type Props = {
 
 const ManagersListRow = ({
   retailShopManager,
-  // handleItemToggle,
-  // selected,
-}: Props) => {
+}: // handleItemToggle,
+// selected,
+Props) => {
   return (
     <>
       <TableRow>

@@ -29,6 +29,7 @@ import {
 } from "@/graphql/transfer-goods/mutations";
 import { useSession } from "next-auth/react";
 import { TransferType } from "../../../../types/transaction-history";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {};
 
@@ -69,6 +70,7 @@ const Page = (props: Props) => {
       onCompleted: (data) => {
         setSelectedItems([]);
         setSelectedRetailShop(null);
+        showAlert("transferred a", "stock");
       },
     });
   };
@@ -146,14 +148,20 @@ const Page = (props: Props) => {
             variant="contained"
             onClick={() => handleTransferItems()}
           >
-             {loading && <CircularProgress size={16} sx={{mr:1, color:"neutral.500"} }/>}
+            {loading && (
+              <CircularProgress
+                size={16}
+                sx={{ mr: 1, color: "neutral.500" }}
+              />
+            )}
             Transfer Items
           </Button>
-         
         </Container>
       </Box>
       <TransferItemsDrawer
-      selectedItemsId={selectedItems.map((item) => item.warehouseStock.product.id)}
+        selectedItemsId={selectedItems.map(
+          (item) => item.warehouseStock.product.id
+        )}
         handleAddItem={handleAddItem}
         open={open}
         setOpen={setOpen}

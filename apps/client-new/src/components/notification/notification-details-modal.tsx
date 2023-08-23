@@ -37,7 +37,7 @@ const NotificationDetails = (props: Props) => {
     MarkNotificationAsReadData,
     MarkNotificationAsReadVars
   >(MARK_NOTIFICATION_AS_READ);
-  const { open, handleClose, notification,isMyNotification } = props;
+  const { open, handleClose, notification, isMyNotification } = props;
   const { data: sessionData } = useSession();
   useEffect(() => {
     if (notification && isMyNotification) {
@@ -72,46 +72,40 @@ const NotificationDetails = (props: Props) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Container maxWidth="sm">
-      <Card>
-        <CardContent>
-          <Stack spacing={3}>
-            <Stack spacing={1}>
-              <Typography
-                color="text.secondary"
-                variant="overline"
-              >
-                Notification Title
-              </Typography>
-              <Typography variant="subtitle2">
-                {notification?.title}
-              </Typography>
+        <Card>
+          <CardContent>
+            <Stack spacing={3}>
+              <Stack spacing={1}>
+                <Typography color="text.secondary" variant="overline">
+                  Notification Title
+                </Typography>
+                <Typography variant="subtitle2">
+                  {notification?.title}
+                </Typography>
+              </Stack>
+              <Stack spacing={1}>
+                <Typography color="text.secondary" variant="overline">
+                  Recipient Type
+                </Typography>
+                <div>
+                  <CustomChip
+                    label={formatEnumValue(
+                      notification?.recipientType || RecipientType.USER
+                    )}
+                  />
+                </div>
+              </Stack>
+              <Stack spacing={1}>
+                <Typography color="text.secondary" variant="overline">
+                  Description
+                </Typography>
+                <Typography variant="subtitle2">
+                  {notification?.body}
+                </Typography>
+              </Stack>
             </Stack>
-            <Stack spacing={1}>
-              <Typography
-                color="text.secondary"
-                variant="overline"
-              >
-                Recipient Type
-              </Typography>
-              <div>
-                <CustomChip label={formatEnumValue(notification?.recipientType || RecipientType.USER)}/>
-              </div>
-            </Stack>
-            <Stack spacing={1}>
-              <Typography
-                color="text.secondary"
-                variant="overline"
-              >
-                Description
-              </Typography>
-              <Typography variant="subtitle2">
-                {notification?.body}
-              </Typography>
-            </Stack>
-          </Stack>
-        </CardContent>
-      </Card>
-
+          </CardContent>
+        </Card>
 
         {/* <Paper
           elevation={12}

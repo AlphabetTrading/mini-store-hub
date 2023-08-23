@@ -1,10 +1,5 @@
-"use client"
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-} from "@mui/material";
+"use client";
+import { Box, Button, Container, Typography } from "@mui/material";
 import NextLink from "next/link";
 
 const Page = () => {
@@ -40,9 +35,9 @@ const Page = () => {
               }}
             />
           </Box>
-          <Typography align="center" variant= "h3">
+          <Typography align="center" variant="h3">
             404: The page you are looking for isn’t here
-          </Typography> 
+          </Typography>
           <Typography align="center" color="text.secondary" sx={{ mt: 0.5 }}>
             You either tried some shady route or you came here by mistake.
             Whichever it is, try using the navigation.

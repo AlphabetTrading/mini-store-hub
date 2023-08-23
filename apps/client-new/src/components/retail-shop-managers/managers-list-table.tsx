@@ -26,27 +26,27 @@ const ManagersListTable = ({ retailShopManagers }: Props) => {
 
   return (
     <div>
-        <Table sx={{ minWidth: 1200 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Address</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {retailShopManagers.map((retailShopManager, idx) => (
-              <ManagersListRow
-                key={idx}
-                retailShopManager={retailShopManager}
-                // handleItemToggle={handleItemToggle}
-                // selected={retailShopManager.id === selectedItem}
-              />
-            ))}
-          </TableBody>
-        </Table>
+      <Table sx={{ minWidth: 1200 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>First Name</TableCell>
+            <TableCell>Last Name</TableCell>
+            <TableCell>Phone</TableCell>
+            <TableCell>Address</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {retailShopManagers.map((retailShopManager, idx) => (
+            <ManagersListRow
+              key={idx}
+              retailShopManager={retailShopManager}
+              // handleItemToggle={handleItemToggle}
+              // selected={retailShopManager.id === selectedItem}
+            />
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

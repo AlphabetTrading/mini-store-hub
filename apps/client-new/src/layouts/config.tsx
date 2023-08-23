@@ -88,7 +88,9 @@ export const useNavigationItems = () => {
             </SvgIcon>
           ),
           chip: (count: number) =>
-            count === 0 ? <></> : (
+            count === 0 ? (
+              <></>
+            ) : (
               <Chip color="primary" label={count} size="small" />
             ),
         },

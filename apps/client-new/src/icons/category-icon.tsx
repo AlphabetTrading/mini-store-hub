@@ -28,7 +28,6 @@ const CategoryIcon = () => (
           width="100%"
           height="100%"
           fill="#ffffff"
-          
           data-original="#ffffff"
         ></rect>
       </mask>

@@ -8,6 +8,7 @@ import {
   CreateRetailShopInput,
 } from "@/graphql/retail-shops/mutations";
 import { RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
+import { showAlert } from "@/helpers/showAlert";
 import { useMutation } from "@apollo/client";
 import { FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
@@ -57,6 +58,7 @@ const Page = (props: Props) => {
       refetchQueries: [RETAIL_SHOPS],
       onCompleted: () => {
         helpers.resetForm();
+        showAlert("created a", "retail shop");
         router.push("/admin/retail-shops");
       },
     });

@@ -28,6 +28,7 @@ import React from "react";
 import * as Yup from "yup";
 import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {};
 interface Values {
@@ -78,6 +79,7 @@ const Page = (props: Props) => {
           },
         },
         onCompleted: (data) => {
+          showAlert("created a", "user");
           formikHelpers.resetForm();
         },
         refetchQueries: [USERS],

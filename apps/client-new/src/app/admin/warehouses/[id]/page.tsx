@@ -26,6 +26,7 @@ import {
 import { useMutation } from "@apollo/client";
 import { WAREHOUSES } from "@/graphql/warehouses/queries";
 import { useRouter } from "next/navigation";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {
   params: {
@@ -47,6 +48,7 @@ const Page = ({ params }: Props) => {
       },
       refetchQueries: [WAREHOUSES],
       onCompleted(data, clientOptions) {
+        showAlert("deleted a", "warehouse");
         router.replace("/admin/warehouses");
       },
       onError(error) {

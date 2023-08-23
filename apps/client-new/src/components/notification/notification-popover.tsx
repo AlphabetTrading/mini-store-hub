@@ -25,7 +25,7 @@ type Props = {
 };
 
 export const NotificationsPopover = (props: Props) => {
-  const { anchorEl, notifications, onClose,open } = props;
+  const { anchorEl, notifications, onClose, open } = props;
   const isEmpty = notifications.length === 0;
 
   const [notification, setNotification] = useState<Notification | null>(null);
@@ -125,19 +125,19 @@ export const NotificationsPopover = (props: Props) => {
                       },
                     }),
                   }}
-                //   secondaryAction={
-                //     <Tooltip title="Remove">
-                //       <IconButton
-                //         edge="end"
-                //         onClick={() => onRemoveOne?.(notification.id)}
-                //         size="small"
-                //       >
-                //         <SvgIcon>
-                //         <Close />
-                //       </SvgIcon>
-                //       </IconButton>
-                //     </Tooltip>
-                //   }
+                  //   secondaryAction={
+                  //     <Tooltip title="Remove">
+                  //       <IconButton
+                  //         edge="end"
+                  //         onClick={() => onRemoveOne?.(notification.id)}
+                  //         size="small"
+                  //       >
+                  //         <SvgIcon>
+                  //         <Close />
+                  //       </SvgIcon>
+                  //       </IconButton>
+                  //     </Tooltip>
+                  //   }
                 >
                   <>
                     <ListItemAvatar sx={{ mt: 0.5 }}>

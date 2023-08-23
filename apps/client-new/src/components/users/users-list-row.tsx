@@ -64,7 +64,9 @@ const UsersListRow = ({ user }: Props) => {
       >
         <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
         <TableCell>{user.username}</TableCell>
-        <TableCell><CustomChip label={user.role}/></TableCell>
+        <TableCell>
+          <CustomChip label={user.role} />
+        </TableCell>
         <TableCell>{user.phone}</TableCell>
         <TableCell>
           {user?.userProfile?.address?.street}{" "}

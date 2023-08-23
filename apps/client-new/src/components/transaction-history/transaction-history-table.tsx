@@ -59,7 +59,7 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
         <CardHeader title="Latest Transactions" />
         <Table>
           <TableBody>
-            {[...transactionHistory || []].reverse().map((item, idx) => {
+            {[...(transactionHistory || [])].reverse().map((item, idx) => {
               const day: string = dayjs(item?.createdAt).format("DD");
               const month: string = dayjs(item?.createdAt).format("MMM");
               const time: string = dayjs(item?.createdAt).format("hh:mm A");

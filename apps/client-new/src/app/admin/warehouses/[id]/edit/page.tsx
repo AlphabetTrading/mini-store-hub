@@ -13,6 +13,7 @@ import {
   WarehouseData,
   WarehouseVars,
 } from "@/graphql/warehouses/queries";
+import { showAlert } from "@/helpers/showAlert";
 import { useMutation, useQuery } from "@apollo/client";
 import { FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
@@ -77,6 +78,7 @@ const Page = ({ params }: Props) => {
       refetchQueries: [WAREHOUSE],
       onCompleted: () => {
         helpers.resetForm();
+        showAlert("edited a", "warehouse");
         router.back();
       },
     });

@@ -45,6 +45,8 @@ export const authOptions: NextAuthOptions = {
               }
             }
           `;
+
+          console.log(credentials, "Bef");
           const {
             data: { login },
           } = await getClient().mutate({
@@ -56,7 +58,7 @@ export const authOptions: NextAuthOptions = {
               },
             },
           });
-
+          console.log(credentials, login, "After");
           return {
             id: login.user.id,
             user: {
@@ -74,6 +76,7 @@ export const authOptions: NextAuthOptions = {
             refreshToken: login.refreshToken,
           };
         } catch (e) {
+          console.log(e);
           return null;
         }
       },

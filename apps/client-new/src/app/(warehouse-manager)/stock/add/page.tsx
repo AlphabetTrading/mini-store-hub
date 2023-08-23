@@ -40,6 +40,8 @@ import { StockItem } from "../../../../../types/product";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
 import CustomChip from "@/components/custom-chip";
+import { showAlert } from "@/helpers/showAlert";
+
 type Props = {};
 
 const Page = (props: Props) => {
@@ -86,13 +88,11 @@ const Page = (props: Props) => {
     });
   };
 
-  const handleSearch = (query:string) => {
+  const handleSearch = (query: string) => {
     setFilteredStockItems(
       selectedStockItems.filter(
         (item) =>
-          item.product.name
-            .toLowerCase()
-            .includes(query) ||
+          item.product.name.toLowerCase().includes(query) ||
           item.product.serialNumber.includes(query)
       )
     );
@@ -115,6 +115,7 @@ const Page = (props: Props) => {
       },
       onCompleted: (data) => {
         router.push("/stock");
+        showAlert("added a", "stock");
       },
       onError(error, clientOptions) {
         console.log(error);

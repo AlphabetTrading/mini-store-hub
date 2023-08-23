@@ -17,7 +17,7 @@ const TopSellingProducts = (props: Props) => {
   return (
     <Card>
       <CardHeader title="Top Selling Products" />
-      <Table sx={{ minWidth: 800, overflow:"auto" }} >
+      <Table sx={{ minWidth: 800, overflow: "auto" }}>
         <TableHead>
           <TableRow>
             <TableCell>Product</TableCell>

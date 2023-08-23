@@ -18,24 +18,25 @@ type Props = {
 
 const SideNavSection = ({ navigationItems }: Props) => {
   const pathname = usePathname();
-  const{data:sessionData} = useSession()
-  const userId = (sessionData?.user as any).id ||"";
-  const {data} = useQuery<NotificationByUserIdData, NotificationByUserIdVars>(
+  const { data: sessionData } = useSession();
+  const userId = (sessionData?.user as any).id || "";
+  const { data } = useQuery<NotificationByUserIdData, NotificationByUserIdVars>(
     NOTIFICATIONS_BY_USERID,
     {
       variables: {
-        userId: userId
+        userId: userId,
       },
     }
   );
-  
-  const unreadNotifications = data?.allNotificationsByUserId.filter((notification)=>{
-    if (notification.recipientType === RecipientType.USER){
-      return !notification.isRead
-    }else {
-      return !notification.notificationReads.some((n)=>n.userId===userId)
-    }
-  }).length || 0
+
+  const unreadNotifications =
+    data?.allNotificationsByUserId.filter((notification) => {
+      if (notification.recipientType === RecipientType.USER) {
+        return !notification.isRead;
+      } else {
+        return !notification.notificationReads.some((n) => n.userId === userId);
+      }
+    }).length || 0;
 
   return (
     <Stack component="ul" spacing={0.5} sx={{ listStyle: "none", m: 0, p: 0 }}>
@@ -46,7 +47,7 @@ const SideNavSection = ({ navigationItems }: Props) => {
           path={item.path}
           active={pathname.includes(item.path)}
           key={item.title}
-          label= {item.chip && item.chip(unreadNotifications)}
+          label={item.chip && item.chip(unreadNotifications)}
           // label={item.label}
           // disabled={item.disabled}
         />

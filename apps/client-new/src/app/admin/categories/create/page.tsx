@@ -37,6 +37,7 @@ import {
   CreateCategoryVars,
   CREATE_CATEGORY,
 } from "@/graphql/categories/mutations";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {};
 
@@ -110,6 +111,7 @@ const Page = (props: Props) => {
         refetchQueries: [CATEGORIES],
         onCompleted: () => {
           helpers.resetForm();
+          showAlert("created a", "category");
           router.push("/admin/categories");
         },
       });

@@ -26,26 +26,26 @@ const RetailShopsListTable = ({ retailShops }: Props) => {
 
   return (
     <div>
-        <Table sx={{ minWidth: 1200 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Shop Manager</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Coordinates</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {retailShops.map((retailShop, idx) => (
-              <RetailShopsListRow
-                key={idx}
-                retailShop={retailShop}
-                handleItemToggle={handleItemToggle}
-                selected={retailShop.id === selectedItem}
-              />
-            ))}
-          </TableBody>
-        </Table>
+      <Table sx={{ minWidth: 1200 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Shop Manager</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Coordinates</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {retailShops.map((retailShop, idx) => (
+            <RetailShopsListRow
+              key={idx}
+              retailShop={retailShop}
+              handleItemToggle={handleItemToggle}
+              selected={retailShop.id === selectedItem}
+            />
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

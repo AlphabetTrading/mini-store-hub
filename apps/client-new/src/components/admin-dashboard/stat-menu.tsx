@@ -27,7 +27,7 @@ const StatMenu = ({ options, timeFrame, setTimeFrame }: Props) => {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
         endIcon={<ExpandMore />}
-        sx={{ color: "text.primary", fontWeight:"600", fontSize:"1rem"}}
+        sx={{ color: "text.primary", fontWeight: "600", fontSize: "1rem" }}
       >
         {timeFrame} stats
       </Button>
@@ -40,9 +40,9 @@ const StatMenu = ({ options, timeFrame, setTimeFrame }: Props) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {options.map((option,idx) => (
+        {options.map((option, idx) => (
           <MenuItem
-          key={idx}
+            key={idx}
             onClick={() => {
               setTimeFrame(option);
               handleClose();
