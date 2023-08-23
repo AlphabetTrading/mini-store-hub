@@ -5,11 +5,11 @@ import {
   Breadcrumbs,
   Button,
   Card,
-  CardContent,
   CardHeader,
   CircularProgress,
   Container,
   Divider,
+  IconButton,
   Input,
   Link,
   Stack,
@@ -17,14 +17,14 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
-import { Scrollbar } from "@/components/scrollbar";
 import SearchIcon from "@mui/icons-material/Search";
 import { AddIncomingItemModal } from "@/components/modals/incoming-items-modal";
 import { useMutation, useQuery } from "@apollo/client";
@@ -37,13 +37,25 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
 import { StockItem } from "../../../../../types/product";
-
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
+import CustomChip from "@/components/custom-chip";
 type Props = {};
 
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStockItems, setSelectedStockItems] = useState<StockItem[]>([]);
+  const [filteredStockItems, setFilteredStockItems] = useState<StockItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    setFilteredStockItems(
+      selectedStockItems.filter((item) => filteredStockItems.includes(item))
+    );
+    handleSearch(searchQuery);
+  }, [selectedStockItems]);
+
   const [registerIncomingStock, { data, loading }] = useMutation<
     RegisterIncomingStockData,
     RegisterIncomingStockVars
@@ -57,9 +69,38 @@ const Page = (props: Props) => {
   };
 
   const handleRemoveItem = (id: string) => {
-    setSelectedStockItems((prev: any) => {
-      return prev.filter((item: any) => item.id !== id);
+    setSelectedStockItems((prev) => {
+      return prev.filter((item) => item.product.id !== id);
     });
+  };
+
+  const handleItemQuantityChange = (item: StockItem, val: number) => {
+    setSelectedStockItems((prev) => {
+      if (item.quantity + val <= 0) {
+        return prev.filter((i) => i.product.id !== item.product.id);
+      }
+      return [
+        ...prev.filter((i) => i.product.id !== item.product.id),
+        { ...item, quantity: item.quantity + val },
+      ];
+    });
+  };
+
+  const handleSearch = (query:string) => {
+    setFilteredStockItems(
+      selectedStockItems.filter(
+        (item) =>
+          item.product.name
+            .toLowerCase()
+            .includes(query) ||
+          item.product.serialNumber.includes(query)
+      )
+    );
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    handleSearch(e.target.value);
   };
 
   const handleRegisterStock = async () => {
@@ -131,36 +172,90 @@ const Page = (props: Props) => {
                 <SvgIcon>
                   <SearchIcon />
                 </SvgIcon>
-                <Input disableUnderline placeholder="Search by product name" />
+                <Input
+                  disableUnderline
+                  placeholder="Search by name"
+                  value={searchQuery}
+                  onChange={handleChange}
+                />
               </Stack>
-              <Table sx={{ minWidth: 1200 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Product Name</TableCell>
-                    <TableCell>Serial Number</TableCell>
-                    <TableCell>Categroy</TableCell>
-                    <TableCell>Quantity</TableCell>
-                    <TableCell>Purchased Price</TableCell>
-                    <TableCell>Selling Price</TableCell>
-                    <TableCell>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {selectedStockItems.map((item: StockItem, idx: number) => (
-                    <TableRow key={idx}>
-                      <TableCell>{item.product.name}</TableCell>
-                      <TableCell>{item.product.serialNumber}</TableCell>
-                      <TableCell>{item.product.category.name}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell>
-                        {item.product.activePrice?.purchasedPrice}
-                      </TableCell>
-                      <TableCell>{item.product.activePrice?.price}</TableCell>
-                      <TableCell>{item.product.activePrice?.price}</TableCell>
+              <TableContainer style={{ maxHeight: 400 }}>
+                <Table stickyHeader sx={{ minWidth: 1200 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Product Name</TableCell>
+                      <TableCell>Categroy</TableCell>
+                      <TableCell>Selected Quantity</TableCell>
+                      <TableCell>Purchased Price</TableCell>
+                      <TableCell>Selling Price</TableCell>
+                      <TableCell>Total Value</TableCell>
+                      <TableCell>Action</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody sx={{ maxHeight: 20 }}>
+                    {filteredStockItems.map((item: StockItem, idx: number) => (
+                      <TableRow key={idx}>
+                        <TableCell>
+                          <Stack>
+                            <Typography variant="body2">
+                              {item.product.name}
+                            </Typography>
+                            <Typography
+                              color="text.secondary"
+                              variant="body2"
+                            >{`SN- ${item.product.serialNumber}`}</Typography>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell>
+                          <CustomChip label={item.product.category.name} />
+                        </TableCell>
+                        <TableCell>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={2}
+                          >
+                            <Stack>
+                              <IconButton
+                                sx={{ p: 0 }}
+                                onClick={() =>
+                                  handleItemQuantityChange(item, 1)
+                                }
+                              >
+                                <ArrowDropUp />
+                              </IconButton>
+                              <IconButton
+                                sx={{ p: 0 }}
+                                onClick={() =>
+                                  handleItemQuantityChange(item, -1)
+                                }
+                              >
+                                <ArrowDropDown />
+                              </IconButton>
+                            </Stack>
+                            <Typography>{item.quantity}</Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>
+                          {item.product.activePrice?.purchasedPrice}
+                        </TableCell>
+                        <TableCell>{item.product.activePrice?.price}</TableCell>
+                        <TableCell>
+                          {item.product.activePrice?.price * item.quantity}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() => handleRemoveItem(item.product.id)}
+                          >
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Card>
             <Stack justifyContent="flex-start" direction="row">
               <Button

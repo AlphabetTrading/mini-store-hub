@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Scrollbar } from "../scrollbar";
 import {
   Table,
   TableBody,
@@ -15,19 +14,18 @@ type Props = {
 };
 
 const ManagersListTable = ({ retailShopManagers }: Props) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const handleItemToggle = (id: string) => {
-    setSelectedItem((prev) => {
-      if (prev === id) {
-        return null;
-      }
-      return id;
-    });
-  };
+  // const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  // const handleItemToggle = (id: string) => {
+  //   setSelectedItem((prev) => {
+  //     if (prev === id) {
+  //       return null;
+  //     }
+  //     return id;
+  //   });
+  // };
 
   return (
     <div>
-      <Scrollbar>
         <Table sx={{ minWidth: 1200 }}>
           <TableHead>
             <TableRow>
@@ -43,13 +41,12 @@ const ManagersListTable = ({ retailShopManagers }: Props) => {
               <ManagersListRow
                 key={idx}
                 retailShopManager={retailShopManager}
-                handleItemToggle={handleItemToggle}
-                selected={retailShopManager.id === selectedItem}
+                // handleItemToggle={handleItemToggle}
+                // selected={retailShopManager.id === selectedItem}
               />
             ))}
           </TableBody>
         </Table>
-      </Scrollbar>
     </div>
   );
 };

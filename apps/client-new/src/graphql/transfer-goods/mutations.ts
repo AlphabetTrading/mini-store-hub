@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { TransferType } from "../../../types/transaction-history";
 
 export interface TransferGoodsVars {
   data: {
@@ -10,8 +11,9 @@ export interface TransferGoodsVars {
       goodsTransferId?: string;
     }[];
     destinationWarehouseId?: string;
-    transferType?: string;
+    transferType?: TransferType;
   };
+
 }
 
 export interface TransferGoodsData {
@@ -19,9 +21,9 @@ export interface TransferGoodsData {
 }
 
 export const TRANSFER_GOODS = gql`
-  mutation CreateGoodsTransfer($data: CreateGoodsTransferInput!) {
-    createGoodsTransfer(data: $data) {
-      id
-    }
+mutation Mutation($data: CreateGoodsTransferInput!) {
+  createGoodsTransfer(data: $data) {
+    id
   }
+}
 `;

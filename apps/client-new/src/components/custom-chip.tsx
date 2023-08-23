@@ -1,4 +1,5 @@
-import { Box, Chip, Stack, useTheme } from "@mui/material";
+import formatEnumValue from "@/helpers/formatEnum";
+import { Chip } from "@mui/material";
 import React from "react";
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 const CustomChip = ({ label, status }: Props) => {
   return (
     <Chip
-      label={label}
+      label={formatEnumValue(label)}
       sx={{
         width: "fit-content",
         backgroundColor: (theme) => {
@@ -18,6 +19,8 @@ const CustomChip = ({ label, status }: Props) => {
               return theme.palette.success.alpha12;
             case "error":
               return theme.palette.error.alpha12;
+            case "neutral":
+              return theme.palette.neutral[100];
             default:
               return theme.palette.indigo.alpha12;
           }
@@ -29,6 +32,8 @@ const CustomChip = ({ label, status }: Props) => {
               return theme.palette.success.main;
             case "error":
               return theme.palette.error.main;
+            case "neutral":
+              return theme.palette.neutral[700];
             default:
               return theme.palette.indigo.main;
           }

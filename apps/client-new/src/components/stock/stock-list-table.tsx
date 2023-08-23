@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Scrollbar } from "../scrollbar";
 import {
   Table,
   TableBody,
@@ -7,55 +6,37 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import ItemListRow from "./stock-list-row";
-import { WarehouseStockData } from "@/graphql/products/queries";
 import { StockItem } from "../../../types/product";
+import StockListRow from "./stock-list-row";
 
 type Props = {
   warehouseStocks: StockItem[];
 };
 
-const ItemListTable = ({ warehouseStocks }: Props) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const handleItemToggle = (id: string) => {
-    setSelectedItem((prev) => {
-      if (prev === id) {
-        return null;
-      }
-      return id;
-    });
-  };
-
+const StockListTable = ({ warehouseStocks }: Props) => {
   return (
     <div>
-      <Scrollbar>
-        <Table sx={{ minWidth: 1200 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Product Name</TableCell>
-              <TableCell>Serial Number</TableCell>
-              <TableCell>Product Category</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Unit</TableCell>
-              <TableCell>Purchase Price</TableCell>
-              <TableCell>Selling Price</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {warehouseStocks.map((warehouseStock, idx) => (
-              <ItemListRow
-                key={idx}
-                warehouseStock={warehouseStock}
-                handleItemToggle={handleItemToggle}
-                selected={warehouseStock.product.id === selectedItem}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </Scrollbar>
+      <Table sx={{ minWidth: 1200 }}>
+        <TableHead>
+          <TableRow>
+            {/* <TableCell /> */}
+            <TableCell>Product Name</TableCell>
+            <TableCell>Product Category</TableCell>
+            <TableCell>Unit</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>Purchase Price</TableCell>
+            <TableCell>Selling Price</TableCell>
+            <TableCell>Total Value</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {warehouseStocks.map((warehouseStock, idx) => (
+            <StockListRow key={idx} warehouseStock={warehouseStock} />
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
 
-export default ItemListTable;
+export default StockListTable;

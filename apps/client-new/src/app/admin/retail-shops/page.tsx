@@ -48,6 +48,7 @@ const Page = (props: Props) => {
             </Stack>
             <Button
               component={NextLink}
+              variant="contained"
               href={"/admin/retail-shops/create"}
               startIcon={<AddIcon />}
             >

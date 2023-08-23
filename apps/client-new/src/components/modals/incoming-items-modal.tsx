@@ -48,7 +48,7 @@ interface Values {
 }
 const initialValues: Values = {
   itemId: "",
-  quantity: 0,
+  quantity: 1,
 };
 const validationSchema = Yup.object({
   itemId: Yup.string().required("Item is required"),

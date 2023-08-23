@@ -19,6 +19,7 @@ import {
   RetailShopValuationVars,
   RetailShopVars,
 } from "@/graphql/retail-shops/queries";
+import dayjs from "dayjs";
 
 type Props = {
   retailShopId: string;
@@ -45,7 +46,8 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
       },
     }
   );
-  const valuation = valuationData?.totalValuationByRetailShopId || 0;
+  console.log(valuationData)
+  const valuation = valuationData?.totalValuationByRetailShopId.totalValuation || 0;
 
   const retailShop = data?.retailShop;
 
@@ -68,6 +70,8 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
             label="Name"
             value={retailShop?.name}
           />
+          <Divider />
+
           <PropertyListItem
             align={align}
             label="ስም"
@@ -101,7 +105,7 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
           <PropertyListItem
             align={align}
             label="Created At"
-            value={retailShop?.createdAt}
+            value={dayjs(retailShop?.createdAt).format("MMMM DD, YYYY")}
           />
           <Divider />
           <PropertyListItem
