@@ -26,6 +26,7 @@ import { useMutation } from "@apollo/client";
 import { ref } from "yup";
 import { RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
 import { useRouter } from "next/navigation";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {
   params: {
@@ -46,6 +47,7 @@ const Page = ({ params }: Props) => {
       },
       refetchQueries: [RETAIL_SHOPS],
       onCompleted(data, clientOptions) {
+        showAlert("removed a", "retail shop");
         router.back();
       },
       onError(error) {

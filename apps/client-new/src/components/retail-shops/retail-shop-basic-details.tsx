@@ -46,8 +46,9 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
       },
     }
   );
-  console.log(valuationData)
-  const valuation = valuationData?.totalValuationByRetailShopId.totalValuation || 0;
+  console.log(valuationData);
+  const valuation =
+    valuationData?.totalValuationByRetailShopId.totalValuation || 0;
 
   const retailShop = data?.retailShop;
 

@@ -8,15 +8,14 @@ type Props = {
   notifications: Notification[];
   setNotification: React.Dispatch<React.SetStateAction<Notification | null>>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isMyNotification:boolean;
+  isMyNotification: boolean;
 };
 
 const NotificationsList = ({
   notifications,
   setNotification,
   setOpen,
-  isMyNotification
-
+  isMyNotification,
 }: Props) => {
   const { data: sessionData } = useSession();
   const userId = (sessionData?.user as any).id || "";
@@ -40,7 +39,11 @@ const NotificationsList = ({
             }}
             key={idx}
           >
-            <NotificationItem isMyNotification={isMyNotification} isRead={isRead} notification={notification} />
+            <NotificationItem
+              isMyNotification={isMyNotification}
+              isRead={isRead}
+              notification={notification}
+            />
           </Box>
         );
       })}

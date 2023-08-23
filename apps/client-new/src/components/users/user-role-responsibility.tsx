@@ -22,8 +22,8 @@ const UserRoleResponsibility = (props: Props) => {
     <Card>
       <CardHeader title="Roles and Responsibilities" />
       <PropertyList>
-        <PropertyListItem divider label="Role"  >
-          <CustomChip label={formatEnumValue(role || UserRole.USER)}  />
+        <PropertyListItem divider label="Role">
+          <CustomChip label={formatEnumValue(role || UserRole.USER)} />
         </PropertyListItem>
         {warehouses && warehouses.length > 0 && (
           <PropertyListItem
@@ -39,7 +39,11 @@ const UserRoleResponsibility = (props: Props) => {
             value={retailShops[0].name}
           />
         )}
-        <PropertyListItem divider label="User Created At" value={dayjs(createdAt).format("MMMM DD, YYYY")} />
+        <PropertyListItem
+          divider
+          label="User Created At"
+          value={dayjs(createdAt).format("MMMM DD, YYYY")}
+        />
       </PropertyList>
     </Card>
   );

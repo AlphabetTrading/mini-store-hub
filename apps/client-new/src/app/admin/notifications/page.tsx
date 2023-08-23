@@ -28,7 +28,7 @@ import { Notification } from "../../../../types/notification";
 
 type Props = {};
 
-const tabs = ["My Notifications","Others"];
+const tabs = ["My Notifications", "Others"];
 
 const Page = (props: Props) => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -108,7 +108,9 @@ const Page = (props: Props) => {
             >
               <NotificationsList
                 isMyNotification={false}
-                notifications={[...dataAll?.getAllNotifications || []].reverse()}
+                notifications={[
+                  ...(dataAll?.getAllNotifications || []),
+                ].reverse()}
                 setNotification={setNotification}
                 setOpen={setOpen}
               />
@@ -122,7 +124,9 @@ const Page = (props: Props) => {
             >
               <NotificationsList
                 isMyNotification={true}
-                notifications={[...data?.allNotificationsByUserId || []].reverse()}
+                notifications={[
+                  ...(data?.allNotificationsByUserId || []),
+                ].reverse()}
                 setNotification={setNotification}
                 setOpen={setOpen}
               />

@@ -4,11 +4,11 @@ import React from "react";
 
 type Props = {
   imgSrc: string;
-  timeFrame:string;
-  stat:string
+  timeFrame: string;
+  stat: string;
 };
 
-const StatCard = ({ imgSrc,timeFrame,stat }: Props) => {
+const StatCard = ({ imgSrc, timeFrame, stat }: Props) => {
   return (
     <Card sx={{ py: 2, pl: 2 }}>
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -17,14 +17,14 @@ const StatCard = ({ imgSrc,timeFrame,stat }: Props) => {
         </div>
         <Stack>
           <Typography color="text.secondary" variant="body2">
-           {`${timeFrame} ${stat}`} 
+            {`${timeFrame} ${stat}`}
           </Typography>
           <Stack direction="row">
             <Typography color="text.primary" variant="h5">
               4,763
             </Typography>
             <Stack direction="row" spacing={0}>
-              <ExpandMore color="error"  />
+              <ExpandMore color="error" />
               <Typography color="error" variant="body2">
                 12%
               </Typography>

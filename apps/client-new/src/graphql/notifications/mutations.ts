@@ -27,10 +27,10 @@ export interface MarkNotificationAsReadVars {
 export interface MarkNotificationAsReadData {
   markNotificationAsRead: {
     id: string;
-    isRead:boolean;
-    notificationReads :{
-      userId:string
-    }[]
+    isRead: boolean;
+    notificationReads: {
+      userId: string;
+    }[];
   };
 }
 

@@ -125,9 +125,10 @@ const NotificationItem = ({
                 <Typography
                   color="text.secondary"
                   sx={{
-                    ...(!isNotificationRead && isMyNotification&&{
-                      fontWeight: 700,
-                    }),
+                    ...(!isNotificationRead &&
+                      isMyNotification && {
+                        fontWeight: 700,
+                      }),
                   }}
                   noWrap
                   variant="body2"
@@ -138,9 +139,10 @@ const NotificationItem = ({
               <Typography
                 color="text.secondary"
                 sx={{
-                  ...(!isNotificationRead && isMyNotification&& {
-                    fontWeight: 600,
-                  }),
+                  ...(!isNotificationRead &&
+                    isMyNotification && {
+                      fontWeight: 600,
+                    }),
                 }}
                 variant="body2"
               >

@@ -31,6 +31,8 @@ import { useMutation } from "@apollo/client";
 import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
 import { Unit } from "../../../../../types/product";
+import { showAlert } from "@/helpers/showAlert";
+import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -85,16 +87,17 @@ const Page = (props: Props) => {
         variables: {
           data: {
             name: values.name,
-            amharicName: values.amharicName,
+            // amharicName: values.amharicName,
             categoryId: values.category,
             description: values.description,
-            amharicDescription: values.amharicDescription,
+            // amharicDescription: values.amharicDescription,
             unit: values.unit,
           },
         },
         refetchQueries: [PRODUCTS],
         onCompleted: () => {
           helpers.resetForm();
+          showAlert("added a", "product");
           router.push("/admin/products");
         },
       });

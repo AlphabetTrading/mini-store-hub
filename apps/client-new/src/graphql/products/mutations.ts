@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 
 export interface CreateProductVars {
   data: {
-    amharicDescription?: string;
+    // amharicDescription?: string;
     description: string;
     name: string;
-    amharicName?: string;
+    // amharicName?: string;
     unit: string;
     categoryId: string;
   };

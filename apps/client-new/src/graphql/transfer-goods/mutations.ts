@@ -13,7 +13,6 @@ export interface TransferGoodsVars {
     destinationWarehouseId?: string;
     transferType?: TransferType;
   };
-
 }
 
 export interface TransferGoodsData {
@@ -21,9 +20,9 @@ export interface TransferGoodsData {
 }
 
 export const TRANSFER_GOODS = gql`
-mutation Mutation($data: CreateGoodsTransferInput!) {
-  createGoodsTransfer(data: $data) {
-    id
+  mutation Mutation($data: CreateGoodsTransferInput!) {
+    createGoodsTransfer(data: $data) {
+      id
+    }
   }
-}
 `;

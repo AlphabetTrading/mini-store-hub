@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Alert,
@@ -28,7 +28,10 @@ import {
   SendNotificationVars,
 } from "@/graphql/notifications/mutations";
 import { RecipientType } from "../../../types/notification";
-import { ALL_NOTIFICATIONS, NOTIFICATIONS_BY_USERID } from "@/graphql/notifications/queries";
+import {
+  ALL_NOTIFICATIONS,
+  NOTIFICATIONS_BY_USERID,
+} from "@/graphql/notifications/queries";
 type Props = {
   onClose: () => void;
   open: boolean;
@@ -93,7 +96,7 @@ export const NotificationComposer = ({ onClose, open }: Props) => {
           formikHelpers.resetForm();
           onClose();
         },
-        refetchQueries: [NOTIFICATIONS_BY_USERID,ALL_NOTIFICATIONS],
+        refetchQueries: [NOTIFICATIONS_BY_USERID, ALL_NOTIFICATIONS],
       });
     },
   });

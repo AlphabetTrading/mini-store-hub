@@ -13,6 +13,7 @@ import { WAREHOUSES } from "@/graphql/warehouses/queries";
 import WarehouseCreateEditForm, {
   WarehouseInputValues,
 } from "@/components/warehouses/warehouse-create-edit-form";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {};
 
@@ -58,6 +59,7 @@ const Page = (props: Props) => {
       refetchQueries: [WAREHOUSES],
       onCompleted: () => {
         helpers.resetForm();
+        showAlert("added a", "warehouse");
         router.push("/admin/warehouses");
       },
     });

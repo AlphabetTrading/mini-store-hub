@@ -13,6 +13,7 @@ import {
   RetailShopData,
   RetailShopVars,
 } from "@/graphql/retail-shops/queries";
+import { showAlert } from "@/helpers/showAlert";
 import { useMutation, useQuery } from "@apollo/client";
 import { FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
@@ -79,6 +80,7 @@ const Page = ({ params }: Props) => {
       refetchQueries: [RETAIL_SHOP],
       onCompleted: () => {
         helpers.resetForm();
+        showAlert("edited a", "retail shop");
         router.back();
       },
     });

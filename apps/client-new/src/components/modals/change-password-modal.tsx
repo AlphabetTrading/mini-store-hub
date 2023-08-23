@@ -29,6 +29,7 @@ import { useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
 import { UserRole } from "../../../types/user";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {
   open: boolean;
@@ -73,6 +74,7 @@ const ChangePassword = (props: Props) => {
         onCompleted: (data) => {
           reset();
           handleClose();
+          showAlert("changed your", "password");
           formikHelpers.resetForm();
         },
       });
