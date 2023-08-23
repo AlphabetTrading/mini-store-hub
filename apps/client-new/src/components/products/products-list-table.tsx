@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Scrollbar } from "../scrollbar";
 import {
   Table,
   TableBody,

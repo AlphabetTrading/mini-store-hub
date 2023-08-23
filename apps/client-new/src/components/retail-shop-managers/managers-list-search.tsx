@@ -12,7 +12,7 @@ const ManagersListSearch = (props: Props) => {
         <SvgIcon>
           <SearchIcon />
         </SvgIcon>
-        <Input disableUnderline placeholder="Search by product name" />
+        <Input disableUnderline placeholder="Search by name" />
       </Stack>
       <Divider />
       {/* <Box sx={{ p: 2.5 }}>

@@ -26,6 +26,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { USERS } from "@/graphql/users/queries";
 import NextLink from "next/link";
+import CustomChip from "../custom-chip";
 type Props = {
   user: User;
 };
@@ -63,7 +64,7 @@ const UsersListRow = ({ user }: Props) => {
       >
         <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
         <TableCell>{user.username}</TableCell>
-        <TableCell>{user.role}</TableCell>
+        <TableCell><CustomChip label={user.role}/></TableCell>
         <TableCell>{user.phone}</TableCell>
         <TableCell>
           {user?.userProfile?.address?.street}{" "}

@@ -36,6 +36,7 @@ import {
 import { useFormik } from "formik";
 import { PRODUCTS } from "@/graphql/products/queries";
 import * as Yup from "yup";
+import CustomChip from "../custom-chip";
 
 type Props = {
   product: Product;
@@ -141,8 +142,12 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
         </TableCell>
         <TableCell align="left">{product.name}</TableCell>
         <TableCell align="left">{product.serialNumber}</TableCell>
-        <TableCell align="left">{product.category.name}</TableCell>
-        <TableCell align="left">{product.unit}</TableCell>
+        <TableCell align="left">
+          <CustomChip label={product.category.name} />
+        </TableCell>
+        <TableCell align="left">
+          <CustomChip label={product.unit} status="neutral" />
+        </TableCell>
         <TableCell align="left">
           {product.activePrice?.purchasedPrice}
         </TableCell>

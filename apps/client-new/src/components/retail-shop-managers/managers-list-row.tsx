@@ -7,23 +7,23 @@ import { User } from "../../../types/user";
 
 type Props = {
   retailShopManager: User;
-  handleItemToggle: (id: string) => void;
-  selected: boolean;
+  // handleItemToggle: (id: string) => void;
+  // selected: boolean;
 };
 
 const ManagersListRow = ({
   retailShopManager,
-  handleItemToggle,
-  selected,
+  // handleItemToggle,
+  // selected,
 }: Props) => {
   return (
     <>
       <TableRow>
-        <TableCell>
+        {/* <TableCell>
           <IconButton onClick={() => handleItemToggle(retailShopManager.id)}>
             {selected ? <ExpandMore /> : <ChevronRightIcon />}
           </IconButton>
-        </TableCell>
+        </TableCell> */}
         <TableCell align="left">{retailShopManager.firstName}</TableCell>
         <TableCell align="left">{retailShopManager.lastName}</TableCell>
         <TableCell align="left">{retailShopManager.phone}</TableCell>

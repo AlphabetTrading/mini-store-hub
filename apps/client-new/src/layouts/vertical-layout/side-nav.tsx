@@ -1,8 +1,9 @@
-import { Box, Drawer, Stack, useTheme } from "@mui/material";
+import { Box, Drawer, Stack, Typography, useTheme } from "@mui/material";
 import React from "react";
 import SideNavSection from "./side-nav-section";
 import NextLink from "next/link";
 import { NavigationItem } from "../config";
+import { Storefront } from "@mui/icons-material";
 
 type Props = {
   navigationItems: NavigationItem[];
@@ -53,13 +54,16 @@ const SideNav = ({ navigationItems }: Props) => {
               borderStyle: "solid",
               borderWidth: 1,
               display: "flex",
-              height: 40,
+              height: 35,
               p: "4px",
-              width: 40,
+              width: 35,
             }}
           >
+            <Storefront color={"primary"} fontSize="large" />
             {/* <Logo /> */}
           </Box>
+          <Typography>Mini Store Hub</Typography>
+
           {/* <TenantSwitch sx={{ flexGrow: 1 }} /> */}
         </Stack>
         <Stack

@@ -26,7 +26,7 @@ import { USER, UserData, UserVars } from "@/graphql/users/queries";
 import StateHandler from "@/components/state-handler";
 import UserRoleResponsibility from "@/components/users/user-role-responsibility";
 import UserManagement from "@/components/users/user-management";
-import UserOtherDetails from "@/components/users/user-other-detils";
+import UserOtherDetails from "@/components/users/user-other-details";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 
 const tabs = [

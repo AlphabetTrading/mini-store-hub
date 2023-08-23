@@ -6,10 +6,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
+import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
 
 type Props = {
   selectedWarehouseItem: SelectedWarehouseItem;
@@ -73,7 +71,7 @@ const ItemsSummaryRow = ({
               sx={{ p: 0 }}
               onClick={() => handleItemQuantityChange(selectedWarehouseItem, 1)}
             >
-              <ArrowDropUpIcon />
+              <ArrowDropUp />
             </IconButton>
             <IconButton
               sx={{ p: 0 }}
@@ -81,7 +79,7 @@ const ItemsSummaryRow = ({
                 handleItemQuantityChange(selectedWarehouseItem, -1)
               }
             >
-              <ArrowDropDownIcon />
+              <ArrowDropDown />
             </IconButton>
           </Stack>
           <Typography>{selectedQuantity}</Typography>
@@ -92,7 +90,7 @@ const ItemsSummaryRow = ({
       </TableCell>
       <TableCell>
         <IconButton onClick={() => handleRemoveItem(warehouseStock.product.id)}>
-          <DeleteOutlineIcon color="error" />
+          <DeleteOutline color="error" />
         </IconButton>
       </TableCell>
     </TableRow>

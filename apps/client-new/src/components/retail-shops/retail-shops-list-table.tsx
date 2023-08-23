@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Scrollbar } from "../scrollbar";
 import {
   Table,
   TableBody,
@@ -27,7 +26,6 @@ const RetailShopsListTable = ({ retailShops }: Props) => {
 
   return (
     <div>
-      <Scrollbar>
         <Table sx={{ minWidth: 1200 }}>
           <TableHead>
             <TableRow>
@@ -48,7 +46,6 @@ const RetailShopsListTable = ({ retailShops }: Props) => {
             ))}
           </TableBody>
         </Table>
-      </Scrollbar>
     </div>
   );
 };

@@ -67,11 +67,19 @@ export interface RetailShopValuationVars {
   retailShopId: string;
 }
 export interface RetailShopValuationData {
-  totalValuationByRetailShopId: number;
+  totalValuationByRetailShopId: {
+    count: number;
+    totalQuantity: number;
+    totalValuation: number;
+  };
 }
 
 export const RETAIL_SHOP_VALUATION = gql`
-  query Query($retailShopId: String!) {
-    totalValuationByRetailShopId(retailShopId: $retailShopId)
+  query TotalValuationByRetailShopId($retailShopId: String!) {
+    totalValuationByRetailShopId(retailShopId: $retailShopId) {
+      count
+      totalQuantity
+      totalValuation
+    }
   }
 `;

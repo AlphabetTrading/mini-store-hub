@@ -28,6 +28,7 @@ import {
   TransferGoodsVars,
 } from "@/graphql/transfer-goods/mutations";
 import { useSession } from "next-auth/react";
+import { TransferType } from "../../../../types/transaction-history";
 
 type Props = {};
 
@@ -57,11 +58,11 @@ const Page = (props: Props) => {
           goods: selectedItems.map((item) => ({
             productId: item.warehouseStock.product.id,
             quantity: item.selectedQuantity,
-            price: item.warehouseStock.product.activePrice.price,
+            // price: item.warehouseStock.product.activePrice.price,
           })),
           retailShopId: selectedRetailShop!,
           sourceWarehouseId: (sessionData?.user as any).warehouseId || "",
-          transferType: "WarehouseToRetailShop",
+          transferType: TransferType.WarehouseToRetailShop,
         },
       },
       refetchQueries: [WAREHOUSE_STOCK],
@@ -145,12 +146,14 @@ const Page = (props: Props) => {
             variant="contained"
             onClick={() => handleTransferItems()}
           >
+             {loading && <CircularProgress size={16} sx={{mr:1, color:"neutral.500"} }/>}
             Transfer Items
           </Button>
-          {loading && <CircularProgress />}
+         
         </Container>
       </Box>
       <TransferItemsDrawer
+      selectedItemsId={selectedItems.map((item) => item.warehouseStock.product.id)}
         handleAddItem={handleAddItem}
         open={open}
         setOpen={setOpen}

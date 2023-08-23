@@ -23,11 +23,13 @@ import { useFormik } from "formik";
 import React from "react";
 import { Product, StockItem } from "../../../types/product";
 import { useSession } from "next-auth/react";
+import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleAddItem: (item: StockItem, quantity: number) => void;
+  selectedItemsId: string[];
 };
 interface Values {
   quantity: number;
@@ -38,7 +40,12 @@ const initialValues: Values = {
   itemId: "",
 };
 
-const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
+const TransferItemsDrawer = ({
+  open,
+  setOpen,
+  handleAddItem,
+  selectedItemsId,
+}: Props) => {
   const { data: sessionData } = useSession();
 
   const generateValidationSchema = (values: Values) => {
@@ -86,8 +93,6 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
     },
   });
 
-  console.log(formik.errors);
-
   return (
     <Drawer
       anchor="right"
@@ -130,39 +135,44 @@ const TransferItemsDrawer = ({ open, setOpen, handleAddItem }: Props) => {
                   </div>
                 </Alert>
               ) : (
-                itemsData?.warehouseStocks.items?.map((item, idx) => (
-                  <Paper
-                    key={idx}
-                    sx={{
-                      alignItems: "flex-start",
-                      display: "flex",
-                      px: 2,
-                      py: 1,
-                    }}
-                    variant="outlined"
-                  >
-                    <FormControlLabel
-                      control={<Radio />}
+                itemsData?.warehouseStocks.items
+                  ?.filter((item) => !selectedItemsId.includes(item.product.id))
+                  .map((item, idx) => (
+                    <Paper
                       key={idx}
-                      label={
-                        <Box sx={{ ml: 2 }}>
-                          <Stack direction="row" gap={1}>
-                            <Typography variant="subtitle2">
-                              {item.product.name}
-                            </Typography>
+                      sx={{
+                        alignItems: "flex-start",
+                        display: "flex",
+                        px: 2,
+                        py: 1,
+                      }}
+                      variant="outlined"
+                    >
+                      <FormControlLabel
+                        control={<Radio />}
+                        key={idx}
+                        label={
+                          <Box sx={{ ml: 2 }}>
+                            <Stack direction="row" gap={1}>
+                              <Typography variant="subtitle2">
+                                {item.product.name}
+                              </Typography>
+                              <Typography
+                                color="text.secondary"
+                                variant="body2"
+                              >
+                                {`(${item.product.serialNumber})`}
+                              </Typography>
+                            </Stack>
                             <Typography color="text.secondary" variant="body2">
-                              {`(${item.product.serialNumber})`}
+                              {`Quantity: ${item.quantity}`}
                             </Typography>
-                          </Stack>
-                          <Typography color="text.secondary" variant="body2">
-                            {`Quantity: ${item.quantity}`}
-                          </Typography>
-                        </Box>
-                      }
-                      value={item.product.id}
-                    />
-                  </Paper>
-                ))
+                          </Box>
+                        }
+                        value={item.product.id}
+                      />
+                    </Paper>
+                  ))
               )}
             </Stack>
           </Card>

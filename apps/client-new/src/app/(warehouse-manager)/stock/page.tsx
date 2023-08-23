@@ -4,7 +4,6 @@ import {
   Breadcrumbs,
   Button,
   Card,
-  CircularProgress,
   Container,
   Link,
   Stack,
@@ -14,7 +13,6 @@ import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
-import ItemListTable from "@/components/stock/stock-list-table";
 import {
   WAREHOUSE_STOCK,
   WarehouseStockData,
@@ -25,6 +23,7 @@ import { useSession } from "next-auth/react";
 import ProductsListSearch from "@/components/products/products-list-search";
 import Pagination from "@/components/Pagination";
 import StateHandler from "@/components/state-handler";
+import StockListTable from "@/components/stock/stock-list-table";
 
 type Props = {};
 
@@ -141,7 +140,7 @@ const Page = (props: Props) => {
             empty={data?.warehouseStocks.items.length == 0}
           >
             <Card>
-              <ItemListTable
+              <StockListTable
                 warehouseStocks={data?.warehouseStocks.items || []}
               />
               <Pagination
