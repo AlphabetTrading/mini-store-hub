@@ -1,16 +1,15 @@
+import React from "react";
 import {
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import { useGetLowStockItems } from "@/src/hooks/api/useGetLowStockItems";
-import { useAuth } from "@/src/contexts/auth";
+import { useGetLowStockItems } from "../../hooks/api/useGetLowStockItems";
+import { useAuth } from "../../contexts/auth";
 import { ActivityIndicator, Avatar, Card } from "react-native-paper";
-import { useLocalization } from "@/src/contexts/localization";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useLocalization } from "../../contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
 import { useNavigation } from "@react-navigation/native";
 
 const LowStockItems = () => {
@@ -20,7 +19,6 @@ const LowStockItems = () => {
   const { t, locale } = useLocalization();
   const { theme } = useAppTheme();
 
-  const [items, setItems] = useState<any[]>([]);
   const { loading, data, refetch } = useGetLowStockItems(retailShopID);
 
   return (
@@ -124,16 +122,14 @@ const LowStockItems = () => {
                       }}
                     >
                       {locale === "en"
-                        ? `${
-                            item.product.activePrice
-                              ? item.product.activePrice.price
-                              : 29
-                          } ${t("etb")}`
-                        : `${t("etb")} ${
-                            item.product.activePrice
-                              ? item.product.activePrice.price
-                              : 29
-                          } `}
+                        ? `${item.product.activePrice
+                          ? item.product.activePrice.price
+                          : 29
+                        } ${t("etb")}`
+                        : `${t("etb")} ${item.product.activePrice
+                          ? item.product.activePrice.price
+                          : 29
+                        } `}
                     </Text>
                   </View>
                 </TouchableOpacity>

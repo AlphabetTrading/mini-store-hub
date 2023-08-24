@@ -7,15 +7,14 @@ import {
   View,
 } from "react-native";
 import React, { useEffect } from "react";
-import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import {
-  useGetInsightsData,
   useGetInsightsDataDetail,
 } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
-import { useAppTheme } from "@/src/contexts/preference";
-import { INSIGHTS_TYPE } from "@/src/types/types";
+import { useAppTheme } from "../../contexts/preference";
+import { INSIGHTS_TYPE } from "../../types/types";
+import { Button } from "react-native-paper";
 
 const MostSoldItems = ({
   retailShopID,
@@ -36,7 +35,11 @@ const MostSoldItems = ({
       <ActivityIndicator />
     </View>
   ) : error ? (
-    <Text>Error Try Again</Text>
+    <View>
+      <Text>Error Try Again</Text>
+
+      <Button onPress={() => { refetch() }}>Refresh</Button>
+    </View>
   ) : (
     data.findProductsBySoldQuantityAndRetailShop.items.map(
       (item: any, index: number) => {

@@ -61,10 +61,10 @@ import { RolesGuard } from './auth/roles.guard';
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,
     // },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {

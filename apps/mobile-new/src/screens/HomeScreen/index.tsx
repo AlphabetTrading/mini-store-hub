@@ -9,10 +9,9 @@ import { useState } from "react";
 import { BaseLayout } from "../../components/BaseLayout";
 import { StatusBar } from "expo-status-bar";
 import DashboardComponents from "../../components/HomePage/DashboardComponents";
-// import i18n from "../../i18n";
 import { useLocalization } from "../../contexts/localization";
-import { useAppTheme } from "@/src/contexts/preference";
-import LowStockItems from "@/src/components/HomePage/LowStockItems";
+import { useAppTheme } from "../../contexts/preference";
+import LowStockItems from "../../components/HomePage/LowStockItems";
 export default function HomeScreen() {
   const { theme } = useAppTheme();
   const { t } = useLocalization();

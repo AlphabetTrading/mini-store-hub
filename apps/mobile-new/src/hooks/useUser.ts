@@ -20,6 +20,7 @@ export const useUser = () => {
           Platform.OS ? Platform.OS : "unknown"
         );
       } catch (error) {
+        console.error(error, "error updating notification token");
         setAuthState(prevAuthState);
       }
     }

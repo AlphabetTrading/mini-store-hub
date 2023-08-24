@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Card, Avatar } from "react-native-paper";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { Entypo } from "@expo/vector-icons";
 import { CheckoutItem } from "./TransactionItem";
 import { notifyMessage } from "../Toast";

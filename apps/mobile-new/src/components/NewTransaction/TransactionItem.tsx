@@ -9,7 +9,7 @@ import {
 import React, { useRef } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 
 export interface CheckoutItem {
   id?: string;
@@ -152,11 +152,11 @@ const TransactionItem = ({
         onSwipeableOpen={(direction) => {
           removeItem(checkoutItem);
         }}
-        onSwipeableClose={(direction) => {}}
-        // overshootRight={false}
-        // overshootFriction={8}
-        // activeOffsetX={[-20, 20]}
-        // onActivated={()=>removeItem(checkoutItem)}
+        onSwipeableClose={(direction) => { }}
+      // overshootRight={false}
+      // overshootFriction={8}
+      // activeOffsetX={[-20, 20]}
+      // onActivated={()=>removeItem(checkoutItem)}
       >
         <View
           style={{

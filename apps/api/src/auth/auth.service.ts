@@ -142,7 +142,6 @@ export class AuthService {
     const res = await this.generateTokens({
       userId: user.id,
     });
-    console.log('res', res);
     return res;
   }
 

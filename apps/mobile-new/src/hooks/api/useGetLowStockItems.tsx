@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { GET_LOW_STOCK_PRODUCTS } from "@/src/graphql/queries/statsQueries";
+import { GET_LOW_STOCK_PRODUCTS } from "../../graphql/queries/statsQueries";
 
 export const useGetLowStockItems = (retailShopId: string, option?: any) => {
   return useQuery(GET_LOW_STOCK_PRODUCTS, {

@@ -14,7 +14,7 @@ type Props = {
 
 export const LoadingContext = createContext<LoadingContextProps | undefined>({
   loading: false,
-  setLoading: (value: boolean) => {},
+  setLoading: (value: boolean) => { },
 });
 
 export const LoadingContextProvider = (props: Props) => {

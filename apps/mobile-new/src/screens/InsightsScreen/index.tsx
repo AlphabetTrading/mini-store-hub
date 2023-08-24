@@ -11,9 +11,9 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
 import { useGetInsightsData } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
-import { useAppTheme } from "@/src/contexts/preference";
-import { INSIGHTS_TYPE } from "@/src/types/types";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { INSIGHTS_TYPE } from "../../types/types";
+import { useLocalization } from "../../contexts/localization";
 
 type Props = {};
 
@@ -200,7 +200,7 @@ const InsightsScreen = (props: Props) => {
             }}
             onPress={() => {
               navigation.navigate("Root", {
-                screen: "Insights",
+                screen: "InsightsRoot",
                 params: {
                   screen: "InsightsDetailScreen",
                   params: {
@@ -238,7 +238,7 @@ const InsightsScreen = (props: Props) => {
             }}
             onPress={() => {
               navigation.navigate("Root", {
-                screen: "Insights",
+                screen: "InsightsRoot",
                 params: {
                   screen: "InsightsDetailScreen",
                   params: {

@@ -19,7 +19,6 @@ import { InventoryStack } from "../navigations/InventoryStack";
 import { NewTransactionStack } from "../navigations/NewTransactionStack";
 import { SalesStack } from "../navigations/SalesStack";
 import { InsightsStack } from "../navigations/InsightsStack";
-import NotificationIconComp from "../components/NotificationIconComp";
 import AppbarRightAction from "../components/AppbarRightAction";
 import HomeStack from "../navigations/HomeStack";
 
@@ -438,7 +437,7 @@ const AppStack = ({ route }: any) => {
           component={SalesStack}
         />
         <BottomTab.Screen
-          name="Insights"
+          name="InsightsRoot"
           options={{
             title: t("insights"),
             // tabBarItemStyle: {

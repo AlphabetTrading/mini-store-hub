@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { Searchbar } from "react-native-paper";
 type SearchBarComponentProps = {
   placeholder?: string;
