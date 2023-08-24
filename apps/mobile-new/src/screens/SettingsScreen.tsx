@@ -1,4 +1,3 @@
-// SettingsScreen.js
 import React, { useState } from "react";
 import { View } from "react-native"; // Import Picker for language selection
 import { Text } from "react-native-paper";

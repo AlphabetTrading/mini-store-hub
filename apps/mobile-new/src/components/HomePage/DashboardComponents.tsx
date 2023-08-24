@@ -1,18 +1,16 @@
 import {
   ActivityIndicator,
-  RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { LinearGradient, Path, Svg } from "react-native-svg";
+import { Path, Svg } from "react-native-svg";
 import React from "react";
 import { useAuth } from "../../contexts/auth";
 import { useGetSalesData } from "../../hooks/api/useGetDashboardData";
 import { useLocalization } from "../../contexts/localization";
-import { useAppTheme } from "@/src/contexts/preference";
-import { formatNumber } from "@/src/utils/numbers";
+import { useAppTheme } from "../../contexts/preference";
+import { formatNumber } from "../../utils/numbers";
 
 type DashboardComponentsProps = {
   selectedFilter: string;

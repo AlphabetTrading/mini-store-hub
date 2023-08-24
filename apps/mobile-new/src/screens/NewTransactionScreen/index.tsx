@@ -10,7 +10,7 @@ import AsyncStorageUtils from "../../utils/async_storage";
 import { CheckoutItem } from "../../components/NewTransaction/TransactionItem";
 import CheckoutInfoBanner from "../../components/NewTransaction/CheckoutInfoBanner";
 import TransactionItemsList from "../../components/NewTransaction/TransactionItemsList";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { FAB } from "react-native-paper";
 
 const CheckoutScreen = () => {

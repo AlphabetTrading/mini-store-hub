@@ -6,8 +6,14 @@ export class CreateProductInput {
   @Field()
   name: string;
 
+  @Field(() => String, { nullable: true })
+  amharicName?: string;
+
   @Field()
   description: string;
+
+  @Field(() => String, { nullable: true })
+  amharicDescription?: string;
 
   @Field(() => UnitType)
   unit: UnitType;

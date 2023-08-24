@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Modal,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
@@ -31,6 +30,7 @@ const NotificationScreen = (props: Props) => {
     authState?.user?.id || ""
   );
 
+  console.log(error, data, loading, "NOTIFICATION SCREEN")
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -129,8 +129,8 @@ const NotificationScreen = (props: Props) => {
                         item.recipientType === "USER"
                           ? "#00FF00"
                           : item.recipientType === "RETAIL_SHOP"
-                          ? "#00FFFF"
-                          : "#FF0000",
+                            ? "#00FFFF"
+                            : "#FF0000",
                       borderRadius: 3,
                     }}
                   ></View>

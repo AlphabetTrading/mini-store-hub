@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
 import React from "react";
-import Svg, { Path } from "react-native-svg";
 
 type Props = {
   svg: any;

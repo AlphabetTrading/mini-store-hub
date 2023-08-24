@@ -12,15 +12,16 @@ import { useNavigation } from "@react-navigation/native";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
 import { useQuery } from "@apollo/client";
 import { BaseLayout } from "../../components/BaseLayout";
-import { useAppTheme } from "@/src/contexts/preference";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { useLocalization } from "../../contexts/localization";
 
 type Props = {};
 
 const InventoryScreen = (props: Props) => {
   const navigation = useNavigation();
-  const { data, error, refetch, loading } = useQuery(GET_CATEGORIES);
-
+  const { data, error, refetch, loading } = useQuery(GET_CATEGORIES, {
+    errorPolicy: "all",
+  });
   const { theme } = useAppTheme();
 
   const styles = StyleSheet.create({

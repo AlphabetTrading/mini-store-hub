@@ -1,12 +1,9 @@
-node\*modules/
-.env
-.env.\*
-android/
+
 apps/api
 apps/client
 apps/client-new
 apps/mobile
-
+apps/mini-store-mobile
 
 <!-- apps/mobile-new/.expo -->
 

@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
@@ -11,8 +10,8 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { useQuery } from "@apollo/client";
 import { GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP } from "../../graphql/queries/salesQueries";
 import { format } from "date-fns";
-import { useAppTheme } from "@/src/contexts/preference";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { useLocalization } from "../../contexts/localization";
 
 type Props = {};
 

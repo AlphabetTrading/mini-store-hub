@@ -49,6 +49,10 @@ export class NotificationService {
     // identify recipient type from the user
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
       case UserRole.ADMIN:
@@ -106,6 +110,10 @@ export class NotificationService {
 
   async getAllReadNotifications(userId: string): Promise<Notification[]> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
 
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {

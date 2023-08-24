@@ -1,4 +1,5 @@
 import React from "react";
+import { StatusBar } from "expo-status-bar";
 import "react-native-gesture-handler";
 import { SafeAreaView, StyleSheet } from "react-native";
 import Navigation from "./src/routes";
@@ -9,7 +10,6 @@ import useCachedResources from "./src/hooks/useCachedResources";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LocalizationProvider } from "./src/contexts/localization";
 import { PreferenceContextProvider } from "./src/contexts/preference";
-import { StatusBar } from "expo-status-bar";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

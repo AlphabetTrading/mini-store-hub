@@ -12,9 +12,9 @@ import { GET_RETAIL_SHOP_PRODUCT_DETAIL } from "../../graphql/queries/retailShop
 import { useAuth } from "../../contexts/auth";
 import { BaseLayout } from "../../components/BaseLayout";
 import { format } from "date-fns";
-import { useAppTheme } from "@/src/contexts/preference";
-import { PriceHistory } from "@/src/types/models";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { PriceHistory } from "../../types/models";
+import { useLocalization } from "../../contexts/localization";
 
 type Props = {};
 
@@ -212,7 +212,7 @@ const ItemDetailScreen = ({ route }: any) => {
                   </View>
                 </View>
               )}
-              // keyExtractor={(_, index) => index}
+            // keyExtractor={(_, index) => index}
             />
           </View>
         </View>

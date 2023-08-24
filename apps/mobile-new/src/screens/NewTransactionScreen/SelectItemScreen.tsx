@@ -9,18 +9,16 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { SafeAreaView } from "react-native";
-import { SearchBar } from "react-native-screens";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
 import { GET_RETAIL_SHOP_PRODUCTS_SIMPLE } from "../../graphql/queries/retailShopQuery";
-import * as SecureStore from "expo-secure-store";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorageUtils from "../../utils/async_storage";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
+import SearchBar from "../../components/SearchBar";
 type Props = {};
 
 const SelectItem = () => {
@@ -30,7 +28,6 @@ const SelectItem = () => {
   const [alreadySelected, setAlreadySelected] = useState<any[]>([]);
   const { theme } = useAppTheme();
   const fetchCheckout = useCallback(async () => {
-    // const prevCheckout = await SecureStore.getItemAsync("checkout");
     const items = await AsyncStorageUtils.getItem("checkout");
     setAlreadySelected(items);
   }, [route]);
@@ -106,7 +103,7 @@ const SelectItem = () => {
                   width: "100%",
                 }}
               >
-                <SearchBar />
+                <SearchBar searchPhrase={""} setSearchPhrase={() => { }} />
                 <FlatList
                   data={data.retailShopStockByRetailShopId.items}
                   renderItem={({ item, index }) => (
@@ -206,10 +203,6 @@ const SelectItem = () => {
               margin: 10,
             }}
             onPress={async () => {
-              // await SecureStore.setItemAsync(
-              //   "checkout",
-              //   JSON.stringify(alreadySelected)
-              // );
               await AsyncStorageUtils.setItem("checkout", alreadySelected);
               navigation.navigate("Root", {
                 screen: "NewTransactionRoot",

@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { SearchBar } from "react-native-screens";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
@@ -18,10 +17,10 @@ import { Button, FAB } from "react-native-paper";
 
 import CategoryList from "../../components/NewTransaction/CategoryList";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
-import { useAppTheme } from "@/src/contexts/preference";
-import SingleProductItemCard from "@/src/components/NewTransaction/SingleProductItemCard";
-import { Category } from "@/src/types/models";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import SingleProductItemCard from "../../components/NewTransaction/SingleProductItemCard";
+import { Category } from "../../types/models";
+import { useLocalization } from "../../contexts/localization";
 
 const AllCategory: Category = {
   id: "afasfiahsofa",
@@ -234,7 +233,7 @@ const AddTransactionItemsScreen = () => {
                   data={filteredProducts.sort((a, b) =>
                     alreadySelected
                       ? alreadySelected.findIndex((i) => i.id === b.id) -
-                        alreadySelected.findIndex((i) => i.id === a.id)
+                      alreadySelected.findIndex((i) => i.id === a.id)
                       : 1
                   )}
                   ItemSeparatorComponent={() => (

@@ -1,6 +1,5 @@
 import {
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,7 +15,7 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { Avatar } from "react-native-paper";
 
 type Props = {};
@@ -234,16 +233,14 @@ const CategoryDetailScreen = ({
                         }}
                       >
                         {locale === "en"
-                          ? `${
-                              item.product.activePrice
-                                ? item.product.activePrice.price
-                                : 29
-                            } ${t("etb")}`
-                          : `${t("etb")} ${
-                              item.product.activePrice
-                                ? item.product.activePrice.price
-                                : 29
-                            } `}
+                          ? `${item.product.activePrice
+                            ? item.product.activePrice.price
+                            : 29
+                          } ${t("etb")}`
+                          : `${t("etb")} ${item.product.activePrice
+                            ? item.product.activePrice.price
+                            : 29
+                          } `}
                       </Text>
                     </View>
                   </TouchableOpacity>

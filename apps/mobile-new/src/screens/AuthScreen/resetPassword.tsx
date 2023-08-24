@@ -14,7 +14,7 @@ import { useAuth } from "../../contexts/auth";
 import { Entypo } from "@expo/vector-icons";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 
 type Props = {};
 

@@ -9,4 +9,10 @@ export class CreateNotificationInput {
 
   @Field(() => String)
   body: string;
+
+  @Field(() => String, { nullable: true })
+  amharicTitle?: string;
+
+  @Field(() => String, { nullable: true })
+  amharicBody?: string;
 }

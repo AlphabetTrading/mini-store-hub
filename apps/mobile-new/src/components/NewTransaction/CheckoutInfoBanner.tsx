@@ -11,7 +11,7 @@ import AsyncStorageUtils from "../../utils/async_storage";
 import { CREATE_SALES_TRANSACTION_MUTATION } from "../../graphql/mutations/salesMutations";
 import { useMutation } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { ActivityIndicator, Card, Snackbar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 type Props = {
@@ -193,12 +193,12 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
         visible={visible}
         onDismiss={onDismissSnackBar}
         duration={4000}
-        // action={{
-        //   label: "Undo",
-        //   onPress: () => {
-        //     // Do something
-        //   },
-        // }}
+      // action={{
+      //   label: "Undo",
+      //   onPress: () => {
+      //     // Do something
+      //   },
+      // }}
       >
         Successfully Created.
       </Snackbar>

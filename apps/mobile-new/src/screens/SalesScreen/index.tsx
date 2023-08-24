@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -9,15 +8,14 @@ import {
 } from "react-native";
 import React from "react";
 import { Entypo } from "@expo/vector-icons";
-import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import { GET_SALES_TRANSACTIONS_BY_RETAIL_SHOP } from "../../graphql/queries/salesQueries";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
 import { format } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
-import { useAppTheme } from "@/src/contexts/preference";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { useLocalization } from "../../contexts/localization";
 
 type Props = {};
 

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
-import { useLocalization } from "@/src/contexts/localization";
-import { useAuth } from "@/src/contexts/auth";
+import { useLocalization } from "../../contexts/localization";
+import { useAuth } from "../../contexts/auth";
 const profileImage = require("../../../assets/images/profile.png");
 const GreetingsComponent = () => {
   const { t, locale } = useLocalization();
@@ -12,20 +12,20 @@ const GreetingsComponent = () => {
       return locale.includes("en")
         ? t("goodMorning")
         : authState?.user.gender === "MALE"
-        ? t("goodMorningM")
-        : t("goodMorningF");
+          ? t("goodMorningM")
+          : t("goodMorningF");
     } else if (currentTime < 18) {
       return locale.includes("en")
         ? t("goodAfternoon")
         : authState?.user.gender === "MALE"
-        ? t("goodAfternoonM")
-        : t("goodAfternoonF");
+          ? t("goodAfternoonM")
+          : t("goodAfternoonF");
     } else {
       return locale.includes("en")
         ? t("goodEvening")
         : authState?.user.gender === "MALE"
-        ? t("goodEveningM")
-        : t("goodEveningF");
+          ? t("goodEveningM")
+          : t("goodEveningF");
     }
   };
   return (
