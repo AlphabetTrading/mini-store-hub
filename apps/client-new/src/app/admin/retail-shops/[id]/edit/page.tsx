@@ -10,6 +10,7 @@ import {
 } from "@/graphql/retail-shops/mutations";
 import {
   RETAIL_SHOP,
+  RETAIL_SHOPS,
   RetailShopData,
   RetailShopVars,
 } from "@/graphql/retail-shops/queries";
@@ -77,7 +78,10 @@ const Page = ({ params }: Props) => {
           },
         },
       },
-      refetchQueries: [RETAIL_SHOP],
+      refetchQueries: [
+        { query: RETAIL_SHOPS },
+        { query: RETAIL_SHOP, variables: { retailShopId: params.id } },
+      ],
       onCompleted: () => {
         helpers.resetForm();
         showAlert("edited a", "retail shop");

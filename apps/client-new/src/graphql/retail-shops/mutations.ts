@@ -4,7 +4,7 @@ export interface CreateRetailShopInput {
   data: {
     name: string;
     amharicName: string;
-    retailShopManagerId: string;
+    retailShopManagerId?: string;
     address: {
       city: string;
       formattedAddress: string;

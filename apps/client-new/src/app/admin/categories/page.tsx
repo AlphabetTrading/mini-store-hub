@@ -42,7 +42,7 @@ const Page = (props: Props) => {
         name: filter.filter.split("|")[1],
       },
     },
-    fetchPolicy: "cache-and-network",
+    // fetchPolicy: "cache-and-network",
   });
 
   useEffect(() => {

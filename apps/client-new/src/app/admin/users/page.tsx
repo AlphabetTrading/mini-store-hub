@@ -32,7 +32,7 @@ const Page = (props: Props) => {
         take: rowsPerPage,
       },
     },
-    fetchPolicy: "cache-and-network",
+    // fetchPolicy: "cache-and-network",
   });
 
   return (

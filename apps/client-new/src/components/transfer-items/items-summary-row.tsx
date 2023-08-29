@@ -61,7 +61,12 @@ const ItemsSummaryRow = ({
 
   return (
     <TableRow>
-      <TableCell>{warehouseStock.product.name}</TableCell>
+      <TableCell>
+        <Stack>
+          <Typography  variant="body2">{warehouseStock.product.name}</Typography>
+          <Typography variant="body2" color="text.secondary">SN- {warehouseStock.product.serialNumber}</Typography>
+        </Stack>
+      </TableCell>
       <TableCell>{warehouseStock.product.activePrice?.price}</TableCell>
       <TableCell>{warehouseStock.quantity}</TableCell>
       <TableCell>
@@ -86,7 +91,7 @@ const ItemsSummaryRow = ({
         </Stack>
       </TableCell>
       <TableCell>
-        {warehouseStock.product.activePrice?.price * warehouseStock.quantity}
+        {warehouseStock.product.activePrice?.price * selectedQuantity}
       </TableCell>
       <TableCell>
         <IconButton onClick={() => handleRemoveItem(warehouseStock.product.id)}>

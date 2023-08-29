@@ -36,11 +36,8 @@ import {
 import { useFormik } from "formik";
 import { PRODUCTS } from "@/graphql/products/queries";
 import * as Yup from "yup";
-<<<<<<< Updated upstream
 import CustomChip from "../custom-chip";
-=======
 import { showAlert } from "@/helpers/showAlert";
->>>>>>> Stashed changes
 
 type Props = {
   product: Product;
@@ -91,7 +88,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
       variables: {
         deleteProductId: product.id,
       },
-      refetchQueries: [PRODUCTS],
+      refetchQueries: [{ query: PRODUCTS }],
       onCompleted: () => {
         showAlert("removed a", "product");
         handleItemToggle(product.id);
@@ -123,7 +120,8 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
             unit: values.unit,
           },
         },
-        refetchQueries: [PRODUCTS],
+        refetchQueries: [{ query: PRODUCTS }],
+
         onCompleted: () => {
           formikHelpers.resetForm();
           showAlert("edited a", "product");

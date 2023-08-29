@@ -10,6 +10,7 @@ import {
 } from "@/graphql/warehouses/mutations";
 import {
   WAREHOUSE,
+  WAREHOUSES,
   WarehouseData,
   WarehouseVars,
 } from "@/graphql/warehouses/queries";
@@ -29,7 +30,7 @@ const Page = ({ params }: Props) => {
   const router = useRouter();
   const [
     updateWarehouse,
-    { data: updateData, loading: updateLoading, error: updateError },
+    { data: updateData, loading: updateLoading, error: updateError ,reset},
   ] = useMutation<UpdateWarehouseData, UpdateWarehouseVars>(UPDATE_WAREHOUSE);
 
   const { data, loading, error } = useQuery<WarehouseData, WarehouseVars>(
@@ -75,11 +76,19 @@ const Page = ({ params }: Props) => {
         },
         updateWarehouseId: params.id,
       },
-      refetchQueries: [WAREHOUSE],
+      refetchQueries: [
+        { query: WAREHOUSES },
+        { query: WAREHOUSE, variables: { warehouseId: params.id } },
+      ],
       onCompleted: () => {
         helpers.resetForm();
         showAlert("edited a", "warehouse");
         router.back();
+      },
+      onError(error) {
+        setTimeout(() => {
+          reset();
+        }, 3000);
       },
     });
   };

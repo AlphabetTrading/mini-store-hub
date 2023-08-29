@@ -41,6 +41,9 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
 import CustomChip from "@/components/custom-chip";
 import { showAlert } from "@/helpers/showAlert";
+import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
+import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries";
+import EmptyTable from "@/components/empty-table";
 
 type Props = {};
 
@@ -50,6 +53,7 @@ const Page = (props: Props) => {
   const [selectedStockItems, setSelectedStockItems] = useState<StockItem[]>([]);
   const [filteredStockItems, setFilteredStockItems] = useState<StockItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const warehouseId = (sessionData?.user as any).warehouseId || "";
 
   useEffect(() => {
     setFilteredStockItems(
@@ -110,7 +114,7 @@ const Page = (props: Props) => {
           goods: selectedStockItems.map((item: StockItem) => {
             return { productId: item.product.id, quantity: item.quantity };
           }),
-          destinationWarehouseId: (sessionData?.user as any).warehouseId || "",
+          destinationWarehouseId: warehouseId,
         },
       },
       onCompleted: (data) => {
@@ -120,7 +124,21 @@ const Page = (props: Props) => {
       onError(error, clientOptions) {
         console.log(error);
       },
-      refetchQueries: [WAREHOUSE_STOCK],
+      refetchQueries: [
+        { query: WAREHOUSE_STOCK },
+        {
+          query: GET_TOTAL_VALUATION_OF_WAREHOUSE,
+          variables: {
+            warehouseId: warehouseId,
+          },
+        },
+        {
+          query: WAREHOUSE_TRANSACTION_HISTORY,
+          variables: {
+            warehouseId: warehouseId,
+          },
+        },
+      ],
     });
   };
 
@@ -174,8 +192,9 @@ const Page = (props: Props) => {
                   <SearchIcon />
                 </SvgIcon>
                 <Input
+                  fullWidth
                   disableUnderline
-                  placeholder="Search by name"
+                  placeholder="Search by name or serial number"
                   value={searchQuery}
                   onChange={handleChange}
                 />
@@ -194,66 +213,72 @@ const Page = (props: Props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody sx={{ maxHeight: 20 }}>
-                    {filteredStockItems.map((item: StockItem, idx: number) => (
-                      <TableRow key={idx}>
-                        <TableCell>
-                          <Stack>
-                            <Typography variant="body2">
-                              {item.product.name}
-                            </Typography>
-                            <Typography
-                              color="text.secondary"
-                              variant="body2"
-                            >{`SN- ${item.product.serialNumber}`}</Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell>
-                          <CustomChip label={item.product.category.name} />
-                        </TableCell>
-                        <TableCell>
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={2}
-                          >
+                    {filteredStockItems.length === 0 ? (
+                      <EmptyTable colspan={7}/>
+                    ) : (
+                      filteredStockItems.map((item: StockItem, idx: number) => (
+                        <TableRow key={idx}>
+                          <TableCell>
                             <Stack>
-                              <IconButton
-                                sx={{ p: 0 }}
-                                onClick={() =>
-                                  handleItemQuantityChange(item, 1)
-                                }
-                              >
-                                <ArrowDropUp />
-                              </IconButton>
-                              <IconButton
-                                sx={{ p: 0 }}
-                                onClick={() =>
-                                  handleItemQuantityChange(item, -1)
-                                }
-                              >
-                                <ArrowDropDown />
-                              </IconButton>
+                              <Typography variant="body2">
+                                {item.product.name}
+                              </Typography>
+                              <Typography
+                                color="text.secondary"
+                                variant="body2"
+                              >{`SN- ${item.product.serialNumber}`}</Typography>
                             </Stack>
-                            <Typography>{item.quantity}</Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell>
-                          {item.product.activePrice?.purchasedPrice}
-                        </TableCell>
-                        <TableCell>{item.product.activePrice?.price}</TableCell>
-                        <TableCell>
-                          {item.product.activePrice?.price * item.quantity}
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() => handleRemoveItem(item.product.id)}
-                          >
-                            <DeleteOutline color="error" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+
+                          <TableCell>
+                            <CustomChip label={item.product.category.name} />
+                          </TableCell>
+                          <TableCell>
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              <Stack>
+                                <IconButton
+                                  sx={{ p: 0 }}
+                                  onClick={() =>
+                                    handleItemQuantityChange(item, 1)
+                                  }
+                                >
+                                  <ArrowDropUp />
+                                </IconButton>
+                                <IconButton
+                                  sx={{ p: 0 }}
+                                  onClick={() =>
+                                    handleItemQuantityChange(item, -1)
+                                  }
+                                >
+                                  <ArrowDropDown />
+                                </IconButton>
+                              </Stack>
+                              <Typography>{item.quantity}</Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            {item.product.activePrice?.purchasedPrice}
+                          </TableCell>
+                          <TableCell>
+                            {item.product.activePrice?.price}
+                          </TableCell>
+                          <TableCell>
+                            {item.product.activePrice?.price * item.quantity}
+                          </TableCell>
+                          <TableCell>
+                            <IconButton
+                              onClick={() => handleRemoveItem(item.product.id)}
+                            >
+                              <DeleteOutline color="error" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>

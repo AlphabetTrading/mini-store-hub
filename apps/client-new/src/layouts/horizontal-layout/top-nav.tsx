@@ -11,14 +11,21 @@ import MenuIcon from "@mui/icons-material/Menu";
 import TopNavSection from "./top-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { NavigationItem } from "../config";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { NotificationsButton } from "@/components/notification/notification-button";
+import {
+  NotificationByUserIdData,
+  NotificationByUserIdVars,
+  NOTIFICATIONS_BY_USERID,
+} from "@/graphql/notifications/queries";
+import { useQuery } from "@apollo/client";
 
 type Props = {
   onMobileNav: () => void;
   navigationItems: NavigationItem[];
+  // unreadNotifications:number;
 };
 
 export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
@@ -26,6 +33,25 @@ export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
   const theme = useTheme();
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
   // const cssVars = useCssVars(color);
+  const { data: sessionData } = useSession();
+  const { data, error, loading } = useQuery<
+    NotificationByUserIdData,
+    NotificationByUserIdVars
+  >(NOTIFICATIONS_BY_USERID, {
+    variables: {
+      userId: (sessionData?.user as any).id || "",
+    },
+  });
+  const unreadNotifications =
+    data?.allNotificationsByUserId.filter((notification) => {
+      if (notification.recipientType === "USER") {
+        return !notification.isRead;
+      } else {
+        return !notification.notificationReads.some(
+          (n) => n.userId === (sessionData?.user as any).id || ""
+        );
+      }
+    }).length || 0;
 
   return (
     <Box
@@ -101,7 +127,10 @@ export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
         </Stack>
         <Stack alignItems="center" direction="row" spacing={2}>
           {/* <LanguageSwitch /> */}
-          <NotificationsButton />
+          <NotificationsButton
+            unreadNotifications={unreadNotifications}
+            notifications={data?.allNotificationsByUserId || []}
+          />
           {/* <ContactsButton /> */}
           {/* <AccountButton /> */}
           <IconButton onClick={() => signOut()}>

@@ -32,7 +32,7 @@ import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
 import { Unit } from "../../../../../types/product";
 import { showAlert } from "@/helpers/showAlert";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -82,7 +82,6 @@ const Page = (props: Props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
-      console.log("...");
       await createProduct({
         variables: {
           data: {
@@ -94,7 +93,8 @@ const Page = (props: Props) => {
             unit: values.unit,
           },
         },
-        refetchQueries: [PRODUCTS],
+        refetchQueries: [ {query:PRODUCTS} ],
+        // awaitRefetchQueries: true,
         onCompleted: () => {
           helpers.resetForm();
           showAlert("added a", "product");

@@ -14,6 +14,10 @@ import {
   CardHeader,
   Button,
   CircularProgress,
+  Input,
+  SvgIcon,
+  AlertTitle,
+  Alert,
 } from "@mui/material";
 import ItemsSummaryTable from "@/components/transfer-items/items-summary-table";
 
@@ -30,6 +34,9 @@ import {
 import { useSession } from "next-auth/react";
 import { TransferType } from "../../../../types/transaction-history";
 import { showAlert } from "@/helpers/showAlert";
+import SearchIcon from "@mui/icons-material/Search";
+import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
+import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries";
 
 type Props = {};
 
@@ -52,7 +59,55 @@ const Page = (props: Props) => {
   const [selectedRetailShop, setSelectedRetailShop] = useState<string | null>(
     null
   );
+  const [formError, setFormError] = useState<{
+    retailShop: string;
+    items: string;
+  }>({ retailShop: "", items: "" });
+
+  const [filteredItems, setFilteredItems] = useState<SelectedWarehouseItem[]>(
+    []
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const warehouseId = (sessionData?.user as any).warehouseId || "";
+
+  useEffect(() => {
+    setFilteredItems(
+      selectedItems.filter((item) => filteredItems.includes(item))
+    );
+    handleSearch(searchQuery);
+  }, [selectedItems]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    handleSearch(e.target.value);
+  };
+
+  const handleSearch = (query: string) => {
+    setFilteredItems(
+      selectedItems.filter(
+        ({ warehouseStock }) =>
+          warehouseStock.product.name.toLowerCase().includes(query) ||
+          warehouseStock.product.serialNumber.includes(query)
+      )
+    );
+  };
+
   const handleTransferItems = async () => {
+    if (selectedItems.length === 0) {
+      setFormError({ retailShop: "", items: "Select at least one item" });
+      return;
+    }
+    if (!selectedRetailShop) {
+      setFormError({
+        items: "",
+        retailShop: "Select a retail shop",
+      });
+      return;
+    }
+    setFormError({
+      items: "",
+      retailShop: "",
+    });
     await transferGoodsToRetailshop({
       variables: {
         data: {
@@ -62,11 +117,34 @@ const Page = (props: Props) => {
             // price: item.warehouseStock.product.activePrice.price,
           })),
           retailShopId: selectedRetailShop!,
-          sourceWarehouseId: (sessionData?.user as any).warehouseId || "",
+          sourceWarehouseId: warehouseId,
           transferType: TransferType.WarehouseToRetailShop,
         },
       },
-      refetchQueries: [WAREHOUSE_STOCK],
+      refetchQueries: [
+        {
+          query: WAREHOUSE_STOCK,
+          variables: {
+            filterWarehouseStockInput: {
+              warehouse: {
+                id: (sessionData?.user as any).warehouseId || "",
+              },
+            },
+          },
+        },
+        {
+          query: GET_TOTAL_VALUATION_OF_WAREHOUSE,
+          variables: {
+            warehouseId: warehouseId,
+          },
+        },
+        {
+          query: WAREHOUSE_TRANSACTION_HISTORY,
+          variables: {
+            warehouseId: warehouseId,
+          },
+        },
+      ],
       onCompleted: (data) => {
         setSelectedItems([]);
         setSelectedRetailShop(null);
@@ -123,10 +201,28 @@ const Page = (props: Props) => {
                         Add
                       </Button>
                     }
-                    title="Products Summary"
+                    title="Selected Products"
                   />
+                  <Stack
+                    alignItems="center"
+                    spacing={2}
+                    sx={{ p: 2 }}
+                    direction="row"
+                  >
+                    <SvgIcon>
+                      <SearchIcon />
+                    </SvgIcon>
+                    <Input
+                      disableUnderline
+                      placeholder="Search by name or serial number"
+                      value={searchQuery}
+                      fullWidth
+                      onChange={handleChange}
+                    />
+                  </Stack>
                   <ItemsSummaryTable
                     handleRemoveItem={handleRemoveItem}
+                    filteredItems={filteredItems}
                     selectedItems={selectedItems}
                     setSelectedItems={setSelectedItems}
                   />
@@ -146,6 +242,7 @@ const Page = (props: Props) => {
           <Button
             disabled={loading}
             variant="contained"
+            sx={{ my: 2 }}
             onClick={() => handleTransferItems()}
           >
             {loading && (
@@ -156,6 +253,24 @@ const Page = (props: Props) => {
             )}
             Transfer Items
           </Button>
+          {formError.retailShop && (
+            <Alert color="error">
+              <AlertTitle>Error</AlertTitle>
+              {formError.retailShop}
+            </Alert>
+          )}
+          {formError.items && (
+            <Alert color="error">
+              <AlertTitle>Error</AlertTitle>
+              {formError.items}
+            </Alert>
+          )}
+          {error && (
+            <Alert color="error">
+              <AlertTitle>Error</AlertTitle>
+              {error.message}
+            </Alert>
+          )}
         </Container>
       </Box>
       <TransferItemsDrawer
