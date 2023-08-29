@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, CircularProgress } from "@mui/material";
+import { Alert, AlertTitle, Box, CircularProgress, Typography } from "@mui/material";
 import React from "react";
 
 type Props = {
@@ -30,7 +30,9 @@ const StateHandler = (props: Props) => {
     );
   }
   if (props.empty) {
-    return <div>No Records</div>;
+    return <Typography sx={{
+      pl: 2,  
+    }} variant="body2">No Records</Typography>;
   }
   return <>{props.children}</>;
 };

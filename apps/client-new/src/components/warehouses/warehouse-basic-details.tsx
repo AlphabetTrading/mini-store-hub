@@ -62,14 +62,14 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
   const align = mdUp ? "horizontal" : "vertical";
 
   return (
-    <StateHandler
-      loading={loading || valuationLoading}
-      empty={false}
-      error={error}
-      // error={error ? error : valuationError ? valuationError : null}
-    >
-      <Card>
-        <CardHeader title="Basic info" />
+    <Card>
+      <CardHeader title="Basic info" />
+      <StateHandler
+        loading={loading || valuationLoading}
+        empty={false}
+        error={error}
+        // error={error ? error : valuationError ? valuationError : null}
+      >
         <Divider />
         <PropertyList>
           <PropertyListItem
@@ -77,12 +77,12 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
             label="Name"
             value={warehouse?.name}
           />
+          <Divider />
           <PropertyListItem
             align={align}
             label="ስም"
             value={warehouse?.amharicName}
           />
-
           <Divider />
           <PropertyListItem align={align} label="Address">
             <Typography variant="subtitle2">
@@ -130,8 +130,8 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
           />
           <Divider />
         </PropertyList>
-      </Card>
-    </StateHandler>
+      </StateHandler>
+    </Card>
   );
 };
 

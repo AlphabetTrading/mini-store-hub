@@ -7,9 +7,10 @@ import { Storefront } from "@mui/icons-material";
 
 type Props = {
   navigationItems: NavigationItem[];
+  unreadNotifications: number;
 };
 const SIDE_NAV_WIDTH = 280;
-const SideNav = ({ navigationItems }: Props) => {
+const SideNav = ({ navigationItems ,unreadNotifications}: Props) => {
   const theme = useTheme();
 
   return (
@@ -74,7 +75,7 @@ const SideNav = ({ navigationItems }: Props) => {
             px: 2,
           }}
         >
-          <SideNavSection navigationItems={navigationItems} />
+          <SideNavSection navigationItems={navigationItems} unreadNotifications={unreadNotifications}/>
         </Stack>
       </Stack>
     </Drawer>

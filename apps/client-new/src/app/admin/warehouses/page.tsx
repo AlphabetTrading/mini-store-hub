@@ -24,9 +24,7 @@ import StateHandler from "@/components/state-handler";
 type Props = {};
 
 const Page = (props: Props) => {
-  const { data, loading, error } = useQuery<WarehousesData>(WAREHOUSES, {
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error } = useQuery<WarehousesData>(WAREHOUSES);
 
   return (
     <Box component="main" sx={{ py: 8 }}>

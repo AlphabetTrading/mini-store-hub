@@ -44,9 +44,9 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
       variables: {
         retailShopId: retailShopId,
       },
+      
     }
   );
-  console.log(valuationData);
   const valuation =
     valuationData?.totalValuationByRetailShopId.totalValuation || 0;
 

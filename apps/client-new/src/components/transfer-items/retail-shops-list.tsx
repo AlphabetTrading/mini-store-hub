@@ -12,11 +12,16 @@ import {
   Stack,
   Alert,
   CircularProgress,
+  InputAdornment,
+  OutlinedInput,
+  SvgIcon,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { RetailShopsData, RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
 import StateHandler from "../state-handler";
+import { Search } from "@mui/icons-material";
+import { RetailShop } from "../../../types/retail-shop";
 
 type Props = {
   setSelectedRetailShop: React.Dispatch<React.SetStateAction<string | null>>;
@@ -29,23 +34,54 @@ const RetailShopsList = ({
 }: Props) => {
   const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS);
   const retailShops = data?.retailShops.items;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredRetailShops, setFilteredRetailShops] = useState<RetailShop[]>(
+    []
+  );
+  useEffect(() => {
+    const filtered = retailShops?.filter((retailShop) => {
+      return retailShop.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      retailShop.retailShopManager?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      retailShop.retailShopManager?.lastName.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+    setFilteredRetailShops(filtered || []);
+  }, [searchQuery, retailShops]);
+
   return (
     <StateHandler
       loading={loading}
       error={error}
       empty={data?.retailShops.items.length === 0}
     >
-      <Box sx={{ p: 3, overflow: "auto" }} maxHeight={320}>
+      <Stack sx={{ p: 3 }} spacing={2}>
+        <OutlinedInput
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+          }}
+          value={searchQuery}
+          fullWidth
+          placeholder="Search by name or owner"
+          startAdornment={
+            <InputAdornment position="start">
+              <SvgIcon>
+                <Search />
+              </SvgIcon>
+            </InputAdornment>
+          }
+          sx={{ flexGrow: 1 }}
+        />
         <form onSubmit={(event) => event.preventDefault()}>
           <Stack
             component={RadioGroup}
             onChange={(event) => {
               setSelectedRetailShop(event.currentTarget.value);
             }}
-            spacing={3}
+            spacing={2}
+            sx={{ p: 3, overflow: "auto",display:"block" }}
+            maxHeight={350}
             value={selectedRetailShop?.toString() || ""}
           >
-            {retailShops?.map((retailShop, idx) => (
+            {filteredRetailShops?.map((retailShop, idx) => (
               <Paper
                 key={idx}
                 sx={{
@@ -64,7 +100,9 @@ const RetailShopsList = ({
                         {retailShop.name}
                       </Typography>
                       <Typography color="text.secondary" variant="body2">
-                        {`${retailShop.retailShopManager?.firstName} ${retailShop.retailShopManager?.lastName}`}
+                        {`${retailShop.retailShopManager?.firstName || ""} ${
+                          retailShop.retailShopManager?.lastName || ""
+                        }`}
                       </Typography>
                     </Box>
                   }
@@ -74,7 +112,7 @@ const RetailShopsList = ({
             ))}
           </Stack>
         </form>
-      </Box>
+      </Stack>
     </StateHandler>
   );
 };

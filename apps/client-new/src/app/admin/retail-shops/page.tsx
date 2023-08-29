@@ -21,9 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 type Props = {};
 
 const Page = (props: Props) => {
-  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS, {
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error } = useQuery<RetailShopsData>(RETAIL_SHOPS);
 
   return (
     <Box component="main" sx={{ py: 8 }}>
