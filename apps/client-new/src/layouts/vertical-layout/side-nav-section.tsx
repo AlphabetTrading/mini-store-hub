@@ -14,10 +14,10 @@ import { RecipientType } from "../../../types/notification";
 
 type Props = {
   navigationItems: NavigationItem[];
-  unreadNotifications:number;
+  unreadNotifications: number;
 };
 
-const SideNavSection = ({ navigationItems,unreadNotifications }: Props) => {
+const SideNavSection = ({ navigationItems, unreadNotifications }: Props) => {
   const pathname = usePathname();
   const { data: sessionData } = useSession();
   const userId = (sessionData?.user as any).id || "";

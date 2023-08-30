@@ -10,7 +10,7 @@ type Props = {
   unreadNotifications?: number;
 };
 
-const MobileNavSection = ({ navigationItems ,unreadNotifications}: Props) => {
+const MobileNavSection = ({ navigationItems, unreadNotifications }: Props) => {
   const pathname = usePathname();
 
   return (

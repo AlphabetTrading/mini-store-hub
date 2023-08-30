@@ -93,7 +93,7 @@ const Page = (props: Props) => {
             unit: values.unit,
           },
         },
-        refetchQueries: [ {query:PRODUCTS} ],
+        refetchQueries: [{ query: PRODUCTS }],
         // awaitRefetchQueries: true,
         onCompleted: () => {
           helpers.resetForm();

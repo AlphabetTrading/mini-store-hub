@@ -45,7 +45,7 @@ const Page = ({ params }: Props) => {
       variables: {
         deleteRetailShopId: params.id,
       },
-      refetchQueries: [{query:RETAIL_SHOPS}],
+      refetchQueries: [{ query: RETAIL_SHOPS }],
       onCompleted(data, clientOptions) {
         showAlert("removed a", "retail shop");
         router.back();

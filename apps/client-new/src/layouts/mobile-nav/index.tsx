@@ -63,7 +63,6 @@ export const MobileNav = ({
             //   href={paths.index}
             alignItems="center"
             justifyContent="center"
- 
             sx={{
               borderColor: "var(--nav-logo-border)",
               borderRadius: 1,
