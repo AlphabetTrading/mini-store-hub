@@ -187,7 +187,6 @@
   "insights": "Insights",
   "overview": "Overview",
   "home": "Home",
-  "dashboard": "Dashboard",
   "notifications": "Notifications",
   "markAsRead": "Mark as Read",
   "detail": "Detail",
@@ -216,9 +215,10 @@
   "removeAll": "Remove All",
   "proceedToCheckout": "Proceed to Checkout",
   "submitting": "Submitting...",
-  "addNewTranasaction": "Add New Transaction",
+  "addNewTransaction": "Add New Transaction",
   "lowStockItems": "Low Stock Items",
   "noLowStockItems": "No Low Stock Items",
   "transactionDetail": "Transaction Detail",
-  "items": "Items"
+  "items": "Items",
+  "details": "Details"
 }

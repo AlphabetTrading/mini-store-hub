@@ -14,6 +14,7 @@ import { formatNumber } from "../../utils/numbers";
 
 type DashboardComponentsProps = {
   selectedFilter: string;
+  isRefreshing: boolean;
 };
 
 const DashboardComponents = (props: DashboardComponentsProps) => {
@@ -26,29 +27,13 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
     retailShopID,
     selectedFilter
   );
-  // const [refreshing, setRefreshing] = React.useState(false);
 
-  // const onRefresh = React.useCallback(() => {
-  //   setRefreshing(true);
-  //   refetch();
-  //   setTimeout(() => {
-  //     setRefreshing(false);
-  //   }, 2000);
-  // }, []);
+  React.useMemo(() => {
+    refetch();
+  }, [props.isRefreshing]);
 
   return (
     <View
-      // refreshControl={
-      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      // }
-      // contentContainerStyle={{
-      //   marginTop: 20,
-      //   flexDirection: "row",
-      //   flexWrap: "wrap",
-      //   gap: 20,
-      //   justifyContent: "space-between",
-      // }}
-
       style={{
         marginTop: 20,
         flexDirection: "row",

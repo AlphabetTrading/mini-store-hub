@@ -8,7 +8,7 @@ import React, {
 import * as Notifications from "expo-notifications";
 import * as SecureStore from "expo-secure-store";
 import {
-  apolloClient,
+  apolloClient, getTokensFromStorage,
 } from "../graphql/apolloClient";
 import Constants from "expo-constants";
 import {
@@ -22,6 +22,7 @@ import {
 } from "../graphql/mutations/notificationMutations";
 import Loading from "../components/Loading";
 import { print } from "graphql";
+import jwtDecode from "jwt-decode";
 
 interface Address {
   street: string;
@@ -33,7 +34,7 @@ interface UserProfile {
   address: Address;
 }
 
-interface AuthState {
+export interface AuthState {
   accessToken: string;
   refreshToken: string;
   user: {
@@ -94,9 +95,19 @@ export function AuthContextProvider(props: ProviderProps) {
   // get user from async storage, and set it to state
 
   const fetchData = useCallback(async () => {
-    const localState = await SecureStore.getItemAsync("login");
-    if (localState) {
-      setAuthState(JSON.parse(localState));
+    const localState = await getTokensFromStorage();
+
+    // if there is no local state, set auth state to null
+    if (!localState) return setAuthState(null);
+
+    // if there is a local state, set auth state to local state
+    const refreshToken = localState?.refreshToken;
+
+    const { exp } = jwtDecode(refreshToken) as any;
+    const expirationTime = exp * 1000 - 60000;
+
+    if (Date.now() < expirationTime) {
+      setAuthState(localState);
     } else {
       setAuthState(null);
     }
@@ -147,7 +158,6 @@ export function AuthContextProvider(props: ProviderProps) {
       );
       const data = await res.json();
       if (data.errors) {
-        console.log(data.errors, " res.errors");
         return { data: undefined, error: new Error("Invalid Credentials") };
       }
       status = true;

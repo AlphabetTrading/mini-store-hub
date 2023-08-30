@@ -288,9 +288,10 @@
   "removeAllItems": "ሁሉንም እቃዎችን አጥፋ",
   "proceedToCheckout": "ወደ ክፍያ ይመለሱ",
   "submitting": "ይህንን ይጫኑ...",
-  "addNewTranasaction": "አዲስ ይገባ",
+  "addNewTransaction": "አዲስ ይገባ",
   "lowStockItems": "በዝቅተኛ መጠን ያሉ እቃዎች",
   "noLowStockItems": "በዝቅተኛ መጠን የሚገኙ እቃዎች የሉም",
   "transactionDetail": "የሽያጭ ዝርዝር",
-  "items": "እቃዎች"
+  "items": "እቃዎች",
+  "checkout": "ክፍያ"
 }

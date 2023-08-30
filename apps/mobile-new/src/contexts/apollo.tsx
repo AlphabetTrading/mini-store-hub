@@ -7,7 +7,6 @@ type Props = {
 };
 
 export const ApolloContextProvider = (props: Props) => {
-  const { authState, setAuthState } = useAuth();
-  const client = apolloClient(authState, setAuthState);
+  const client = apolloClient();
   return <ApolloProvider client={client}>{props.children}</ApolloProvider>;
 };

@@ -49,8 +49,11 @@ const ProductList = ({ filteredProducts, refreshing, onRefresh }: Props) => {
                 renderItem={({ item, index }) => (
                     <SingleProductItemCard
                         key={item.id}
-                        item={item}
-                    />
+                        item={item} selectItem={function (item: any): void {
+                            throw new Error('Function not implemented.');
+                        }} updateItem={function (item: any): void {
+                            throw new Error('Function not implemented.');
+                        }} alreadySelected={[]} />
                 )}
                 keyExtractor={(item) => item.id}
             />

@@ -49,6 +49,7 @@ const SingleProductItemCard = ({
       style={[
         {
           borderRadius: 10,
+          padding: 5,
           width: "100%",
         },
       ]}
@@ -60,7 +61,7 @@ const SingleProductItemCard = ({
             borderRadius: 10,
           },
           isSelected && {
-            borderWidth: 0.5,
+            borderWidth: 1,
             borderColor: theme.colors.accent,
           },
         ]}
@@ -71,6 +72,7 @@ const SingleProductItemCard = ({
               flexDirection: "row",
               backgroundColor: theme.colors.cardBackground,
               alignItems: "center",
+              borderRadius: 9,
             },
           ]}
         >

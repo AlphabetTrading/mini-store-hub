@@ -52,8 +52,11 @@ const AddTransactionItemsScreen = () => {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<Category>(AllCategory);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
 
-  const { loading, data, error, refetch } = useQuery(
+
+  const { loading, error, refetch } = useQuery(
     GET_RETAIL_SHOP_PRODUCTS_SIMPLE,
     {
       variables: {
@@ -62,30 +65,46 @@ const AddTransactionItemsScreen = () => {
         },
       },
       notifyOnNetworkStatusChange: true,
-      refetchWritePolicy: "merge",
-      partialRefetch: true,
       fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+      onCompleted: async (data,) => {
+        if (data.retailShopStockByRetailShopId.items) {
+          const alteredItems = data.retailShopStockByRetailShopId.items.map(
+            (item: any) => ({ ...item, selectedQuantity: 0 })
+          );
+          setProducts(alteredItems);
+          setFilteredProducts(alteredItems);
+        }
+      },
+      onError: (err) => {
+        console.log(err)
+      }
+
     }
   );
 
+  const GET_ALL_QUERY_VARIABLE = {
+    filterRetailShopStockInput: {
+      retailShopId: authState?.user.retailShop[0].id,
+    },
+  }
+
+  const GET_CATEGORY_QUERY_VARIABLE = {
+    filterRetailShopStockInput: {
+      product: {
+        category: {
+          id: selectedCategory.id,
+        },
+      },
+      retailShopId: authState?.user.retailShop[0].id,
+    },
+  }
+
   useEffect(() => {
     if (selectedCategory.id === AllCategory.id) {
-      refetch({
-        filterRetailShopStockInput: {
-          retailShopId: authState?.user.retailShop[0].id,
-        },
-      });
+      refetch(GET_ALL_QUERY_VARIABLE);
     } else {
-      refetch({
-        filterRetailShopStockInput: {
-          product: {
-            category: {
-              id: selectedCategory.id,
-            },
-          },
-          retailShopId: authState?.user.retailShop[0].id,
-        },
-      });
+      refetch(GET_CATEGORY_QUERY_VARIABLE);
     }
   }, [selectedCategory]);
 
@@ -127,17 +146,16 @@ const AddTransactionItemsScreen = () => {
     }, 2000);
   }, []);
 
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
-  useEffect(() => {
-    if (data && data.retailShopStockByRetailShopId.items) {
-      const alteredItems = data.retailShopStockByRetailShopId.items.map(
-        (item: any) => ({ ...item, selectedQuantity: 0 })
-      );
-      setProducts(alteredItems);
-      setFilteredProducts(alteredItems);
-    }
-  }, [data, selectedCategory]);
+
+  // useEffect(() => {
+  //   if (data && data.retailShopStockByRetailShopId.items) {
+  //     const alteredItems = data.retailShopStockByRetailShopId.items.map(
+  //       (item: any) => ({ ...item, selectedQuantity: 0 })
+  //     );
+  //     setProducts(alteredItems);
+  //     setFilteredProducts(alteredItems);
+  //   }
+  // }, [data, selectedCategory]);
 
   useEffect(() => {
     if (searchPhrase === "") {
@@ -230,12 +248,7 @@ const AddTransactionItemsScreen = () => {
                       onRefresh={onRefresh}
                     />
                   }
-                  data={filteredProducts.sort((a, b) =>
-                    alreadySelected
-                      ? alreadySelected.findIndex((i) => i.id === b.id) -
-                      alreadySelected.findIndex((i) => i.id === a.id)
-                      : 1
-                  )}
+                  data={filteredProducts}
                   ItemSeparatorComponent={() => (
                     <View
                       style={{

@@ -13,6 +13,8 @@ export const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
   "https://mini-store-hub-api.onrender.com/graphql/";
 
+// export const BASE_URL = "http://54.89.62.66:5000/graphql";
+
 const retryLink = new RetryLink({
   delay: {
     initial: 300,
@@ -73,7 +75,6 @@ export const apolloClient = () => {
 
   const authLink = setContext(async (req, { headers }) => {
     const localState = await getTokensFromStorage();
-
     if (!localState) {
       return { headers };
     }
@@ -86,11 +87,11 @@ export const apolloClient = () => {
       const { accessToken, refreshToken } = await getRefresh(
         localState?.refreshToken
       );
-      setAuthState({
-        ...localState,
-        accessToken,
-        refreshToken,
-      });
+      // update local state
+      await SecureStore.setItemAsync(
+        "login",
+        JSON.stringify({ ...localState, accessToken, refreshToken })
+      );
 
       return accessToken
         ? {
@@ -147,6 +148,3 @@ const getRefresh = async (refreshToken: string) => {
   const { data } = await response.json();
   return data.refreshToken;
 };
-function setAuthState(arg0: any) {
-  throw new Error("Function not implemented.");
-}

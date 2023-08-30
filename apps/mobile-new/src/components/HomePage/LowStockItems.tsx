@@ -12,7 +12,11 @@ import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "../../contexts/preference";
 import { useNavigation } from "@react-navigation/native";
 
-const LowStockItems = () => {
+type Props = {
+  isRefreshing: boolean;
+};
+
+const LowStockItems = (props: Props) => {
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
   const navigation = useNavigation();
@@ -20,6 +24,10 @@ const LowStockItems = () => {
   const { theme } = useAppTheme();
 
   const { loading, data, refetch } = useGetLowStockItems(retailShopID);
+
+  React.useMemo(() => {
+    refetch();
+  }, [props.isRefreshing]);
 
   return (
     <View
@@ -99,7 +107,7 @@ const LowStockItems = () => {
                         }}
                       >
                         {/* {item.product.name} */}
-                        {locale === "en"
+                        {locale.includes("en")
                           ? item.product.name
                           : item.product.amharicName}
                       </Text>

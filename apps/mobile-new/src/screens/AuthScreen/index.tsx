@@ -51,7 +51,6 @@ const LoginScreen = ({ }: any) => {
       },
     },
     onCompleted: async ({ login }: any) => {
-      console.log(login, " is login data");
       if (login) {
         setAuthState(login);
         navigation.navigate("Root", {

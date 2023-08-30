@@ -21,6 +21,7 @@ import { SalesStack } from "../navigations/SalesStack";
 import { InsightsStack } from "../navigations/InsightsStack";
 import AppbarRightAction from "../components/AppbarRightAction";
 import HomeStack from "../navigations/HomeStack";
+import TransactionRoot from "../screens/NewTransactionScreen/TransactionRoot";
 
 type Props = {};
 
@@ -68,6 +69,8 @@ const AppStack = ({ route }: any) => {
   }, [changeBottomTabVisibility]);
 
   const { t } = useLocalization();
+
+
 
   return (
     <View
