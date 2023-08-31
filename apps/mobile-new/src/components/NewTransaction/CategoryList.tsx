@@ -31,7 +31,6 @@ const CategoryList = (props: Props) => {
       setCategories([AllCategory, ...data.categories.items]);
     },
     onError: (e: any) => {
-      console.log(error, "is the error");
     },
   });
 

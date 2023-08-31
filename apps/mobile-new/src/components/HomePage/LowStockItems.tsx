@@ -53,7 +53,7 @@ const LowStockItems = (props: Props) => {
       >
         {loading ? (
           <View style={{ margin: 20 }}>
-            <ActivityIndicator animating={true} color={"#5C6BC0"} />
+            <ActivityIndicator animating={true} color={theme.colors.tint} />
           </View>
         ) : data?.findLowStockByRetailShopId.items.length > 0 ? (
           data?.findLowStockByRetailShopId.items.map((item: any) => (
@@ -106,7 +106,6 @@ const LowStockItems = (props: Props) => {
                           fontFamily: "InterMedium",
                         }}
                       >
-                        {/* {item.product.name} */}
                         {locale.includes("en")
                           ? item.product.name
                           : item.product.amharicName}
@@ -129,7 +128,7 @@ const LowStockItems = (props: Props) => {
                         color: theme.colors.text,
                       }}
                     >
-                      {locale === "en"
+                      {locale.includes("en")
                         ? `${item.product.activePrice
                           ? item.product.activePrice.price
                           : 29

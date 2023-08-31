@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   View,
   Text,
-  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +13,7 @@ import { useQuery } from "@apollo/client";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useAppTheme } from "../../contexts/preference";
 import { useLocalization } from "../../contexts/localization";
+import { ActivityIndicator } from "react-native-paper";
 
 type Props = {};
 
@@ -54,13 +54,22 @@ const InventoryScreen = (props: Props) => {
   });
 
   const { t, locale } = useLocalization();
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch().then(() => {
+      setRefreshing(false);
+    }
+    );
+  }, []);
   return (
     <BaseLayout>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : (
         <View style={styles.container}>
@@ -86,6 +95,8 @@ const InventoryScreen = (props: Props) => {
           >
             {data?.categories.items.length > 0 ? (
               <FlatList
+                refreshing={refreshing}
+                onRefresh={onRefresh}
                 data={data?.categories.items}
                 keyExtractor={(item) => item.id}
                 numColumns={3}
@@ -126,7 +137,7 @@ const InventoryScreen = (props: Props) => {
                       />
                     </View>
                     <Text style={styles.categoryText}>
-                      {locale === "en" ? item.name : item.amharicName}
+                      {locale.includes("en") ? item.name : item.amharicName}
                     </Text>
                   </TouchableOpacity>
                 )}

@@ -171,7 +171,6 @@ export function AuthContextProvider(props: ProviderProps) {
       await updateNotificationToken(data.data.login, token, "android");
       return { data: data.data.login, error: undefined };
     } catch (error) {
-      console.log(error, " is the error");
       setAuthState(null);
       return { error: error as Error, data: undefined };
     }
@@ -257,8 +256,6 @@ export function AuthContextProvider(props: ProviderProps) {
       });
       return { data: res.data, error: undefined };
     } catch (error) {
-      console.log(error);
-      // setAuthState(prev => ({...prev, user: {...prev?.user, allowsNotifications: false}}));
       return { error: error as Error, data: undefined };
     }
   };

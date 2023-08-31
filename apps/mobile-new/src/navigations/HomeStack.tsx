@@ -11,7 +11,7 @@ const HomeStackNavigator = createNativeStackNavigator<HomeTabParamList>();
 
 export const HomeStack = ({ navigation }: any) => {
   const { theme } = useAppTheme();
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
   return (
     <HomeStackNavigator.Navigator initialRouteName="Index">
       <HomeStackNavigator.Screen

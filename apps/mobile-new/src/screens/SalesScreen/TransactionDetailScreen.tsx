@@ -3,21 +3,38 @@ import {
   Text,
   View,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useQuery } from "@apollo/client";
 import { GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP } from "../../graphql/queries/salesQueries";
 import { format } from "date-fns";
 import { useAppTheme } from "../../contexts/preference";
 import { useLocalization } from "../../contexts/localization";
+import { ActivityIndicator } from "react-native-paper";
+import TransactionItem from "../../components/Sales/TransactionItem";
+import { FlatList } from "react-native-gesture-handler";
+import CustomDivider from "../../components/CustomDivider";
 
 type Props = {};
 
-const TransactionDetailScreen = ({ route }: any) => {
+const TransactionDetailScreen = ({ route, navigation }: any) => {
   const { transactionID, totalPrice } = route.params;
-  const { t } = useLocalization();
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: {
+        display: "none",
+      },
+    });
+
+    return () =>
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+  }, [navigation]);
+
+  const { t, locale } = useLocalization();
 
   const { data, loading, refetch, error } = useQuery(
     GET_SINGLE_SALES_TRANSACTION_BY_RETAIL_SHOP,
@@ -49,15 +66,21 @@ const TransactionDetailScreen = ({ route }: any) => {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : !data || error ? (
         <View>
-          <Text>Something went wrong</Text>
+          <Text>{t("somethingWentWrong")}</Text>
         </View>
       ) : (
-        <View style={styles.container}>
-          <ScrollView>
+        <ScrollView
+          horizontal
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "center",
+          }}
+        >
+          <View style={styles.container}>
             <Text
               style={{
                 marginLeft: 8,
@@ -92,7 +115,7 @@ const TransactionDetailScreen = ({ route }: any) => {
                   fontSize: 20,
                 }}
               >
-                {data.saleTransaction?.totalPrice} ETB
+                {data.saleTransaction?.totalPrice} {t("etb")}
               </Text>
               <Text
                 style={{
@@ -110,70 +133,21 @@ const TransactionDetailScreen = ({ route }: any) => {
             <Text
               style={{
                 marginLeft: 8,
-                marginVertical: 20,
+                marginVertical: 15,
                 color: theme.colors.text,
                 fontFamily: "InterBold",
                 textTransform: "uppercase",
               }}
             >
-              Items
+              {t("items")}
             </Text>
-            {data.saleTransaction.saleTransactionItems.map(
-              (saleTransactionItem: any, index: number) => {
-                return (
-                  <View
-                    key={saleTransactionItem.id}
-                    style={{
-                      flexDirection: "row",
-                      // backgroundColor: "#FFF",
-                      backgroundColor: theme.colors.background,
 
-                      width: "100%",
-                      padding: 20,
-                      paddingVertical: 15,
-                      alignItems: "center",
-                      gap: 16,
-                      marginVertical: 2,
-                      borderRadius: 6,
-                    }}
-                  >
-                    <View style={{ flex: 1, gap: 5 }}>
-                      <Text
-                        style={{
-                          color: theme.colors.text,
-
-                          fontSize: 18,
-                          fontFamily: "InterSemiBold",
-                        }}
-                      >
-                        {saleTransactionItem.product.name}
-                      </Text>
-                      <Text
-                        style={{
-                          color: theme.colors.text,
-
-                          fontFamily: "InterLight",
-                        }}
-                      >
-                        Quantity: {saleTransactionItem.quantity}
-                      </Text>
-                    </View>
-                    <Text
-                      style={{
-                        width: 80,
-                        fontSize: 18,
-                        fontFamily: "InterBold",
-                        alignSelf: "flex-end",
-                        // color: "#626262",
-                        color: theme.colors.text,
-                      }}
-                    >
-                      ETB {saleTransactionItem.subTotal}
-                    </Text>
-                  </View>
-                );
-              }
-            )}
+            <FlatList
+              data={data.saleTransaction.saleTransactionItems}
+              renderItem={({ item }) => <TransactionItem saleTransactionItem={item} />}
+              ItemSeparatorComponent={CustomDivider}
+              keyExtractor={(item) => item.id}
+            />
             <View
               style={{
                 flexDirection: "row",
@@ -185,11 +159,11 @@ const TransactionDetailScreen = ({ route }: any) => {
                 marginTop: 20,
               }}
             >
-              <Text style={styles.totalStyle}>Total</Text>
-              <Text style={styles.totalStyle}>ETB {totalPrice}</Text>
+              <Text style={styles.totalStyle}>{t("total")}</Text>
+              <Text style={styles.totalStyle}>{t("etb")} {totalPrice}</Text>
             </View>
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       )}
     </BaseLayout>
   );

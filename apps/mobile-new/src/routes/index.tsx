@@ -18,6 +18,7 @@ import LoginScreen from "../screens/AuthScreen";
 import ForgotPasswordScreen from "../screens/AuthScreen/forgotPassword";
 import ResetPasswordScreen from "../screens/AuthScreen/resetPassword";
 import NotificationStack from "../navigations/NotificationsStack";
+import OfflineBanner from "../components/OfflineBanner";
 
 type Props = {};
 const Navigation = (props: Props) => {

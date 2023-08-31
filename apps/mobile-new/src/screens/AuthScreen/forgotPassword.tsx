@@ -111,7 +111,6 @@ const ForgotPasswordScreen = ({ route }: any) => {
               ],
             });
           } catch (e) {
-            console.log(e, "error");
           }
           setSubmitting(false);
         }}

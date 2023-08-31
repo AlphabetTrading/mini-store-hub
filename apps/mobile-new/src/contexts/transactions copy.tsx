@@ -117,7 +117,6 @@ const CheckoutContextProvider = ({ children }: any) => {
             delete newCheckoutItems[stockItem.productId];
             setCheckoutItems(newCheckoutItems);
         } else {
-            console.log("not found");
         }
     }, []);
 

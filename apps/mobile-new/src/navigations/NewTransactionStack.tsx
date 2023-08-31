@@ -14,7 +14,7 @@ const NewTransactionStackNavigator =
 
 export const NewTransactionStack = ({ navigation, route }: any) => {
   const { theme } = useAppTheme();
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
   return (
     <NewTransactionStackNavigator.Navigator
       initialRouteName="Index"
@@ -27,7 +27,7 @@ export const NewTransactionStack = ({ navigation, route }: any) => {
         name="Index"
         component={CheckoutScreen}
         options={{
-          title: "Add New Transaction",
+          title: t("newTransaction"),
           animation: "fade",
           headerLeft: () => {
             return (
@@ -46,13 +46,13 @@ export const NewTransactionStack = ({ navigation, route }: any) => {
           },
           headerTintColor: "#FFF",
         }}
-        // options={{ headerShown: false }}
+      // options={{ headerShown: false }}
       />
       <NewTransactionStackNavigator.Screen
         name="AddTransactionItems"
         component={AddTransactionItemsScreen}
         options={{
-          title: "Select Items",
+          title: t("addTransactionItems"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

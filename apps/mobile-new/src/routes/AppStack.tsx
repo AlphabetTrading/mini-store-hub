@@ -260,6 +260,8 @@ const AppStack = ({ route }: any) => {
                   alignItems: "center",
                   borderWidth: 0.25,
                   borderColor: "#FFF",
+                  elevation: 10,
+
                 }}
               >
                 <TabItem
@@ -443,11 +445,6 @@ const AppStack = ({ route }: any) => {
           name="InsightsRoot"
           options={{
             title: t("insights"),
-            // tabBarItemStyle: {
-            //   borderWidth: 0.5,
-            //   borderColor: "#D3D3D3",
-            //   height: 60,
-            // },
             headerShown: false,
             tabBarStyle: {
               display: hideBottomTab ? "none" : "flex",

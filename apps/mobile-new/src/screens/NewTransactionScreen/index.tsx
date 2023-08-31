@@ -12,10 +12,12 @@ import CheckoutInfoBanner from "../../components/NewTransaction/CheckoutInfoBann
 import TransactionItemsList from "../../components/NewTransaction/TransactionItemsList";
 import { FAB } from "react-native-paper";
 import { useAppTheme } from "../../contexts/preference";
+import { useLocalization } from "../../contexts/localization";
 
 const CheckoutScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<any>();
+  const { t, locale } = useLocalization();
   const [checkoutItems, setCheckoutItems] = React.useState<CheckoutItem[]>([]);
   const isFocused = useIsFocused();
   const { theme } = useAppTheme();
@@ -43,6 +45,7 @@ const CheckoutScreen = () => {
       bottom: 0,
       borderRadius: 32,
       backgroundColor: theme.colors.primary,
+      zIndex: 100,
     },
   });
 
@@ -70,7 +73,7 @@ const CheckoutScreen = () => {
           }}
         >
           <Text style={{ marginTop: 20, color: theme.colors.text }}>
-            No items added yet
+            {t("noItemsAddedYet")}
           </Text>
         </View>
       ) : (
@@ -80,6 +83,7 @@ const CheckoutScreen = () => {
             flexDirection: "column",
             justifyContent: "flex-end",
             rowGap: 10,
+            position: "relative",
           }}
         >
           <TransactionItemsList
@@ -108,29 +112,7 @@ const CheckoutScreen = () => {
           });
         }}
       />
-      {/* <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 10,
-          right: 10,
-          width: 60,
-          height: 60,
-          borderRadius: 30,
-          backgroundColor: theme.colors.primary,
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "flex-end",
-          margin: 10,
-        }}
-        onPress={() => {
-          navigation.navigate("Root", {
-            screen: "NewTransactionRoot",
-            params: { screen: "AddTransactionItems" },
-          });
-        }}
-      >
-        <Entypo name="plus" style={{ padding: 5 }} size={36} color="white" />
-      </TouchableOpacity> */}
+     
     </BaseLayout>
   );
 };

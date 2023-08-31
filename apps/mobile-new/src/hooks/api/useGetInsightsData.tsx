@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   GET_PRODUCTS_BY_SOLD_QUANTITY_AND_BY_RETAIL_SHOP,
   GET_PRODUCTS_BY_TOP_SELL_AND_BY_RETAIL_SHOP,

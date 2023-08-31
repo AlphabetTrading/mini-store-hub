@@ -1,19 +1,18 @@
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
 import { BaseLayout } from "../../components/BaseLayout";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
 import { GET_RETAIL_SHOP_PRODUCTS_SIMPLE } from "../../graphql/queries/retailShopQuery";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorageUtils from "../../utils/async_storage";
-import { Button, FAB } from "react-native-paper";
+import { ActivityIndicator, Button, FAB } from "react-native-paper";
 
 import CategoryList from "../../components/NewTransaction/CategoryList";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
@@ -21,6 +20,7 @@ import { useAppTheme } from "../../contexts/preference";
 import SingleProductItemCard from "../../components/NewTransaction/SingleProductItemCard";
 import { Category } from "../../types/models";
 import { useLocalization } from "../../contexts/localization";
+import CustomDivider from "../../components/CustomDivider";
 
 const AllCategory: Category = {
   id: "afasfiahsofa",
@@ -54,38 +54,11 @@ const AddTransactionItemsScreen = () => {
     useState<Category>(AllCategory);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
-
-
-  const { loading, error, refetch } = useQuery(
-    GET_RETAIL_SHOP_PRODUCTS_SIMPLE,
-    {
-      variables: {
-        filterRetailShopStockInput: {
-          retailShopId: authState?.user.retailShop[0].id,
-        },
-      },
-      notifyOnNetworkStatusChange: true,
-      fetchPolicy: "cache-and-network",
-      nextFetchPolicy: "cache-first",
-      onCompleted: async (data,) => {
-        if (data.retailShopStockByRetailShopId.items) {
-          const alteredItems = data.retailShopStockByRetailShopId.items.map(
-            (item: any) => ({ ...item, selectedQuantity: 0 })
-          );
-          setProducts(alteredItems);
-          setFilteredProducts(alteredItems);
-        }
-      },
-      onError: (err) => {
-        console.log(err)
-      }
-
-    }
-  );
+  const retailShopId = authState?.user.retailShop[0].id;
 
   const GET_ALL_QUERY_VARIABLE = {
     filterRetailShopStockInput: {
-      retailShopId: authState?.user.retailShop[0].id,
+      retailShopId,
     },
   }
 
@@ -96,17 +69,29 @@ const AddTransactionItemsScreen = () => {
           id: selectedCategory.id,
         },
       },
-      retailShopId: authState?.user.retailShop[0].id,
+      retailShopId,
     },
   }
 
-  useEffect(() => {
-    if (selectedCategory.id === AllCategory.id) {
-      refetch(GET_ALL_QUERY_VARIABLE);
-    } else {
-      refetch(GET_CATEGORY_QUERY_VARIABLE);
+  const { loading, error, refetch } = useQuery(
+    GET_RETAIL_SHOP_PRODUCTS_SIMPLE,
+    {
+      variables: selectedCategory.id === AllCategory.id ? GET_ALL_QUERY_VARIABLE : GET_CATEGORY_QUERY_VARIABLE,
+      onCompleted: async (data,) => {
+        if (data.retailShopStockByRetailShopId.items) {
+          const alteredItems = data.retailShopStockByRetailShopId.items.map(
+            (item: any) => ({ ...item, selectedQuantity: 0 })
+          );
+          setProducts(alteredItems);
+          setFilteredProducts(alteredItems);
+        }
+      },
+      onError: (err) => {
+      },
+
+
     }
-  }, [selectedCategory]);
+  );
 
   const selectItem = (stockItem: any) => {
     if (alreadySelected) {
@@ -146,18 +131,7 @@ const AddTransactionItemsScreen = () => {
     }, 2000);
   }, []);
 
-
-  // useEffect(() => {
-  //   if (data && data.retailShopStockByRetailShopId.items) {
-  //     const alteredItems = data.retailShopStockByRetailShopId.items.map(
-  //       (item: any) => ({ ...item, selectedQuantity: 0 })
-  //     );
-  //     setProducts(alteredItems);
-  //     setFilteredProducts(alteredItems);
-  //   }
-  // }, [data, selectedCategory]);
-
-  useEffect(() => {
+  const searchItems = useCallback(() => {
     if (searchPhrase === "") {
       setFilteredProducts(products);
     } else {
@@ -177,7 +151,13 @@ const AddTransactionItemsScreen = () => {
         })
       );
     }
-  }, [searchPhrase]);
+  }, [searchPhrase])
+
+  useEffect(() => {
+    searchItems()
+  }, [searchItems]);
+
+
 
   const styles = StyleSheet.create({
     container: {
@@ -190,10 +170,14 @@ const AddTransactionItemsScreen = () => {
       margin: 16,
       right: 0,
       bottom: 0,
-      borderRadius: 32,
-      backgroundColor: theme.colors.primary,
+      borderRadius: 33,
+      backgroundColor: theme.colors.background,
+      borderColor: theme.colors.tint,
+      borderWidth: theme.mode === "light" ? 0 : 1.5,
+      elevation: 4,
     },
   });
+
   return (
     <BaseLayout>
       <SearchBarComponent
@@ -207,11 +191,12 @@ const AddTransactionItemsScreen = () => {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
+
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} size="small" />
         </View>
       ) : (
         <View style={styles.container}>
@@ -229,7 +214,7 @@ const AddTransactionItemsScreen = () => {
                     refetch();
                   }}
                 >
-                  <Text style={{ color: theme.colors.text }}>Refresh</Text>
+                  <Text style={{ color: theme.colors.text }}>{t("refresh")}</Text>
                 </Button>
               </View>
             ) : filteredProducts.length > 0 ? (
@@ -239,7 +224,6 @@ const AddTransactionItemsScreen = () => {
                   width: "100%",
                 }}
               >
-                {/* <SearchBar /> */}
                 <FlatList
                   contentContainerStyle={styles.container}
                   refreshControl={
@@ -249,15 +233,8 @@ const AddTransactionItemsScreen = () => {
                     />
                   }
                   data={filteredProducts}
-                  ItemSeparatorComponent={() => (
-                    <View
-                      style={{
-                        height: 5,
-                        backgroundColor: theme.colors.background,
-                      }}
-                    />
-                  )}
-                  renderItem={({ item, index }) => (
+                  ItemSeparatorComponent={CustomDivider}
+                  renderItem={({ item }) => (
                     <SingleProductItemCard
                       key={item.id}
                       item={item}
@@ -284,40 +261,11 @@ const AddTransactionItemsScreen = () => {
                     color: theme.colors.text,
                   }}
                 >
-                  No Items Found
+                  {t("noItemsFound")}
                 </Text>
               </View>
             )}
           </View>
-          {/* <TouchableOpacity
-            style={{
-              position: "absolute",
-              bottom: 10,
-              right: 10,
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              backgroundColor: "#5684E0",
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "flex-end",
-              margin: 10,
-            }}
-            onPress={async () => {
-              await AsyncStorageUtils.setItem("checkout", alreadySelected);
-              navigation.navigate("Root", {
-                screen: "NewTransactionRoot",
-                params: { screen: "Index" },
-              });
-            }}
-          >
-            <AntDesign
-              name="check"
-              style={{ padding: 5 }}
-              size={36}
-              color="white"
-            />
-          </TouchableOpacity> */}
           <FAB
             icon="check"
             style={styles.fab}

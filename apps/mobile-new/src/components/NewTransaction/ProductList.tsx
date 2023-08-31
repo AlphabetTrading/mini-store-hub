@@ -1,9 +1,8 @@
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { Divider } from 'react-native-paper';
-import { useLocalization } from '../../contexts/localization';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
 import { useAppTheme } from '../../contexts/preference';
 import SingleProductItemCard from './SingleProductItemCard';
+import CustomDivider from '../CustomDivider';
 
 type Props = {
     filteredProducts: any[];
@@ -45,7 +44,7 @@ const ProductList = ({ filteredProducts, refreshing, onRefresh }: Props) => {
                     />
                 }
                 data={filteredProducts}
-                ItemSeparatorComponent={Divider}
+                ItemSeparatorComponent={CustomDivider}
                 renderItem={({ item, index }) => (
                     <SingleProductItemCard
                         key={item.id}
