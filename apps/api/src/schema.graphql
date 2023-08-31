@@ -130,6 +130,8 @@ input CreatePriceHistoryInput {
 
 input CreateProductInput {
   activePriceId: String
+  amharicDescription: String
+  amharicName: String
   categoryId: String!
   description: String!
   images: [String!]
@@ -928,6 +930,8 @@ input UpdateNotificationTokenInput {
 
 input UpdateProductInput {
   activePriceId: String
+  amharicDescription: String
+  amharicName: String
   categoryId: String
   description: String
   images: [String!]
@@ -1075,6 +1079,8 @@ type WarehouseStock {
 }
 
 input sendPushNotificationInput {
+  amharicBody: String
+  amharicTitle: String
   body: String!
   recipientId: String
   recipientType: RecipientType!
