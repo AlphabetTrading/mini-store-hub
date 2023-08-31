@@ -12,6 +12,7 @@ import { useAppTheme } from "../../contexts/preference";
 import { Entypo } from "@expo/vector-icons";
 import { CheckoutItem } from "./TransactionItem";
 import { notifyMessage } from "../Toast";
+import { useLocalization } from "../../contexts/localization";
 type Props = {
   item: CheckoutItem;
   selectItem: (item: any) => void;
@@ -19,13 +20,14 @@ type Props = {
   alreadySelected: any[];
 };
 
-const SingleProductItemCard = ({
+const SingleProductItemCard = React.memo(({
   item,
   alreadySelected,
   selectItem,
   updateItem,
 }: Props) => {
   const { theme } = useAppTheme();
+  const { t, locale } = useLocalization();
   const isSelected =
     alreadySelected && alreadySelected.some((i) => i.id === item.id);
   const [productItem, setProductItem] = useState<CheckoutItem>({
@@ -49,6 +51,7 @@ const SingleProductItemCard = ({
       style={[
         {
           borderRadius: 10,
+          padding: 5,
           width: "100%",
         },
       ]}
@@ -60,7 +63,7 @@ const SingleProductItemCard = ({
             borderRadius: 10,
           },
           isSelected && {
-            borderWidth: 0.5,
+            borderWidth: 1,
             borderColor: theme.colors.accent,
           },
         ]}
@@ -71,6 +74,7 @@ const SingleProductItemCard = ({
               flexDirection: "row",
               backgroundColor: theme.colors.cardBackground,
               alignItems: "center",
+              borderRadius: 9,
             },
           ]}
         >
@@ -89,15 +93,16 @@ const SingleProductItemCard = ({
                     color: theme.colors.text,
                   }}
                 >
-                  {productItem.product.name}
+                  {locale.includes("am") ? productItem.product.amharicName : productItem.product.name}
                 </Text>
                 <Text
                   style={{
                     fontFamily: "InterRegular",
                     color: theme.colors.text,
+
                   }}
                 >
-                  Quantity: {productItem.selectedQuantity}
+                  {t("quantity")}: {productItem.quantity}
                 </Text>
                 <Text
                   style={{
@@ -108,7 +113,7 @@ const SingleProductItemCard = ({
                     color: theme.colors.text,
                   }}
                 >
-                  ETB {productItem.product.activePrice.price}
+                  {t("etb")} {productItem.product.activePrice.price}
                 </Text>
                 <Text></Text>
               </View>
@@ -161,7 +166,12 @@ const SingleProductItemCard = ({
                       />
                     </Pressable>
                   </View>
-                  <Text style={{ fontSize: 20, color: theme.colors.text }}>
+                  <Text style={{
+                    fontSize: 20,
+                    color: theme.colors.text,
+                    textAlign: "center",
+                    minWidth: 20,
+                  }}>
                     {productItem.selectedQuantity}
                   </Text>
                   <View
@@ -198,7 +208,7 @@ const SingleProductItemCard = ({
                     }}
                   >
                     {productItem.selectedQuantity} x{" "}
-                    {productItem.product.activePrice.price} = ETB{" "}
+                    {productItem.product.activePrice.price} = {t("etb")}{" "}
                     {productItem.selectedQuantity *
                       productItem.product.activePrice.price}
                   </Text>
@@ -222,7 +232,7 @@ const SingleProductItemCard = ({
                     color: theme.colors.text,
                   }}
                 >
-                  {item.product.name}
+                  {locale.includes("am") ? item.product.amharicName : item.product.name}
                 </Text>
                 <Text
                   style={{
@@ -230,7 +240,7 @@ const SingleProductItemCard = ({
                     color: theme.colors.text,
                   }}
                 >
-                  Quantity: {item.quantity}
+                  {t("quantity")}: {item.quantity}
                 </Text>
               </View>
               <Text
@@ -244,7 +254,7 @@ const SingleProductItemCard = ({
                   textAlign: "center",
                 }}
               >
-                ETB {item.product.activePrice.price}
+                {t("etb")} {item.product.activePrice.price}
               </Text>
             </View>
           )}
@@ -252,7 +262,7 @@ const SingleProductItemCard = ({
       </Card>
     </TouchableOpacity>
   );
-};
+});
 
 export default SingleProductItemCard;
 

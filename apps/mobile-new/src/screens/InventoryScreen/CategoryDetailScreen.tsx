@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -16,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "../../contexts/preference";
-import { Avatar } from "react-native-paper";
+import { Avatar, ActivityIndicator } from "react-native-paper";
 
 type Props = {};
 
@@ -137,7 +136,7 @@ const CategoryDetailScreen = ({
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : (
         <View style={{ width: "100%" }}>

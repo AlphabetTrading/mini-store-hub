@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, Image, } from "react-native";
 import React from "react";
 import { BaseLayout } from "../components/BaseLayout";
 import { GET_ME_QUERY } from "../graphql/queries/userQueries";
@@ -6,6 +6,7 @@ import { useQuery } from "@apollo/client";
 import { useAuth } from "../contexts/auth";
 import { useLocalization } from "../contexts/localization";
 import { useAppTheme } from "../contexts/preference";
+import { ActivityIndicator } from "react-native-paper";
 
 type Props = {};
 
@@ -28,7 +29,7 @@ const ProfileScreen = (props: Props) => {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="small" />
         </View>
       ) : (
         <View style={styles.container}>

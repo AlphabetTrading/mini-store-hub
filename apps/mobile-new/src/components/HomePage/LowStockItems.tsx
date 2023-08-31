@@ -12,7 +12,11 @@ import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "../../contexts/preference";
 import { useNavigation } from "@react-navigation/native";
 
-const LowStockItems = () => {
+type Props = {
+  isRefreshing: boolean;
+};
+
+const LowStockItems = (props: Props) => {
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
   const navigation = useNavigation();
@@ -20,6 +24,10 @@ const LowStockItems = () => {
   const { theme } = useAppTheme();
 
   const { loading, data, refetch } = useGetLowStockItems(retailShopID);
+
+  React.useMemo(() => {
+    refetch();
+  }, [props.isRefreshing]);
 
   return (
     <View
@@ -45,7 +53,7 @@ const LowStockItems = () => {
       >
         {loading ? (
           <View style={{ margin: 20 }}>
-            <ActivityIndicator animating={true} color={"#5C6BC0"} />
+            <ActivityIndicator animating={true} color={theme.colors.tint} />
           </View>
         ) : data?.findLowStockByRetailShopId.items.length > 0 ? (
           data?.findLowStockByRetailShopId.items.map((item: any) => (
@@ -98,8 +106,7 @@ const LowStockItems = () => {
                           fontFamily: "InterMedium",
                         }}
                       >
-                        {/* {item.product.name} */}
-                        {locale === "en"
+                        {locale.includes("en")
                           ? item.product.name
                           : item.product.amharicName}
                       </Text>
@@ -121,7 +128,7 @@ const LowStockItems = () => {
                         color: theme.colors.text,
                       }}
                     >
-                      {locale === "en"
+                      {locale.includes("en")
                         ? `${item.product.activePrice
                           ? item.product.activePrice.price
                           : 29

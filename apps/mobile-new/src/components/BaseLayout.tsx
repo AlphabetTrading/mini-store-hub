@@ -1,6 +1,7 @@
 import { SafeAreaView, StyleSheet, ViewStyle } from "react-native";
 
 import { useAppTheme } from "../contexts/preference";
+import OfflineBanner from "./OfflineBanner";
 export const BaseLayout = ({
   children,
   style,
@@ -16,6 +17,9 @@ export const BaseLayout = ({
     },
   });
   return (
-    <SafeAreaView style={[styles.container, style]}>{children}</SafeAreaView>
+    <SafeAreaView style={[styles.container, style]}>
+      <OfflineBanner />
+      {children}
+    </SafeAreaView>
   );
 };

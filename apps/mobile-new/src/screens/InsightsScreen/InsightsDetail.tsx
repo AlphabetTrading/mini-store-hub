@@ -1,130 +1,18 @@
 import {
-  ActivityIndicator,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
-  Text,
   View,
+  Text,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
-  useGetInsightsDataDetail,
 } from "../../hooks/api/useGetInsightsData";
 import { useAuth } from "../../contexts/auth";
 import { useAppTheme } from "../../contexts/preference";
 import { INSIGHTS_TYPE } from "../../types/types";
-import { Button } from "react-native-paper";
-
-const MostSoldItems = ({
-  retailShopID,
-  insightsType,
-}: {
-  retailShopID: string;
-  insightsType: INSIGHTS_TYPE;
-}) => {
-  const { data, loading, refetch, error } = useGetInsightsDataDetail(
-    retailShopID,
-    insightsType
-  );
-
-  const { theme } = useAppTheme();
-
-  return loading ? (
-    <View>
-      <ActivityIndicator />
-    </View>
-  ) : error ? (
-    <View>
-      <Text>Error Try Again</Text>
-
-      <Button onPress={() => { refetch() }}>Refresh</Button>
-    </View>
-  ) : (
-    data.findProductsBySoldQuantityAndRetailShop.items.map(
-      (item: any, index: number) => {
-        return (
-          <View
-            key={item.id}
-            style={{
-              backgroundColor: theme.colors.cardBackground,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 20,
-              marginVertical: 2,
-              borderRadius: 6,
-            }}
-          >
-            <Text
-              style={{
-                color: theme.colors.text,
-                fontFamily: "InterMedium",
-                fontSize: 16,
-              }}
-            >
-              {index + 1}. {item.name}
-            </Text>
-            <Text
-              style={{
-                color: theme.colors.text,
-                fontSize: 16,
-                fontFamily: "InterMedium",
-              }}
-            >
-              120kg
-            </Text>
-          </View>
-        );
-      }
-    )
-  );
-};
-
-const TopSellingItems = ({
-  retailShopID,
-  insightsType,
-}: {
-  retailShopID: string;
-  insightsType: INSIGHTS_TYPE;
-}) => {
-  const { data, loading, refetch, error } = useGetInsightsDataDetail(
-    retailShopID,
-    insightsType
-  );
-
-  return loading ? (
-    <View>
-      <ActivityIndicator />
-    </View>
-  ) : error ? (
-    <Text>Error Try Again</Text>
-  ) : (
-    data.findProductsByTopSellAndByRetailShop.items.map(
-      (item: any, index: number) => {
-        return (
-          <View
-            key={index}
-            style={{
-              backgroundColor: "#FFF",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 20,
-              marginVertical: 2,
-              borderRadius: 6,
-            }}
-          >
-            <Text style={{ fontFamily: "InterMedium", fontSize: 16 }}>
-              {index + 1}. {item.name}
-            </Text>
-            <Text style={{ fontSize: 16, fontFamily: "InterMedium" }}>
-              120kg
-            </Text>
-          </View>
-        );
-      }
-    )
-  );
-};
+import AllSoldItems from "../../components/Insights/AllSoldItems";
+import AllSellingItems from "../../components/Insights/AllSellingItems";
 
 const InsightsDetailScreen = ({
   route,
@@ -150,28 +38,27 @@ const InsightsDetailScreen = ({
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 15,
+      padding: 10,
       backgroundColor: theme.colors.background,
+      minHeight: "100%"
     },
   });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView>
-        <View style={styles.container}>
-          {route.params.insightsID === INSIGHTS_TYPE.MOST_SOLD_ITEMS ? (
-            <MostSoldItems
-              retailShopID={retailShopID}
-              insightsType={INSIGHTS_TYPE.MOST_SOLD_ITEMS}
-            />
-          ) : (
-            <TopSellingItems
-              retailShopID={retailShopID}
-              insightsType={INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM}
-            />
-          )}
-        </View>
-      </ScrollView>
+      <View style={styles.container}>
+        {route.params.insightsID === INSIGHTS_TYPE.MOST_SOLD_ITEMS ? (
+          <AllSoldItems
+            retailShopID={retailShopID}
+            insightsType={INSIGHTS_TYPE.MOST_SOLD_ITEMS}
+          />
+        ) : (
+          <AllSellingItems
+            retailShopID={retailShopID}
+            insightsType={INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 };

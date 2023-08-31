@@ -6,6 +6,7 @@ export const LOGIN_MUTATION = gql`
       accessToken
       refreshToken
       user {
+        id
         amharicFirstName
         amharicLastName
         firstName
@@ -14,7 +15,6 @@ export const LOGIN_MUTATION = gql`
         isActive
         phone
         username
-
         userProfile {
           photoUrl
           idUrl

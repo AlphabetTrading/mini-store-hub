@@ -38,7 +38,7 @@ const loginSchema = Yup.object().shape({
 
 const LoginScreen = ({ }: any) => {
   const navigation = useNavigation();
-  const { setAuthState, authState, updateNotificationToken } = useAuth();
+  const { setAuthState, updateNotificationToken } = useAuth();
   const { theme } = useAppTheme();
   const [viewPassword, setViewPassword] = useState(false);
   const controller = new AbortController();
@@ -51,7 +51,6 @@ const LoginScreen = ({ }: any) => {
       },
     },
     onCompleted: async ({ login }: any) => {
-      console.log(login, " is login data");
       if (login) {
         setAuthState(login);
         navigation.navigate("Root", {
@@ -70,7 +69,6 @@ const LoginScreen = ({ }: any) => {
       }
     },
     onError: (error) => {
-      console.log(error);
       notifyMessage("Error: " + error.message);
     },
     errorPolicy: "all"
@@ -154,8 +152,8 @@ const LoginScreen = ({ }: any) => {
             try {
               setTimeout(() => {
                 controller.abort();
-                console.log("Aborted");
-              }, 5000);
+                notifyMessage("Something went wrong, please try again");
+              }, 7000);
 
               const res = await login({
                 variables: {
@@ -180,7 +178,6 @@ const LoginScreen = ({ }: any) => {
               //   }
               return res.data;
             } catch (e) {
-              console.log(e);
               notifyMessage("Network Error Please try again");
             }
             setSubmitting(false);

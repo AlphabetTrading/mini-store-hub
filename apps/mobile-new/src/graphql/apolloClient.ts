@@ -8,10 +8,14 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { setContext } from "@apollo/client/link/context";
 import jwtDecode from "jwt-decode";
 import * as SecureStore from "expo-secure-store";
+import { CachePersistor } from "apollo3-cache-persist";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
   "https://mini-store-hub-api.onrender.com/graphql/";
+
+// export const BASE_URL = "http://54.89.62.66:5000/graphql";
 
 const retryLink = new RetryLink({
   delay: {
@@ -20,7 +24,7 @@ const retryLink = new RetryLink({
     jitter: true,
   },
   attempts: {
-    max: 5,
+    max: 3,
     retryIf: (error, _operation) => !!error,
   },
 });
@@ -34,82 +38,56 @@ export const getTokensFromStorage = async (): Promise<any> => {
   }
 };
 
+const cache = new InMemoryCache();
+
+export const catchPersistor = new CachePersistor({
+  cache,
+  storage: AsyncStorage,
+});
+
 export const apolloClient = () => {
-  // setContext to add authorization header to every request
-
-  // const authLink = new ApolloLink((operation, forward) => {
-  //   operation.setContext(async ({ headers }: any) => {
-  //     const { exp } = jwtDecode(authState.accessToken) as any;
-  //     const expirationTime = exp * 1000 - 60000;
-
-  //     if (Date.now() >= expirationTime) {
-  //       const { accessToken, refreshToken } = await getRefresh(
-  //         authState.refreshToken
-  //       );
-  //       setAuthState({
-  //         ...authState,
-  //         accessToken,
-  //         refreshToken,
-  //       });
-  //     }
-
-  //     const ops = authState
-  //       ? {
-  //           headers: {
-  //             ...headers,
-  //             authorization: authState.accessToken
-  //               ? `Bearer  ${authState?.accessToken}`
-  //               : null,
-  //           },
-  //         }
-  //       : { headers };
-
-  //     console.log(ops);
-  //     return ops;
-  //   });
-
-  //   return forward(operation);
-  // });
-
   const authLink = setContext(async (req, { headers }) => {
     const localState = await getTokensFromStorage();
-
     if (!localState) {
       return { headers };
     }
     const token = localState?.accessToken;
-
     const { exp } = jwtDecode(token) as any;
     const expirationTime = exp * 1000 - 60000;
 
-    if (Date.now() >= expirationTime) {
-      const { accessToken, refreshToken } = await getRefresh(
-        localState?.refreshToken
-      );
-      setAuthState({
-        ...localState,
-        accessToken,
-        refreshToken,
-      });
+    try {
+      if (Date.now() >= expirationTime) {
+        const {
+          refreshToken: { accessToken, refreshToken },
+        } = await getRefresh(localState?.refreshToken);
+        console.log(accessToken, refreshToken);
+        // update local state
+        await SecureStore.setItemAsync(
+          "login",
+          JSON.stringify({ ...localState, accessToken, refreshToken })
+        );
 
-      return accessToken
-        ? {
-            headers: {
-              ...headers,
-              authorization: accessToken ? `Bearer ${accessToken}` : null,
-            },
-          }
-        : { headers };
-    } else {
-      // return the headers to the context so httpLink can read them
-      return token
-        ? {
-            headers: {
-              ...headers,
-              authorization: token ? `Bearer ${token}` : null,
-            },
-          }
-        : { headers };
+        return accessToken
+          ? {
+              headers: {
+                ...headers,
+                authorization: accessToken ? `Bearer ${accessToken}` : null,
+              },
+            }
+          : { headers };
+      } else {
+        // return the headers to the context so httpLink can read them
+        return token
+          ? {
+              headers: {
+                ...headers,
+                authorization: token ? `Bearer ${token}` : null,
+              },
+            }
+          : { headers };
+      }
+    } catch (err) {
+      return { headers };
     }
   });
 
@@ -117,11 +95,16 @@ export const apolloClient = () => {
   const link = new HttpLink({
     uri: BASE_URL,
   });
-  const cache = new InMemoryCache();
 
   const client = new ApolloClient({
     link: ApolloLink.from([retryLink, authLink, link]),
     cache,
+    connectToDevTools: process.env.NODE_ENV === "development",
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "cache-and-network",
+      },
+    },
   });
 
   return client;
@@ -145,8 +128,41 @@ const getRefresh = async (refreshToken: string) => {
   });
 
   const { data } = await response.json();
-  return data.refreshToken;
+  return data;
 };
-function setAuthState(arg0: any) {
-  throw new Error("Function not implemented.");
-}
+
+// setContext to add authorization header to every request
+
+// const authLink = new ApolloLink((operation, forward) => {
+//   operation.setContext(async ({ headers }: any) => {
+//     const { exp } = jwtDecode(authState.accessToken) as any;
+//     const expirationTime = exp * 1000 - 60000;
+
+//     if (Date.now() >= expirationTime) {
+//       const { accessToken, refreshToken } = await getRefresh(
+//         authState.refreshToken
+//       );
+//       setAuthState({
+//         ...authState,
+//         accessToken,
+//         refreshToken,
+//       });
+//     }
+
+//     const ops = authState
+//       ? {
+//           headers: {
+//             ...headers,
+//             authorization: authState.accessToken
+//               ? `Bearer  ${authState?.accessToken}`
+//               : null,
+//           },
+//         }
+//       : { headers };
+
+//     console.log(ops);
+//     return ops;
+//   });
+
+//   return forward(operation);
+// });

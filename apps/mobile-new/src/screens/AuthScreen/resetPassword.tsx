@@ -130,17 +130,7 @@ const ResetPasswordScreen = ({ route }: any) => {
           try {
             const res = await resetPassword(values.password, phone);
             navigation.dispatch(StackActions.replace("SignIn"));
-
-            // navigation.reset({
-            //   index: 0,
-            //   routes: [
-            //     {
-            //       name: "SignIn",
-            //     },
-            //   ],
-            // });
           } catch (e) {
-            console.log(e);
           }
           setSubmitting(false);
         }}

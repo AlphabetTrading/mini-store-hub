@@ -80,12 +80,15 @@ export const GET_RETAIL_SHOP_PRODUCT_DETAIL = gql`
         serialNumber
         images
         category {
+          id
           name
         }
         activePrice {
+          id
           price
         }
         priceHistory {
+          id
           price
           createdAt
         }

@@ -5,6 +5,7 @@ export const useGetLowStockItems = (retailShopId: string, option?: any) => {
   return useQuery(GET_LOW_STOCK_PRODUCTS, {
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
+    fetchPolicy: "cache-and-network",
     variables: {
       retailShopId,
       paginationInput: {

@@ -10,7 +10,7 @@ type Props = {
   options: any[];
 };
 
-const CustomMaterialMenu = ({}: any) => {
+const CustomMaterialMenu = () => {
   const { signOut } = useAuth();
   const [visible, setVisible] = useState(false);
   const hideMenu = () => setVisible(false);
@@ -24,6 +24,7 @@ const CustomMaterialMenu = ({}: any) => {
       onDismiss={hideMenu}
       contentStyle={{
         backgroundColor: theme.colors.cardBackground,
+        elevation: 10,
       }}
       anchor={
         // <IconButton
@@ -82,7 +83,6 @@ const CustomMaterialMenu = ({}: any) => {
               })
             );
           } catch (error) {
-            console.log(error, " error");
           }
         }}
         title={t("logout")}

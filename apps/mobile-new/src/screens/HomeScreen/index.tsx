@@ -3,9 +3,10 @@ import {
   View,
   TouchableWithoutFeedback,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { Text } from "react-native-paper";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { BaseLayout } from "../../components/BaseLayout";
 import { StatusBar } from "expo-status-bar";
 import DashboardComponents from "../../components/HomePage/DashboardComponents";
@@ -22,6 +23,15 @@ export default function HomeScreen() {
   ];
   const [selectedFilter, setSelectedFilter] = useState(filters[0].id);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   return (
     <BaseLayout
       style={{
@@ -37,6 +47,10 @@ export default function HomeScreen() {
           flexDirection: "column",
           rowGap: 10,
         }}
+
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View>
           <View
@@ -93,10 +107,10 @@ export default function HomeScreen() {
               }
             )}
           </View>
-          <DashboardComponents selectedFilter={selectedFilter} />
+          <DashboardComponents selectedFilter={selectedFilter} isRefreshing={refreshing} />
         </View>
 
-        <LowStockItems />
+        <LowStockItems isRefreshing={refreshing} />
       </ScrollView>
     </BaseLayout>
   );

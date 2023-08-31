@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -16,6 +15,8 @@ import { useMutation } from "@apollo/client";
 import { MARK_NOTIFICATION_AS_READ } from "../../graphql/queries/notificationQueries";
 import { useAuth } from "../../contexts/auth";
 import { useLocalization } from "../../contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { ActivityIndicator } from "react-native-paper";
 
 const NotificationDetailScreen = ({ route, navigation }: any) => {
   const { data, loading, error, refetch } = useGetSingleNotification(
@@ -77,13 +78,15 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
     );
   };
 
+  const { theme } = useAppTheme();
+
   return (
     <SafeAreaView>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : (
         <ScrollView
