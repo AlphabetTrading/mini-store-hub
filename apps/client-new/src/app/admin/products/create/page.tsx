@@ -32,7 +32,7 @@ import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
 import { Unit } from "../../../../../types/product";
 import { showAlert } from "@/helpers/showAlert";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Props = {};
 
