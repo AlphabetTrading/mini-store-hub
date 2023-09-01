@@ -1,14 +1,17 @@
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import ItemsSummaryRow from "./items-summary-row";
 import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
+import EmptyTable from "../empty-table";
 
 type Props = {
   handleRemoveItem: (id: string) => void;
@@ -16,12 +19,14 @@ type Props = {
   setSelectedItems: React.Dispatch<
     React.SetStateAction<SelectedWarehouseItem[]>
   >;
+  filteredItems: SelectedWarehouseItem[];
 };
 
 const ItemsSummaryTable = ({
   handleRemoveItem,
   selectedItems,
   setSelectedItems,
+  filteredItems,
 }: Props) => {
   return (
     <TableContainer style={{ maxHeight: 400 }}>
@@ -36,17 +41,22 @@ const ItemsSummaryTable = ({
             <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {selectedItems.map((item, idx) => (
-            <ItemsSummaryRow
-              key={idx}
-              selectedWarehouseItem={item}
-              handleRemoveItem={handleRemoveItem}
-              setSelectedItems={setSelectedItems}
-              selectedItems={selectedItems}
-            />
-          ))}
-        </TableBody>
+
+        {selectedItems.length === 0 ? (
+          <EmptyTable colspan={6} />
+        ) : (
+          <TableBody>
+            {filteredItems.map((item, idx) => (
+              <ItemsSummaryRow
+                key={idx}
+                selectedWarehouseItem={item}
+                handleRemoveItem={handleRemoveItem}
+                setSelectedItems={setSelectedItems}
+                selectedItems={selectedItems}
+              />
+            ))}
+          </TableBody>
+        )}
       </Table>
     </TableContainer>
   );

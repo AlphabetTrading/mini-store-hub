@@ -1,4 +1,3 @@
-// create react native localizations, here
 
 import React, { useEffect, useState } from "react";
 import * as Localization from "expo-localization";
@@ -14,7 +13,7 @@ const LocalizationContext = React.createContext<{
 }>({
   t: (key: string, config: any) => "",
   locale: "en",
-  setLocale: (data: string) => {},
+  setLocale: (data: string) => { },
 });
 
 export const LocalizationProvider = ({ children }: any) => {

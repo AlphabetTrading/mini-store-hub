@@ -14,7 +14,7 @@ import { useAuth } from "../../contexts/auth";
 import { Entypo } from "@expo/vector-icons";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 
 type Props = {};
 
@@ -130,17 +130,7 @@ const ResetPasswordScreen = ({ route }: any) => {
           try {
             const res = await resetPassword(values.password, phone);
             navigation.dispatch(StackActions.replace("SignIn"));
-
-            // navigation.reset({
-            //   index: 0,
-            //   routes: [
-            //     {
-            //       name: "SignIn",
-            //     },
-            //   ],
-            // });
           } catch (e) {
-            console.log(e);
           }
           setSubmitting(false);
         }}

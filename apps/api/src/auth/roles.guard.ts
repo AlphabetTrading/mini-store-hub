@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { UserRole } from '@prisma/client';
@@ -21,6 +26,12 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const ctx = GqlExecutionContext.create(context).getContext();
-    return this.matchRoles(requiredRoles, ctx.req.user.role);
+    const authorized = this.matchRoles(requiredRoles, ctx.req.user.role);
+    if (!authorized) {
+      throw new UnauthorizedException(
+        'You are not authorized to access this resource',
+      );
+    }
+    return authorized;
   }
 }

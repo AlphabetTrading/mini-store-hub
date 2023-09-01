@@ -1,28 +1,22 @@
 import {
-  ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import React from "react";
-import { Entypo } from "@expo/vector-icons";
-import Colors from "../../constants/Colors";
 import { BaseLayout } from "../../components/BaseLayout";
 import { GET_SALES_TRANSACTIONS_BY_RETAIL_SHOP } from "../../graphql/queries/salesQueries";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
-import { format } from "date-fns";
-import { useNavigation } from "@react-navigation/native";
-import { useAppTheme } from "@/src/contexts/preference";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { useLocalization } from "../../contexts/localization";
+import SingleTransactionItem from "../../components/Sales/SingleTransactionItem";
+import { ActivityIndicator } from "react-native-paper";
 
 type Props = {};
 
 const SalesScreen = (props: Props) => {
-  const navigation = useNavigation();
   const { authState } = useAuth();
   const { theme } = useAppTheme();
   const { loading, data, error, refetch } = useQuery(
@@ -45,13 +39,20 @@ const SalesScreen = (props: Props) => {
     },
   });
   const { t } = useLocalization();
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch().then(() => setRefreshing(false));
+  }, []);
+
   return (
     <BaseLayout>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="small" color={theme.colors.tint} />
         </View>
       ) : (
         data?.saleTransactionsByRetailShop && (
@@ -63,6 +64,8 @@ const SalesScreen = (props: Props) => {
               }}
             >
               <FlatList
+                refreshing={refreshing}
+                onRefresh={onRefresh}
                 data={data.saleTransactionsByRetailShop.items}
                 ListHeaderComponent={
                   <Text
@@ -75,87 +78,7 @@ const SalesScreen = (props: Props) => {
                     {t("sales")}
                   </Text>
                 }
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: theme.colors.cardBackground,
-                      marginVertical: 4,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
-                      padding: 16,
-                      paddingHorizontal: 18,
-                      borderRadius: 10,
-                    }}
-                    onPress={() => {
-                      navigation.navigate("Root", {
-                        screen: "SalesRoot",
-                        params: {
-                          screen: "TransactionDetailScreen",
-                          params: {
-                            transactionID: item.id,
-                            totalPrice: item.totalPrice,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{
-                          fontFamily: "InterSemiBold",
-                          fontSize: 18,
-                          color: theme.colors.text,
-                        }}
-                      >
-                        {format(new Date(item.createdAt), "MMM dd yyyy")}
-                      </Text>
-                      <Text
-                        style={{
-                          fontFamily: "InterRegular",
-                          fontSize: 14,
-                          color: theme.colors.text,
-                        }}
-                      >
-                        {format(new Date(item.createdAt), "pp")}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        gap: 12,
-                        alignItems: "center",
-                      }}
-                    >
-                      <View>
-                        <Text
-                          style={{
-                            fontFamily: "InterSemiBold",
-                            fontSize: 18,
-                            color: theme.colors.text,
-                          }}
-                        >
-                          ETB {item.totalPrice}
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: "InterRegular",
-                            fontSize: 14,
-                            color: theme.colors.text,
-                            textAlign: "right",
-                          }}
-                        >
-                          {item.saleTransactionItems?.length} Items
-                        </Text>
-                      </View>
-                      <Entypo
-                        name="chevron-right"
-                        size={24}
-                        color={theme.colors.text}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                )}
+                renderItem={({ item }) => <SingleTransactionItem item={item} />}
                 keyExtractor={(item) => item.id}
               />
             </View>

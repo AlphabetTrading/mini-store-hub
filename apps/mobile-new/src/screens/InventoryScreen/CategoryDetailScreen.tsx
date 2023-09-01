@@ -1,11 +1,9 @@
 import {
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -16,8 +14,8 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
-import { useAppTheme } from "@/src/contexts/preference";
-import { Avatar } from "react-native-paper";
+import { useAppTheme } from "../../contexts/preference";
+import { Avatar, ActivityIndicator } from "react-native-paper";
 
 type Props = {};
 
@@ -138,7 +136,7 @@ const CategoryDetailScreen = ({
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : (
         <View style={{ width: "100%" }}>
@@ -234,16 +232,14 @@ const CategoryDetailScreen = ({
                         }}
                       >
                         {locale === "en"
-                          ? `${
-                              item.product.activePrice
-                                ? item.product.activePrice.price
-                                : 29
-                            } ${t("etb")}`
-                          : `${t("etb")} ${
-                              item.product.activePrice
-                                ? item.product.activePrice.price
-                                : 29
-                            } `}
+                          ? `${item.product.activePrice
+                            ? item.product.activePrice.price
+                            : 29
+                          } ${t("etb")}`
+                          : `${t("etb")} ${item.product.activePrice
+                            ? item.product.activePrice.price
+                            : 29
+                          } `}
                       </Text>
                     </View>
                   </TouchableOpacity>

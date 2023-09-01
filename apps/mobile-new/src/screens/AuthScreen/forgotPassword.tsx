@@ -12,7 +12,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { StatusBar } from "expo-status-bar";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
@@ -111,7 +111,6 @@ const ForgotPasswordScreen = ({ route }: any) => {
               ],
             });
           } catch (e) {
-            console.log(e, "error");
           }
           setSubmitting(false);
         }}

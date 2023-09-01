@@ -9,7 +9,8 @@ import {
 import React, { useRef } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
+import { useLocalization } from "../../contexts/localization";
 
 export interface CheckoutItem {
   id?: string;
@@ -37,6 +38,7 @@ const TransactionItem = ({
 }) => {
   const ref = useRef(null);
   const { theme } = useAppTheme();
+  const { t, locale } = useLocalization();
 
   const removeItem = async (item: CheckoutItem) => {
     setCheckoutItems((prev: CheckoutItem[]) => {
@@ -94,7 +96,7 @@ const TransactionItem = ({
                 transform: [{ scale: scale }],
               }}
             >
-              Delete
+              {t("delete")}
             </Animated.Text>
             <Entypo name="trash" size={24} color="white" />
           </Animated.View>
@@ -152,11 +154,11 @@ const TransactionItem = ({
         onSwipeableOpen={(direction) => {
           removeItem(checkoutItem);
         }}
-        onSwipeableClose={(direction) => {}}
-        // overshootRight={false}
-        // overshootFriction={8}
-        // activeOffsetX={[-20, 20]}
-        // onActivated={()=>removeItem(checkoutItem)}
+        onSwipeableClose={(direction) => { }}
+      // overshootRight={false}
+      // overshootFriction={8}
+      // activeOffsetX={[-20, 20]}
+      // onActivated={()=>removeItem(checkoutItem)}
       >
         <View
           style={{
@@ -190,7 +192,7 @@ const TransactionItem = ({
                   },
                 ]}
               >
-                {checkoutItem.product.name}
+                {locale.includes("am") ? checkoutItem.product.amharicName : checkoutItem.product.name}
               </Text>
               <Text
                 style={{
@@ -199,7 +201,7 @@ const TransactionItem = ({
                   color: theme.colors.text,
                 }}
               >
-                Unit Price: ETB {checkoutItem.product.activePrice.price}
+                {t("unitPrice")}: {t("etb")} {checkoutItem.product.activePrice.price}
               </Text>
               <Text
                 style={{
@@ -208,7 +210,7 @@ const TransactionItem = ({
                   color: theme.colors.text,
                 }}
               >
-                ETB{" "}
+                {t("total")}{": "}{t("etb")}{" "}
                 <Text style={{ fontSize: 18, color: theme.colors.text }}>
                   {checkoutItem.product.activePrice.price *
                     checkoutItem.selectedQuantity}

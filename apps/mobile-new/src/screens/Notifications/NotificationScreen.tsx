@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
-  Modal,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
@@ -14,6 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useAuth } from "../../contexts/auth";
 import { useGetUsersNotifications } from "../../hooks/api/useGetNotificationsData";
+import { useAppTheme } from "../../contexts/preference";
+import { ActivityIndicator } from "react-native-paper";
 
 type Props = {};
 
@@ -32,7 +32,7 @@ const NotificationScreen = (props: Props) => {
   );
 
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const { theme } = useAppTheme();
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     refetch();
@@ -52,7 +52,7 @@ const NotificationScreen = (props: Props) => {
             minHeight: 300,
           }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : error ? (
         <View
@@ -129,8 +129,8 @@ const NotificationScreen = (props: Props) => {
                         item.recipientType === "USER"
                           ? "#00FF00"
                           : item.recipientType === "RETAIL_SHOP"
-                          ? "#00FFFF"
-                          : "#FF0000",
+                            ? "#00FFFF"
+                            : "#FF0000",
                       borderRadius: 3,
                     }}
                   ></View>

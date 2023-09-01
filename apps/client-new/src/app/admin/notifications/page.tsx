@@ -36,26 +36,25 @@ const Page = (props: Props) => {
   const handleTabsChange = useCallback((event: any, value: number) => {
     setCurrentTab(value);
   }, []);
-  const {
-    data: dataAll,
-    loading: loadingAll,
-    error: errorAll,
-  } = useQuery<AllNotificationData>(ALL_NOTIFICATIONS);
+  const [
+    getAllNotifications,
+    { data: dataAll, loading: loadingAll, error: errorAll },
+  ] = useLazyQuery<AllNotificationData>(ALL_NOTIFICATIONS);
 
   const { data: sessionData } = useSession();
 
-  const [getNotificationsByUserID, { data, error, loading }] = useLazyQuery<
+  const { data, error, loading } = useQuery<
     NotificationByUserIdData,
     NotificationByUserIdVars
-  >(NOTIFICATIONS_BY_USERID);
+  >(NOTIFICATIONS_BY_USERID, {
+    variables: {
+      userId: (sessionData?.user as any).id || "",
+    },
+  });
 
   useEffect(() => {
     if (currentTab === 1) {
-      getNotificationsByUserID({
-        variables: {
-          userId: (sessionData?.user as any).id || "",
-        },
-      });
+      getAllNotifications();
     }
   }, [currentTab]);
 

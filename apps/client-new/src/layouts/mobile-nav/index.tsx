@@ -1,4 +1,4 @@
-import { Box, Drawer, Stack, useTheme } from "@mui/material";
+import { Box, Drawer, Stack, Typography, useTheme } from "@mui/material";
 import MobileNavSection from "./mobile-nav-section";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { NavigationItem } from "../config";
@@ -8,8 +8,14 @@ type Props = {
   onClose: () => void;
   open: boolean;
   navigationItems: NavigationItem[];
+  unreadNotifications?: number;
 };
-export const MobileNav = ({ open, onClose, navigationItems }: Props) => {
+export const MobileNav = ({
+  open,
+  onClose,
+  navigationItems,
+  unreadNotifications,
+}: Props) => {
   const theme = useTheme();
 
   return (
@@ -55,6 +61,9 @@ export const MobileNav = ({ open, onClose, navigationItems }: Props) => {
         <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
           <Box
             //   href={paths.index}
+            alignItems="center"
+            justifyContent="center"
+ 
             sx={{
               borderColor: "var(--nav-logo-border)",
               borderRadius: 1,
@@ -62,7 +71,7 @@ export const MobileNav = ({ open, onClose, navigationItems }: Props) => {
               borderWidth: 1,
               display: "flex",
               height: 40,
-              p: "4px",
+              p: "3px",
               width: 40,
             }}
           >
@@ -70,6 +79,9 @@ export const MobileNav = ({ open, onClose, navigationItems }: Props) => {
 
             {/* <Logo /> */}
           </Box>
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Mini Store Hub
+          </Typography>
         </Stack>
         <Stack
           component="nav"
@@ -79,7 +91,10 @@ export const MobileNav = ({ open, onClose, navigationItems }: Props) => {
             px: 2,
           }}
         >
-          <MobileNavSection navigationItems={navigationItems} />
+          <MobileNavSection
+            navigationItems={navigationItems}
+            unreadNotifications={unreadNotifications}
+          />
         </Stack>
       </Stack>
       {/* </Scrollbar> */}

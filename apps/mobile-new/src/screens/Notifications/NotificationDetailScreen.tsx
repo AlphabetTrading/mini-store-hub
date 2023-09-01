@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -15,7 +14,9 @@ import { format } from "date-fns";
 import { useMutation } from "@apollo/client";
 import { MARK_NOTIFICATION_AS_READ } from "../../graphql/queries/notificationQueries";
 import { useAuth } from "../../contexts/auth";
-import { useLocalization } from "@/src/contexts/localization";
+import { useLocalization } from "../../contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { ActivityIndicator } from "react-native-paper";
 
 const NotificationDetailScreen = ({ route, navigation }: any) => {
   const { data, loading, error, refetch } = useGetSingleNotification(
@@ -77,13 +78,15 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
     );
   };
 
+  const { theme } = useAppTheme();
+
   return (
     <SafeAreaView>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : (
         <ScrollView
@@ -165,7 +168,7 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
                     {locale.includes("en")
                       ? data.notificationById?.title
                       : data.notificationById?.amharicTitle ??
-                        data.notificationById?.title}
+                      data.notificationById?.title}
                   </Text>
                   <Text style={{ fontFamily: "InterMedium", fontSize: 14 }}>
                     {format(
@@ -178,7 +181,7 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
                   {locale.includes("en")
                     ? data.notificationById?.body
                     : data.notificationById?.amharicBody ??
-                      data.notificationById?.body}
+                    data.notificationById?.body}
                 </Text>
               </View>
             </View>

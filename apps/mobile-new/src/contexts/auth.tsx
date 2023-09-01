@@ -8,9 +8,7 @@ import React, {
 import * as Notifications from "expo-notifications";
 import * as SecureStore from "expo-secure-store";
 import {
-  BASE_URL,
-  apolloClient,
-  apolloClientWithNoToken,
+  apolloClient, getTokensFromStorage,
 } from "../graphql/apolloClient";
 import Constants from "expo-constants";
 import {
@@ -24,6 +22,7 @@ import {
 } from "../graphql/mutations/notificationMutations";
 import Loading from "../components/Loading";
 import { print } from "graphql";
+import jwtDecode from "jwt-decode";
 
 interface Address {
   street: string;
@@ -35,7 +34,7 @@ interface UserProfile {
   address: Address;
 }
 
-interface AuthState {
+export interface AuthState {
   accessToken: string;
   refreshToken: string;
   user: {
@@ -94,12 +93,23 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthContextProvider(props: ProviderProps) {
   const [authState, setAuthState] = useState<AuthState | null | undefined>();
   // get user from async storage, and set it to state
+
   const fetchData = useCallback(async () => {
-    const localState = await SecureStore.getItemAsync("login");
-    if (localState) {
-      await setAuthState(JSON.parse(localState));
+    const localState = await getTokensFromStorage();
+
+    // if there is no local state, set auth state to null
+    if (!localState) return setAuthState(null);
+
+    // if there is a local state, set auth state to local state
+    const refreshToken = localState?.refreshToken;
+
+    const { exp } = jwtDecode(refreshToken) as any;
+    const expirationTime = exp * 1000 - 60000;
+
+    if (Date.now() < expirationTime) {
+      setAuthState(localState);
     } else {
-      await setAuthState(null);
+      setAuthState(null);
     }
   }, []);
 
@@ -136,15 +146,21 @@ export function AuthContextProvider(props: ProviderProps) {
       }),
     };
     try {
+      let status = false;
+      setTimeout(() => {
+        if (!status) {
+          return { data: undefined, error: new Error("Invalid Credentials/ Network Error Please Try again!") };
+        }
+      }, 3000);
       const res = await fetch(
         "https://mini-store-hub-api.onrender.com/graphql/",
         requestOptions
       );
       const data = await res.json();
       if (data.errors) {
-        console.log(data.errors, " res.errors");
         return { data: undefined, error: new Error("Invalid Credentials") };
       }
+      status = true;
       await SecureStore.setItemAsync("login", JSON.stringify(data.data.login));
       setAuthState(data.data.login);
       const token = (
@@ -155,10 +171,36 @@ export function AuthContextProvider(props: ProviderProps) {
       await updateNotificationToken(data.data.login, token, "android");
       return { data: data.data.login, error: undefined };
     } catch (error) {
-      console.log(error, " is the error");
       setAuthState(null);
       return { error: error as Error, data: undefined };
     }
+
+    // try {
+    //   const token = (
+    //     await Notifications.getExpoPushTokenAsync({
+    //       projectId: Constants.expoConfig?.extra?.eas?.projectId,
+    //     })
+    //   ).data;
+    //   const client = apolloClient(authState, setAuthState);
+    //   const res = await client.mutate({
+    //     mutation: LOGIN_MUTATION,
+    //     variables: {
+    //       data: {
+    //         phone,
+    //         password,
+    //       },
+    //     },
+    //   });
+    //   await SecureStore.setItemAsync("login", JSON.stringify(res.data.login));
+    //   setAuthState(res.data.login);
+    //   await updateNotificationToken(res.data.login, token, "android");
+    //   return { data: res.data.login, error: undefined };
+    // } catch (error) {
+    //   console.log(error, " is the error");
+    //   setAuthState(null);
+    //   return { error: error as Error, data: undefined };
+    // }
+
   };
 
   /**
@@ -170,8 +212,8 @@ export function AuthContextProvider(props: ProviderProps) {
       const token = (await Notifications.getExpoPushTokenAsync()).data;
 
       await SecureStore.deleteItemAsync("login");
-      const client = apolloClient(authState, setAuthState);
-      const res = await client.mutate({
+      const client = apolloClient();
+      await client.mutate({
         mutation: REMOVE_NOTIFICATION_MUTATION,
         variables: {
           token,
@@ -200,7 +242,7 @@ export function AuthContextProvider(props: ProviderProps) {
     device_type: string
   ) => {
     try {
-      const client = apolloClient(authState, setAuthState);
+      const client = apolloClient();
       const notificationInput = {
         device_type,
         token,
@@ -214,8 +256,6 @@ export function AuthContextProvider(props: ProviderProps) {
       });
       return { data: res.data, error: undefined };
     } catch (error) {
-      console.log(error);
-      // setAuthState(prev => ({...prev, user: {...prev?.user, allowsNotifications: false}}));
       return { error: error as Error, data: undefined };
     }
   };
@@ -227,16 +267,16 @@ export function AuthContextProvider(props: ProviderProps) {
    */
   const forgotPassword = async (OTP: string, phone: string) => {
     try {
-      const client = apolloClientWithNoToken();
-      const res = await client.mutate({
-        mutation: FORGOT_PASSWORD_MUTATION,
-        variables: {
-          data: {
-            phone,
-          },
-        },
-      });
-      return { data: res.data.login, error: undefined };
+      // const client = apolloClientWithNoToken();
+      // const res = await client.mutate({
+      //   mutation: FORGOT_PASSWORD_MUTATION,
+      //   variables: {
+      //     data: {
+      //       phone,
+      //     },
+      //   },
+      // });
+      return { data: null, error: undefined };
     } catch (error) {
       setAuthState(null);
       return { error: error as Error, data: undefined };
@@ -252,16 +292,16 @@ export function AuthContextProvider(props: ProviderProps) {
 
   const resetPassword = async (newPassword: string, phone: string) => {
     try {
-      const client = apolloClientWithNoToken();
-      const res = await client.mutate({
-        mutation: RESET_PASSWORD_MUTATION,
-        variables: {
-          data: {
-            phone,
-          },
-        },
-      });
-      return { data: res.data.login, error: undefined };
+      // const client = apolloClientWithNoToken();
+      // const res = await client.mutate({
+      //   mutation: RESET_PASSWORD_MUTATION,
+      //   variables: {
+      //     data: {
+      //       phone,
+      //     },
+      //   },
+      // });
+      return { data: null, error: undefined };
     } catch (error) {
       setAuthState(null);
       return { error: error as Error, data: undefined };
@@ -270,17 +310,23 @@ export function AuthContextProvider(props: ProviderProps) {
 
   //   useProtectedRoute(authState);
 
+  // wrap the object in useMemo to avoid unnecessary re-renders
+  const authContextValue = React.useMemo(
+    () => ({
+      signIn: login,
+      signOut: logout,
+      authState,
+      setAuthState,
+      updateNotificationToken,
+      forgotPassword,
+      resetPassword,
+    }),
+    [authState]
+  );
+
   return (
     <AuthContext.Provider
-      value={{
-        signIn: login,
-        signOut: logout,
-        authState,
-        setAuthState,
-        updateNotificationToken,
-        forgotPassword,
-        resetPassword,
-      }}
+      value={authContextValue}
     >
       {typeof authState === "undefined" ? <Loading /> : props.children}
     </AuthContext.Provider>

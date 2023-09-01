@@ -55,29 +55,31 @@ const Page = (props: Props) => {
       },
       orderBy: OrderBySelector(filter.filter),
     },
-    fetchPolicy: "cache-and-network",
+    // notifyOnNetworkStatusChange: true,
+    
+    // fetchPolicy: "cache-and-network",
   });
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      refetch({
-        filterProductInput: {
-          name: {
-            contains: filter.query,
-          },
-          serialNumber: {
-            contains: filter.query,
-          },
-        },
-        paginationInput: {
-          skip: page * rowsPerPage,
-          take: rowsPerPage,
-        },
-        orderBy: OrderBySelector(filter.filter),
-      });
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [filter, page, refetch, rowsPerPage]);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     refetch({
+  //       filterProductInput: {
+  //         name: {
+  //           contains: filter.query,
+  //         },
+  //         serialNumber: {
+  //           contains: filter.query,
+  //         },
+  //       },
+  //       paginationInput: {
+  //         skip: page * rowsPerPage,
+  //         take: rowsPerPage,
+  //       },
+  //       orderBy: OrderBySelector(filter.filter),
+  //     });
+  //   }, 300);
+  //   return () => clearTimeout(timeout);
+  // }, [filter, page, refetch, rowsPerPage]);
 
   return (
     <Box component="main" sx={{ py: 8 }}>

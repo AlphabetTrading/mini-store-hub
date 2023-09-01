@@ -31,7 +31,7 @@ export const InsightsStack = ({ navigation }: any) => {
         name="InsightsDetailScreen"
         component={InsightsDetailScreen}
         options={({ route }: any) => ({
-          title: route?.params?.categoryName,
+          title: t("insightsDetail"),
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },

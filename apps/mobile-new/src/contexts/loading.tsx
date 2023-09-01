@@ -14,9 +14,9 @@ type Props = {
 
 export const LoadingContext = createContext<LoadingContextProps | undefined>({
   loading: false,
-  setLoading: (value: boolean) => {},
+  setLoading: (value: boolean) => { },
 });
-
+import * as SecureStore from "expo-secure-store";
 export const LoadingContextProvider = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const { toggleTheme, theme } = useAppTheme();

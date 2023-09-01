@@ -113,6 +113,7 @@ export const NotificationsPopover = (props: Props) => {
                       "&:hover": {
                         backgroundColor: "primary.light",
                       },
+
                       backgroundColor: "primary.lightest",
                       "&:before": {
                         backgroundColor: "primary.main",
@@ -159,6 +160,9 @@ export const NotificationsPopover = (props: Props) => {
                               mr: 0.5,
                               minWidth: 200,
                               maxWidth: 300,
+                              ...(!isRead && {
+                                fontWeight: 700,
+                              }),
                             }}
                             noWrap
                             variant="subtitle2"
@@ -170,6 +174,9 @@ export const NotificationsPopover = (props: Props) => {
                             sx={{
                               minWidth: 200,
                               maxWidth: 300,
+                              ...(!isRead && {
+                                fontWeight: 600,
+                              }),
                             }}
                             noWrap
                           >

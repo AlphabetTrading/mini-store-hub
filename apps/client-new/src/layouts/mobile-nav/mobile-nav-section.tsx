@@ -7,10 +7,12 @@ import { usePathname } from "next/navigation";
 
 type Props = {
   navigationItems: any;
+  unreadNotifications?: number;
 };
 
-const MobileNavSection = ({ navigationItems }: Props) => {
+const MobileNavSection = ({ navigationItems ,unreadNotifications}: Props) => {
   const pathname = usePathname();
+
   return (
     <Stack
       component="ul"
@@ -28,9 +30,9 @@ const MobileNavSection = ({ navigationItems }: Props) => {
             disabled={item.disabled}
             icon={item.icon}
             key={item.title}
-            label={item.label}
             path={item.path}
             title={item.title}
+            label={item.chip && item.chip(unreadNotifications)}
           />
         );
       })}

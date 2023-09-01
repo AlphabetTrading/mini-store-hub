@@ -109,13 +109,14 @@ const TransferItemsDrawer = ({
         <Stack sx={{ px: 4, py: 8 }} spacing={2}>
           <Typography variant="h6">Add Item</Typography>
           <Card sx={{ p: 4 }}>
-            <Stack
+            <Stack  
               component={RadioGroup}
-              spacing={3}
+              spacing={1}
               value={formik.values.itemId.toString()}
               onChange={(event) => {
                 formik.setFieldValue("itemId", event.currentTarget.value);
               }}
+              sx={{ maxHeight:350, display: "block", overflow:"auto",pl:1}}
             >
               {itemsLoading ? (
                 <Box
@@ -145,6 +146,7 @@ const TransferItemsDrawer = ({
                         display: "flex",
                         px: 2,
                         py: 1,
+                       
                       }}
                       variant="outlined"
                     >

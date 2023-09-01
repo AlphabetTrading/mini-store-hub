@@ -14,8 +14,15 @@ import * as Yup from "yup";
 import { useAuth } from "../../contexts/auth";
 import { notifyMessage } from "../../components/Toast";
 import { StatusBar } from "expo-status-bar";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation } from "@apollo/client";
+import { LOGIN_MUTATION } from "../../graphql/mutations/authMutations";
+
+import * as Notifications from "expo-notifications";
+import * as SecureStore from "expo-secure-store";
+import Constants from "expo-constants";
+
 
 type Props = {};
 
@@ -29,12 +36,43 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().required("Required"),
 });
 
-const LoginScreen = ({}: any) => {
+const LoginScreen = ({ }: any) => {
   const navigation = useNavigation();
-  const { signIn } = useAuth();
+  const { setAuthState, updateNotificationToken } = useAuth();
   const { theme } = useAppTheme();
   const [viewPassword, setViewPassword] = useState(false);
-  // const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const controller = new AbortController();
+
+  const [login, { loading, data }] = useMutation(LOGIN_MUTATION, {
+    notifyOnNetworkStatusChange: true,
+    context: {
+      fetchOptions: {
+        signal: controller.signal,
+      },
+    },
+    onCompleted: async ({ login }: any) => {
+      if (login) {
+        setAuthState(login);
+        navigation.navigate("Root", {
+          screen: "HomeRoot",
+        });
+        await SecureStore.setItemAsync("login", JSON.stringify(login));
+        const token = (
+          await Notifications.getExpoPushTokenAsync({
+            projectId: Constants.expoConfig?.extra?.eas?.projectId,
+          })
+        ).data;
+        await updateNotificationToken(login, token, "android");
+      }
+      else {
+        notifyMessage("Error: " + "Invalid Credentials Please try again");
+      }
+    },
+    onError: (error) => {
+      notifyMessage("Error: " + error.message);
+    },
+    errorPolicy: "all"
+  });
   const INITIAL_VALUES: FormValues = {
     phone: "",
     password: "",
@@ -112,24 +150,34 @@ const LoginScreen = ({}: any) => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              console.log(values);
-              const res = await signIn(values.phone, values.password);
-              if (res.error) {
-                notifyMessage("Error: " + res.error?.message);
-                if (
-                  res.error?.message === "Invalid Credentials" ||
-                  res.error?.message ===
-                    "No user found for phone: " + values.phone
-                ) {
-                  notifyMessage("Invalid Credentials Please try again");
-                } else {
-                  notifyMessage(res.error?.message, true);
-                }
-                return;
-              }
+              setTimeout(() => {
+                controller.abort();
+                notifyMessage("Something went wrong, please try again");
+              }, 7000);
+
+              const res = await login({
+                variables: {
+                  data: {
+                    phone: values.phone,
+                    password: values.password,
+                  }
+                },
+              });
+              //   if (res.errors) {
+              //     notifyMessage("Error: " + res.errorsmessage);
+              //     if (
+              //       res.error?.message === "Invalid Credentials" ||
+              //       res.error?.message ===
+              //       "No user found for phone: " + values.phone
+              //     ) {
+              //       notifyMessage("Invalid Credentials Please try again");
+              //     } else {
+              //       notifyMessage(res.error?.message, true);
+              //     }
+              //     return;
+              //   }
               return res.data;
             } catch (e) {
-              console.log(e);
               notifyMessage("Network Error Please try again");
             }
             setSubmitting(false);
@@ -229,10 +277,10 @@ const LoginScreen = ({}: any) => {
               <TouchableOpacity
                 style={styles.loginButton}
                 onPress={() => handleSubmit()}
-                disabled={isSubmitting}
+                disabled={loading}
               >
                 <Text style={styles.loginButtonText}>
-                  {isSubmitting ? (
+                  {loading ? (
                     <ActivityIndicator color={theme.colors.white} />
                   ) : (
                     "Sign In"

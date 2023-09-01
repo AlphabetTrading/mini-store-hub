@@ -160,8 +160,11 @@
   "editTransaction": "ሽያጭ አስተካክል",
   "deleteTransaction": "ሽያጭ ሰርዝ",
   "transactionList": "የሽያጭ ዝርዝር",
-  "transactionCode": "Transaction Code",
-  "transactionName": "Transaction Name",
+  "transactionCode": "የሽያጭ መለያ ቁጥር",
+  "transactionName": "የሽያጭ ስም",
+  "newTransaction": "አዲስ ሽያጭ ጨምር",
+  "addTransactionItems": "ሽያጭ እቃዎች ጨምር",
+  "transactionDate": "የሽያጭ ቀን",
   "purchases": "ግዙፍ",
   "addPurchase": "አዲስ ግዙፍ ጨምር",
   "returns": "ተመልሶች",
@@ -208,7 +211,6 @@
   "completed": "ጨረሷል",
   "processing": "በሂደት ላይ",
   "cancelled": "ተሰርዟል",
-
   "id": "ID",
   "total": "ጠቅላላ",
   "totalPrice": "ጠቅላላ ዋጋ",
@@ -239,7 +241,7 @@
   "delivered": "Delivered",
 
   "code": "መለያ ቁጥር",
-
+  "insightsDetail": "ዝርዝር ግንዛቤዎች",
   "name": "ስም",
   "description": "መግለጫ",
   "price": "ዋጋ",
@@ -287,10 +289,15 @@
   "removeAll": "ሁሉንም አጥፋ",
   "removeAllItems": "ሁሉንም እቃዎችን አጥፋ",
   "proceedToCheckout": "ወደ ክፍያ ይመለሱ",
-  "submitting": "ይህንን ይጫኑ...",
-  "addNewTranasaction": "አዲስ ይገባ",
+  "addNewTransaction": "አዲስ ይገባ",
   "lowStockItems": "በዝቅተኛ መጠን ያሉ እቃዎች",
   "noLowStockItems": "በዝቅተኛ መጠን የሚገኙ እቃዎች የሉም",
   "transactionDetail": "የሽያጭ ዝርዝር",
-  "items": "እቃዎች"
+  "items": "እቃዎች",
+  "checkout": "ክፍያ",
+  "unitPrice": "ነጠላ ዋጋ",
+  "clearAll": "ሁሉንም አጽዳ",
+  "submitting": "እየተጫኑ ነው...",
+  "refresh": "አስቀድሞ ይጫኑ",
+  "somethingWentWrong": "የሆነ ስህተት ተከስቷል"
 }

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../../graphql/queries/categoryQueries";
-import { useAppTheme } from "@/src/contexts/preference";
-import { Category } from "@/src/types/models";
-import { useLocalization } from "@/src/contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
+import { Category } from "../../types/models";
+import { useLocalization } from "../../contexts/localization";
 
 const AllCategory: Category = {
   id: "afasfiahsofa",
@@ -31,7 +31,6 @@ const CategoryList = (props: Props) => {
       setCategories([AllCategory, ...data.categories.items]);
     },
     onError: (e: any) => {
-      console.log(error, "is the error");
     },
   });
 

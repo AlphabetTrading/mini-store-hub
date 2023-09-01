@@ -1,27 +1,33 @@
+import React from "react";
 import {
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import { useGetLowStockItems } from "@/src/hooks/api/useGetLowStockItems";
-import { useAuth } from "@/src/contexts/auth";
+import { useGetLowStockItems } from "../../hooks/api/useGetLowStockItems";
+import { useAuth } from "../../contexts/auth";
 import { ActivityIndicator, Avatar, Card } from "react-native-paper";
-import { useLocalization } from "@/src/contexts/localization";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useLocalization } from "../../contexts/localization";
+import { useAppTheme } from "../../contexts/preference";
 import { useNavigation } from "@react-navigation/native";
 
-const LowStockItems = () => {
+type Props = {
+  isRefreshing: boolean;
+};
+
+const LowStockItems = (props: Props) => {
   const { authState } = useAuth();
   const retailShopID = authState?.user.retailShop[0].id;
   const navigation = useNavigation();
   const { t, locale } = useLocalization();
   const { theme } = useAppTheme();
 
-  const [items, setItems] = useState<any[]>([]);
   const { loading, data, refetch } = useGetLowStockItems(retailShopID);
+
+  React.useMemo(() => {
+    refetch();
+  }, [props.isRefreshing]);
 
   return (
     <View
@@ -47,7 +53,7 @@ const LowStockItems = () => {
       >
         {loading ? (
           <View style={{ margin: 20 }}>
-            <ActivityIndicator animating={true} color={"#5C6BC0"} />
+            <ActivityIndicator animating={true} color={theme.colors.tint} />
           </View>
         ) : data?.findLowStockByRetailShopId.items.length > 0 ? (
           data?.findLowStockByRetailShopId.items.map((item: any) => (
@@ -100,8 +106,7 @@ const LowStockItems = () => {
                           fontFamily: "InterMedium",
                         }}
                       >
-                        {/* {item.product.name} */}
-                        {locale === "en"
+                        {locale.includes("en")
                           ? item.product.name
                           : item.product.amharicName}
                       </Text>
@@ -123,17 +128,15 @@ const LowStockItems = () => {
                         color: theme.colors.text,
                       }}
                     >
-                      {locale === "en"
-                        ? `${
-                            item.product.activePrice
-                              ? item.product.activePrice.price
-                              : 29
-                          } ${t("etb")}`
-                        : `${t("etb")} ${
-                            item.product.activePrice
-                              ? item.product.activePrice.price
-                              : 29
-                          } `}
+                      {locale.includes("en")
+                        ? `${item.product.activePrice
+                          ? item.product.activePrice.price
+                          : 29
+                        } ${t("etb")}`
+                        : `${t("etb")} ${item.product.activePrice
+                          ? item.product.activePrice.price
+                          : 29
+                        } `}
                     </Text>
                   </View>
                 </TouchableOpacity>

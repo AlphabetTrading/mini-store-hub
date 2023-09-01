@@ -44,7 +44,7 @@ const Page = (props: Props) => {
         data: {
           name: values.name,
           amharicName: values.amharicName,
-          retailShopManagerId: values.retailShopManager?.id || "",
+          retailShopManagerId: values.retailShopManager?.id || undefined,
           address: {
             city: values.city,
             amharicFormattedAddress: values.amharicFormattedAddress,
@@ -55,7 +55,7 @@ const Page = (props: Props) => {
           },
         },
       },
-      refetchQueries: [RETAIL_SHOPS],
+      refetchQueries: [{ query: RETAIL_SHOPS }],
       onCompleted: () => {
         helpers.resetForm();
         showAlert("created a", "retail shop");

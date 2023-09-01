@@ -9,6 +9,12 @@ export class sendPushNotificationInput {
   @Field(() => String)
   body: string;
 
+  @Field(() => String, { nullable: true })
+  amharicTitle?: string;
+
+  @Field(() => String, { nullable: true })
+  amharicBody?: string;
+
   @Field(() => RecipientType)
   recipientType: RecipientType;
 

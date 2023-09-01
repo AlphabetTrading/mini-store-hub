@@ -11,9 +11,10 @@ import AsyncStorageUtils from "../../utils/async_storage";
 import { CREATE_SALES_TRANSACTION_MUTATION } from "../../graphql/mutations/salesMutations";
 import { useMutation } from "@apollo/client";
 import { useAuth } from "../../contexts/auth";
-import { useAppTheme } from "@/src/contexts/preference";
+import { useAppTheme } from "../../contexts/preference";
 import { ActivityIndicator, Card, Snackbar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import { useLocalization } from "../../contexts/localization";
 type Props = {
   checkoutItems: CheckoutItem[];
   setCheckoutItems: any;
@@ -23,6 +24,7 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
   const [total, setTotal] = React.useState<number>(0);
   const { authState } = useAuth();
   const navigation = useNavigation();
+  const { t, locale } = useLocalization();
 
   const updateCheckout = useCallback(async () => {
     setTotal(
@@ -90,31 +92,83 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
   const onDismissSnackBar = () => setVisible(false);
 
   return (
-    <View>
-      <Card
+    <View style={{
+      width: "100%",
+      position: "relative"
+    }}>
+      <View
         style={{
-          flexDirection: "column",
-          alignItems: "flex-start",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: theme.colors.tint,
+          opacity: 0.3,
+          zIndex: 0
         }}
       >
-        <Card.Content>
-          <Text
-            onPress={async () => {
-              setCheckoutItems([]);
-              await AsyncStorageUtils.setItem("checkout", []);
-              setTotal(0);
-            }}
+      </View>
+      <View
+        style={{
+          position: "relative",
+          width: "100%",
+          backfaceVisibility: "hidden",
+          backgroundColor: "transparent",
+          zIndex: 1
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            padding: 20,
+          }}
+        >
+          <View
             style={{
-              fontFamily: "InterSemiBold",
-              fontSize: 20,
-              color: "red",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            Remove All
-          </Text>
+
+            <Text
+              onPress={async () => {
+                setCheckoutItems([]);
+                await AsyncStorageUtils.setItem("checkout", []);
+                setTotal(0);
+              }}
+              style={{
+                fontFamily: "InterSemiBold",
+                fontSize: 20,
+                color: theme.colors.primary,
+              }}
+            >
+              {t("items")} {checkoutItems.length}
+            </Text>
+            <Text
+              onPress={async () => {
+                setCheckoutItems([]);
+                await AsyncStorageUtils.setItem("checkout", []);
+                setTotal(0);
+              }}
+              style={{
+                fontFamily: "InterSemiBold",
+                fontSize: 20,
+                color: "red",
+              }}
+            >
+              {t("clearAll")}
+            </Text>
+          </View>
           <View style={{ alignItems: "flex-start", gap: 10 }}>
             <Text style={{ fontFamily: "InterSemiBold", fontSize: 18 }}>
-              Total:{" "}
+              {t("total")}:{" "}
               <Text
                 style={{
                   color: "#000",
@@ -122,7 +176,7 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
                   fontSize: 20,
                 }}
               >
-                ETB {total}
+                {t("etb")} {total}
               </Text>
             </Text>
             <TouchableOpacity
@@ -151,7 +205,7 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
                       fontSize: 16,
                     }}
                   >
-                    Submitting...
+                    {t("submitting")}
                   </Text>
                   <TouchableOpacity
                     style={{
@@ -187,18 +241,18 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
               )}
             </TouchableOpacity>
           </View>
-        </Card.Content>
-      </Card>
+        </View>
+      </View>
       <Snackbar
         visible={visible}
         onDismiss={onDismissSnackBar}
         duration={4000}
-        // action={{
-        //   label: "Undo",
-        //   onPress: () => {
-        //     // Do something
-        //   },
-        // }}
+      // action={{
+      //   label: "Undo",
+      //   onPress: () => {
+      //     // Do something
+      //   },
+      // }}
       >
         Successfully Created.
       </Snackbar>

@@ -1,6 +1,7 @@
 import { FlatList, StyleSheet, View } from "react-native";
 import React from "react";
 import TransactionItem, { CheckoutItem } from "./TransactionItem";
+import CustomDivider from "../CustomDivider";
 
 const TransactionItemsList = ({
   checkoutItems,
@@ -33,7 +34,7 @@ const TransactionItemsList = ({
           setCheckoutItems={setCheckoutItems}
         />
       )}
-      ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}
+      ItemSeparatorComponent={CustomDivider}
       inverted={true}
       keyExtractor={(item, index) => item.productId}
     />

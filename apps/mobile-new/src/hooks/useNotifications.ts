@@ -81,9 +81,7 @@ export const useNotifications = () => {
         params: { notificationID: data.notificationId ?? "" },
       });
       // Linking.openURL("exp://192.168.42.135:19000/notifications");
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   return {

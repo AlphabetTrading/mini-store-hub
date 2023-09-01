@@ -8,7 +8,13 @@ export class UpdateProductInput extends PartialType(CreateProductInput) {
   name?: string;
 
   @Field(() => String, { nullable: true })
+  amharicName?: string;
+
+  @Field(() => String, { nullable: true })
   description?: string;
+
+  @Field(() => String, { nullable: true })
+  amharicDescription?: string;
 
   @Field(() => String, { nullable: true })
   serialNumber?: string;

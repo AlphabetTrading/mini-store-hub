@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import * as firebase from 'firebase-admin';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationTokenInput } from './dto/createNotificationToken.dto';
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
 import { NotificationEvent } from './events/notification.event';
-import { Expo, ExpoPushMessage } from 'expo-server-sdk';
+import { Expo } from 'expo-server-sdk';
 
 import {
   NotificationToken,
@@ -14,22 +13,6 @@ import {
   UserRole,
 } from '@prisma/client';
 import { Notification } from './models/notification.model';
-
-const firebase_private_key_b64 = Buffer.from(
-  process.env.FIREBASE_PRIVATE_KEY_BASE64,
-  'base64',
-);
-const firebase_private_key = firebase_private_key_b64.toString('utf8');
-firebase.initializeApp({
-  credential: firebase.credential.cert(
-    {
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: firebase_private_key,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-    },
-    // path.join(__dirname, '..', '..', 'mini-store-hub-firebase-adminsdk.json'),
-  ),
-});
 
 @Injectable()
 export class NotificationService {
@@ -48,6 +31,10 @@ export class NotificationService {
   async getAllNotificationsByUserId(userId: string): Promise<Notification[]> {
     // identify recipient type from the user
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
 
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
@@ -106,6 +93,10 @@ export class NotificationService {
 
   async getAllReadNotifications(userId: string): Promise<Notification[]> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
 
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
@@ -195,7 +186,7 @@ export class NotificationService {
       const notification_tokens = payload.tokens;
       const notification_id = payload.notification_id;
 
-      // send notification to firebase
+      // send notification to expo
       await this.sendExpoNotification(
         notification_tokens,
         notification_title,

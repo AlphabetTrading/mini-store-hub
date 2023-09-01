@@ -6,7 +6,6 @@ import { AntDesign } from "@expo/vector-icons";
 import { useAuth } from "../contexts/auth";
 import {
   useGetUnreadNotificationsCount,
-  useGetUsersNotifications,
 } from "../hooks/api/useGetNotificationsData";
 
 const NotificationIconComp = () => {

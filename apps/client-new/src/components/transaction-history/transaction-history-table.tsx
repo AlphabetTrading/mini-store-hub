@@ -50,13 +50,13 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
   };
 
   return (
-    <StateHandler
-      loading={loading}
-      error={error}
-      empty={transactionHistory.length === 0}
-    >
-      <Card>
-        <CardHeader title="Latest Transactions" />
+    <Card>
+      <CardHeader title="Latest Transactions" />
+      <StateHandler
+        loading={loading}
+        error={error}
+        empty={transactionHistory.length === 0}
+      >
         <Table>
           <TableBody>
             {[...(transactionHistory || [])].reverse().map((item, idx) => {
@@ -104,8 +104,8 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
             })}
           </TableBody>
         </Table>
-      </Card>
-    </StateHandler>
+      </StateHandler>
+    </Card>
   );
 };
 

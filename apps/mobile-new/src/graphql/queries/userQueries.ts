@@ -21,6 +21,7 @@ export const GET_ME_QUERY = gql`
       }
       userProfile {
         photoUrl
+        idUrl
         address {
           city
           formattedAddress

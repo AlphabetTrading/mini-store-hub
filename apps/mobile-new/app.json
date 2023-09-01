@@ -22,7 +22,8 @@
       },
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "bundleIdentifier": "com.kalmad99.mobile"
     },
     "android": {
       "package": "com.kalmad99.mobile",

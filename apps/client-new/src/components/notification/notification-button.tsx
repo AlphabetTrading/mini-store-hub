@@ -9,34 +9,24 @@ import {
 } from "@/graphql/notifications/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
+import {Notification} from "../../../types/notification";
 
-export const NotificationsButton = () => {
+type Props = {
+  notifications: Notification[];
+  unreadNotifications: number;
+};
+
+export const NotificationsButton = ({unreadNotifications,notifications}:Props) => {
   const popover = usePopover();
   const { data: sessionData } = useSession();
-  const { data, error, loading } = useQuery<
-    NotificationByUserIdData,
-    NotificationByUserIdVars
-  >(NOTIFICATIONS_BY_USERID, {
-    variables: {
-      userId: (sessionData?.user as any).id || "",
-    },
-  });
-  const unread = data?.allNotificationsByUserId.filter((notification) => {
-    if (notification.recipientType === "USER") {
-      return !notification.isRead;
-    } else {
-      return !notification.notificationReads.some(
-        (n) => n.userId === (sessionData?.user as any).id || ""
-      );
-    }
-  });
+
   // const { handleRemoveOne, handleMarkAllAsRead, notifications, unread } = useNotifications();
 
   return (
     <>
       <Tooltip title="Notifications">
         <IconButton ref={popover.anchorRef} onClick={popover.handleOpen}>
-          <Badge color="error" badgeContent={unread?.length || 0}>
+          <Badge color="error" badgeContent={unreadNotifications}>
             <SvgIcon width={8}>
               <NotificationIcon />
             </SvgIcon>
@@ -45,7 +35,7 @@ export const NotificationsButton = () => {
       </Tooltip>
       <NotificationsPopover
         anchorEl={popover.anchorRef.current}
-        notifications={[...(data?.allNotificationsByUserId || [])].reverse()}
+        notifications={[...notifications].reverse()}
         onClose={popover.handleClose}
         //   onMarkAllAsRead={handleMarkAllAsRead}
         //   onRemoveOne={handleRemoveOne}
