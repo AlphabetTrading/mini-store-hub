@@ -3,7 +3,8 @@ import StatCard from "@/components/admin-dashboard/stat-card";
 import StatMenu from "@/components/admin-dashboard/stat-menu";
 import { TopRetailShops } from "@/components/admin-dashboard/top-retail-shops-chart";
 import TopSellingProducts from "@/components/admin-dashboard/top-selling-products-table";
-import { Box, Card, Container, Grid, Stack } from "@mui/material";
+import { useGetAdminDashboardStatQuery } from "@/hooks/useGetAdminDashboardStatQuery";
+import { Box, Container, Stack, CircularProgress, Grid } from "@mui/material";
 import React, { useState } from "react";
 
 type Props = {};
@@ -11,6 +12,10 @@ const options = ["Today's", "This week's", "This month's", "All time"];
 
 const Page = (props: Props) => {
   const [timeFrame, setTimeFrame] = useState(options[0]);
+
+  const { data, loading, error, refetch } =
+    useGetAdminDashboardStatQuery(timeFrame);
+
   return (
     <Box component="main">
       <Container>
@@ -21,37 +26,51 @@ const Page = (props: Props) => {
             timeFrame={timeFrame}
           />
           <Stack spacing={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6} lg={3}>
-                <StatCard
-                  timeFrame={timeFrame}
-                  stat="revenue"
-                  imgSrc="/assets/icons/revenue.svg"
-                />
-              </Grid>
-              <Grid item xs={12} md={6} lg={3}>
-                <StatCard
-                  timeFrame={timeFrame}
-                  imgSrc="/assets/icons/sold.svg"
-                  stat="sale"
-                />
-              </Grid>
-              <Grid item xs={12} md={6} lg={3}>
-                <StatCard
-                  timeFrame={timeFrame}
-                  imgSrc="/assets/icons/profit.svg"
-                  stat="profit"
-                />
-              </Grid>
-              <Grid item xs={12} md={6} lg={3}>
-                <StatCard
-                  timeFrame={timeFrame}
-                  imgSrc="/assets/icons/transaction.svg"
-                  stat="transaction"
-                />
-              </Grid>
-            </Grid>
-
+            {loading ? (
+              <Stack
+                direction="row"
+                sx={{ justifyContent: "center", alignItems: "center" }}
+              >
+                <CircularProgress />
+              </Stack>
+            ) : (
+              data && (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6} lg={3}>
+                    <StatCard
+                      timeFrame={timeFrame}
+                      stat="revenue"
+                      imgSrc="/assets/icons/revenue.svg"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6} lg={3}>
+                    <StatCard
+                      timeFrame={timeFrame}
+                      imgSrc="/assets/icons/sold.svg"
+                      stat="sale"
+                      value={data.totalSalesByDate}
+                      pastValue={data.totalPrevSalesByDate}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6} lg={3}>
+                    <StatCard
+                      timeFrame={timeFrame}
+                      imgSrc="/assets/icons/profit.svg"
+                      stat="profit"
+                      value={data.totalProfitByDate}
+                      pastValue={data.totalPrevProfitByDate}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6} lg={3}>
+                    <StatCard
+                      timeFrame={timeFrame}
+                      imgSrc="/assets/icons/transaction.svg"
+                      stat="transaction"
+                    />
+                  </Grid>
+                </Grid>
+              )
+            )}
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>
                 <TopSellingProducts />
