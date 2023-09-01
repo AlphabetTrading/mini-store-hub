@@ -44,7 +44,6 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
       variables: {
         retailShopId: retailShopId,
       },
-      
     }
   );
   const valuation =

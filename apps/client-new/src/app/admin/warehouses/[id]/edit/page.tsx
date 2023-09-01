@@ -30,7 +30,7 @@ const Page = ({ params }: Props) => {
   const router = useRouter();
   const [
     updateWarehouse,
-    { data: updateData, loading: updateLoading, error: updateError ,reset},
+    { data: updateData, loading: updateLoading, error: updateError, reset },
   ] = useMutation<UpdateWarehouseData, UpdateWarehouseVars>(UPDATE_WAREHOUSE);
 
   const { data, loading, error } = useQuery<WarehouseData, WarehouseVars>(

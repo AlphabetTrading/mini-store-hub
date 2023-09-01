@@ -33,7 +33,7 @@ const Page = (props: Props) => {
   const router = useRouter();
   const [
     createWarehouse,
-    { data: createData, loading: createLoading, error: createError,reset },
+    { data: createData, loading: createLoading, error: createError, reset },
   ] = useMutation<CreateWarehouseData, CreateWarehouseVars>(CREATE_WAREHOUSE);
 
   const onSubmit = async (
@@ -56,7 +56,7 @@ const Page = (props: Props) => {
           },
         },
       },
-      refetchQueries: [{query:WAREHOUSES}],
+      refetchQueries: [{ query: WAREHOUSES }],
       onCompleted: () => {
         helpers.resetForm();
         showAlert("added a", "warehouse");

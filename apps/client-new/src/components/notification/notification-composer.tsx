@@ -85,7 +85,7 @@ export const NotificationComposer = ({ onClose, open }: Props) => {
     validationSchema,
     validate(values) {
       let errors: any = {};
-      if (values.recipientType===RecipientType.USER && !values.recipient) {
+      if (values.recipientType === RecipientType.USER && !values.recipient) {
         errors.recipient = "Required";
       }
       return errors;
