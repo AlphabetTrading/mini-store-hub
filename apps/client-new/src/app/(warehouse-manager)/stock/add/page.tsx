@@ -214,7 +214,7 @@ const Page = (props: Props) => {
                   </TableHead>
                   <TableBody sx={{ maxHeight: 20 }}>
                     {filteredStockItems.length === 0 ? (
-                      <EmptyTable colspan={7}/>
+                      <EmptyTable colspan={7} />
                     ) : (
                       filteredStockItems.map((item: StockItem, idx: number) => (
                         <TableRow key={idx}>

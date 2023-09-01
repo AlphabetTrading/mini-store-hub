@@ -46,7 +46,7 @@ const Page = ({ params }: Props) => {
       variables: {
         deleteWarehouseId: params.id,
       },
-      refetchQueries: [{query:WAREHOUSES}],
+      refetchQueries: [{ query: WAREHOUSES }],
       onCompleted(data, clientOptions) {
         showAlert("deleted a", "warehouse");
         router.replace("/admin/warehouses");

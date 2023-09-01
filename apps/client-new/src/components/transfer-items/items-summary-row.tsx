@@ -63,8 +63,10 @@ const ItemsSummaryRow = ({
     <TableRow>
       <TableCell>
         <Stack>
-          <Typography  variant="body2">{warehouseStock.product.name}</Typography>
-          <Typography variant="body2" color="text.secondary">SN- {warehouseStock.product.serialNumber}</Typography>
+          <Typography variant="body2">{warehouseStock.product.name}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            SN- {warehouseStock.product.serialNumber}
+          </Typography>
         </Stack>
       </TableCell>
       <TableCell>{warehouseStock.product.activePrice?.price}</TableCell>

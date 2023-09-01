@@ -40,9 +40,15 @@ const RetailShopsList = ({
   );
   useEffect(() => {
     const filtered = retailShops?.filter((retailShop) => {
-      return retailShop.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      retailShop.retailShopManager?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      retailShop.retailShopManager?.lastName.toLowerCase().includes(searchQuery.toLowerCase());
+      return (
+        retailShop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        retailShop.retailShopManager?.firstName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        retailShop.retailShopManager?.lastName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      );
     });
     setFilteredRetailShops(filtered || []);
   }, [searchQuery, retailShops]);
@@ -77,7 +83,7 @@ const RetailShopsList = ({
               setSelectedRetailShop(event.currentTarget.value);
             }}
             spacing={2}
-            sx={{ p: 3, overflow: "auto",display:"block" }}
+            sx={{ p: 3, overflow: "auto", display: "block" }}
             maxHeight={350}
             value={selectedRetailShop?.toString() || ""}
           >

@@ -56,7 +56,7 @@ const Page = (props: Props) => {
       orderBy: OrderBySelector(filter.filter),
     },
     // notifyOnNetworkStatusChange: true,
-    
+
     // fetchPolicy: "cache-and-network",
   });
 
