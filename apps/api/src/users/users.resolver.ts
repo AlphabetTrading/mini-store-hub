@@ -152,6 +152,11 @@ export class UsersResolver {
     return this.usersService.getWarehouseByUserId(user.id);
   }
 
+  @Mutation(() => User)
+  async createADMIN(@Args('data') data: CreateUserInput) {
+    return this.usersService.createUser(data, 'ADMIN');
+  }
+
   @HasRoles('ADMIN')
   @UseGuards(RolesGuard)
   @Mutation(() => User)

@@ -8,9 +8,14 @@ import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { FilterSaleTransactionInput } from './dto/filter-sale-transactions-input';
 import { OrderBySaleTransactionInput } from './dto/sale-transaction-order.input';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
-import { PaginationSaleTransactions } from 'src/common/pagination/pagination-info';
+import {
+  PaginationRetailShops,
+  PaginationRetailShopsWithExtraInfo,
+  PaginationSaleTransactions,
+} from 'src/common/pagination/pagination-info';
 import { Prisma } from '@prisma/client';
 import { CreateBulkSaleTransactionInput } from './dto/create-bulk-sale-transaction.input';
+import { RetailShopsService } from 'src/retail-shops/retail-shops.service';
 
 const pubSub = new PubSub();
 @Resolver(() => SaleTransaction)
@@ -18,6 +23,7 @@ const pubSub = new PubSub();
 export class SaleTransactionsResolver {
   constructor(
     private readonly saleTransactionsService: SaleTransactionsService, // private readonly RetailShopStockService: RetailShopStock,
+    private readonly retailShopService: RetailShopsService,
   ) {}
 
   @Query(() => PaginationSaleTransactions, { name: 'saleTransactions' })
@@ -143,6 +149,114 @@ export class SaleTransactionsResolver {
     @Args('endDate') endDate: string,
   ): Promise<number> {
     return this.saleTransactionsService.totalSalesByDate(startDate, endDate);
+  }
+
+  @Query(() => Float)
+  async totalTransactionsByDate(
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalTransactionsByDate(
+      startDate,
+      endDate,
+    );
+  }
+
+  @Query(() => PaginationRetailShopsWithExtraInfo, {
+    name: 'retailShopSortByTotalSales',
+  })
+  async retailShopRankByTotalSales(
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const count = await this.retailShopService.count();
+    const retailShops =
+      await this.saleTransactionsService.retailShopRankByTotalSales(
+        startDate,
+        endDate,
+        paginationInput?.skip || 0,
+        paginationInput?.take || 10,
+      );
+
+    return {
+      items: retailShops,
+      meta: {
+        page: paginationInput?.skip || 0,
+        limit: paginationInput?.take || 10,
+        count,
+      },
+    };
+  }
+
+  @Query(() => PaginationRetailShopsWithExtraInfo, {
+    name: 'retailShopSortByTotalProfit',
+  })
+  async retailShopRankByTotalProfit(
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const count = await this.retailShopService.count();
+    const retailShops =
+      await this.saleTransactionsService.retailShopRankByTotalProfit(
+        startDate,
+        endDate,
+        paginationInput?.skip || 0,
+        paginationInput?.take || 10,
+      );
+
+    return {
+      items: retailShops,
+      meta: {
+        page: paginationInput?.skip || 0,
+        limit: paginationInput?.take || 10,
+        count,
+      },
+    };
+  }
+
+  @Query(() => PaginationRetailShopsWithExtraInfo, {
+    name: 'retailShopSortByTotalTransactions',
+  })
+  async retailShopRankByTotalTransactions(
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+    @Args('paginationInput', { type: () => PaginationInput, nullable: true })
+    paginationInput?: PaginationInput,
+  ) {
+    const count = await this.retailShopService.count();
+    const retailShops =
+      await this.saleTransactionsService.retailShopRankByTotalTransactions(
+        startDate,
+        endDate,
+        paginationInput?.skip || 0,
+        paginationInput?.take || 10,
+      );
+
+    return {
+      items: retailShops,
+      meta: {
+        page: paginationInput?.skip || 0,
+        limit: paginationInput?.take || 10,
+        count,
+      },
+    };
+  }
+
+  @Query(() => Float)
+  async totalTransactionsByRetailShopAndDate(
+    @Args('retailShopId') retailShopId: string,
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<number> {
+    return this.saleTransactionsService.totalTransactionsByRetailShopAndDate(
+      retailShopId,
+      startDate,
+      endDate,
+    );
   }
 
   @Query(() => Float)

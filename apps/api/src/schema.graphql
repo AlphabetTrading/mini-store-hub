@@ -378,6 +378,7 @@ type Mutation {
   activateUser(userId: String!): User!
   changePassword(data: ChangePasswordInput!): User!
   changeUserPassword(newPassword: String!, userId: String!): User!
+  createADMIN(data: CreateUserInput!): User!
   createBulkRetailShopStock(data: CreateBulkRetailShopStockInput!): [RetailShopStock!]!
   createBulkWarehouseStock(data: CreateBulkWarehouseStockInput!): [WarehouseStock!]!
   createCategory(data: CreateCategoryInput!): Category!
@@ -586,6 +587,11 @@ type PaginationRetailShops {
   meta: PaginationInfo
 }
 
+type PaginationRetailShopsWithExtraInfo {
+  items: [RetailShopWithExtraInfo!]!
+  meta: PaginationInfo
+}
+
 type PaginationSaleTransactions {
   items: [SaleTransaction!]!
   meta: PaginationInfo
@@ -679,6 +685,9 @@ type Query {
   readNotificationsByUserId(userId: String!): [Notification!]!
   retailShop(id: String!): RetailShop!
   retailShopManagers: [User!]!
+  retailShopSortByTotalProfit(endDate: String!, paginationInput: PaginationInput, startDate: String!): PaginationRetailShopsWithExtraInfo!
+  retailShopSortByTotalSales(endDate: String!, paginationInput: PaginationInput, startDate: String!): PaginationRetailShopsWithExtraInfo!
+  retailShopSortByTotalTransactions(endDate: String!, paginationInput: PaginationInput, startDate: String!): PaginationRetailShopsWithExtraInfo!
   retailShopStock(id: String!): RetailShopStock!
   retailShopStockById(id: String!): RetailShopStock!
   retailShopStockByProductId(productId: String!): [RetailShopStock!]!
@@ -715,6 +724,8 @@ type Query {
   totalSoldQuantityByRetailShop(retailShopId: String!): Float!
   totalSoldQuantityByRetailShopAndByDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalSoldQuantityByRetailShopAndProduct(productId: String!, retailShopId: String!): Float!
+  totalTransactionsByDate(endDate: String!, startDate: String!): Float!
+  totalTransactionsByRetailShopAndDate(endDate: String!, retailShopId: String!, startDate: String!): Float!
   totalValuationByRetailShopId(retailShopId: String!): StockValuation!
   totalValuationByRetailShopIdAndDate(endDate: String!, retailShopId: String!, startDate: String!): StockValuation!
   totalValuationByWarehouseId(warehouseId: String!): StockValuation!
@@ -796,6 +807,31 @@ type RetailShopStock {
   quantity: Float!
   retailShop: RetailShop
   retailShopId: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type RetailShopWithExtraInfo {
+  address: Address
+  addressId: String
+  amharicName: String
+  annualTransaction: [AnnualTransaction!]
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  dailyTransaction: [DailyTransaction!]
+  goodsTransfersAsDestination: [GoodsTransfer!]
+  id: ID!
+  monthlyTransaction: [MonthlyTransaction!]
+  name: String!
+  retailShopManager: User
+  retailShopManagerId: String
+  retailShopStock: [RetailShopStock!]
+  saleTransaction: [SaleTransaction!]
+  totalProfit: Float
+  totalSales: Float
+  totalTransactions: Float
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
