@@ -278,6 +278,199 @@ export class SaleTransactionsService {
     return overallProfit;
   }
 
+  // calculate ranks of retail shops by total sales
+  async retailShopRankByTotalSales(
+    startDate: string,
+    endDate: string,
+    skip: number,
+    take: number,
+  ) {
+    const formattedStartDate = new Date(startDate);
+    const formattedEndDate = new Date(endDate);
+
+    const retailShops = await this.prisma.retailShop.findMany({
+      where: {
+        saleTransaction: {
+          every: {
+            createdAt: {
+              gte: formattedStartDate,
+              lt: formattedEndDate,
+            },
+          },
+        },
+      },
+      include: {
+        saleTransaction: true,
+      },
+    });
+
+    const retailShopsWithTotalSales = retailShops.map((retailShop) => {
+      const totalSales = retailShop.saleTransaction.reduce((acc, curr) => {
+        return acc + curr.totalPrice;
+      }, 0);
+      return {
+        ...retailShop,
+        totalSales,
+      };
+    });
+
+    const sortedRetailShops = retailShopsWithTotalSales.sort((a, b) => {
+      return b.totalSales - a.totalSales;
+    });
+
+    return sortedRetailShops.slice(skip, skip + take);
+  }
+
+  // calculate ranks of retail shops by total profit
+  async retailShopRankByTotalProfit(
+    startDate: string,
+    endDate: string,
+    skip: number,
+    take: number,
+  ) {
+    const formattedStartDate = new Date(startDate);
+    const formattedEndDate = new Date(endDate);
+
+    const retailShops = await this.prisma.retailShop.findMany({
+      where: {
+        saleTransaction: {
+          every: {
+            createdAt: {
+              gte: formattedStartDate,
+              lt: formattedEndDate,
+            },
+          },
+        },
+      },
+      include: {
+        saleTransaction: {
+          include: {
+            saleTransactionItems: {
+              include: {
+                product: {
+                  include: {
+                    activePrice: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const retailShopsWithTotalProfit = retailShops.map((retailShop) => {
+      const totalProfit = retailShop.saleTransaction.reduce((acc, curr) => {
+        const profit = curr.saleTransactionItems.reduce((acc, curr) => {
+          const {
+            subTotal,
+            quantity,
+            product: {
+              activePrice: { purchasedPrice },
+            },
+          } = curr;
+          const profit = subTotal - purchasedPrice * quantity;
+          return acc + profit;
+        }, 0);
+        return acc + profit;
+      }, 0);
+      return {
+        ...retailShop,
+        totalProfit,
+      };
+    });
+
+    const sortedRetailShops = retailShopsWithTotalProfit.sort((a, b) => {
+      return b.totalProfit - a.totalProfit;
+    });
+
+    return sortedRetailShops.slice(skip, skip + take);
+  }
+
+  // calculate ranks of retail shops by total number of transactions
+  async retailShopRankByTotalTransactions(
+    startDate: string,
+    endDate: string,
+    skip: number,
+    take: number,
+  ) {
+    const formattedStartDate = new Date(startDate);
+    const formattedEndDate = new Date(endDate);
+
+    const retailShops = await this.prisma.retailShop.findMany({
+      where: {
+        saleTransaction: {
+          every: {
+            createdAt: {
+              gte: formattedStartDate,
+              lt: formattedEndDate,
+            },
+          },
+        },
+      },
+      include: {
+        saleTransaction: true,
+      },
+    });
+
+    const retailShopsWithTotalTransactions = retailShops.map((retailShop) => {
+      const totalTransactions = retailShop.saleTransaction.length;
+      return {
+        ...retailShop,
+        totalTransactions,
+      };
+    });
+
+    const sortedRetailShops = retailShopsWithTotalTransactions.sort((a, b) => {
+      return b.totalTransactions - a.totalTransactions;
+    });
+
+    return sortedRetailShops.slice(skip, skip + take);
+  }
+
+  // calculate ranks of products by total sales
+  async productRankByTotalSales(
+    startDate: string,
+    endDate: string,
+    skip: number,
+    take: number,
+  ) {
+    const formattedStartDate = new Date(startDate);
+    const formattedEndDate = new Date(endDate);
+
+    const products = await this.prisma.product.findMany({
+      where: {
+        saleTransactionItem: {
+          some: {
+            createdAt: {
+              gte: formattedStartDate,
+              lt: formattedEndDate,
+            },
+          },
+        },
+      },
+      include: {
+        saleTransactionItem: true,
+      },
+    });
+
+    const productsWithTotalSales = products.map((product) => {
+      const totalSales = product.saleTransactionItem.reduce((acc, curr) => {
+        return acc + curr.subTotal;
+      }, 0);
+      return {
+        ...product,
+        totalSales,
+      };
+    });
+
+    const sortedProducts = productsWithTotalSales.sort((a, b) => {
+      return b.totalSales - a.totalSales;
+    });
+
+    return sortedProducts.slice(skip, skip + take);
+  }
+
   async totalSales() {
     const response = await this.prisma.saleTransaction.aggregate({
       _sum: {
@@ -784,6 +977,50 @@ export class SaleTransactionsService {
       },
     });
     const total = response._sum.subTotal;
+    return total;
+  }
+
+  async totalTransactionsByRetailShopAndDate(
+    retailShopId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const response = await this.prisma.saleTransaction.aggregate({
+      where: {
+        retailShopId: retailShopId,
+        createdAt: {
+          gte: formattedStartDate,
+          lt: formattedEndDate,
+        },
+      },
+      _count: {
+        id: true,
+      },
+    });
+    const total = response._count.id ?? 0;
+    return total;
+  }
+  async totalTransactionsByDate(startDate: string, endDate: string) {
+    const [formattedStartDate, formattedEndDate] = [
+      new Date(startDate),
+      new Date(endDate),
+    ];
+    const response = await this.prisma.saleTransaction.aggregate({
+      where: {
+        createdAt: {
+          gte: formattedStartDate,
+          lt: formattedEndDate,
+        },
+      },
+      _count: {
+        id: true,
+      },
+    });
+    const total = response._count.id ?? 0;
     return total;
   }
 }

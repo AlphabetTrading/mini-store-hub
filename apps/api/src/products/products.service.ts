@@ -128,6 +128,7 @@ export class ProductsService {
     const products = await this.prisma.product.findMany({
       orderBy,
       where: {
+        ...where,
         goods: {
           every: {
             goodsTransfer: {
