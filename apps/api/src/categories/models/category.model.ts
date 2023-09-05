@@ -18,6 +18,9 @@ export class Category extends BaseModel {
   @Field(() => String, { nullable: true })
   parentId?: string;
 
+  @Field(() => String, { nullable: true })
+  image?: string;
+
   @Field(() => Category, { nullable: true })
   parent?: Category;
 

@@ -290,7 +290,6 @@ export class ProductsService {
 
   async create(data: CreateProductInput) {
     // Pad the currentSerialNumber with leading zeros to ensure it's 4 digits
-
     const currentSerialNumber = await this.prisma.product.count();
     const serialNumber = currentSerialNumber.toString().padStart(4, '0');
 

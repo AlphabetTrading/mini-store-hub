@@ -35,6 +35,12 @@ export const GET_UNREAD_NOTIFICATIONS = gql`
   }
 `;
 
+export const GET_UNREAD_NOTIFICATIONS_COUNT = gql`
+  query Query($userId: String!) {
+    unreadNotificationsCountByUserId(userId: $userId)
+  }
+`;
+
 export const GET_NOTIFICATION_DETAIL = gql`
   query notificationById($notificationById: String!) {
     notificationById(id: $notificationById) {

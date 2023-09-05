@@ -16,7 +16,7 @@ export const BASE_URL =
   "https://mini-store-hub-api.onrender.com/graphql/";
 
 // export const BASE_URL = "http://54.89.62.66:5000/graphql";
-
+// export const BASE_URL = "https://df3d-196-188-33-23.ngrok-free.app/graphql";
 const retryLink = new RetryLink({
   delay: {
     initial: 300,

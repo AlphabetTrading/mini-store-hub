@@ -137,20 +137,20 @@ enum UnitType {
 }
 
 model Product {
-  id                String   @id @default(uuid())
-  serialNumber      String
-  name              String
+  id                 String   @id @default(uuid())
+  serialNumber       String
+  name               String
   // amharicName field contains the title of the product in amharic character
-  amharicName       String?  @map("የ እቃ ስም") @db.Text
-  description       String
+  amharicName        String?  @map("የ እቃ ስም") @db.Text
+  description        String
   // amharicDescription field contains the description of the product in amharic character
-  amharicDecription String?  @map("መግለጫ") @db.Text
-  categoryId        String
-  category          Category @relation(fields: [categoryId], references: [id])
-  unit              UnitType
-  images            String[]
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  amharicDescription String?  @map("መግለጫ") @db.Text
+  categoryId         String
+  category           Category @relation(fields: [categoryId], references: [id])
+  unit               UnitType
+  images             String[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   activePriceId String?        @unique
   activePrice   PriceHistory?  @relation("ActivePrice", fields: [activePriceId], references: [id])
