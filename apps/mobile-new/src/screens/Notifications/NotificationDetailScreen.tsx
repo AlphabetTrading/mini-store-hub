@@ -57,9 +57,6 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
         title: locale.includes("en")
           ? data.notificationById?.title
           : data.notificationById?.amharicTitle ?? data.notificationById?.title,
-        headerStyle: {
-          backgroundColor: "#5684E0",
-        },
         headerTintColor: "#fff",
         headerTitleStyle: {
           fontWeight: "bold",

@@ -52,6 +52,12 @@ const LoginScreen = ({ }: any) => {
     },
     onCompleted: async ({ login }: any) => {
       if (login) {
+        console.log(login, "login")
+        if (login?.user?.role !== "RETAIL_SHOP_MANAGER") {
+          notifyMessage("Error: " + "You are not allowed to login as retailshop manager");
+          return;
+        }
+        console.log(login)
         setAuthState(login);
         navigation.navigate("Root", {
           screen: "HomeRoot",

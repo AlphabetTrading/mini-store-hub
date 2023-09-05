@@ -51,6 +51,7 @@ type Category {
   createdAt: DateTime!
   description: String
   id: ID!
+  image: String
   name: String!
   parent: Category
   parentId: String
@@ -99,6 +100,7 @@ input CreateCategoryInput {
   amharicDescription: String
   amharicName: String
   description: String!
+  image: String
   name: String!
   parentId: String
 }
@@ -731,6 +733,7 @@ type Query {
   totalValuationByWarehouseId(warehouseId: String!): StockValuation!
   totalValuationByWarehouseIdAndDate(endDate: String!, startDate: String!, warehouseId: String!): StockValuation!
   unreadNotificationsByUserId(userId: String!): [Notification!]!
+  unreadNotificationsCountByUserId(userId: String!): Float!
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: OrderByUserInput, paginationInput: PaginationInput): PaginationUser!
   warehouse(id: String!): Warehouse!
@@ -947,6 +950,7 @@ input UpdateCategoryInput {
   amharicDescription: String
   amharicName: String
   description: String
+  image: String
   name: String
   parentId: String
 }

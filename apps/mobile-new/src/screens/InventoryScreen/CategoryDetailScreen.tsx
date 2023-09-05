@@ -207,7 +207,7 @@ const CategoryDetailScreen = ({
                           }}
                         >
                           {/* {item.product.name} */}
-                          {locale === "en"
+                          {locale.includes("en")
                             ? item.product.name
                             : item.product.amharicName}
                         </Text>
@@ -231,7 +231,7 @@ const CategoryDetailScreen = ({
                           color: theme.colors.text,
                         }}
                       >
-                        {locale === "en"
+                        {locale.includes("en")
                           ? `${item.product.activePrice
                             ? item.product.activePrice.price
                             : 29

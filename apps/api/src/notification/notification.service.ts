@@ -13,6 +13,7 @@ import {
   UserRole,
 } from '@prisma/client';
 import { Notification } from './models/notification.model';
+import { RecordsEvent } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class NotificationService {
@@ -91,6 +92,59 @@ export class NotificationService {
     return readNotifications;
   }
 
+  async getAllUnreadNotificationsCount(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
+    let notificationTypes: RecipientType[] = [RecipientType.USER];
+
+    if (user.role === UserRole.ADMIN) {
+      notificationTypes = [RecipientType.ALL, RecipientType.USER];
+    } else if (user.role === UserRole.RETAIL_SHOP_MANAGER) {
+      notificationTypes = [
+        RecipientType.RETAIL_SHOP,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    } else if (user.role === UserRole.WAREHOUSE_MANAGER) {
+      notificationTypes = [
+        RecipientType.WAREHOUSE,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    }
+
+    const readNotificationIds = await this.prisma.notificationRead.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        notificationId: true,
+      },
+    });
+
+    const notificationIds = readNotificationIds.map(
+      (readNotification) => readNotification.notificationId,
+    );
+
+    const unreadNotifications = await this.prisma.notification.count({
+      where: {
+        isRead: false,
+        id: {
+          notIn: notificationIds,
+        },
+        recipientType: {
+          in: notificationTypes,
+        },
+      },
+    });
+
+    return unreadNotifications;
+  }
+
   async getAllReadNotifications(userId: string): Promise<Notification[]> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
@@ -151,6 +205,30 @@ export class NotificationService {
   }
 
   async getAllUnreadNotifications(userId: string): Promise<Notification[]> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
+    let notificationTypes: RecipientType[] = [RecipientType.USER];
+
+    if (user.role === UserRole.ADMIN) {
+      notificationTypes = [RecipientType.ALL, RecipientType.USER];
+    } else if (user.role === UserRole.RETAIL_SHOP_MANAGER) {
+      notificationTypes = [
+        RecipientType.RETAIL_SHOP,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    } else if (user.role === UserRole.WAREHOUSE_MANAGER) {
+      notificationTypes = [
+        RecipientType.WAREHOUSE,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    }
+
     const readNotificationIds = await this.prisma.notificationRead.findMany({
       where: {
         userId,
@@ -166,8 +244,12 @@ export class NotificationService {
 
     const unreadNotifications = await this.prisma.notification.findMany({
       where: {
+        isRead: false,
         id: {
           notIn: notificationIds,
+        },
+        recipientType: {
+          in: notificationTypes,
         },
       },
       include: {

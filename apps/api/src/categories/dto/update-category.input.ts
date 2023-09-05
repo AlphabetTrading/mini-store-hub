@@ -17,4 +17,7 @@ export class UpdateCategoryInput extends PartialType(CreateCategoryInput) {
 
   @Field(() => String, { nullable: true })
   parentId?: string;
+
+  @Field(() => String, { nullable: true })
+  image?: string;
 }
