@@ -11,6 +11,13 @@ export interface Product {
   category: { id: string; name: string };
   activePrice: PriceHistory;
   priceHistory: PriceHistory[];
+  saleTransactionItem?: SaleTransactionItem[];
+}
+
+export interface SaleTransactionItem {
+  id: string;
+  subTotal: number;
+  quantity: number;
 }
 
 export interface PriceHistory {

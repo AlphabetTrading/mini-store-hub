@@ -46,14 +46,18 @@ export const useGetAdminDashboardStatQuery = (selectedFilter: any) => {
 
   return useQuery(GET_ADMIN_DASHBOARD_STAT_BY_DATE, {
     variables: {
-      salesEndDate: new Date(endDate),
-      salesStartDate: new Date(startDate),
+      salesEndDate: endDate,
+      salesStartDate: startDate,
       prevSalesEndDate: startDate,
       prevSalesStartDate: prevStartDate,
       profitEndDate: endDate,
       profitStartDate: startDate,
       prevProfitEndDate: startDate,
       prevProfitStartDate: prevStartDate,
+      transactionsEndDate: endDate,
+      transactionsStartDate: startDate,
+      prevTransactionsEndDate: startDate,
+      prevTransactionsStartDate: prevStartDate,
     },
     notifyOnNetworkStatusChange: true,
   });

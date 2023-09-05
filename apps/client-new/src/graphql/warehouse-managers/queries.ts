@@ -26,6 +26,34 @@ export const GET_TOTAL_VALUATION_OF_WAREHOUSE = gql`
   }
 `;
 
+export interface GetInventoryContentData {
+  warehouseStocks: {
+    items: {
+      maxQuantity: number;
+      quantity: number;
+    }[];
+  };
+}
+
+export interface GetInventoryContentVars {
+  filterWarehouseStockInput: {
+    warehouse: {
+      id: string;
+    };
+  };
+}
+
+export const GET_INVENTORY_CONTENT_OF_WAREHOUSE = gql`
+  query WarehouseStock($filterWarehouseStockInput: FilterWarehouseStockInput) {
+    warehouseStocks(filterWarehouseStockInput: $filterWarehouseStockInput) {
+      items {
+        maxQuantity
+        quantity
+      }
+    }
+  }
+`;
+
 export interface GetLowStockItemsByWarehouseData {
   findLowStockByWarehouseId: {
     items: LowStockItemsWarehouse[];
