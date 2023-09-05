@@ -19,7 +19,7 @@ const LowStockItemsRow = ({ lowStockItem }: Props) => {
               {lowStockItem.product.name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Code: {lowStockItem.product.serialNumber}
+              Serial Number: #{lowStockItem.product.serialNumber}
             </Typography>
           </Stack>
         </Stack>

@@ -1,31 +1,15 @@
 "use client";
-import { RetailShopManagerIcon } from "@/components/icons/retail-shop-manager";
-import { RetailShopsIcon } from "@/components/icons/retail-shops";
-import { WarehouseDashboardIcon } from "@/components/icons/warehouse_dashboard";
-import SemiCircleGauge from "@/components/warehouses/semi-circle-gauge";
-import {
-  Box,
-  Card,
-  CardHeader,
-  CircularProgress,
-  Container,
-  Grid,
-  Stack,
-  SvgIcon,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { useSession } from "next-auth/react";
 import React from "react";
-// import ProfileSvg from "../../../../public/assets/images/Group 6.png";
-import Image from "next/image";
-import TopSellingProducts from "@/components/warehouse-manager-dashboard/top-selling-products-table";
-import LowStockItemsTable from "@/components/warehouse-manager-dashboard/low-stock-items-table";
-import { StockDistribution } from "@/components/warehouse-manager-dashboard/stock-distribution-chart";
 import { useQuery } from "@apollo/client";
 import {
+  GET_INVENTORY_CONTENT_OF_WAREHOUSE,
   GET_LOW_STOCK_ITEMS_BY_WAREHOUSE,
   GET_STOCK_DISTRIBUTION,
   GET_TOTAL_VALUATION_OF_WAREHOUSE,
+  GetInventoryContentData,
+  GetInventoryContentVars,
   GetLowStockItemsByWarehouseData,
   GetLowStockItemsByWarehouseVars,
   GetStockDistributionData,
@@ -34,12 +18,17 @@ import {
   GetTotalWarehouseValuationVars,
 } from "@/graphql/warehouse-managers/queries";
 import StateHandler from "@/components/state-handler";
+import InventoryContent from "@/components/warehouse-manager-dashboard/inventory-content";
+import WarehouseValuation from "@/components/warehouse-manager-dashboard/warehouse-valuation";
+import { StockDistribution } from "@/components/warehouse-manager-dashboard/stock-distribution-chart";
+import LowStockItemsTable from "@/components/warehouse-manager-dashboard/low-stock-items-table";
 
 type Props = {};
 
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
   const warehouseId = (sessionData?.user as any).warehouseId || "";
+
   const { data, error, loading } = useQuery<
     GetTotalWarehouseValuationData,
     GetTotalWarehouseValuationVars
@@ -48,6 +37,23 @@ const Page = (props: Props) => {
       warehouseId: warehouseId,
     },
   });
+
+  const {
+    data: inventoryContentData,
+    error: inventoryContentError,
+    loading: inventoryContentLoading,
+  } = useQuery<GetInventoryContentData, GetInventoryContentVars>(
+    GET_INVENTORY_CONTENT_OF_WAREHOUSE,
+    {
+      variables: {
+        filterWarehouseStockInput: {
+          warehouse: {
+            id: warehouseId,
+          },
+        },
+      },
+    }
+  );
 
   const {
     data: lowStockData,
@@ -80,152 +86,43 @@ const Page = (props: Props) => {
     }
   );
 
-  const pageLoading = stockDistributionLoading || lowStockLoading || loading;
-  const pageError = stockDistributionError || lowStockError || error;
+  const pageLoading =
+    stockDistributionLoading ||
+    inventoryContentLoading ||
+    lowStockLoading ||
+    loading;
+  const pageError =
+    stockDistributionError || inventoryContentError || lowStockError || error;
+
+  var totalQuantity = 0;
+  var remainingQuantity = 0;
+  inventoryContentData?.warehouseStocks.items.forEach((item) => {
+    totalQuantity += item.maxQuantity;
+    remainingQuantity += item.quantity;
+  });
 
   return (
     <Box component="main" sx={{ height: "100%" }}>
       <StateHandler loading={pageLoading} error={pageError} empty={false}>
         <Container maxWidth="xl" sx={{ paddingY: 2 }}>
-          <Typography variant="h5">Warehouse Statistics</Typography>
-          <Grid container spacing={10}>
+          {/* <Typography variant="h5">Warehouse Statistics</Typography> */}
+          <Grid container spacing={6}>
             <Grid item md={12} lg={7} xl={7}>
-              <Card sx={{ flexDirection: "row", marginTop: 2 }}>
-                <Stack
-                  direction="column"
-                  sx={{
-                    height: 375,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    sx={{
-                      height: "90%",
-                      width: "100%",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Stack
-                      direction="column"
-                      sx={{
-                        height: "75%",
-                        marginX: 4,
-                        // backgroundColor: "green",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Stack direction="column">
-                        <Typography variant="subtitle1">
-                          Total Inventory Value
-                        </Typography>
-                        <Typography variant="h2">
-                          {data?.totalValuationByWarehouseId.totalValuation}
-                        </Typography>
-                      </Stack>
-                      <Stack direction="column" spacing={1}>
-                        <Stack
-                          spacing={2}
-                          direction="row"
-                          sx={{ alignItems: "center" }}
-                        >
-                          <RetailShopManagerIcon />
-                          <div style={{ flexDirection: "column" }}>
-                            <Typography variant="subtitle1">
-                              Total Number of Products
-                            </Typography>
-                            <Typography variant="h4">
-                              {data?.totalValuationByWarehouseId.totalQuantity}
-                            </Typography>
-                          </div>
-                        </Stack>
-                        <Stack
-                          spacing={2}
-                          direction="row"
-                          sx={{ alignItems: "center" }}
-                        >
-                          <RetailShopManagerIcon />
-                          <div style={{ flexDirection: "column" }}>
-                            <Typography variant="subtitle1">
-                              Total Number of Unique Products
-                            </Typography>
-                            <Typography variant="h4">
-                              {data?.totalValuationByWarehouseId.count}
-                            </Typography>
-                          </div>
-                        </Stack>
-                      </Stack>
-                    </Stack>
-                    <Stack
-                      direction="column"
-                      sx={{
-                        position: "relative",
-                        width: 0.5,
-                        height: 0.9,
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          right: 0,
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      >
-                        <WarehouseDashboardIcon
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                          }}
-                        />
-                      </div>
-                    </Stack>
-
-                    {/* <WarehouseDashboardIcon sx={{ width: "100%" }} /> */}
-                  </Stack>
-                </Stack>
-              </Card>
+              <WarehouseValuation
+                valuation={data?.totalValuationByWarehouseId.totalValuation!}
+                totalProducts={data?.totalValuationByWarehouseId.totalQuantity!}
+                totalUniqueProducts={data?.totalValuationByWarehouseId.count!}
+              />
             </Grid>
             <Grid item md={12} lg={5} xl={5}>
-              <Card sx={{ marginTop: 2 }}>
-                <Stack
-                  direction="column"
-                  sx={{
-                    height: 375,
-                    justifyContent: "center",
-                    color: "black",
-                  }}
-                >
-                  <Stack direction="column" sx={{ height: "70%", marginX: 5 }}>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      sx={{ alignItems: "flex-start" }}
-                    >
-                      <Stack direction="column">
-                        <Typography variant="subtitle1">
-                          Inventory Content
-                        </Typography>
-                        <h1 style={{ fontSize: 80 }}>78%</h1>
-                      </Stack>
-                      <Stack
-                        direction="column"
-                        sx={{
-                          justifyContent: "flex-start",
-                        }}
-                      >
-                        <SemiCircleGauge value={78} />
-                      </Stack>
-                    </Stack>
-                    <Typography variant="subtitle2" sx={{ marginTop: 4 }}>
-                      78% of the initial inventory still remains in the
-                      warehouse. 112,067 worth of stock still remains in the
-                      stock
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Card>
+              <InventoryContent
+                content={Number(
+                  ((remainingQuantity / totalQuantity) * 100).toFixed()
+                )}
+                valuation={Number(
+                  data?.totalValuationByWarehouseId.totalValuation
+                )}
+              />
             </Grid>
           </Grid>
           {/* <Grid container spacing={10} marginY={0}>
@@ -233,7 +130,7 @@ const Page = (props: Props) => {
               <TopSellingProducts />
             </Grid>
           </Grid> */}
-          <Grid container marginY={2} spacing={10}>
+          <Grid container marginY={1} spacing={6}>
             <Grid item xs={12} lg={6}>
               <StockDistribution
                 total={data?.totalValuationByWarehouseId.totalQuantity}
