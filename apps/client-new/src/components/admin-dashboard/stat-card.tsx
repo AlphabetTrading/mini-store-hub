@@ -51,7 +51,7 @@ const StatCard = ({ imgSrc, timeFrame, stat, value, pastValue }: Props) => {
                 }}
                 variant="body2"
               >
-                {pastValue !== 0 ? Math.abs(difference).toFixed() : 0}%
+                {pastValue !== 0 ? Math.abs(difference * 100).toFixed(1) : 0}%
               </Typography>
             </Stack>
           </Stack>
