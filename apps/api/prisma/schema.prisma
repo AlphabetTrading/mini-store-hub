@@ -116,7 +116,7 @@ model Category {
   description        String
   amharicDescription String?    @map("መግለጫ") @db.Text
   parentId           String?
-  images             String[]
+  image              String?
   parent             Category?  @relation("Subcategory", fields: [parentId], references: [id])
   subcategories      Category[] @relation("Subcategory")
   createdAt          DateTime   @default(now())

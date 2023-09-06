@@ -91,6 +91,19 @@ export class NotificationResolver {
     return this.notificationService.findOne(notificationId);
   }
 
+  @Query(() => Notification, {
+    name: 'getUsersNotificationDetailByUserIdAndNotificationId',
+  })
+  async getUsersNotificationDetailByUserIdAndNotificationId(
+    @Args('userId') userId: string,
+    @Args('notificationId') notificationId: string,
+  ) {
+    return this.notificationService.getUsersNotificationDetailByUserIdAndNotificationId(
+      userId,
+      notificationId,
+    );
+  }
+
   // @Query(() => [Notification])
   // async readNotifications(@Args('userId') userId: string) {
   //   return this.notificationService.getNotificationsByUserIdAndStatus(

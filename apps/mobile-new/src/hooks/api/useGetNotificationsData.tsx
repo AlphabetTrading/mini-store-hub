@@ -16,12 +16,13 @@ export const useGetUsersNotifications = (userId: string) => {
   });
 };
 
-export const useGetSingleNotification = (notificationId: string) => {
+export const useGetSingleNotification = (notificationId: string, userId: string) => {
   return useQuery(GET_NOTIFICATION_DETAIL, {
     notifyOnNetworkStatusChange: true,
     errorPolicy: "all",
     variables: {
-      notificationById: notificationId,
+      notificationId,
+      userId
     },
   });
 };
