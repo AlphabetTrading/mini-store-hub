@@ -18,7 +18,6 @@ import {
 import React from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   DELETE_WAREHOUSE,
   DeleteWarehouseVars,

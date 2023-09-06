@@ -1,6 +1,7 @@
 import {
   Alert,
   AlertTitle,
+  Box,
   Button,
   CardContent,
   CircularProgress,
@@ -11,6 +12,7 @@ import {
   Link,
   MenuItem,
   Stack,
+  SvgIcon,
   Switch,
   TableCell,
   TableRow,
@@ -21,20 +23,9 @@ import React from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import NextLink from "next/link";
-import { Product } from "../../../types/product";
-import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
+import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
 import { useMutation, useQuery } from "@apollo/client";
-import {
-  DELETE_PRODUCT,
-  DeleteProductData,
-  DeleteProductVars,
-  UPDATE_PRODUCT,
-  UpdateProductData,
-  UpdateProductVars,
-} from "@/graphql/products/mutations";
 import { useFormik } from "formik";
-import { PRODUCTS } from "@/graphql/products/queries";
 import * as Yup from "yup";
 import { Category } from "../../../types/categories";
 import {
@@ -47,6 +38,7 @@ import {
 } from "@/graphql/categories/mutations";
 import dayjs from "dayjs";
 import { showAlert } from "@/helpers/showAlert";
+import { ImageOutlined } from "@mui/icons-material";
 
 type Props = {
   category: Category;
@@ -74,7 +66,6 @@ const validationSchema = Yup.object({
 });
 
 const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
-  const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
   const [
     deleteCategory,
     {
@@ -148,7 +139,57 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
             {selected ? <ExpandMore /> : <ChevronRightIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{category.name}</TableCell>
+        <TableCell width="25%">
+          <Box
+            sx={{
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            {category.image ? (
+              <Box
+                sx={{
+                  alignItems: "center",
+                  backgroundColor: "neutral.50",
+                  backgroundImage: `url(${category.image})`,
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                  borderRadius: 1,
+                  display: "flex",
+                  height: 80,
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  width: 80,
+                }}
+              />
+            ) : (
+              <Box
+                sx={{
+                  alignItems: "center",
+                  backgroundColor: "neutral.50",
+                  borderRadius: 1,
+                  display: "flex",
+                  height: 80,
+                  justifyContent: "center",
+                  width: 80,
+                }}
+              >
+                <SvgIcon>
+                  <ImageOutlined />
+                </SvgIcon>
+              </Box>
+            )}
+            <Box
+              sx={{
+                cursor: "pointer",
+                ml: 2,
+              }}
+            >
+              <Typography variant="subtitle2">{category.name}</Typography>
+            </Box>
+          </Box>
+        </TableCell>
+        {/* <TableCell align="left">{category.name}</TableCell> */}
         <TableCell align="left">{category.description}</TableCell>
         <TableCell align="left">
           {dayjs(category.createdAt).format("DD/MM/YYYY")}
