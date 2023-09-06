@@ -6,8 +6,12 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateSaleTransactionInput } from './dto/update-sale-transaction.input';
-import { Prisma } from '@prisma/client';
+import { Prisma, RecipientType } from '@prisma/client';
 import { CreateBulkSaleTransactionInput } from './dto/create-bulk-sale-transaction.input';
+import { NotificationService } from 'src/notification/notification.service';
+import { NotificationEvent } from 'src/notification/events/notification.event';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { v4 as uuidv4 } from 'uuid';
 
 const salesTransactionInclude: Prisma.SaleTransactionInclude = {
   retailShop: true,
@@ -30,7 +34,11 @@ const salesTransactionInclude: Prisma.SaleTransactionInclude = {
 export class SaleTransactionsService {
   private readonly logger = new Logger(SaleTransactionsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async totalProfitByProductByDate(
     productId: string,
@@ -754,7 +762,12 @@ export class SaleTransactionsService {
     });
   }
 
-  async createSaleTransaction(data: CreateBulkSaleTransactionInput) {
+  async createSaleTransaction(
+    userId: string,
+    data: CreateBulkSaleTransactionInput,
+  ) {
+    const notification_tokens =
+      await this.notificationService.getNotificationTokensByUserId(userId);
     const { goods, retailShopId } = data;
     const retailShop = await this.prisma.retailShop.findUnique({
       where: { id: retailShopId },
@@ -806,6 +819,7 @@ export class SaleTransactionsService {
         if (!product) {
           throw new NotFoundException('Product not found');
         }
+
         await tx.retailShopStock.update({
           where: {
             productId_retailShopId: {
@@ -819,6 +833,45 @@ export class SaleTransactionsService {
             },
           },
         });
+
+        const retailShopStock = await tx.retailShopStock.findUnique({
+          where: {
+            productId_retailShopId: {
+              retailShopId: retailShopId,
+              productId: productId,
+            },
+          },
+        });
+
+        // send notification if stock is less than 10
+        if (retailShopStock.quantity < retailShopStock.maxQuantity * (1 / 10)) {
+          this.logger.log(
+            'Stock of ' +
+              product.name +
+              ' is less than 10, please restock the product',
+          );
+          const notification_id = uuidv4();
+
+          this.eventEmitter.emitAsync(
+            'notification.created',
+            new NotificationEvent({
+              notification_id: notification_id,
+              notification_body:
+                'Stock of ' + product.name + ' is less than 10',
+              notification_title: 'Stock Alert',
+              tokens: notification_tokens,
+            }),
+          );
+
+          return this.notificationService.sendIndividualNotification({
+            notification_id: notification_id,
+            title: 'Stock Alert',
+            body: 'Stock of ' + product.name + ' is less than 10',
+            notificationId: notification_id,
+            recipientType: RecipientType.USER,
+            recipientId: userId,
+          });
+        }
       }
     });
     // calculate total price
@@ -856,6 +909,7 @@ export class SaleTransactionsService {
       };
     });
     const goodsWithSubTotalResolved = await Promise.all(goodsWithSubTotal);
+
     return await this.prisma.saleTransaction.create({
       data: {
         totalPrice,

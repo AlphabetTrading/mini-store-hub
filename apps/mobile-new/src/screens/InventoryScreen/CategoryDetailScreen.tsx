@@ -194,7 +194,7 @@ const CategoryDetailScreen = ({
                       }}
                     >
                       <Avatar.Image
-                        source={{ uri: "https://picsum.photos/200" }}
+                        source={{ uri: item.product.images > 0 ? item.images[0] : "https://picsum.photos/200/300" }}
                         size={60}
                       />
                       {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}

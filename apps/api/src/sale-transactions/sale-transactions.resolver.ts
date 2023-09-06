@@ -16,6 +16,8 @@ import {
 import { Prisma } from '@prisma/client';
 import { CreateBulkSaleTransactionInput } from './dto/create-bulk-sale-transaction.input';
 import { RetailShopsService } from 'src/retail-shops/retail-shops.service';
+import { UserEntity } from 'src/common/decorators';
+import { User } from 'src/users/models/user.model';
 
 const pubSub = new PubSub();
 @Resolver(() => SaleTransaction)
@@ -421,9 +423,10 @@ export class SaleTransactionsResolver {
 
   @Mutation(() => SaleTransaction)
   async createSaleTransaction(
+    @UserEntity() user: User,
     @Args('data') data: CreateBulkSaleTransactionInput,
   ): Promise<SaleTransaction> {
-    return this.saleTransactionsService.createSaleTransaction(data);
+    return this.saleTransactionsService.createSaleTransaction(user.id, data);
   }
 
   @Mutation(() => SaleTransaction)

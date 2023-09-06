@@ -673,6 +673,7 @@ type Query {
   findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
   findProductsByTopSellAndByWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
   getAllNotifications: [Notification!]!
+  getUsersNotificationDetailByUserIdAndNotificationId(notificationId: String!, userId: String!): Notification!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
   goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput): PaginationGoodsTransfer!

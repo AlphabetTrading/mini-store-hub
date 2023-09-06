@@ -68,7 +68,7 @@
     },
     "notification": {
       "icon": "./assets/images/icon.png",
-      "color": "#ee8172"
+      "androidMode": "default"
     },
     "updates": {
       "url": "https://u.expo.dev/2fa6b5a7-f577-465e-a177-18e218351aca"

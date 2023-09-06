@@ -40,13 +40,13 @@ export class NotificationService {
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
       case UserRole.ADMIN:
-        recipientType = ['ALL'];
+        recipientType = [RecipientType.ALL, RecipientType.USER];
         break;
       case UserRole.RETAIL_SHOP_MANAGER:
-        recipientType = ['RETAIL_SHOP', 'ALL'];
+        recipientType = [RecipientType.RETAIL_SHOP, RecipientType.USER];
         break;
       case UserRole.WAREHOUSE_MANAGER:
-        recipientType = ['WAREHOUSE', 'ALL'];
+        recipientType = [RecipientType.WAREHOUSE, RecipientType.USER];
         break;
       default:
         break;
@@ -89,7 +89,23 @@ export class NotificationService {
       },
     });
 
-    return readNotifications;
+    return readNotifications.map((notification) => {
+      if (
+        notification.notificationReads.filter(
+          (notfi: any) => notfi.userId === userId,
+        ).length > 0
+      ) {
+        const notificationData = {
+          ...notification,
+          isRead: true,
+        };
+
+        delete notificationData.notificationReads;
+
+        return notificationData;
+      }
+      return notification;
+    });
   }
 
   async getAllUnreadNotificationsCount(userId: string) {
@@ -365,6 +381,37 @@ export class NotificationService {
         user: true,
       },
     });
+  }
+
+  async getUsersNotificationDetailByUserIdAndNotificationId(
+    userId: string,
+    notificationId: string,
+  ) {
+    const notification = await this.prisma.notification.findUnique({
+      where: {
+        id: notificationId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('Notification is not found');
+    }
+
+    // check if it is read
+    const hasRead = this.prisma.notificationRead.findFirst({
+      where: {
+        notificationId,
+        userId,
+      },
+    });
+
+    return {
+      ...notification,
+      isRead: hasRead ? true : false,
+    };
   }
 
   async getNotificationsByUserIdAndStatus(user_id: string, status: boolean) {
