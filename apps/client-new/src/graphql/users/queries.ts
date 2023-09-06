@@ -44,6 +44,7 @@ export const USERS = gql`
             lat
             lng
           }
+          photoUrl
         }
         retailShop {
           name

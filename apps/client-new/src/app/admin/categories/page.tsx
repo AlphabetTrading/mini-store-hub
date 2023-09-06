@@ -19,8 +19,9 @@ import CategoriesListTable from "@/components/categories/categories-list-table";
 import { ProductsData, PRODUCTS } from "@/graphql/products/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
-import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
+import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
 import Pagination from "@/components/Pagination";
+import StateHandler from "@/components/state-handler";
 
 type Props = {};
 
@@ -32,7 +33,7 @@ const Page = (props: Props) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { data: sessionData } = useSession();
-  const { data, error, loading, refetch } = useQuery<CategoryData>(CATEGORIES, {
+  const { data, error, loading, refetch } = useQuery<CategoriesData>(CATEGORIES, {
     variables: {
       paginationInput: {
         skip: page * rowsPerPage,
@@ -110,24 +111,22 @@ const Page = (props: Props) => {
             }}
           >
             <CategoriesListSearch filter={filter} setFilter={setFilter} />
-            {loading ? (
-              <CircularProgress />
-            ) : !data || error ? (
-              <Typography variant="h4">
-                Failed to fetch {JSON.stringify(error)}
-              </Typography>
-            ) : (
+            <StateHandler
+              empty={data?.categories.items.length===0}
+              error={error}
+              loading={loading}
+            >
               <>
-                <CategoriesListTable categories={data.categories.items} />
+                <CategoriesListTable categories={data?.categories.items||[]} />
                 <Pagination
-                  meta={data.categories.meta}
+                  meta={data?.categories.meta}
                   page={page}
                   setPage={setPage}
                   rowsPerPage={rowsPerPage}
                   setRowsPerPage={setRowsPerPage}
                 />
               </>
-            )}
+            </StateHandler>
           </Card>
           {/* <Card>
             <ItemListSearch/>

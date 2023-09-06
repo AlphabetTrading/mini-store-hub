@@ -4,7 +4,6 @@ import {
   Breadcrumbs,
   Button,
   Card,
-  CircularProgress,
   Container,
   Link,
   Stack,
@@ -20,6 +19,7 @@ import { useSession } from "next-auth/react";
 import ProductsListSearch from "@/components/products/products-list-search";
 import ProductsListTable from "@/components/products/products-list-table";
 import Pagination from "@/components/Pagination";
+import StateHandler from "@/components/state-handler";
 
 type Props = {};
 
@@ -57,29 +57,29 @@ const Page = (props: Props) => {
     },
     // notifyOnNetworkStatusChange: true,
 
-    // fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-and-network",
   });
 
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     refetch({
-  //       filterProductInput: {
-  //         name: {
-  //           contains: filter.query,
-  //         },
-  //         serialNumber: {
-  //           contains: filter.query,
-  //         },
-  //       },
-  //       paginationInput: {
-  //         skip: page * rowsPerPage,
-  //         take: rowsPerPage,
-  //       },
-  //       orderBy: OrderBySelector(filter.filter),
-  //     });
-  //   }, 300);
-  //   return () => clearTimeout(timeout);
-  // }, [filter, page, refetch, rowsPerPage]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      refetch({
+        filterProductInput: {
+          name: {
+            contains: filter.query,
+          },
+          serialNumber: {
+            contains: filter.query,
+          },
+        },
+        paginationInput: {
+          skip: page * rowsPerPage,
+          take: rowsPerPage,
+        },
+        orderBy: OrderBySelector(filter.filter),
+      });
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [filter, page, refetch, rowsPerPage]);
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -123,24 +123,20 @@ const Page = (props: Props) => {
             }}
           >
             <ProductsListSearch filter={filter} setFilter={setFilter} />
-            {loading ? (
-              <CircularProgress />
-            ) : !data || error ? (
-              <Typography variant="h4">
-                Failed to fetch {JSON.stringify(error)}
-              </Typography>
-            ) : (
-              <>
-                <ProductsListTable products={data.products.items} />
-                <Pagination
-                  meta={data.products.meta}
-                  page={page}
-                  setPage={setPage}
-                  rowsPerPage={rowsPerPage}
-                  setRowsPerPage={setRowsPerPage}
-                />
-              </>
-            )}
+            <StateHandler
+              empty={data?.products.items.length === 0}
+              error={error}
+              loading={loading}
+            >
+              <ProductsListTable products={data?.products.items || []} />
+              <Pagination
+                meta={data?.products.meta}
+                page={page}
+                setPage={setPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
+              />
+            </StateHandler>
           </Card>
           {/* <Card>
             <ItemListSearch/>

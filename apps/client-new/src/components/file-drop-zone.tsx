@@ -24,7 +24,6 @@ type Props = {
 };
 
 const FileDropZone = ({ file, setFile }: Props) => {
-  console.log(file);
   const onDrop = useCallback((acceptedFiles: any) => {
     setFile(acceptedFiles[0]);
   }, []);

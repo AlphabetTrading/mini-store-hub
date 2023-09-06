@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardContent,
+  CardHeader,
   CircularProgress,
   Container,
   Grid,
@@ -15,22 +16,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
+import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import { API_URL } from "@/constants/urls";
-import {
-  CREATE_PRODUCT,
-  CreateProductData,
-  CreateProductVars,
-} from "@/graphql/products/mutations";
 import { useMutation } from "@apollo/client";
-import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
-import { Unit } from "../../../../../types/product";
 import { Category } from "../../../../../types/categories";
 import {
   CreateCategoryData,
@@ -38,6 +31,7 @@ import {
   CREATE_CATEGORY,
 } from "@/graphql/categories/mutations";
 import { showAlert } from "@/helpers/showAlert";
+import FileDropZone from "@/components/file-drop-zone";
 
 type Props = {};
 
@@ -58,6 +52,7 @@ interface Values {
   description: string;
   amharicDescription: string;
   parentCategory?: Category;
+  image:any
 }
 
 const initialValues: Values = {
@@ -65,6 +60,7 @@ const initialValues: Values = {
   amharicName: "",
   description: "",
   amharicDescription: "",
+  image:null,
 };
 
 const Page = (props: Props) => {
@@ -90,7 +86,8 @@ const Page = (props: Props) => {
     data: categoryData,
     loading: categoryLoading,
     error: categoryError,
-  } = useQuery<CategoryData>(CATEGORIES);
+  } = useQuery<CategoriesData>(CATEGORIES);
+  const [photo, setPhoto] = useState<any>(null);
 
   const router = useRouter();
 
@@ -245,6 +242,15 @@ const Page = (props: Props) => {
                   </Grid>
                 </CardContent>
               </Card>
+
+              
+              <Card>
+                <CardHeader title="Upload Photo" />
+                <CardContent sx={{ pt: 0 }}>
+                  <FileDropZone setFile={setPhoto} file={photo} />
+                </CardContent>
+              </Card>
+
 
               <Stack
                 direction="row"

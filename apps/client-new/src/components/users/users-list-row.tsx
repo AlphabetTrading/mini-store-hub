@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   CardContent,
   Divider,
@@ -62,7 +63,21 @@ const UsersListRow = ({ user }: Props) => {
         hover
         sx={{ textDecoration: "none" }}
       >
-        <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
+        <TableCell>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar
+              src={user.userProfile?.photoUrl}
+              sx={{
+                height: 50,
+                width: 50,
+              }}
+            >
+              {/* Hanna Samuel */}
+              {/* {getInitials(customer.name)} */}
+            </Avatar>
+            <Typography variant="body2">{`${user.firstName} ${user.lastName}`}</Typography>
+          </Stack>
+        </TableCell>
         <TableCell>{user.username}</TableCell>
         <TableCell>
           <CustomChip label={user.role} />
