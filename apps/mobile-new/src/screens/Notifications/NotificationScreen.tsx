@@ -9,7 +9,6 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useAuth } from "../../contexts/auth";
 import { useGetUsersNotifications } from "../../hooks/api/useGetNotificationsData";
 import { useAppTheme } from "../../contexts/preference";
@@ -18,15 +17,7 @@ import SingleNotificationItem from "../../components/Notifications/SingleNotific
 
 type Props = {};
 
-interface Notification {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-}
-
 const NotificationScreen = (props: Props) => {
-  const navigation = useNavigation();
   const { authState } = useAuth();
   const { data, loading, error, refetch } = useGetUsersNotifications(
     authState?.user?.id || ""
@@ -41,7 +32,6 @@ const NotificationScreen = (props: Props) => {
       setRefreshing(false);
     }, 2000);
   }, []);
-
 
   const styles = StyleSheet.create({
     container: {
@@ -98,7 +88,7 @@ const NotificationScreen = (props: Props) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           style={{ width: "100%" }}
-          renderItem={({ item, index }) => <SingleNotificationItem item={item} />}
+          renderItem={({ item }) => <SingleNotificationItem item={item} />}
           ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#EFEFEF" }}></View>}
         />
       ) : (

@@ -3,6 +3,8 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '../../contexts/preference';
 import { format } from 'date-fns';
+import { IconButton } from 'react-native-paper';
+import { customFormatDistanceFromNow } from '../../utils/datefns';
 
 type Props = {
     item: any
@@ -18,7 +20,7 @@ const SingleNotificationItem = ({ item }: Props) => {
             style={{
                 width: "100%",
                 backgroundColor: item.isRead ? theme.colors.background : theme.colors.cardBackground,
-                padding: 20,
+                padding: 10,
                 flexDirection: "column",
                 rowGap: 10,
             }}
@@ -36,21 +38,46 @@ const SingleNotificationItem = ({ item }: Props) => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    width: "100%",
                 }}
             >
-                <View style={{ gap: 10 }}>
-                    <Text style={{ fontFamily: "InterMedium", fontSize: item.isRead ? 14 : 16, color: theme.colors.text }}>
-                        {item.title}
-                    </Text>
+                <View>
+                    <IconButton
+                        icon={item.isRead ? "bell-outline" : "bell-ring-outline"}
+                        iconColor={item.isRead ? theme.colors.textSecondary : theme.colors.accent}
+                        // color={item.isRead ? theme.colors.text : theme.colors.primary}
+                        size={24}
+                    />
+                </View>
+                <View style={{
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    flexGrow: 1,
+                }}>
+
+                    <View style={{ gap: 10, maxWidth: 300 }}>
+                        <Text style={{ fontFamily: item.isRead ? "InterBold" : "InterMedium", fontSize: item.isRead ? 14 : 16, color: theme.colors.text }}>
+                            {item.title}
+                        </Text>
+                        <Text
+                            style={{
+                                fontFamily: "InterLight",
+                                fontSize: 12,
+                                paddingRight: 10,
+                                color: theme.colors.text
+                            }}
+                        >
+                            {item.body}
+                        </Text>
+                    </View>
                     <Text
                         style={{
                             fontFamily: "InterLight",
                             fontSize: 12,
-                            paddingRight: 10,
-                            color: theme.colors.text
+                            color: theme.colors.text,
                         }}
                     >
-                        {item.body}
+                        {customFormatDistanceFromNow(new Date(item.createdAt))}
                     </Text>
                 </View>
 
@@ -68,15 +95,7 @@ const SingleNotificationItem = ({ item }: Props) => {
                     }}
                 ></View>
             </View>
-            <Text
-                style={{
-                    fontFamily: "InterLight",
-                    fontSize: 12,
-                    color: theme.colors.text,
-                }}
-            >
-                {format(new Date(item.createdAt), "MM:HH - MMM dd yyyy")}
-            </Text>
+
         </TouchableOpacity>
     );
 }

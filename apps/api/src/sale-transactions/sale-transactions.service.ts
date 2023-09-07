@@ -260,6 +260,9 @@ export class SaleTransactionsService {
             lt: formattedEndDate,
           },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
         include: {
           product: {
             include: {
@@ -307,6 +310,9 @@ export class SaleTransactionsService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         saleTransaction: true,
       },
@@ -349,6 +355,9 @@ export class SaleTransactionsService {
             },
           },
         },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
       include: {
         saleTransaction: {
@@ -418,6 +427,9 @@ export class SaleTransactionsService {
       },
       include: {
         saleTransaction: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 

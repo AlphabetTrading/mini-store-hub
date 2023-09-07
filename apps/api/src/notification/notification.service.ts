@@ -43,10 +43,18 @@ export class NotificationService {
         recipientType = [RecipientType.ALL, RecipientType.USER];
         break;
       case UserRole.RETAIL_SHOP_MANAGER:
-        recipientType = [RecipientType.RETAIL_SHOP, RecipientType.USER];
+        recipientType = [
+          RecipientType.RETAIL_SHOP,
+          RecipientType.USER,
+          RecipientType.ALL,
+        ];
         break;
       case UserRole.WAREHOUSE_MANAGER:
-        recipientType = [RecipientType.WAREHOUSE, RecipientType.USER];
+        recipientType = [
+          RecipientType.WAREHOUSE,
+          RecipientType.USER,
+          RecipientType.ALL,
+        ];
         break;
       default:
         break;
@@ -82,6 +90,9 @@ export class NotificationService {
             },
           },
         ],
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
       include: {
         notificationReads: true,
@@ -156,6 +167,9 @@ export class NotificationService {
           in: notificationTypes,
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return unreadNotifications;
@@ -171,13 +185,13 @@ export class NotificationService {
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
       case UserRole.ADMIN:
-        recipientType = ['ALL'];
+        recipientType = ['ALL', 'USER'];
         break;
       case UserRole.RETAIL_SHOP_MANAGER:
-        recipientType = ['RETAIL_SHOP', 'ALL'];
+        recipientType = ['RETAIL_SHOP', 'ALL', 'USER'];
         break;
       case UserRole.WAREHOUSE_MANAGER:
-        recipientType = ['WAREHOUSE', 'ALL'];
+        recipientType = ['WAREHOUSE', 'ALL', 'USER'];
         break;
       default:
         break;
@@ -410,7 +424,7 @@ export class NotificationService {
 
     return {
       ...notification,
-      isRead: hasRead ? true : false,
+      isRead: hasRead ? notification.isRead : false,
     };
   }
 
@@ -595,9 +609,8 @@ export class NotificationService {
         id: notificationId,
       },
     });
-
     // check if the notification is group notification
-    if (notification.recipientType !== 'USER') {
+    if (notification.recipientType !== UserRole.USER) {
       const notificationRead = await this.prisma.notificationRead.upsert({
         where: {
           notificationId_userId: {

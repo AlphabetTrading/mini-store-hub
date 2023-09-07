@@ -1,8 +1,8 @@
 import { ToastAndroid, Platform } from "react-native";
 
-export function notifyMessage(msg: string, duration: boolean = false) {
+export function notifyMessage(msg: string, isShort: boolean = false) {
   if (Platform.OS === "android") {
-    ToastAndroid.show(msg, duration ? ToastAndroid.SHORT : ToastAndroid.LONG);
+    ToastAndroid.show(msg, isShort ? ToastAndroid.SHORT : ToastAndroid.LONG);
   } else {
   }
 }
