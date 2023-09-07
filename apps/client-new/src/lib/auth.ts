@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getClient } from "./client";
 import { gql } from "@apollo/client";
 import jwtDecode from "jwt-decode";
+import { UserRole } from "../../types/user";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -56,6 +57,13 @@ export const authOptions: NextAuthOptions = {
               },
             },
           });
+
+          // if (
+          //   login.user.role !== UserRole.ADMIN ||
+          //   login.user.role !== UserRole.WAREHOUSE_MANAGER
+          // )
+          //   return;
+
           return {
             id: login.user.id,
             user: {

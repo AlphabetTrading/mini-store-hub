@@ -76,7 +76,7 @@ const Page = ({ params }: Props) => {
     values: ProductInputValues,
     helpers: FormikHelpers<ProductInputValues>
   ) => {
-    if (photo !== "string") {
+    if (photo && typeof photo !== "string") {
       await uploadPhoto({
         variables: {
           file: photo,
@@ -89,6 +89,7 @@ const Page = ({ params }: Props) => {
         },
       });
     }
+
     await updateProduct({
       variables: {
         updateProductId: params.id,
@@ -99,7 +100,7 @@ const Page = ({ params }: Props) => {
           description: values.description,
           amharicDescription: values.amharicDescription,
           unit: values.unit!,
-          images: [values.photoUrl],
+          images: photo?[values.photoUrl]:[],
         },
       },
       refetchQueries: [
