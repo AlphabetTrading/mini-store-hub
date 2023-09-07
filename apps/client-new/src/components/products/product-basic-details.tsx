@@ -1,14 +1,13 @@
-import {  Card, CardActions, CardHeader, Chip } from "@mui/material";
+import {  Card, CardHeader, Chip } from "@mui/material";
 import { PropertyList } from "../property-list";
 import { PropertyListItem } from "../property-list-item";
-import { useState } from "react";
 import { Product } from "../../../types/product";
 
 type Props = {
   product?: Product;
 };
 export const ProductBasicDetails = ({ product }: Props) => {
-  const [open, setOpen] = useState(false);
+
   return (
       <Card>
         <CardHeader title="Basic Details" />

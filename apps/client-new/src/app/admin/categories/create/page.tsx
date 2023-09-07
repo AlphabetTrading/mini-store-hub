@@ -32,6 +32,7 @@ import {
 } from "@/graphql/categories/mutations";
 import { showAlert } from "@/helpers/showAlert";
 import FileDropZone from "@/components/file-drop-zone";
+import { UploadFileData, UPLOAD_FILE } from "@/graphql/file/mutations";
 
 type Props = {};
 
@@ -52,7 +53,7 @@ interface Values {
   description: string;
   amharicDescription: string;
   parentCategory?: Category;
-  image:any
+  imageUrl: string;
 }
 
 const initialValues: Values = {
@@ -60,22 +61,10 @@ const initialValues: Values = {
   amharicName: "",
   description: "",
   amharicDescription: "",
-  image:null,
+  imageUrl: "",
 };
 
 const Page = (props: Props) => {
-  // const handleCreateCategory = async () => {
-  //     await createCategory({
-  //       variables: {
-  //       onCompleted: (data) => {
-  //         router.push("/categories");
-  //       },
-  //       onError(error, clientOptions) {
-  //         console.log(error);
-  //       },
-  //       refetchQueries: [CATEGORIES],
-  //   };
-  //     });
 
   const [createCategory, { data, loading }] = useMutation<
     CreateCategoryData,
@@ -88,6 +77,10 @@ const Page = (props: Props) => {
     error: categoryError,
   } = useQuery<CategoriesData>(CATEGORIES);
   const [photo, setPhoto] = useState<any>(null);
+  const [
+    uploadPhoto,
+    { error: uploadPhotoError, loading: uploadPhotoLoading },
+  ] = useMutation<UploadFileData>(UPLOAD_FILE);
 
   const router = useRouter();
 
@@ -95,6 +88,17 @@ const Page = (props: Props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
+      if (photo) {
+        await uploadPhoto({
+          variables: {
+            file: photo,
+          },
+          onCompleted: (data) => {
+            showAlert("uploaded a", "photo");
+            values.imageUrl = data.uploadFile;
+          },
+        });
+      }
       await createCategory({
         variables: {
           data: {
@@ -103,6 +107,8 @@ const Page = (props: Props) => {
             name: values.name,
             description: values.description,
             parentId: values.parentCategory?.id,
+            image: values.imageUrl,
+            
           },
         },
         refetchQueries: [CATEGORIES],
@@ -243,14 +249,12 @@ const Page = (props: Props) => {
                 </CardContent>
               </Card>
 
-              
               <Card>
                 <CardHeader title="Upload Photo" />
                 <CardContent sx={{ pt: 0 }}>
                   <FileDropZone setFile={setPhoto} file={photo} />
                 </CardContent>
               </Card>
-
 
               <Stack
                 direction="row"
