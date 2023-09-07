@@ -3,7 +3,9 @@ import {
   AlertTitle,
   Box,
   Button,
+  Card,
   CardContent,
+  CardHeader,
   CircularProgress,
   Divider,
   Grid,
@@ -19,7 +21,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
@@ -39,6 +41,8 @@ import {
 import dayjs from "dayjs";
 import { showAlert } from "@/helpers/showAlert";
 import { ImageOutlined } from "@mui/icons-material";
+import FileDropZone from "../file-drop-zone";
+import { UploadFileData, UPLOAD_FILE } from "@/graphql/file/mutations";
 
 type Props = {
   category: Category;
@@ -52,6 +56,7 @@ interface Values {
   description: string;
   amharicDescription: string;
   parentId?: string;
+  image?: string;
 }
 
 const validationSchema = Yup.object({
@@ -75,7 +80,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
       reset: deleteReset,
     },
   ] = useMutation<DeleteCategoryData, DeleteCategoryVars>(DELETE_CATEGORY);
-
+  const [photo, setPhoto] = useState<any>(category.image);
   const [
     updateCategory,
     { loading: updateLoading, error: updateError, reset: updateReset },
@@ -94,6 +99,11 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
     });
   };
 
+  const [
+    uploadPhoto,
+    { error: uploadPhotoError, loading: uploadPhotoLoading },
+  ] = useMutation<UploadFileData>(UPLOAD_FILE);
+
   const initialValues: Values = {
     name: category.name,
     amharicName: category.amharicName,
@@ -105,7 +115,23 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit(values, formikHelpers) {
+    onSubmit: async (values, formikHelpers) => {
+      if (photo && typeof photo !== "string") {
+        await uploadPhoto({
+          variables: {
+            file: photo,
+          },
+          onCompleted: (data) => {
+            console.log(data, "photo");
+            showAlert("uploaded a", "photo");
+            values.image = data.uploadFile;
+          },
+        });
+      }
+      if(!photo){
+        values.image = "";
+      }
+
       updateCategory({
         variables: {
           updateCategoryId: category.id,
@@ -114,6 +140,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
             description: values.description,
             amharicName: values.amharicName,
             amharicDescription: values.amharicDescription,
+            image: values.image,
           },
         },
         refetchQueries: [CATEGORIES],
@@ -299,6 +326,12 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                         />
                       </Grid>
                     </Grid>
+                      <Card>
+                        <CardHeader title="Upload Photo" />
+                        <CardContent sx={{ pt: 0 }}>
+                          <FileDropZone setFile={setPhoto} file={photo} />
+                        </CardContent>
+                      </Card>
                   </Grid>
                 </Grid>
               </CardContent>

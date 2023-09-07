@@ -19,6 +19,8 @@ import {
   CardHeader,
   Button,
   Link,
+  AlertTitle,
+  Alert,
 } from "@mui/material";
 import { Unit } from "../../../types/product";
 import BreadcrumbsSeparator from "../breadcrumbs-separator";
@@ -39,7 +41,7 @@ type Props = {
   photo: any;
 };
 export interface ProductInputValues {
-  unit: Unit |null;
+  unit: Unit | null;
   name: string;
   amharicName: string;
   description: string;
@@ -60,15 +62,15 @@ const validationSchema = Yup.object({
 });
 
 const ProductCreateEditForm = (props: Props) => {
-  
   const { onSubmit, initialValues, loading, error, title, photo, setPhoto } =
-  props;
+    props;
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit,
   });
-  console.log(initialValues)
+  console.log(error)
+  console.log(initialValues);
   const [
     getCategories,
     {
@@ -312,6 +314,12 @@ const ProductCreateEditForm = (props: Props) => {
                   {title}
                 </Button>
               </Stack>
+              {error && (
+                <Alert>
+                  <AlertTitle>Error</AlertTitle>
+                  {error?.message}
+                </Alert>
+              )}
             </Stack>
           </form>
         </Stack>
