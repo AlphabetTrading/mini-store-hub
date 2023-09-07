@@ -142,6 +142,7 @@ export const PRODUCTS = gql`
         name
         amharicName
         id
+        images
         priceHistory {
           createdAt
           id
@@ -185,7 +186,10 @@ export const PRODUCT = gql`
       name
       serialNumber
       unit
+      images
       description
+      amharicName
+      amharicDescription
       activePrice {
         id
         price
