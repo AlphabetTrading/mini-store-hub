@@ -27,7 +27,7 @@ import StockListTable from "@/components/stock/stock-list-table";
 
 type Props = {};
 
-const OrderBySelector = (filter: string) => {
+export const OrderBySelector = (filter: string) => {
   const filterType = filter.split("|")[0];
   switch (filterType) {
     case "name":
