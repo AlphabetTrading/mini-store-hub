@@ -36,7 +36,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
-import { StockItem } from "../../../../../types/product";
+import { StockItem } from "../../../../../../types/product";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
 import CustomChip from "@/components/custom-chip";
@@ -45,15 +45,19 @@ import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/q
 import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries";
 import EmptyTable from "@/components/empty-table";
 
-type Props = {};
+type Props = {
+  params:{
+    id:string;
+  }
+};
 
-const Page = (props: Props) => {
-  const { data: sessionData } = useSession();
+const Page = ({params}: Props) => {
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStockItems, setSelectedStockItems] = useState<StockItem[]>([]);
   const [filteredStockItems, setFilteredStockItems] = useState<StockItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const warehouseId = (sessionData?.user as any).warehouseId || "";
+  const warehouseId = params.id;
 
   useEffect(() => {
     setFilteredStockItems(
@@ -118,7 +122,7 @@ const Page = (props: Props) => {
         },
       },
       onCompleted: (data) => {
-        router.push("/stock");
+        router.back();
         showAlert("added a", "stock");
       },
       onError(error, clientOptions) {
@@ -159,15 +163,15 @@ const Page = (props: Props) => {
               alignItems="center"
             >
               <Stack spacing={1}>
-                <Typography variant="h4">Register Incoming Items</Typography>
+                <Typography variant="h4">Process Incoming Items</Typography>
                 <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-                  <Link component={NextLink} href={"/dashboard"}>
+                  <Link component={NextLink} href={"/admin/dashboard"}>
                     Dashboard
                   </Link>
-                  <Link component={NextLink} href={"/stock"}>
+                  <Link component={NextLink} href={`/admin/warehouses/${params.id}`}>
                     Stock
                   </Link>
-                  <Typography>Register Incoming Items</Typography>
+                  <Typography>Process Incoming Items</Typography>
                 </Breadcrumbs>
               </Stack>
               <Button
