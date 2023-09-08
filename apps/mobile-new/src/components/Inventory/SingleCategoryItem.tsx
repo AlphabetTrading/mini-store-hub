@@ -13,7 +13,6 @@ const SingleCategoryItem = ({ item }: Props) => {
     const navigation = useNavigation()
     const { theme } = useAppTheme()
     const { locale } = useLocalization()
-    console.log(item)
 
     const styles = StyleSheet.create({
         container: {

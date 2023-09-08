@@ -219,6 +219,7 @@ export function AuthContextProvider(props: ProviderProps) {
           token,
         },
       });
+      await client.clearStore();
       setAuthState(null);
       return { error: undefined, data: true };
     } catch (error) {

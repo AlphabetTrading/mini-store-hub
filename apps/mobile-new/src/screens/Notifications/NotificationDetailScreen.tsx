@@ -24,7 +24,6 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
     route.params?.notificationID,
     authState?.user.id ?? "",
   );
-  console.log(data, error, "")
   const { t, locale } = useLocalization();
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -44,7 +43,6 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
     },
   ] = useMutation(MARK_NOTIFICATION_AS_READ, {
     onError: (err) => {
-      console.log(err);
       notifyMessage("Error marking notification as read")
     },
     refetchQueries: [
