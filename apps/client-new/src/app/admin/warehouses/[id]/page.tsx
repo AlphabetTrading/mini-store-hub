@@ -38,7 +38,6 @@ import {
   WarehouseStockVars,
   WAREHOUSE_STOCK,
 } from "@/graphql/products/queries";
-import { OrderBySelector } from "@/app/(warehouse-manager)/stock/page";
 import Pagination from "@/components/Pagination";
 
 type Props = {
@@ -52,6 +51,32 @@ const tabs = [
   { label: "Stock", value: "stock" },
   { label: "Transaction History", value: "transaction" },
 ];
+type OrderBySelectorReturnType =
+  | { product: { name: string } }
+  | { product: { category: { name: string } } }
+  | undefined;
+
+const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
+  const filterType = filter.split("|")[0];
+  switch (filterType) {
+    case "name":
+      return {
+        product: {
+          name: filter.split("|")[1],
+        },
+      };
+    case "categoryName":
+      return {
+        product: {
+          category: {
+            name: filter.split("|")[1],
+          },
+        },
+      };
+    default:
+      return undefined;
+  }
+};
 
 const Page = ({ params }: Props) => {
   const [currentTab, setCurrentTab] = useState("details");
