@@ -26,8 +26,12 @@ import StateHandler from "@/components/state-handler";
 import StockListTable from "@/components/stock/stock-list-table";
 
 type Props = {};
+type OrderBySelectorReturnType =
+  | { product: { name: string } }
+  | { product: { category: { name: string } } }
+  | undefined;
 
-export const OrderBySelector = (filter: string) => {
+ const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
   const filterType = filter.split("|")[0];
   switch (filterType) {
     case "name":
@@ -44,6 +48,8 @@ export const OrderBySelector = (filter: string) => {
           },
         },
       };
+    default:
+      return undefined;
   }
 };
 
@@ -123,14 +129,14 @@ const Page = (props: Props) => {
               </Breadcrumbs>
             </Stack>
             <Stack>
-              <Button
+              {/* <Button
                 variant="contained"
                 component={NextLink}
                 href={"/stock/add"}
                 startIcon={<AddIcon />}
               >
                 Add New Items
-              </Button>
+              </Button> */}
             </Stack>
           </Stack>
           <ProductsListSearch filter={filter} setFilter={setFilter} />
