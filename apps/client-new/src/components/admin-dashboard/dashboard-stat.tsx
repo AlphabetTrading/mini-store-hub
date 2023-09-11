@@ -11,6 +11,8 @@ const DashboardStat = (props: Props) => {
   const [timeFrame, setTimeFrame] = useState(options[0]);
   const { data, loading, error, refetch } =
     useGetAdminDashboardStatQuery(timeFrame);
+    console.log(data)
+    console.log(error)
 
   return (
     <Stack>
