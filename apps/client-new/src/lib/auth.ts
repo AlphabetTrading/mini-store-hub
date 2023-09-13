@@ -58,11 +58,11 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
-          // if (
-          //   login.user.role !== UserRole.ADMIN ||
-          //   login.user.role !== UserRole.WAREHOUSE_MANAGER
-          // )
-          //   return;
+          if (
+            login.user.role !== UserRole.ADMIN &&
+            login.user.role !== UserRole.WAREHOUSE_MANAGER
+          )
+            return null;
 
           return {
             id: login.user.id,
