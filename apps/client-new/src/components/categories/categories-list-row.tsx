@@ -128,7 +128,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
           },
         });
       }
-      if(!photo){
+      if (!photo) {
         values.image = "";
       }
 
@@ -243,8 +243,32 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
             <form onSubmit={formik.handleSubmit}>
               <CardContent>
                 <Grid container spacing={3}>
-                  <Grid item md={8} xs={12}>
-                    <Typography variant="h6">Basic details</Typography>
+                  <Grid item md={12} xs={12}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Typography variant="h6">Basic details</Typography>
+                      <div>
+                        <Button
+                          disabled={deleteLoading}
+                          onClick={() => {
+                            handleDeleteProduct();
+                          }}
+                          color="error"
+                        >
+                          {deleteLoading && (
+                            <CircularProgress
+                              sx={{
+                                color: "neutral.400",
+                                // display: loading ? "block" : "none",
+                                width: "25px !important",
+                                height: "25px !important",
+                                mr: 1,
+                              }}
+                            />
+                          )}
+                          Delete Category
+                        </Button>
+                      </div>
+                    </Stack>
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={3}>
                       <Grid item md={6} xs={12}>
@@ -326,12 +350,12 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                         />
                       </Grid>
                     </Grid>
-                      <Card>
-                        <CardHeader title="Upload Photo" />
-                        <CardContent sx={{ pt: 0 }}>
-                          <FileDropZone setFile={setPhoto} file={photo} />
-                        </CardContent>
-                      </Card>
+                    <Card>
+                      <CardHeader title="Upload Photo" />
+                      <CardContent sx={{ pt: 0 }}>
+                        <FileDropZone setFile={setPhoto} file={photo} />
+                      </CardContent>
+                    </Card>
                   </Grid>
                 </Grid>
               </CardContent>
@@ -347,9 +371,9 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                     onClick={() => {}}
                     type="submit"
                     variant="contained"
-                    disabled={updateLoading}
+                    disabled={formik.isSubmitting}
                   >
-                    {updateLoading && (
+                    {formik.isSubmitting && (
                       <CircularProgress
                         sx={{
                           color: "neutral.400",
@@ -371,28 +395,6 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                     Cancel
                   </Button>
                 </Stack>
-                <div>
-                  <Button
-                    disabled={deleteLoading}
-                    onClick={() => {
-                      handleDeleteProduct();
-                    }}
-                    color="error"
-                  >
-                    {deleteLoading && (
-                      <CircularProgress
-                        sx={{
-                          color: "neutral.400",
-                          // display: loading ? "block" : "none",
-                          width: "25px !important",
-                          height: "25px !important",
-                          mr: 1,
-                        }}
-                      />
-                    )}
-                    Delete Category
-                  </Button>
-                </div>
               </Stack>
               {(deleteError || updateError) && (
                 <Alert severity="error">
