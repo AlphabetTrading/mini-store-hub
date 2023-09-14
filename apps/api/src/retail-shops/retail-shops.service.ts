@@ -141,4 +141,38 @@ export class RetailShopsService {
 
     return this.prisma.retailShop.delete({ where: { id } });
   }
+
+  async deactivate(id: string) {
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
+    return this.prisma.retailShop.update({
+      where: { id },
+      data: {
+        status: false,
+      },
+    });
+  }
+
+  async activate(id: string) {
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id },
+    });
+
+    if (!retailShop) {
+      throw new Error('Retail shop not found');
+    }
+
+    return this.prisma.retailShop.update({
+      where: { id },
+      data: {
+        status: true,
+      },
+    });
+  }
 }

@@ -104,6 +104,16 @@ export class WarehousesResolver {
     return this.warehousesService.update(id, data);
   }
 
+  @Mutation(() => Warehouse)
+  async activateWarehouse(@Args('id') id: string) {
+    return this.warehousesService.activate(id);
+  }
+
+  @Mutation(() => Warehouse)
+  async deactivateWarehouse(@Args('id') id: string) {
+    return this.warehousesService.deactivate(id);
+  }
+
   @HasRoles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
   @Mutation(() => Warehouse)

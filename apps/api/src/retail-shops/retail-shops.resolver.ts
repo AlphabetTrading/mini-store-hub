@@ -96,6 +96,16 @@ export class RetailShopsResolver {
   }
 
   @Mutation(() => RetailShop)
+  async deactivateRetailShop(@Args('id') id: string) {
+    return this.retailShopsService.deactivate(id);
+  }
+
+  @Mutation(() => RetailShop)
+  async activateRetailShop(@Args('id') id: string) {
+    return this.retailShopsService.activate(id);
+  }
+
+  @Mutation(() => RetailShop)
   async deleteRetailShop(@Args('id') id: string) {
     return this.retailShopsService.remove(id);
   }

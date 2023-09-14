@@ -377,7 +377,9 @@ type MonthlyTransaction {
 
 type Mutation {
   acceptNotification(notificationInput: CreateNotificationTokenInput!): NotificationToken!
+  activateRetailShop(id: String!): RetailShop!
   activateUser(userId: String!): User!
+  activateWarehouse(id: String!): Warehouse!
   changePassword(data: ChangePasswordInput!): User!
   changeUserPassword(newPassword: String!, userId: String!): User!
   createADMIN(data: CreateUserInput!): User!
@@ -397,7 +399,9 @@ type Mutation {
   createWarehouse(data: CreateWarehouseInput!): Warehouse!
   createWarehouseManager(data: CreateUserInput!): User!
   createWarehouseStock(data: CreateWarehouseStockInput!): WarehouseStock!
+  deactivateRetailShop(id: String!): RetailShop!
   deactivateUser(userId: String!): User!
+  deactivateWarehouse(id: String!): Warehouse!
   deleteCategory(id: String!): Category!
   deleteFile(url: String!): Boolean!
   deleteGoodsTransfer(id: String!): GoodsTransfer!
@@ -795,6 +799,7 @@ type RetailShop {
   retailShopManagerId: String
   retailShopStock: [RetailShopStock!]
   saleTransaction: [SaleTransaction!]
+  status: Boolean!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -833,6 +838,7 @@ type RetailShopWithExtraInfo {
   retailShopManagerId: String
   retailShopStock: [RetailShopStock!]
   saleTransaction: [SaleTransaction!]
+  status: Boolean!
   totalProfit: Float
   totalSales: Float
   totalTransactions: Float
@@ -1095,6 +1101,7 @@ type Warehouse {
   id: ID!
   name: String!
   retailShopStock: [RetailShopStock!]
+  status: Boolean!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!

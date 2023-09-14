@@ -18,7 +18,6 @@ import { Prisma, UserRole } from '@prisma/client';
 import { PaginationCategories } from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterCategoryInput } from './dto/filter-category.input';
-import { CategoryOrder } from './dto/category-order.input';
 import { OrderByCategoryInput } from './dto/order-by-category.input';
 
 @Resolver(() => Category)
@@ -54,16 +53,17 @@ export class CategoriesResolver {
             {
               amharicName: filterCategoryInput?.name,
             },
+            {
+              subcategories: {
+                some: filterCategoryInput?.subcategories,
+              },
+            },
+            {
+              description: filterCategoryInput?.description,
+            },
           ],
         },
-        {
-          subcategories: {
-            some: filterCategoryInput?.subcategories,
-          },
-        },
-        {
-          description: filterCategoryInput?.description,
-        },
+
         {
           createdAt: filterCategoryInput?.createdAt,
         },

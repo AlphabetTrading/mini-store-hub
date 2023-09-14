@@ -45,17 +45,18 @@ export class ProductsResolver {
             {
               amharicName: filterProductInput?.name,
             },
+            {
+              serialNumber: filterProductInput?.serialNumber,
+            },
+            {
+              description: filterProductInput?.description,
+            },
+            {
+              category: filterProductInput?.category,
+            },
           ],
         },
-        {
-          serialNumber: filterProductInput?.serialNumber,
-        },
-        {
-          description: filterProductInput?.description,
-        },
-        {
-          category: filterProductInput?.category,
-        },
+
         {
           createdAt: filterProductInput?.createdAt,
         },
