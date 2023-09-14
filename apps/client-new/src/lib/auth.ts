@@ -63,7 +63,6 @@ export const authOptions: NextAuthOptions = {
             login.user.role !== UserRole.WAREHOUSE_MANAGER
           )
             return null;
-
           return {
             id: login.user.id,
             user: {

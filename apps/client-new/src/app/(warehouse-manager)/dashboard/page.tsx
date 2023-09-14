@@ -28,6 +28,7 @@ type Props = {};
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
   const warehouseId = (sessionData?.user as any).warehouseId || "";
+  console.log(sessionData)
 
   const { data, error, loading } = useQuery<
     GetTotalWarehouseValuationData,

@@ -19,6 +19,9 @@ import {
   NotificationByUserIdData,
   NotificationByUserIdVars,
   NOTIFICATIONS_BY_USERID,
+  UNREAD_NOTIFICATIONS_COUNT,
+  UnreadNotificationsCountData,
+  UnreadNotificationsCountVars,
 } from "@/graphql/notifications/queries";
 import { useQuery } from "@apollo/client";
 
@@ -34,24 +37,25 @@ export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
   // const cssVars = useCssVars(color);
   const { data: sessionData } = useSession();
+  const userId = (sessionData?.user as any).id || "";
   const { data, error, loading } = useQuery<
     NotificationByUserIdData,
     NotificationByUserIdVars
   >(NOTIFICATIONS_BY_USERID, {
     variables: {
-      userId: (sessionData?.user as any).id || "",
+      userId: userId,
+    },
+  });
+  const { data: notificationCount } = useQuery<
+    UnreadNotificationsCountData,
+    UnreadNotificationsCountVars
+  >(UNREAD_NOTIFICATIONS_COUNT, {
+    variables: {
+      userId: userId,
     },
   });
   const unreadNotifications =
-    data?.allNotificationsByUserId.filter((notification) => {
-      if (notification.recipientType === "USER") {
-        return !notification.isRead;
-      } else {
-        return !notification.notificationReads.some(
-          (n) => n.userId === (sessionData?.user as any).id || ""
-        );
-      }
-    }).length || 0;
+    notificationCount?.unreadNotificationsCountByUserId;
 
   return (
     <Box
@@ -128,7 +132,7 @@ export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
         <Stack alignItems="center" direction="row" spacing={2}>
           {/* <LanguageSwitch /> */}
           <NotificationsButton
-            unreadNotifications={unreadNotifications}
+            unreadNotifications={unreadNotifications||0}
             notifications={data?.allNotificationsByUserId || []}
           />
           {/* <ContactsButton /> */}
