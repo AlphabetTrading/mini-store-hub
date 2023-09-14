@@ -23,7 +23,7 @@ const NotificationsList = ({
     <Box>
       {notifications.map((notification, idx) => {
         // const isSelected = selected.includes(emailId);
-        const isRead = notification.notificationReads.some(
+        const isRead = notification.notificationReads?.some(
           (n) => userId === n.userId
         );
         // const href =

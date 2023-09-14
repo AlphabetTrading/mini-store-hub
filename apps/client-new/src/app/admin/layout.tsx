@@ -11,6 +11,9 @@ import {
   NotificationByUserIdData,
   NotificationByUserIdVars,
   NOTIFICATIONS_BY_USERID,
+  UNREAD_NOTIFICATIONS_COUNT,
+  UnreadNotificationsCountData,
+  UnreadNotificationsCountVars,
 } from "@/graphql/notifications/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
@@ -36,26 +39,23 @@ const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const { data: sessionData } = useSession();
+  const userId  =(sessionData?.user as any).id || "";
   const navigationData = useNavigationItems();
   const { data, error, loading } = useQuery<
     NotificationByUserIdData,
     NotificationByUserIdVars
   >(NOTIFICATIONS_BY_USERID, {
     variables: {
-      userId: (sessionData?.user as any).id || "",
+      userId: userId,
     },
   });
-  const unreadNotifications = data?.allNotificationsByUserId.filter(
-    (notification) => {
-      if (notification.recipientType === "USER") {
-        return !notification.isRead;
-      } else {
-        return !notification.notificationReads.some(
-          (n) => n.userId === (sessionData?.user as any).id || ""
-        );
-      }
+  const {data:notificationCount} = useQuery<UnreadNotificationsCountData,UnreadNotificationsCountVars>(UNREAD_NOTIFICATIONS_COUNT,{
+    variables: {
+      userId: userId,  
     }
-  ).length;
+  });
+
+  const unreadNotifications = notificationCount?.unreadNotificationsCountByUserId;
   return (
     <>
       <TopNav onMobileNavOpen={mobileNav.handleOpen} />

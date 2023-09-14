@@ -89,7 +89,7 @@ export const NotificationsPopover = (props: Props) => {
               const isRead =
                 notification.recipientType === RecipientType.USER
                   ? notification.isRead
-                  : notification.notificationReads.some(
+                  : notification.notificationReads?.some(
                       (n) => n.userId === (sessionData?.user as any).id
                     );
 

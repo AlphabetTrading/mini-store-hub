@@ -27,6 +27,7 @@ const FileDropZone = ({ file, setFile }: Props) => {
   const onDrop = useCallback((acceptedFiles: any) => {
     setFile(acceptedFiles[0]);
   }, []);
+  console.log(file)
 
   const {
     getRootProps,
@@ -105,7 +106,7 @@ const FileDropZone = ({ file, setFile }: Props) => {
           </Stack>
         </Box>
       ) : (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2}}>
           <List>
             <ListItem
               key={file.path}
@@ -119,7 +120,12 @@ const FileDropZone = ({ file, setFile }: Props) => {
               }}
             >
               <ListItemIcon>
-                <img src={file} width={50} />
+                <img
+                  src={
+                    typeof file == "string" ? file : URL.createObjectURL(file)
+                  }
+                  height={50}
+                />
                 <img src="/assets/icons/file.svg" width={50} />
               </ListItemIcon>
               <ListItemText

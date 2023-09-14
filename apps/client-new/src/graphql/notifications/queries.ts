@@ -44,3 +44,16 @@ export const NOTIFICATIONS_BY_USERID = gql`
     }
   }
 `;
+
+export interface UnreadNotificationsCountVars {
+  userId: string;
+}
+export interface UnreadNotificationsCountData {
+  unreadNotificationsCountByUserId: number;
+}
+
+export const UNREAD_NOTIFICATIONS_COUNT = gql`
+  query Query($userId: String!) {
+    unreadNotificationsCountByUserId(userId: $userId)
+  }
+`;
