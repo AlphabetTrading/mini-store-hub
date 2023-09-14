@@ -21,23 +21,6 @@ const SideNavSection = ({ navigationItems, unreadNotifications }: Props) => {
   const pathname = usePathname();
   const { data: sessionData } = useSession();
   const userId = (sessionData?.user as any).id || "";
-  // const { data } = useQuery<NotificationByUserIdData, NotificationByUserIdVars>(
-  //   NOTIFICATIONS_BY_USERID,
-  //   {
-  //     variables: {
-  //       userId: userId,
-  //     },
-  //   }
-  // );
-
-  // const unreadNotifications =
-  //   data?.allNotificationsByUserId.filter((notification) => {
-  //     if (notification.recipientType === RecipientType.USER) {
-  //       return !notification.isRead;
-  //     } else {
-  //       return !notification.notificationReads.some((n) => n.userId === userId);
-  //     }
-  //   }).length || 0;
 
   return (
     <Stack component="ul" spacing={0.5} sx={{ listStyle: "none", m: 0, p: 0 }}>
