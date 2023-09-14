@@ -1,5 +1,4 @@
 import { Field, InputType, registerEnumType } from '@nestjs/graphql';
-import { OrderByCategoryInput } from 'src/categories/dto/order-by-category.input';
 import { OrderDirection } from 'src/common/order/order-direction';
 import { OrderByProductInput } from 'src/products/dto/order-by-product.input';
 import { OrderByWarehouseInput } from 'src/warehouses/dto/warehouse-order.input';

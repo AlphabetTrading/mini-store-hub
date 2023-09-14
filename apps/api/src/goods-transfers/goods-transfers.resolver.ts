@@ -6,7 +6,6 @@ import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { Prisma, TransferType } from '@prisma/client';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
-import { FilterCategoryInput } from 'src/categories/dto/filter-category.input';
 import { FilterGoodsTransferInput } from './dto/filter-goods-transfer.input';
 import { OrderByGoodsTransferInput } from './dto/goods-transfer-order.input';
 import { PaginationGoodsTransfer } from 'src/common/pagination/pagination-info';
@@ -21,7 +20,7 @@ export class GoodsTransfersResolver {
   @Query(() => PaginationGoodsTransfer, { name: 'goodsTransfers' })
   async goodsTransfers(
     @Args('filterGoodsTransferInput', {
-      type: () => FilterCategoryInput,
+      type: () => FilterGoodsTransferInput,
       nullable: true,
     })
     filterGoodsTransferInput?: FilterGoodsTransferInput,

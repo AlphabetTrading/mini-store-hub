@@ -105,11 +105,12 @@ export class UsersResolver {
             {
               amharicLastName: filterUserInput?.lastName,
             },
+            {
+              phone: filterUserInput?.phone,
+            },
           ],
         },
-        {
-          phone: filterUserInput?.phone,
-        },
+
         {
           createdAt: filterUserInput?.createdAt,
         },

@@ -129,6 +129,12 @@ export class AuthService {
       throw new NotFoundException(`No user found for phone: ${phone}`);
     }
 
+    if (user.isActive === false) {
+      throw new BadRequestException(
+        'User is deactivated, please contact admin',
+      );
+    }
+
     const passwordValid = await this.passwordService.validatePassword(
       password,
       user.password,
@@ -139,7 +145,7 @@ export class AuthService {
       throw new BadRequestException('Invalid Credentials');
     }
 
-    const res = await this.generateTokens({
+    const res = this.generateTokens({
       userId: user.id,
     });
     return res;

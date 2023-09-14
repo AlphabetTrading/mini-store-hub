@@ -264,6 +264,19 @@ const AddTransactionItemsScreen = () => {
                 >
                   {t("noItemsFound")}
                 </Text>
+                <View>
+                  <Button onPress={onRefresh}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontFamily: "InterMedium",
+                        color: theme.colors.text,
+                      }}
+                    >
+                      {t("refresh")}
+                    </Text>
+                  </Button>
+                </View>
               </View>
             )}
           </View>

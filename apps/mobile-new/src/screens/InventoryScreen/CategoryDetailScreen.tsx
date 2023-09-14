@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "../../contexts/preference";
-import { Avatar, ActivityIndicator } from "react-native-paper";
+import { Avatar, ActivityIndicator, Button } from "react-native-paper";
 
 type Props = {};
 
@@ -263,6 +263,23 @@ const CategoryDetailScreen = ({
               >
                 No Items Found
               </Text>
+              <Button
+                onPress={onRefresh}
+                style={{
+                  borderColor: theme.colors.tint,
+                  borderWidth: 1,
+                  marginTop: 10,
+                }}>
+                <Text
+                  style={{
+                    color: theme.colors.text,
+                    fontSize: 18,
+                    fontFamily: "InterMedium",
+                  }}
+                >
+                  {t("refresh")}
+                </Text>
+              </Button>
             </View>
           )}
         </View>

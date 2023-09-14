@@ -168,7 +168,6 @@ input CreateUserInput {
   lastName: String
   password: String!
   phone: String!
-  role: UserRole!
   userProfile: CreateUserProfileInput
   username: String!
 }
@@ -232,6 +231,15 @@ input FilterCategoryInput {
   id: String
   name: StringFilter
   subcategories: FilterCategoryInput
+}
+
+input FilterGoodsTransferInput {
+  createdAt: DateTimeFilter
+  destinationWarehouse: FilterWarehouseInput
+  id: String
+  retailShop: FilterRetailShopInput
+  sourceWarehouse: FilterWarehouseInput
+  transferType: TransferType
 }
 
 input FilterPriceHistoryInput {
@@ -680,7 +688,7 @@ type Query {
   getUsersNotificationDetailByUserIdAndNotificationId(notificationId: String!, userId: String!): Notification!
   getWarehouseByManagerId: Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
-  goodsTransfers(filterGoodsTransferInput: FilterCategoryInput, orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput): PaginationGoodsTransfer!
+  goodsTransfers(filterGoodsTransferInput: FilterGoodsTransferInput, orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput): PaginationGoodsTransfer!
   me: User!
   notificationById(id: String!): Notification!
   priceHistories: [PriceHistory!]!

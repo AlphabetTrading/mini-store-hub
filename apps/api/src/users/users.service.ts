@@ -92,10 +92,10 @@ export class UsersService {
           username: payload.username,
           password: hashedPassword,
           role,
-          userProfile: {
+          userProfile: payload.userProfile && {
             create: {
               ...payload.userProfile,
-              address: {
+              address: payload.userProfile.address && {
                 create: {
                   ...payload.userProfile.address,
                 },

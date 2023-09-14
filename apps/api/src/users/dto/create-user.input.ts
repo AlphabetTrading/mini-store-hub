@@ -34,6 +34,6 @@ export class CreateUserInput {
   @Field(() => CreateUserProfileInput, { nullable: true })
   userProfile?: CreateUserProfileInput;
 
-  @Field(() => UserRole)
-  role: UserRole;
+  // @Field(() => UserRole)
+  // role: UserRole;
 }
