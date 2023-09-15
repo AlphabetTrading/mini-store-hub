@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { UserRole } from '@prisma/client';
 import { DateTimeFilter } from 'src/common/filter/date-filter';
 import { StringFilter } from 'src/common/filter/string-filter';
 
@@ -18,4 +19,7 @@ export class FilterUserInput {
 
   @Field(() => DateTimeFilter, { nullable: true })
   createdAt?: DateTimeFilter;
+
+  @Field(() => UserRole, { nullable: true })
+  role?: UserRole;
 }

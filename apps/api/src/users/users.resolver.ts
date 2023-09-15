@@ -110,7 +110,9 @@ export class UsersResolver {
             },
           ],
         },
-
+        {
+          role: filterUserInput?.role,
+        },
         {
           createdAt: filterUserInput?.createdAt,
         },

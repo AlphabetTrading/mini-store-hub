@@ -293,6 +293,7 @@ input FilterUserInput {
   id: String
   lastName: StringFilter
   phone: StringFilter
+  role: UserRole
 }
 
 input FilterWarehouseInput {
