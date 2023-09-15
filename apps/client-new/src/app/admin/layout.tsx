@@ -39,7 +39,7 @@ const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const { data: sessionData } = useSession();
-  const userId  =(sessionData?.user as any).id || "";
+  const userId = (sessionData?.user as any).id || "";
   const navigationData = useNavigationItems();
   const { data, error, loading } = useQuery<
     NotificationByUserIdData,
@@ -49,13 +49,17 @@ const Layout = ({ children }: Props) => {
       userId: userId,
     },
   });
-  const {data:notificationCount} = useQuery<UnreadNotificationsCountData,UnreadNotificationsCountVars>(UNREAD_NOTIFICATIONS_COUNT,{
+  const { data: notificationCount } = useQuery<
+    UnreadNotificationsCountData,
+    UnreadNotificationsCountVars
+  >(UNREAD_NOTIFICATIONS_COUNT, {
     variables: {
-      userId: userId,  
-    }
+      userId: userId,
+    },
   });
 
-  const unreadNotifications = notificationCount?.unreadNotificationsCountByUserId;
+  const unreadNotifications =
+    notificationCount?.unreadNotificationsCountByUserId;
   return (
     <>
       <TopNav onMobileNavOpen={mobileNav.handleOpen} />

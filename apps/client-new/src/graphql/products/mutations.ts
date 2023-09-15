@@ -8,7 +8,7 @@ export interface CreateProductVars {
     amharicName?: string;
     unit: string;
     categoryId: string;
-    images?:string[];
+    images?: string[];
   };
 }
 
@@ -34,7 +34,7 @@ export interface UpdateProductVars {
     unit?: string;
     amharicName?: string;
     name?: string;
-    images?:string[];
+    images?: string[];
   };
 }
 

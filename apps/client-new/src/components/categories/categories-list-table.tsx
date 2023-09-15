@@ -26,7 +26,7 @@ const CategoriesListTable = ({ categories }: Props) => {
   };
 
   return (
-    <TableContainer sx={{ overflow: "auto" }}>
+    <TableContainer sx={{ overflowX: "auto", overflowY: "auto" }}>
       <Table sx={{ minWidth: 1200 }}>
         <TableHead>
           <TableRow>

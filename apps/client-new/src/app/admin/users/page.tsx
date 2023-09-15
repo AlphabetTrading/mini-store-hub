@@ -9,31 +9,23 @@ import {
   Container,
   Link,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
-import { UsersData, USERS } from "@/graphql/users/queries";
-import { useQuery } from "@apollo/client";
-import UsersListTable from "@/components/users/users-list-table";
-import StateHandler from "@/components/state-handler";
-import Pagination from "@/components/Pagination";
+import UsersList from "@/components/users/users-list";
 
 type Props = {};
 
 const Page = (props: Props) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { data, error, loading } = useQuery<UsersData>(USERS, {
-    variables: {
-      paginationInput: {
-        skip: page * rowsPerPage,
-        take: rowsPerPage,
-      },
-    },
-    // fetchPolicy: "cache-and-network",
-  });
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -65,30 +57,19 @@ const Page = (props: Props) => {
               Register User
             </Button>
           </Stack>
-          {loading ? (
-            <CircularProgress />
-          ) : !data || error ? (
-            <Typography variant="h4">
-              Failed to fetch {JSON.stringify(error)}
-            </Typography>
-          ) : (
-            <Card>
-              <StateHandler
-                empty={data?.users.items.length === 0}
-                error={error}
-                loading={loading}
-              >
-                <UsersListTable users={data?.users.items} />
-                <Pagination
-                  meta={data?.users.meta!}
-                  page={page}
-                  setPage={setPage}
-                  rowsPerPage={rowsPerPage}
-                  setRowsPerPage={setRowsPerPage}
-                />
-              </StateHandler>
-            </Card>
-          )}
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label="All" />
+              <Tab label="Admins" />
+              <Tab label="Retail Shop Managers" />
+              <Tab label="Warehouse Managers" />
+            </Tabs>
+            <UsersList roleIndex={value} />
+          </Box>
         </Stack>
       </Container>
     </Box>

@@ -71,8 +71,8 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
   const align = mdUp ? "horizontal" : "vertical";
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={6}>
+    <Grid container>
+      <Grid item xs={12} lg={6} sx={{ paddingRight: 4 }}>
         <Card>
           <CardHeader title="Basic info" />
           <StateHandler
@@ -85,13 +85,13 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
               <PropertyListItem
                 align={align}
                 label="Name"
-                value={warehouse?.name}
+                value={warehouse?.name ? warehouse?.name : "-"}
               />
               <Divider />
               <PropertyListItem
                 align={align}
                 label="ስም"
-                value={warehouse?.amharicName}
+                value={warehouse?.amharicName ? warehouse?.amharicName : "-"}
               />
               <Divider />
               <PropertyListItem align={align} label="Address">
@@ -132,7 +132,11 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
               <PropertyListItem
                 align={align}
                 label="Warehouse Manager"
-                value={`${warehouse?.warehouseManager?.firstName} ${warehouse?.warehouseManager?.lastName}`}
+                value={
+                  warehouse?.warehouseManager
+                    ? `${warehouse?.warehouseManager?.firstName} ${warehouse?.warehouseManager?.lastName}`
+                    : "-"
+                }
               />
               <Divider />
               <PropertyListItem

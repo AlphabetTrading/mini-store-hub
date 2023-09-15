@@ -8,5 +8,5 @@ export type RetailShop = {
   createdAt?: Date;
   retailShopManager?: User;
   address?: Address;
-  status?:boolean;
+  status?: boolean;
 };

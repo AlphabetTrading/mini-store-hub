@@ -169,7 +169,7 @@ const Page = ({ params }: Props) => {
         py: 8,
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {error && (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>

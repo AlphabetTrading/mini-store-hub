@@ -36,13 +36,21 @@ const OrderBySelector = (filter: string) => {
           name: filter.split("|")[1],
         },
       };
+    case "serialNumber":
+      return {
+        serialNumber: filter.split("|")[1],
+      };
+    case "updatedAt":
+      return {
+        updatedAt: filter.split("|")[1],
+      };
   }
 };
 
 const Page = (props: Props) => {
   const [filter, setFilter] = useState({
     query: "",
-    filter: "name|asc",
+    filter: "updatedAt|desc",
   });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -66,6 +74,11 @@ const Page = (props: Props) => {
         filterProductInput: {
           name: {
             contains: filter.query,
+          },
+          category: {
+            name: {
+              contains: filter.query,
+            },
           },
           serialNumber: {
             contains: filter.query,
