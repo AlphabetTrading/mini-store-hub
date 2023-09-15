@@ -41,7 +41,7 @@ const RetailShopsList = ({
   useEffect(() => {
     const filtered = retailShops?.filter((retailShop) => {
       return (
-        retailShop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        retailShop.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         retailShop.retailShopManager?.firstName
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||

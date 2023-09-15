@@ -178,7 +178,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                 sx={{
                   alignItems: "center",
                   backgroundColor: "neutral.50",
-                  backgroundImage: `url(${category.image})`,
+                  backgroundImage: `url("${category.image}")`,
                   backgroundPosition: "center",
                   backgroundSize: "cover",
                   borderRadius: 1,

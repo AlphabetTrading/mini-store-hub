@@ -15,16 +15,30 @@ import {
   Typography,
   Unstable_Grid2 as Grid,
   Breadcrumbs,
+  Alert,
+  AlertTitle,
+  CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import NextLink from "next/link";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import StateHandler from "@/components/state-handler";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import { PRODUCT, ProductData, ProductVars } from "@/graphql/products/queries";
-import { ImageOutlined } from "@mui/icons-material";
+import {
+  PRODUCT,
+  PRODUCTS,
+  ProductData,
+  ProductVars,
+} from "@/graphql/products/queries";
+import { Delete, ImageOutlined } from "@mui/icons-material";
 import EditPriceHistory from "@/components/products/edit-price-history";
 import { ProductBasicDetails } from "@/components/products/product-basic-details";
+import {
+  DeleteProductData,
+  DeleteProductVars,
+  DELETE_PRODUCT,
+} from "@/graphql/products/mutations";
+import { showAlert } from "@/helpers/showAlert";
 
 const tabs = [
   { label: "Details", value: "details" },
@@ -46,6 +60,21 @@ const Page = ({ params }: Props) => {
     },
     fetchPolicy: "cache-and-network",
   });
+  const [
+    deleteProduct,
+    { loading: deleteLoading, error: deleteError, reset: deleteReset },
+  ] = useMutation<DeleteProductData, DeleteProductVars>(DELETE_PRODUCT);
+  const handleDeleteProduct = async () => {
+    await deleteProduct({
+      variables: {
+        deleteProductId: data?.product.id || "",
+      },
+      refetchQueries: [{ query: PRODUCTS }],
+      onCompleted: () => {
+        showAlert("removed a", "product");
+      },
+    });
+  };
 
   return (
     <>
@@ -102,7 +131,7 @@ const Page = ({ params }: Props) => {
                         sx={{
                           alignItems: "center",
                           backgroundColor: "neutral.50",
-                          backgroundImage: `url(${data?.product?.images[0]})`,
+                          backgroundImage: `url("${data?.product?.images[0]}")`,
                           backgroundPosition: "center",
                           backgroundSize: "cover",
                           borderRadius: 1,
@@ -156,8 +185,36 @@ const Page = ({ params }: Props) => {
                     >
                       Edit
                     </Button>
+
+                    <Button
+                      disabled={deleteLoading}
+                      onClick={() => {
+                        handleDeleteProduct();
+                      }}
+                      color="error"
+                      variant="outlined"
+                    >
+                      {deleteLoading && (
+                        <CircularProgress
+                          sx={{
+                            color: "neutral.400",
+                            // display: loading ? "block" : "none",
+                            width: "25px !important",
+                            height: "25px !important",
+                            mr: 1,
+                          }}
+                        />
+                      )}
+                      Delete
+                    </Button>
                   </Stack>
                 </Stack>
+                {deleteError && (
+                  <Alert severity="error">
+                    <AlertTitle>Error</AlertTitle>
+                    {deleteError?.message}
+                  </Alert>
+                )}
                 <div>
                   <Tabs
                     indicatorColor="primary"

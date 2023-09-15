@@ -3,6 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
 } from "@mui/material";
@@ -16,6 +17,7 @@ type Props = {
 const StockListTable = ({ warehouseStocks }: Props) => {
   return (
     <div>
+      <TableContainer sx={{ overflowX: "auto" }}>
       <Table sx={{ minWidth: 1200 }}>
         <TableHead>
           <TableRow>
@@ -35,6 +37,7 @@ const StockListTable = ({ warehouseStocks }: Props) => {
           ))}
         </TableBody>
       </Table>
+      </TableContainer>
     </div>
   );
 };

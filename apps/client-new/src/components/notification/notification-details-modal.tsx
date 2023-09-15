@@ -47,6 +47,7 @@ const NotificationDetails = (props: Props) => {
           notificationId: notification.id,
         },
         update(cache, { data }) {
+          console.log(data);
           const existingNotifications =
             cache.readQuery<NotificationByUserIdData>({
               query: NOTIFICATIONS_BY_USERID,
@@ -54,12 +55,13 @@ const NotificationDetails = (props: Props) => {
           const newNotifications =
             existingNotifications?.allNotificationsByUserId.map((n) => {
               if (n.id === data?.markNotificationAsRead.id) {
-                return { ...n, ...data?.markNotificationAsRead };
+                return { ...n, ...data?.markNotificationAsRead ,isRead:true};
               } else return n;
             });
 
           cache.writeQuery<NotificationByUserIdData>({
             query: NOTIFICATIONS_BY_USERID,
+
             data: {
               allNotificationsByUserId: newNotifications as Notification[],
             },

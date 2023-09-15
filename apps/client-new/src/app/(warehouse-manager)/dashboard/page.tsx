@@ -107,15 +107,15 @@ const Page = (props: Props) => {
       <StateHandler loading={pageLoading} error={pageError} empty={false}>
         <Container maxWidth="xl" sx={{ paddingY: 2 }}>
           {/* <Typography variant="h5">Warehouse Statistics</Typography> */}
-          <Grid container spacing={6}>
-            <Grid item md={12} lg={7} xl={7}>
+          <Grid container >
+            <Grid item md={12}  xl={7}>
               <WarehouseValuation
                 valuation={data?.totalValuationByWarehouseId.totalValuation!}
                 totalProducts={data?.totalValuationByWarehouseId.totalQuantity!}
                 totalUniqueProducts={data?.totalValuationByWarehouseId.count!}
               />
             </Grid>
-            <Grid item md={12} lg={5} xl={5}>
+            <Grid item md={12}  xl={5}>
               <InventoryContent
                 content={Number(
                   ((remainingQuantity / totalQuantity) * 100).toFixed()

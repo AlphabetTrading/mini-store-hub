@@ -15,7 +15,7 @@ const WarehouseValuation = ({
   totalUniqueProducts,
 }: Props) => {
   return (
-    <Card sx={{ flexDirection: "row", marginTop: 2 }}>
+    <Card sx={{ marginTop: 2 }}>
       <Stack
         direction="column"
         sx={{

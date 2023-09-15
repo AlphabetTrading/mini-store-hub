@@ -203,8 +203,8 @@ const Page = ({params}: Props) => {
                   onChange={handleChange}
                 />
               </Stack>
-              <TableContainer style={{ maxHeight: 400 }}>
-                <Table stickyHeader sx={{ minWidth: 1200 }}>
+              <TableContainer style={{ overflowX:"auto" }}>
+                <Table  sx={{ minWidth: 1200 }}>
                   <TableHead>
                     <TableRow>
                       <TableCell>Product Name</TableCell>

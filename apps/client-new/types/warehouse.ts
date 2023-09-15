@@ -10,6 +10,7 @@ export interface Warehouse {
   warehouseManager: User;
   createdAt: Date;
   warehouseStock: StockItem[];
+  status?:boolean;
 }
 
 export interface LowStockItemsWarehouse {
