@@ -9,8 +9,8 @@ import React from "react";
 
 type Props = {
   loading: boolean;
-  error: any;
-  empty: boolean;
+  error?: any;
+  empty?: boolean;
   children: React.ReactNode;
 };
 

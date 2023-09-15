@@ -63,14 +63,38 @@ export const UPDATE_RETAIL_SHOP = gql`
   }
 `;
 
-export interface DeleteRetailShopVars {
-  deleteRetailShopId: string;
+export interface DeactivateRetailShopVars {
+  deactivateRetailShopId: string;
 }
 
-export const DELETE_RETAIL_SHOP = gql`
-  mutation DeleteRetailShop($deleteRetailShopId: String!) {
-    deleteRetailShop(id: $deleteRetailShopId) {
+export interface ActivateRetailShopVars {
+  activateRetailShopId: string;
+}
+export interface DeactivateRetailShopData{
+  id:string;
+  status:boolean;
+}
+
+export interface ActivateRetailShopData{
+  id:string;
+  status:boolean;
+}
+
+export const DEACTIVATE_RETAIL_SHOP = gql`
+  mutation DeactivateRetailShop($deactivateRetailShopId: String!) {
+    deactivateRetailShop(id: $deactivateRetailShopId) {
       id
+      status
     }
   }
 `;
+
+export const ACTIVATE_RETAIL_SHOP = gql`
+  mutation ActivateRetailShop($activateRetailShopId: String!) {
+    activateRetailShop(id: $activateRetailShopId) {
+      id
+      status
+    }
+  }
+`;
+

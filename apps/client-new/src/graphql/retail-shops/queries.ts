@@ -11,6 +11,7 @@ export const RETAIL_SHOPS = gql`
       items {
         id
         name
+        status
         retailShopManager {
           firstName
           lastName
@@ -42,6 +43,7 @@ export const RETAIL_SHOP = gql`
       name
       amharicName
       createdAt
+      status
       address {
         id
         lat

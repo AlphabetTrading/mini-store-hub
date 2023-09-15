@@ -21,10 +21,7 @@ import NextLink from "next/link";
 import { useQuery } from "@apollo/client";
 import StateHandler from "@/components/state-handler";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import { PRODUCT, ProductData, ProductVars } from "@/graphql/products/queries";
 import { ImageOutlined } from "@mui/icons-material";
-import EditPriceHistory from "@/components/products/edit-price-history";
-import { ProductBasicDetails } from "@/components/products/product-basic-details";
 import { CategoryData, CategoryVars, CATEGORY } from "@/graphql/categories/queries";
 import CategoryBasicDetails from "@/components/categories/category-basic-details";
 
@@ -104,7 +101,7 @@ const Page = ({ params }: Props) => {
                         sx={{
                           alignItems: "center",
                           backgroundColor: "neutral.50",
-                          backgroundImage: `url(${data?.category?.image})`,
+                          backgroundImage: `url("${data?.category?.image}")`,
                           backgroundPosition: "center",
                           backgroundSize: "cover",
                           borderRadius: 1,

@@ -22,13 +22,12 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import {
-  DELETE_WAREHOUSE,
-  DeleteWarehouseVars,
-} from "@/graphql/warehouses/mutations";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { WAREHOUSES } from "@/graphql/warehouses/queries";
-import { useRouter } from "next/navigation";
+import {
+  WAREHOUSE,
+  WarehouseData,
+  WarehouseVars,
+} from "@/graphql/warehouses/queries";
 import { showAlert } from "@/helpers/showAlert";
 import ProductsListSearch from "@/components/products/products-list-search";
 import StateHandler from "@/components/state-handler";
@@ -39,6 +38,14 @@ import {
   WAREHOUSE_STOCK,
 } from "@/graphql/products/queries";
 import Pagination from "@/components/Pagination";
+import {
+  ACTIVATE_WAREHOUSE,
+  ActivateWarehouseData,
+  ActivateWarehouseVars,
+  DEACTIVATE_WAREHOUSE,
+  DeactivateWarehouseData,
+  DeactivateWarehouseVars,
+} from "@/graphql/warehouses/mutations";
 
 type Props = {
   params: {
@@ -80,17 +87,36 @@ const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
 
 const Page = ({ params }: Props) => {
   const [currentTab, setCurrentTab] = useState("details");
-  const [deleteWarehouse, { loading, error, reset }] = useMutation<
-    {},
-    DeleteWarehouseVars
-  >(DELETE_WAREHOUSE);
-  const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filter, setFilter] = useState({
     query: "",
     filter: "name|asc",
   });
+  const { data, error, loading } = useQuery<WarehouseData, WarehouseVars>(
+    WAREHOUSE,
+    {
+      variables: {
+        warehouseId: params.id,
+      },
+    }
+  );
+  const [
+    deactivateWarehouse,
+    {
+      error: deactivateError,
+      loading: deactivateLoading,
+      reset: deactivateReset,
+    },
+  ] = useMutation<DeactivateWarehouseData, DeactivateWarehouseVars>(
+    DEACTIVATE_WAREHOUSE
+  );
+  const [
+    activateWarehouse,
+    { error: activateError, loading: activateLoading, reset: activateReset },
+  ] = useMutation<ActivateWarehouseData, ActivateWarehouseVars>(
+    ACTIVATE_WAREHOUSE
+  );
 
   const [
     getWarehouseData,
@@ -118,23 +144,99 @@ const Page = ({ params }: Props) => {
     return () => clearTimeout(timeout);
   }, [filter, page, rowsPerPage, params.id, getWarehouseData]);
 
-  const handleDelete = async () => {
-    await deleteWarehouse({
+  const handleDeactivate = async () => {
+    await deactivateWarehouse({
       variables: {
-        deleteWarehouseId: params.id,
+        deactivateWarehouseId: params.id,
       },
-      refetchQueries: [{ query: WAREHOUSES }],
+      update(cache, { data }) {
+        const existingWarehouse: WarehouseData = cache.readQuery<
+          WarehouseData,
+          WarehouseVars
+        >({
+          query: WAREHOUSE,
+          variables: {
+            warehouseId: params.id,
+          },
+        }) as WarehouseData;
+
+        const newWarehouse: WarehouseData = {
+          ...existingWarehouse,
+          warehouse: {
+            ...existingWarehouse?.warehouse,
+            status: data?.deactivateWarehouse.status,
+          },
+        };
+        cache.writeQuery<WarehouseData>({
+          query: WAREHOUSE,
+          variables: {
+            retailShopId: params.id,
+          },
+          data: {
+            warehouse: newWarehouse.warehouse,
+          },
+        });
+      },
       onCompleted(data, clientOptions) {
-        showAlert("deleted a", "warehouse");
-        router.replace("/admin/warehouses");
+        console.log(data);
+        showAlert("deactivated a", "warehouse");
       },
       onError(error) {
+        console.log(error);
         setTimeout(() => {
-          reset();
+          deactivateReset();
         }, 3000);
       },
     });
   };
+
+  const handleActivate = async () => {
+    await activateWarehouse({
+      variables: {
+        activateWarehouseId: params.id,
+      },
+      update(cache, { data }) {
+        const existingWarehouse: WarehouseData = cache.readQuery<
+          WarehouseData,
+          WarehouseVars
+        >({
+          query: WAREHOUSE,
+          variables: {
+            warehouseId: params.id,
+          },
+        }) as WarehouseData;
+
+        const newWarehouse: WarehouseData = {
+          ...existingWarehouse,
+          warehouse: {
+            ...existingWarehouse?.warehouse,
+            status: data?.activateWarehouse.status,
+          },
+        };
+        cache.writeQuery<WarehouseData>({
+          query: WAREHOUSE,
+          variables: {
+            retailShopId: params.id,
+          },
+          data: {
+            warehouse: newWarehouse.warehouse,
+          },
+        });
+      },
+      onCompleted(data, clientOptions) {
+        console.log(data);
+
+        showAlert("activated a", "warehouse");
+      },
+      onError(error) {
+        console.log(error);
+        setTimeout(() => {
+          activateReset();
+        }, 3000);
+      },
+    });
+  };
+
   const handleTabsChange = useCallback((event: any, value: string) => {
     setCurrentTab(value);
   }, []);
@@ -148,13 +250,13 @@ const Page = ({ params }: Props) => {
       }}
     >
       <Container maxWidth="lg">
-        {error && (
+        {(activateError || deactivateError) && (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
-            {error.message}
+            {activateError?.message || deactivateError?.message}
           </Alert>
         )}
-        <Stack spacing={4}>
+        <Stack spacing={1}>
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -172,31 +274,37 @@ const Page = ({ params }: Props) => {
                 <Typography>Detail</Typography>
               </Breadcrumbs>
             </Stack>
-            <Stack alignItems="center" direction="row" spacing={2}>
-              <Button
-                variant="outlined"
-                color="error"
-                disabled={loading}
-                // endIcon={<SvgIcon>{<DeleteOutlineIcon />}</SvgIcon>}
-                onClick={() => handleDelete()}
-              >
-                {loading && (
-                  <CircularProgress
-                    size={16}
-                    sx={{ mr: 1, color: "neutral.500" }}
-                  />
-                )}
-                Delete
-              </Button>
-              <Button
-                variant="contained"
-                component={NextLink}
-                endIcon={<SvgIcon>{<EditIcon />}</SvgIcon>}
-                href={`/admin/warehouses/${params.id}/edit`}
-              >
-                Edit
-              </Button>
-            </Stack>
+            {data && (
+              <Stack alignItems="center" direction="row" spacing={2}>
+                <Button
+                  variant="outlined"
+                  color={data.warehouse.status ? "error" : "primary"}
+                  disabled={deactivateLoading || activateLoading}
+                  // endIcon={<SvgIcon>{<DeleteOutlineIcon />}</SvgIcon>}
+                  onClick={() =>
+                    data.warehouse.status
+                      ? handleDeactivate()
+                      : handleActivate()
+                  }
+                >
+                  {(deactivateLoading || activateLoading) && (
+                    <CircularProgress
+                      size={16}
+                      sx={{ mr: 1, color: "neutral.500" }}
+                    />
+                  )}
+                  {data.warehouse.status ? "Deactivate" : "Activate"}
+                </Button>
+                <Button
+                  variant="contained"
+                  component={NextLink}
+                  endIcon={<SvgIcon>{<EditIcon />}</SvgIcon>}
+                  href={`/admin/warehouses/${params.id}/edit`}
+                >
+                  Edit
+                </Button>
+              </Stack>
+            )}
           </Stack>
           <div>
             <Tabs
@@ -215,7 +323,9 @@ const Page = ({ params }: Props) => {
             <Divider />
           </div>
           {currentTab === tabs[0].value && (
-            <WarehouseBasicDetails warehouseId={params.id} />
+            <StateHandler loading={loading} error={error}>
+              {data && <WarehouseBasicDetails warehouse={data?.warehouse} />}{" "}
+            </StateHandler>
           )}
           {currentTab === tabs[1].value && (
             <Stack justifyItems="end">
@@ -230,8 +340,8 @@ const Page = ({ params }: Props) => {
               </Stack>
               <ProductsListSearch filter={filter} setFilter={setFilter} />
               <StateHandler
-                error={error}
-                loading={loading}
+                error={warehouseError}
+                loading={warehouseLoading}
                 empty={warehouseData?.warehouseStocks.items.length == 0}
               >
                 <Card>

@@ -29,9 +29,10 @@ import {
 } from "@/graphql/warehouse-managers/queries";
 import dayjs from "dayjs";
 import { StockDistribution } from "../warehouse-manager-dashboard/stock-distribution-chart";
+import { Warehouse } from "../../../types/warehouse";
 
 type Props = {
-  warehouseId: string;
+  warehouse: Warehouse;
 };
 const targetDate = new Date();
 let startDate = new Date(targetDate);
@@ -39,15 +40,7 @@ startDate.setHours(0, 0, 0, 0);
 let endDate = new Date(targetDate);
 endDate.setHours(23, 59, 59, 999);
 
-const WarehouseBasicDetails = ({ warehouseId }: Props) => {
-  const { data, error, loading } = useQuery<WarehouseData, WarehouseVars>(
-    WAREHOUSE,
-    {
-      variables: {
-        warehouseId: warehouseId,
-      },
-    }
-  );
+const WarehouseBasicDetails = ({ warehouse }: Props) => {
   const {
     data: valuationData,
     error: valuationError,
@@ -56,7 +49,7 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
     GET_TOTAL_VALUATION_OF_WAREHOUSE,
     {
       variables: {
-        warehouseId: warehouseId,
+        warehouseId: warehouse.id,
       },
     }
   );
@@ -68,13 +61,11 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
     GET_STOCK_DISTRIBUTION,
     {
       variables: {
-        warehouseId: warehouseId,
+        warehouseId: warehouse.id,
       },
     }
   );
   const valuation = valuationData?.totalValuationByWarehouseId.totalValuation;
-
-  const warehouse = data?.warehouse;
 
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
   const align = mdUp ? "horizontal" : "vertical";
@@ -85,9 +76,8 @@ const WarehouseBasicDetails = ({ warehouseId }: Props) => {
         <Card>
           <CardHeader title="Basic info" />
           <StateHandler
-            loading={loading || valuationLoading}
+            loading={valuationLoading}
             empty={false}
-            error={error}
             // error={error ? error : valuationError ? valuationError : null}
           >
             <Divider />

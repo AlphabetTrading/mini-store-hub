@@ -82,22 +82,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
     updateProduct,
     { loading: updateLoading, error: updateError, reset: updateReset },
   ] = useMutation<UpdateProductData, UpdateProductVars>(UPDATE_PRODUCT);
-  const [
-    deleteProduct,
-    { loading: deleteLoading, error: deleteError, reset: deleteReset },
-  ] = useMutation<DeleteProductData, DeleteProductVars>(DELETE_PRODUCT);
-  const handleDeleteProduct = async () => {
-    await deleteProduct({
-      variables: {
-        deleteProductId: product.id,
-      },
-      refetchQueries: [{ query: PRODUCTS }],
-      onCompleted: () => {
-        showAlert("removed a", "product");
-        handleItemToggle(product.id);
-      },
-    });
-  };
+
   const initialValues: Values = {
     unit: product.unit,
     serialNumber: product.serialNumber,
@@ -164,7 +149,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                 sx={{
                   alignItems: "center",
                   backgroundColor: "neutral.50",
-                  backgroundImage: `url(${product.images[0]})`,
+                  backgroundImage: `url("${product.images[0]}")`,
                   backgroundPosition: "center",
                   backgroundSize: "cover",
                   borderRadius: 1,
@@ -216,7 +201,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
         </TableCell>
         <TableCell align="left">{product.activePrice?.price}</TableCell>
       </TableRow>
-      {selected && (
+      {/* {selected && (
         <TableRow>
           <TableCell
             colSpan={8}
@@ -370,34 +355,8 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={0}>
                       <Grid item md={6} xs={12}>
-                        {/* <TextField
-                        defaultValue={product.price}
-                        fullWidth
-                        label="Old price"
-                        name="old-price"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              {product.currency}
-                            </InputAdornment>
-                          ),
-                        }}
-                        type="number"
-                      /> */}
                       </Grid>
                       <Grid item md={6} xs={12}>
-                        {/* <TextField
-                        defaultValue={product.price}
-                        fullWidth
-                        label="New price"
-                        name="new-price"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">$</InputAdornment>
-                          ),
-                        }}
-                        type="number"
-                      /> */}
                       </Grid>
                       <Grid item md={6} xs={12}>
                         <Button
@@ -480,7 +439,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
             </form>
           </TableCell>
         </TableRow>
-      )}
+      )} */}
     </>
   );
 };

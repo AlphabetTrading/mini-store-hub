@@ -20,20 +20,14 @@ import {
   RetailShopVars,
 } from "@/graphql/retail-shops/queries";
 import dayjs from "dayjs";
+import { RetailShop } from "../../../types/retail-shop";
 
 type Props = {
-  retailShopId: string;
+  retailShop: RetailShop;
 };
 
-const RetailShopBasicDetails = ({ retailShopId }: Props) => {
-  const { data, error, loading } = useQuery<RetailShopData, RetailShopVars>(
-    RETAIL_SHOP,
-    {
-      variables: {
-        retailShopId: retailShopId,
-      },
-    }
-  );
+const RetailShopBasicDetails = ({ retailShop }: Props) => {
+
   const {
     data: valuationData,
     error: valuationError,
@@ -42,24 +36,23 @@ const RetailShopBasicDetails = ({ retailShopId }: Props) => {
     RETAIL_SHOP_VALUATION,
     {
       variables: {
-        retailShopId: retailShopId,
+        retailShopId: retailShop.id,
       },
     }
   );
   const valuation =
     valuationData?.totalValuationByRetailShopId.totalValuation || 0;
 
-  const retailShop = data?.retailShop;
 
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
   const align = mdUp ? "horizontal" : "vertical";
 
   return (
     <StateHandler
-      loading={loading || valuationLoading}
+      loading={ valuationLoading}
       empty={false}
       //   error={error ? error : valuationError ? valuationError : null}
-      error={error}
+
     >
       <Card>
         <CardHeader title="Basic info" />
