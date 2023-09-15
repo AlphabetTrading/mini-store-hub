@@ -19,6 +19,7 @@ import {
   TableBody,
   IconButton,
   CardHeader,
+  TableContainer,
 } from "@mui/material";
 import { useFormik } from "formik";
 import NextLink from "next/link";
@@ -99,7 +100,6 @@ const EditPriceHistory = ({ productId }: Props) => {
       />
       <Box component="main" sx={{ py: 8 }}>
         <Container maxWidth="xl">
-          {productLoading && <CircularProgress />}
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing={1}>
               <Card>
@@ -127,35 +127,37 @@ const EditPriceHistory = ({ productId }: Props) => {
                     >
                       <Grid container spacing={2}>
                         <Grid xs={12} md={9}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell />
-                                <TableCell align="left">Date</TableCell>
-                                <TableCell align="left">
-                                  Purchased Price Per Unit
-                                </TableCell>
-                                <TableCell align="left">
-                                  Selling Price Per Unit
-                                </TableCell>
-                                <TableCell />
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {productData?.product?.priceHistory?.map(
-                                (history: PriceHistory, idx: number) => (
-                                  <PriceHistoryListRow
-                                    key={idx}
-                                    activePriceId={
-                                      productData?.product?.activePrice?.id
-                                    }
-                                    productId={productData?.product?.id}
-                                    priceHistory={history}
-                                  />
-                                )
-                              )}
-                            </TableBody>
-                          </Table>
+                          <TableContainer sx={{ overflow: "auto" }}>
+                            <Table sx={{ minWidth: 800 }}>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell />
+                                  <TableCell align="left">Date</TableCell>
+                                  <TableCell align="left">
+                                    Purchased Price Per Unit
+                                  </TableCell>
+                                  <TableCell align="left">
+                                    Selling Price Per Unit
+                                  </TableCell>
+                                  <TableCell />
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {productData?.product?.priceHistory?.map(
+                                  (history: PriceHistory, idx: number) => (
+                                    <PriceHistoryListRow
+                                      key={idx}
+                                      activePriceId={
+                                        productData?.product?.activePrice?.id
+                                      }
+                                      productId={productData?.product?.id}
+                                      priceHistory={history}
+                                    />
+                                  )
+                                )}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
                         </Grid>
                       </Grid>
                     </StateHandler>

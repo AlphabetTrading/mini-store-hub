@@ -29,8 +29,8 @@ const ItemsSummaryTable = ({
   filteredItems,
 }: Props) => {
   return (
-    <TableContainer style={{ maxHeight: 400 }}>
-      <Table stickyHeader>
+    <TableContainer sx={{ maxHeight: 400, overflow: "auto" }}>
+      <Table stickyHeader sx={{ minWidth: 900}}>
         <TableHead>
           <TableRow>
             <TableCell>Item Name</TableCell>

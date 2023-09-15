@@ -193,7 +193,7 @@ const Page = (props: Props) => {
             </Stack>
 
             <Grid container spacing={2}>
-              <Grid item xs={12} md={8}>
+              <Grid item sm={12} md={8}>
                 <Card>
                   <CardHeader
                     action={
@@ -228,7 +228,7 @@ const Page = (props: Props) => {
                   />
                 </Card>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item sm={12} md={4}>
                 <Card>
                   <CardHeader title="Retail Shops" />
                   <RetailShopsList

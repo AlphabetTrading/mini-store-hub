@@ -8,6 +8,7 @@ import {
   TableBody,
   Stack,
   Typography,
+  TableContainer,
 } from "@mui/material";
 import React from "react";
 import { LowStockItemsWarehouse } from "../../../types/warehouse";
@@ -20,8 +21,9 @@ type Props = {
 const LowStockItemsTable = ({ lowStockItems }: Props) => {
   return (
     <Card>
-      <CardHeader title="Low Stock Items" />{" "}
-      <Table sx={{ minWidth: 800, overflow: "auto" }}>
+      <CardHeader title="Low Stock Items" />
+      <TableContainer sx={{ overflow: "auto" }}>
+      <Table sx={{ minWidth: 700, overflow: "auto" }}>
         <TableHead>
           <TableRow>
             <TableCell width="55%">Product</TableCell>
@@ -35,6 +37,7 @@ const LowStockItemsTable = ({ lowStockItems }: Props) => {
           ))}
         </TableBody>
       </Table>
+      </TableContainer>
     </Card>
   );
 };

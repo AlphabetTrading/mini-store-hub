@@ -45,6 +45,8 @@ export const MobileNav = ({
       variant="temporary"
       onClose={onClose}
       open={open}
+      onClick={()=>onClose()}
+      onKeyDown={()=>onClose()}
     >
       {/* <Scrollbar
         sx={{

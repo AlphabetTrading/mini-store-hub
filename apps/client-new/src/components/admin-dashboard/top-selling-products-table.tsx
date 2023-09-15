@@ -9,6 +9,7 @@ import {
   Card,
   CardHeader,
   CircularProgress,
+  TableContainer,
 } from "@mui/material";
 import React from "react";
 import { Product } from "../../../types/product";
@@ -37,7 +38,8 @@ const TopSellingProducts = (props: Props) => {
   return (
     <Card>
       <CardHeader title="Top Selling Products" />
-      <Table sx={{ minWidth: 800, overflow: "auto" }}>
+      <TableContainer sx={{overflowX: "auto" }}>
+      <Table sx={{ minWidth: 800 }}>
         <TableHead>
           <TableRow>
             <TableCell>Product</TableCell>
@@ -88,6 +90,7 @@ const TopSellingProducts = (props: Props) => {
           )}
         </TableBody>
       </Table>
+      </TableContainer>
     </Card>
   );
 };
