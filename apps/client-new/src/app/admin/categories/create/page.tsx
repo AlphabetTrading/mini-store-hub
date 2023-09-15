@@ -65,7 +65,6 @@ const initialValues: Values = {
 };
 
 const Page = (props: Props) => {
-
   const [createCategory, { data, loading }] = useMutation<
     CreateCategoryData,
     CreateCategoryVars
@@ -108,7 +107,6 @@ const Page = (props: Props) => {
             description: values.description,
             parentId: values.parentCategory?.id,
             image: values.imageUrl,
-            
           },
         },
         refetchQueries: [CATEGORIES],

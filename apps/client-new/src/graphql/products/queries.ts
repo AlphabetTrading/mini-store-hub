@@ -11,9 +11,6 @@ export interface WarehouseStockVars {
       name: {
         contains: string;
       };
-      serialNumber: {
-        contains: string;
-      };
     };
   };
   paginationInput?: {
@@ -104,6 +101,11 @@ export interface ProductsVars {
   filterProductInput?: {
     name?: {
       contains: string;
+    };
+    category?: {
+      name?: {
+        contains: string;
+      };
     };
     serialNumber?: {
       contains: string;

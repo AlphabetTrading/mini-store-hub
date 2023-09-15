@@ -91,7 +91,7 @@ const Page = ({ params }: Props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filter, setFilter] = useState({
     query: "",
-    filter: "name|asc",
+    filter: "updatedAt|desc",
   });
   const { data, error, loading } = useQuery<WarehouseData, WarehouseVars>(
     WAREHOUSE,
@@ -139,7 +139,25 @@ const Page = ({ params }: Props) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      getWarehouseData();
+      getWarehouseData({
+        variables: {
+          filterWarehouseStockInput: {
+            warehouse: {
+              id: params.id,
+            },
+            product: {
+              name: {
+                contains: filter.query,
+              },
+            },
+          },
+          paginationInput: {
+            skip: page * rowsPerPage,
+            take: rowsPerPage,
+          },
+          orderBy: OrderBySelector(filter.filter),
+        },
+      });
     }, 300);
     return () => clearTimeout(timeout);
   }, [filter, page, rowsPerPage, params.id, getWarehouseData]);
@@ -249,7 +267,7 @@ const Page = ({ params }: Props) => {
         py: 8,
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {(activateError || deactivateError) && (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
@@ -332,6 +350,7 @@ const Page = ({ params }: Props) => {
               <Stack direction="row" justifyContent="start">
                 <Button
                   component={NextLink}
+                  sx={{ my: 1 }}
                   variant="contained"
                   href={`/admin/warehouses/${params.id}/add`}
                 >

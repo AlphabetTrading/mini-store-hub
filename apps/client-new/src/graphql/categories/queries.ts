@@ -4,15 +4,13 @@ import { Category } from "../../../types/categories";
 
 export interface CategoriesVars {
   filterCategoryInput: {
-    description: {
-      contains: string;
-    };
     name: {
       contains: string;
     };
   };
   orderBy: {
     name: string;
+    createdAt: string;
   };
   paginationInput: {
     skip: number;

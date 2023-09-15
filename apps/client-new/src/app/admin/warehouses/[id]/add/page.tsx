@@ -46,13 +46,12 @@ import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries"
 import EmptyTable from "@/components/empty-table";
 
 type Props = {
-  params:{
-    id:string;
-  }
+  params: {
+    id: string;
+  };
 };
 
-const Page = ({params}: Props) => {
-
+const Page = ({ params }: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStockItems, setSelectedStockItems] = useState<StockItem[]>([]);
   const [filteredStockItems, setFilteredStockItems] = useState<StockItem[]>([]);
@@ -168,7 +167,10 @@ const Page = ({params}: Props) => {
                   <Link component={NextLink} href={"/admin/dashboard"}>
                     Dashboard
                   </Link>
-                  <Link component={NextLink} href={`/admin/warehouses/${params.id}`}>
+                  <Link
+                    component={NextLink}
+                    href={`/admin/warehouses/${params.id}`}
+                  >
                     Stock
                   </Link>
                   <Typography>Process Incoming Items</Typography>
@@ -203,8 +205,8 @@ const Page = ({params}: Props) => {
                   onChange={handleChange}
                 />
               </Stack>
-              <TableContainer style={{ overflowX:"auto" }}>
-                <Table  sx={{ minWidth: 1200 }}>
+              <TableContainer style={{ overflowX: "auto" }}>
+                <Table sx={{ minWidth: 1200 }}>
                   <TableHead>
                     <TableRow>
                       <TableCell>Product Name</TableCell>

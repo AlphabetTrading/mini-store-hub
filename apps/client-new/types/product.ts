@@ -12,7 +12,7 @@ export interface Product {
   activePrice: PriceHistory;
   priceHistory: PriceHistory[];
   saleTransactionItem?: SaleTransactionItem[];
-  images:string[]
+  images: string[];
 }
 
 export interface SaleTransactionItem {

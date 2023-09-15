@@ -28,7 +28,7 @@ type Props = {};
 const Page = (props: Props) => {
   const { data: sessionData } = useSession();
   const warehouseId = (sessionData?.user as any).warehouseId || "";
-  console.log(sessionData)
+  console.log(sessionData);
 
   const { data, error, loading } = useQuery<
     GetTotalWarehouseValuationData,
@@ -107,15 +107,15 @@ const Page = (props: Props) => {
       <StateHandler loading={pageLoading} error={pageError} empty={false}>
         <Container maxWidth="xl" sx={{ paddingY: 2 }}>
           {/* <Typography variant="h5">Warehouse Statistics</Typography> */}
-          <Grid container >
-            <Grid item md={12}  xl={7}>
+          <Grid container>
+            <Grid item md={12} xl={7}>
               <WarehouseValuation
                 valuation={data?.totalValuationByWarehouseId.totalValuation!}
                 totalProducts={data?.totalValuationByWarehouseId.totalQuantity!}
                 totalUniqueProducts={data?.totalValuationByWarehouseId.count!}
               />
             </Grid>
-            <Grid item md={12}  xl={5}>
+            <Grid item md={12} xl={5}>
               <InventoryContent
                 content={Number(
                   ((remainingQuantity / totalQuantity) * 100).toFixed()

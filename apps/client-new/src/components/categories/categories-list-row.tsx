@@ -244,7 +244,11 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
               <CardContent>
                 <Grid container spacing={3}>
                   <Grid item md={12} xs={12}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
                       <Typography variant="h6">Basic details</Typography>
                       <div>
                         <Button

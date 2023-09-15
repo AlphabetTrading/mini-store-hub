@@ -30,7 +30,7 @@ const ItemsSummaryTable = ({
 }: Props) => {
   return (
     <TableContainer sx={{ maxHeight: 400, overflow: "auto" }}>
-      <Table stickyHeader sx={{ minWidth: 900}}>
+      <Table stickyHeader sx={{ minWidth: 900 }}>
         <TableHead>
           <TableRow>
             <TableCell>Item Name</TableCell>

@@ -25,27 +25,42 @@ import StateHandler from "@/components/state-handler";
 
 type Props = {};
 
+const OrderBySelector = (filter: string) => {
+  const filterType = filter.split("|")[0];
+  switch (filterType) {
+    case "name":
+      return {
+        name: filter.split("|")[1],
+      };
+    case "createdAt":
+      return {
+        createdAt: filter.split("|")[1],
+      };
+  }
+};
+
 const Page = (props: Props) => {
   const [filter, setFilter] = useState({
     query: "",
-    filter: "name|asc",
+    filter: "createdAt|desc",
   });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { data: sessionData } = useSession();
-  const { data, error, loading, refetch } = useQuery<CategoriesData>(CATEGORIES, {
-    variables: {
-      paginationInput: {
-        skip: page * rowsPerPage,
-        take: rowsPerPage,
+  const { data, error, loading, refetch } = useQuery<CategoriesData>(
+    CATEGORIES,
+    {
+      variables: {
+        paginationInput: {
+          skip: page * rowsPerPage,
+          take: rowsPerPage,
+        },
+        orderBy: OrderBySelector(filter.filter),
       },
-      orderBy: {
-        name: filter.filter.split("|")[1],
-      },
-    },
-    fetchPolicy: "cache-and-network",
-  });
-console.log(data)
+      fetchPolicy: "cache-and-network",
+    }
+  );
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       refetch({
@@ -61,9 +76,7 @@ console.log(data)
           skip: page * rowsPerPage,
           take: rowsPerPage,
         },
-        orderBy: {
-          name: filter.filter.split("|")[1],
-        },
+        orderBy: OrderBySelector(filter.filter),
       });
     }, 300);
     return () => clearTimeout(timeout);
@@ -112,12 +125,14 @@ console.log(data)
           >
             <CategoriesListSearch filter={filter} setFilter={setFilter} />
             <StateHandler
-              empty={data?.categories.items.length===0}
+              empty={data?.categories.items.length === 0}
               error={error}
               loading={loading}
             >
               <>
-                <CategoriesListTable categories={data?.categories.items||[]} />
+                <CategoriesListTable
+                  categories={data?.categories.items || []}
+                />
                 <Pagination
                   meta={data?.categories.meta}
                   page={page}

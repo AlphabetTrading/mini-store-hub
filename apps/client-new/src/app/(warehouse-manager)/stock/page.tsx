@@ -31,7 +31,7 @@ type OrderBySelectorReturnType =
   | { product: { category: { name: string } } }
   | undefined;
 
- const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
+const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
   const filterType = filter.split("|")[0];
   switch (filterType) {
     case "name":

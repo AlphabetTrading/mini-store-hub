@@ -16,7 +16,7 @@ type Props = {
 
 const WarehousesListTable = ({ warehouses }: Props) => {
   return (
-      <TableContainer sx={{ overflow: "auto" }}>
+    <TableContainer sx={{ overflow: "auto" }}>
       <Table sx={{ minWidth: 800 }}>
         <TableHead>
           <TableRow>

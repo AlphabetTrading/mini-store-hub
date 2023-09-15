@@ -2,6 +2,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
 } from "@mui/material";
@@ -24,22 +25,24 @@ const UsersListTable = ({ users }: Props) => {
   //   });
   // };
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Full Name</TableCell>
-          <TableCell>Username</TableCell>
-          <TableCell>Role</TableCell>
-          <TableCell>Phone Number</TableCell>
-          <TableCell>Location</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {users?.map((user, idx) => (
-          <UsersListRow key={idx} user={user} />
-        ))}
-      </TableBody>
-    </Table>
+    <TableContainer sx={{ overflow: "auto" }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Full Name</TableCell>
+            <TableCell>Username</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell>Phone Number</TableCell>
+            <TableCell>Location</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users?.map((user, idx) => (
+            <UsersListRow key={idx} user={user} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

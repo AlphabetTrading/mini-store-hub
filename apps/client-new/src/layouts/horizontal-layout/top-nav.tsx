@@ -132,7 +132,7 @@ export const TopNav = ({ navigationItems, onMobileNav }: Props) => {
         <Stack alignItems="center" direction="row" spacing={2}>
           {/* <LanguageSwitch /> */}
           <NotificationsButton
-            unreadNotifications={unreadNotifications||0}
+            unreadNotifications={unreadNotifications || 0}
             notifications={data?.allNotificationsByUserId || []}
           />
           {/* <ContactsButton /> */}

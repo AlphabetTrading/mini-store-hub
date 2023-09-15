@@ -27,7 +27,6 @@ type Props = {
 };
 
 const RetailShopBasicDetails = ({ retailShop }: Props) => {
-
   const {
     data: valuationData,
     error: valuationError,
@@ -43,16 +42,14 @@ const RetailShopBasicDetails = ({ retailShop }: Props) => {
   const valuation =
     valuationData?.totalValuationByRetailShopId.totalValuation || 0;
 
-
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
   const align = mdUp ? "horizontal" : "vertical";
 
   return (
     <StateHandler
-      loading={ valuationLoading}
+      loading={valuationLoading}
       empty={false}
       //   error={error ? error : valuationError ? valuationError : null}
-
     >
       <Card>
         <CardHeader title="Basic info" />
@@ -68,7 +65,7 @@ const RetailShopBasicDetails = ({ retailShop }: Props) => {
           <PropertyListItem
             align={align}
             label="ስም"
-            value={retailShop?.amharicName}
+            value={retailShop?.amharicName ? retailShop?.amharicName : "-"}
           />
           <Divider />
 

@@ -69,7 +69,7 @@ const ProductCreateEditForm = (props: Props) => {
     validationSchema,
     onSubmit,
   });
-  console.log(error)
+  console.log(error);
   console.log(initialValues);
   const [
     getCategories,

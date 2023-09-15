@@ -28,6 +28,7 @@ const RetailShopsListRow = ({
           href: `/admin/retail-shops/${retailShop.id}`,
           sx: {
             textDecoration: "none",
+            position: "relative",
           },
           hover: true,
         })}
@@ -47,6 +48,15 @@ const RetailShopsListRow = ({
             retailShop.address?.lat &&
             (retailShop.address?.lng, retailShop.address?.lat)}
         </TableCell>
+        <ChevronRightIcon
+          sx={{
+            position: "absolute",
+            top: "50%",
+            bottom: "50%",
+            margin: "auto",
+            right: 8,
+          }}
+        />
       </TableRow>
     </>
   );

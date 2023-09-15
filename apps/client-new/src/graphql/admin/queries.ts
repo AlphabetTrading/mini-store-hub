@@ -97,6 +97,7 @@ export interface TopSellingRetailShopBySalesData {
       totalSales: number;
     }[];
   };
+  totalSalesByDate: number;
 }
 
 export const GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_SALES = gql`
@@ -121,8 +122,10 @@ export const GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_SALES = gql`
         totalSales
       }
     }
+    totalSalesByDate(endDate: $endDate, startDate: $startDate)
   }
 `;
+
 export interface TopSellingRetailShopByProfitData {
   retailShopSortByTotalProfit: {
     items: {
@@ -131,6 +134,7 @@ export interface TopSellingRetailShopByProfitData {
       totalProfit: number;
     }[];
   };
+  totalProfitByDate: number;
 }
 
 export const GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_PROFIT = gql`
@@ -155,6 +159,7 @@ export const GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_PROFIT = gql`
         totalProfit
       }
     }
+    totalProfitByDate(endDate: $endDate, startDate: $startDate)
   }
 `;
 

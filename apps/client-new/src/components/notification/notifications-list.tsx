@@ -17,7 +17,7 @@ const NotificationsList = ({
   setOpen,
   isMyNotification,
 }: Props) => {
-  console.log(notifications)
+  console.log(notifications);
   const { data: sessionData } = useSession();
   const userId = (sessionData?.user as any).id || "";
   return (

@@ -100,7 +100,7 @@ const Page = ({ params }: Props) => {
           description: values.description,
           amharicDescription: values.amharicDescription,
           unit: values.unit!,
-          images: photo?[values.photoUrl]:[],
+          images: photo ? [values.photoUrl] : [],
         },
       },
       refetchQueries: [
