@@ -70,14 +70,14 @@ export interface DeactivateRetailShopVars {
 export interface ActivateRetailShopVars {
   activateRetailShopId: string;
 }
-export interface DeactivateRetailShopData{
-  id:string;
-  status:boolean;
+export interface DeactivateRetailShopData {
+  id: string;
+  status: boolean;
 }
 
-export interface ActivateRetailShopData{
-  id:string;
-  status:boolean;
+export interface ActivateRetailShopData {
+  id: string;
+  status: boolean;
 }
 
 export const DEACTIVATE_RETAIL_SHOP = gql`
@@ -97,4 +97,3 @@ export const ACTIVATE_RETAIL_SHOP = gql`
     }
   }
 `;
-

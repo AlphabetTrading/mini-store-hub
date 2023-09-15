@@ -27,6 +27,14 @@ type Props = {
 
 const sortOptions = [
   {
+    label: "Last Updated At (Newer-Older)",
+    value: "updatedAt|desc",
+  },
+  {
+    label: "Last Updated At (Older-Newer)",
+    value: "updatedAt|asc",
+  },
+  {
     label: "Product Name (A-Z)",
     value: "name|asc",
   },
@@ -41,6 +49,14 @@ const sortOptions = [
   {
     label: "Category Name (Z-A)",
     value: "categoryName|desc",
+  },
+  {
+    label: "Serial Number (A-Z)",
+    value: "serialNumber|asc",
+  },
+  {
+    label: "Serial Number (Z-A)",
+    value: "serialNumber|desc",
   },
 ];
 
@@ -58,7 +74,7 @@ const ProductsListSearch = ({ filter, setFilter }: Props) => {
         direction="row"
         flexWrap="wrap"
         gap={2}
-        sx={{ p: 3 }}
+        sx={{ py: 3 }}
       >
         <OutlinedInput
           onChange={(e) => {

@@ -7,7 +7,7 @@ export interface CreateCategoryVars {
     amharicDescription: string;
     amharicName: string;
     parentId?: string;
-    image?:string;
+    image?: string;
   };
 }
 
@@ -32,7 +32,7 @@ export interface UpdateCategoryVars {
     amharicDescription?: string;
     amharicName?: string;
     parentId?: string;
-    image?:string;
+    image?: string;
   };
   updateCategoryId: string;
 }

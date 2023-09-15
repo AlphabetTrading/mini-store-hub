@@ -52,12 +52,26 @@ export interface RegisterUserData {
   signup: { user: { id: string } };
 }
 
-export const REGISTER_USER = gql`
-  mutation Signup($data: SignupInput!) {
-    signup(data: $data) {
-      user {
-        id
-      }
+export const REGISTER_ADMIN = gql`
+  mutation CreateADMIN($data: CreateUserInput!) {
+    createADMIN(data: $data) {
+      id
+    }
+  }
+`;
+
+export const REGISTER_WAREHOUSE_MANAGER = gql`
+  mutation CreateWarehouseManager($data: CreateUserInput!) {
+    createWarehouseManager(data: $data) {
+      id
+    }
+  }
+`;
+
+export const REGISTER_RETAIL_SHOP_MANAGER = gql`
+  mutation CreateRetailShopManager($data: CreateUserInput!) {
+    createRetailShopManager(data: $data) {
+      id
     }
   }
 `;

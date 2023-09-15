@@ -1,7 +1,9 @@
 "use client";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import {
-  REGISTER_USER,
+  REGISTER_ADMIN,
+  REGISTER_RETAIL_SHOP_MANAGER,
+  REGISTER_WAREHOUSE_MANAGER,
   RegisterUserData,
   RegisterUserVars,
 } from "@/graphql/users/mutations";
@@ -19,6 +21,7 @@ import {
   CircularProgress,
   Container,
   Link,
+  MenuItem,
   Stack,
   TextField,
   Typography,
@@ -29,6 +32,8 @@ import * as Yup from "yup";
 import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { showAlert } from "@/helpers/showAlert";
+import { UserRole } from "../../../../../types/user";
+import { Router, useRouter } from "next/router";
 
 type Props = {};
 interface Values {
@@ -37,6 +42,7 @@ interface Values {
   password: string;
   phone: string;
   username: string;
+  userRole: UserRole;
 }
 
 const initialValues: Values = {
@@ -45,6 +51,7 @@ const initialValues: Values = {
   password: "",
   phone: "",
   username: "",
+  userRole: UserRole.USER,
 };
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -64,37 +71,88 @@ const validationSchema = Yup.object({
 });
 
 const Page = (props: Props) => {
+  const router = useRouter();
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, formikHelpers) => {
-      await registerUser({
-        variables: {
-          data: {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            password: values.password,
-            phone: values.phone,
-            username: values.username,
-          },
-        },
-        onCompleted: (data) => {
-          showAlert("created a", "user");
-          formikHelpers.resetForm();
-        },
-        refetchQueries: [USERS],
-      });
+      var role = values.userRole;
+      const data = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        password: values.password,
+        phone: values.phone,
+        username: values.username,
+      };
+      switch (role) {
+        case UserRole.ADMIN:
+          await registerAdmin({
+            variables: {
+              data,
+            },
+            onCompleted: (data) => {
+              showAlert("created an", "admin");
+              formikHelpers.resetForm();
+              router.push("/admin/users");
+            },
+            refetchQueries: [USERS],
+          });
+        case UserRole.WAREHOUSE_MANAGER:
+          await registerWarehouseManager({
+            variables: {
+              data,
+            },
+            onCompleted: (data) => {
+              showAlert("created a", "warehouse manager");
+              formikHelpers.resetForm();
+              router.push("/admin/users");
+            },
+            refetchQueries: [USERS],
+          });
+        case UserRole.RETAIL_SHOP_MANAGER:
+          await registerRetailShopManager({
+            variables: {
+              data,
+            },
+            onCompleted: (data) => {
+              showAlert("created a", "retail shop manager");
+              formikHelpers.resetForm();
+              router.push("/admin/users");
+            },
+            refetchQueries: [USERS],
+          });
+      }
     },
   });
-  const [registerUser, { data, loading, error }] = useMutation<
+
+  const [registerRetailShopManager, { data, loading, error }] = useMutation<
     RegisterUserData,
     RegisterUserVars
-  >(REGISTER_USER);
+  >(REGISTER_RETAIL_SHOP_MANAGER);
+
+  const [
+    registerWarehouseManager,
+    {
+      data: warehouseRegisterData,
+      loading: warehouseRegisterLoading,
+      error: warehouseRegisterError,
+    },
+  ] = useMutation<RegisterUserData, RegisterUserVars>(
+    REGISTER_WAREHOUSE_MANAGER
+  );
+  const [
+    registerAdmin,
+    {
+      data: adminRegisterData,
+      loading: adminRegisterLoading,
+      error: adminRegisterError,
+    },
+  ] = useMutation<RegisterUserData, RegisterUserVars>(REGISTER_ADMIN);
 
   return (
     <Box component="main" sx={{ p: 8 }}>
       <Stack spacing={1}>
-        <Typography variant="h4">Regsiter User</Typography>
+        <Typography variant="h4">Register User</Typography>
         <Breadcrumbs separator={<BreadcrumbsSeparator />}>
           <Link component={NextLink} href={"/admin/dashboard"}>
             Dashboard
@@ -176,6 +234,24 @@ const Page = (props: Props) => {
                   value={formik.values.username}
                 />
                 <TextField
+                  error={!!(formik.errors.userRole && formik.touched.userRole)}
+                  fullWidth
+                  helperText={formik.touched.userRole && formik.errors.userRole}
+                  label="Role"
+                  name="userRole"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.userRole}
+                  //   defaultValue={user.userRole}
+                  select
+                >
+                  {Object.values(UserRole).map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
                   error={!!(formik.touched.password && formik.errors.password)}
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}
@@ -213,10 +289,12 @@ const Page = (props: Props) => {
               </Button>
             </form>
 
-            {error && (
+            {(error || adminRegisterError || warehouseRegisterError) && (
               <Alert severity="error">
                 <AlertTitle>Error</AlertTitle>
-                {error.message}
+                {error?.message}
+                {adminRegisterError?.message}
+                {warehouseRegisterError?.message}
               </Alert>
             )}
           </CardContent>

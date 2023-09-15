@@ -9,8 +9,6 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Chart } from "../chart";
-import { randomInt } from "crypto";
-import { getRandomColor } from "@/helpers/getRandomColor";
 import {
   GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_SALES,
   TopSellingRetailShopBySalesData,
@@ -21,50 +19,34 @@ import { gql, useQuery } from "@apollo/client";
 type Props = {};
 
 export const TopRetailShops = (props: Props) => {
+  const targetDate = new Date();
+  let endDate = new Date(targetDate);
+  endDate.setHours(23, 59, 59, 999);
   const { data, loading, error } = useQuery<
     TopSellingRetailShopBySalesData,
     TopSellingRetailShopVars
   >(GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_SALES, {
     variables: {
-      endDate: new Date().toUTCString(),
-      startDate: "2023-09-01T00:00:00.393Z",
+      endDate: endDate.toISOString(),
       paginationInput: {
         skip: 0,
         take: 5,
       },
+      startDate: "2023-09-01T00:00:00.393Z",
     },
   });
-
-  const {
-    data: totalSalesData,
-    loading: totalSalesLoading,
-    error: totalSalesError,
-  } = useQuery(
-    gql`
-      query Query($endDate: String!, $startDate: String!) {
-        totalSalesByDate(endDate: $endDate, startDate: $startDate)
-      }
-    `,
-    {
-      variables: {
-        endDate: new Date().toUTCString(),
-        startDate: "2023-09-01T00:00:00.393Z",
-      },
-    }
-  );
 
   var top_five = 0;
   data?.retailShopSortByTotalSales.items.forEach((item) => {
     top_five += item.totalSales;
   });
-  var total = totalSalesData?.totalSalesByDate;
 
   const chartSeries = data
     ? data.retailShopSortByTotalSales.items
         .map((retailShop: any) => {
           return Number(retailShop.totalSales.toFixed(2));
         })
-        .concat(total - top_five)
+        .concat(data.totalSalesByDate - top_five)
     : [];
 
   const labels = data
@@ -125,13 +107,12 @@ export const TopRetailShops = (props: Props) => {
   return (
     <Card>
       <CardHeader title="Top Selling Retail Shop" />
-      {loading || totalSalesLoading ? (
+      {loading ? (
         <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
           <CircularProgress />
         </Stack>
       ) : (
         data &&
-        totalSalesData &&
         data.retailShopSortByTotalSales.items?.length > 0 && (
           <CardContent>
             <Chart
@@ -164,9 +145,7 @@ export const TopRetailShops = (props: Props) => {
                   </Typography>
                   <Box sx={{ flexGrow: 1 }} />
                   <Typography color="text.secondary" variant="subtitle2">
-                    {((item / totalSalesData.totalSalesByDate) * 100).toFixed(
-                      1
-                    )}
+                    {((item / data.totalSalesByDate) * 100).toFixed(1)}
                   </Typography>
                 </Box>
               );

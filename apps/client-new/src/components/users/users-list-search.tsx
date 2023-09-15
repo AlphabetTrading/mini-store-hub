@@ -27,24 +27,24 @@ type Props = {
 
 const sortOptions = [
   {
-    label: "Creation Date (Newer-Older)",
-    value: "createdAt|desc",
+    label: "First Name (A-Z)",
+    value: "firstName|asc",
   },
   {
-    label: "Creation Date (Older-Newer)",
-    value: "createdAt|asc",
+    label: "First Name (Z-A)",
+    value: "firstName|desc",
   },
   {
-    label: "Name (A-Z)",
-    value: "name|asc",
+    label: "Last Name (A-Z)",
+    value: "lastName|asc",
   },
   {
-    label: "Name (Z-A)",
-    value: "name|desc",
+    label: "Last Name (Z-A)",
+    value: "lastName|desc",
   },
 ];
 
-const CategoriesListSearch = ({ filter, setFilter }: Props) => {
+const UsersListSearch = ({ filter, setFilter }: Props) => {
   return (
     <div style={{ width: "100%" }}>
       {/* <Stack alignItems="center" spacing={2} sx={{ p: 2 }} direction="row">
@@ -58,7 +58,7 @@ const CategoriesListSearch = ({ filter, setFilter }: Props) => {
         direction="row"
         flexWrap="wrap"
         gap={2}
-        sx={{ p: 3 }}
+        sx={{ py: 3 }}
       >
         <OutlinedInput
           onChange={(e) => {
@@ -68,7 +68,7 @@ const CategoriesListSearch = ({ filter, setFilter }: Props) => {
             }));
           }}
           value={filter.query}
-          placeholder="Search by category name"
+          placeholder="Search by user name"
           startAdornment={
             <InputAdornment position="start">
               <SvgIcon>
@@ -103,4 +103,4 @@ const CategoriesListSearch = ({ filter, setFilter }: Props) => {
   );
 };
 
-export default CategoriesListSearch;
+export default UsersListSearch;

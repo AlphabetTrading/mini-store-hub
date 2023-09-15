@@ -22,7 +22,11 @@ import { useQuery } from "@apollo/client";
 import StateHandler from "@/components/state-handler";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import { ImageOutlined } from "@mui/icons-material";
-import { CategoryData, CategoryVars, CATEGORY } from "@/graphql/categories/queries";
+import {
+  CategoryData,
+  CategoryVars,
+  CATEGORY,
+} from "@/graphql/categories/queries";
 import CategoryBasicDetails from "@/components/categories/category-basic-details";
 
 const tabs = [
@@ -39,12 +43,15 @@ type Props = {
 
 const Page = ({ params }: Props) => {
   const [currentTab, setCurrentTab] = useState("details");
-  const { data, error, loading } = useQuery<CategoryData, CategoryVars>(CATEGORY, {
-    variables: {
-      categoryId: params.id,
-    },
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, error, loading } = useQuery<CategoryData, CategoryVars>(
+    CATEGORY,
+    {
+      variables: {
+        categoryId: params.id,
+      },
+      fetchPolicy: "cache-and-network",
+    }
+  );
 
   return (
     <>

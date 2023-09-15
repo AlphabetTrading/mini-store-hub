@@ -16,7 +16,6 @@ const NotificationItem = ({
   isRead,
   isMyNotification,
 }: Props) => {
-
   return (
     <Box
       sx={{
