@@ -349,7 +349,7 @@ type GoodsTransfer {
   createdAt: DateTime!
   destinationWarehouse: Warehouse
   destinationWarehouseId: String
-  goodsTransfersAsDestination: [StockItem!]
+  goods: [StockItem!]
   id: ID!
   retailShop: RetailShop
   retailShopId: String
@@ -686,8 +686,9 @@ type Query {
   findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
   findProductsByTopSellAndByWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
   getAllNotifications: [Notification!]!
+  getRetailShopByManagerId(userId: String): RetailShop!
   getUsersNotificationDetailByUserIdAndNotificationId(notificationId: String!, userId: String!): Notification!
-  getWarehouseByManagerId: Warehouse!
+  getWarehouseByManagerId(userId: String): Warehouse!
   goodsTransfer(id: String!): GoodsTransfer!
   goodsTransfers(filterGoodsTransferInput: FilterGoodsTransferInput, orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput): PaginationGoodsTransfer!
   me: User!
@@ -700,7 +701,6 @@ type Query {
   productsByCategory: [Product!]!
   readNotificationsByUserId(userId: String!): [Notification!]!
   retailShop(id: String!): RetailShop!
-  retailShopManagers: [User!]!
   retailShopSortByTotalProfit(endDate: String!, paginationInput: PaginationInput, startDate: String!): PaginationRetailShopsWithExtraInfo!
   retailShopSortByTotalSales(endDate: String!, paginationInput: PaginationInput, startDate: String!): PaginationRetailShopsWithExtraInfo!
   retailShopSortByTotalTransactions(endDate: String!, paginationInput: PaginationInput, startDate: String!): PaginationRetailShopsWithExtraInfo!
@@ -751,7 +751,6 @@ type Query {
   user(id: String!): User!
   users(filterUserInput: FilterUserInput, orderBy: OrderByUserInput, paginationInput: PaginationInput): PaginationUser!
   warehouse(id: String!): Warehouse!
-  warehouseManagers: [User!]!
   warehouseStock(id: String!): WarehouseStock!
   warehouseStockByWarehouseId(warehouseId: String!): [WarehouseStock!]!
   warehouseStocks(filterWarehouseStockInput: FilterWarehouseStockInput, orderBy: OrderByWarehouseStockInput, paginationInput: PaginationInput): PaginationWarehouseStocks!

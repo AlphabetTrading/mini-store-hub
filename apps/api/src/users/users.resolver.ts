@@ -15,6 +15,7 @@ import { Warehouse } from 'src/warehouses/models/warehouse.model';
 import { CreateUserInput } from './dto/create-user.input';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { HasRoles } from 'src/common/decorators';
+import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 
 @Resolver(() => User)
 @UseGuards(GqlAuthGuard)
@@ -139,20 +140,44 @@ export class UsersResolver {
     }
   }
 
-  @Query(() => [User])
-  async retailShopManagers(@Parent() user: User) {
-    return this.usersService.getRetailManagers();
-  }
-
-  @Query(() => [User])
-  async warehouseManagers(@Parent() user: User) {
-    return this.usersService.getWarehouseManagers();
-  }
-
   // get warehouse from user that manages it
   @Query(() => Warehouse)
-  async getWarehouseByManagerId(@Parent() user: User) {
-    return this.usersService.getWarehouseByUserId(user.id);
+  async getWarehouseByManagerId(
+    @UserEntity() user: User,
+    @Args('userId', {
+      type: () => String,
+      nullable: true,
+    })
+    userId,
+  ) {
+    if (userId) {
+      return this.usersService.getWarehouseByUserId(userId);
+    }
+    const warehouse = await this.usersService.getWarehouseByUserId(user.id);
+    if (!warehouse) {
+      throw new BadRequestException('User does not manage any warehouse');
+    }
+    return warehouse;
+  }
+
+  // get retailshop from user that manages it
+  @Query(() => RetailShop)
+  async getRetailShopByManagerId(
+    @UserEntity() user: User,
+    @Args('userId', {
+      type: () => String,
+      nullable: true,
+    })
+    userId,
+  ) {
+    if (userId) {
+      return this.usersService.getRetailShopByUserId(userId);
+    }
+    const retailShop = await this.usersService.getRetailShopByUserId(user.id);
+    if (!retailShop) {
+      throw new BadRequestException('User does not manage any retailShop');
+    }
+    return retailShop;
   }
 
   @Mutation(() => User)

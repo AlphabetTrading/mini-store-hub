@@ -35,6 +35,14 @@ export class UsersService {
     });
   }
 
+  async getRetailShopByUserId(userId: string) {
+    return this.prisma.retailShop.findFirst({
+      where: {
+        retailShopManagerId: userId,
+      },
+    });
+  }
+
   async updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({
       data: {

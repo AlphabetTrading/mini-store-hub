@@ -13,7 +13,11 @@ import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-tr
 
 const goodsTransferInclude = {
   destinationWarehouse: true,
-  goods: true,
+  goods: {
+    include: {
+      product: true,
+    },
+  },
   retailShop: true,
   sourceWarehouse: true,
 };
@@ -32,19 +36,13 @@ export class GoodsTransfersService {
     take?: number;
     where?: Prisma.GoodsTransferWhereInput;
     orderBy?: Prisma.GoodsTransferOrderByWithRelationInput;
-  }): Promise<GoodsTransfer[]> {
+  }) {
     return this.prisma.goodsTransfer.findMany({
       skip,
       take,
       where,
       orderBy,
-
-      include: {
-        destinationWarehouse: true,
-        goods: true,
-        retailShop: true,
-        sourceWarehouse: true,
-      },
+      include: goodsTransferInclude,
     });
   }
 

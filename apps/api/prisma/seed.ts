@@ -971,6 +971,17 @@ async function seedGoodsTransfers() {
       ],
     });
 
+    const products = await prisma.product.findMany({
+      take: 10,
+    });
+
+    const goods = products.map((product) => ({
+      productId: product.id,
+      quantity: randomInt(1, 10),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+
     await prisma.goodsTransfer.create({
       data: {
         sourceWarehouse: {
@@ -984,6 +995,11 @@ async function seedGoodsTransfers() {
           },
         },
         transferType: 'WarehouseToRetailShop',
+        goods: {
+          createMany: {
+            data: goods,
+          },
+        },
       },
     });
 

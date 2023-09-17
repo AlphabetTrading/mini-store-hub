@@ -1,9 +1,4 @@
-import {
-  ObjectType,
-  Field,
-  registerEnumType,
-  HideField,
-} from '@nestjs/graphql';
+import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/models/base.model';
 import { StockItem } from './stock-item.model';
 import { TransferType } from '@prisma/client';
@@ -27,7 +22,7 @@ export class GoodsTransfer extends BaseModel {
   destinationWarehouseId?: string;
 
   @Field(() => [StockItem], { nullable: true })
-  goodsTransfersAsDestination?: [StockItem];
+  goods?: StockItem[];
 
   @Field(() => Warehouse, { nullable: true })
   sourceWarehouse?: Warehouse;

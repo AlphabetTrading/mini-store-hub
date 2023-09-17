@@ -44,7 +44,25 @@ export class WarehouseStockResolver {
           warehouse: filterWarehouseStockInput?.warehouse,
         },
         {
-          product: filterWarehouseStockInput?.product,
+          product: filterWarehouseStockInput?.product && {
+            OR: [
+              {
+                name: filterWarehouseStockInput.product?.name,
+              },
+              {
+                amharicName: filterWarehouseStockInput.product?.name,
+              },
+              {
+                serialNumber: filterWarehouseStockInput.product?.serialNumber,
+              },
+              {
+                description: filterWarehouseStockInput.product?.description,
+              },
+              {
+                category: filterWarehouseStockInput.product?.category,
+              },
+            ],
+          },
         },
         {
           createdAt: filterWarehouseStockInput?.createdAt,
