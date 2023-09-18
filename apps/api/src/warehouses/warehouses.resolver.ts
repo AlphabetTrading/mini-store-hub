@@ -74,7 +74,7 @@ export class WarehousesResolver {
       };
     } catch (e) {
       console.log(e, 'error ');
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading users!');
     }
   }
 

@@ -86,7 +86,7 @@ export class WarehouseStockResolver {
         },
       };
     } catch (e) {
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading warehouse inventories!');
     }
   }
 
@@ -143,7 +143,7 @@ export class WarehouseStockResolver {
   //       },
   //     };
   //   } catch (e) {
-  //     throw new BadRequestException('Error loading products!');
+  //     throw new BadRequestException('Error loading users!');
   //   }
   // }
 

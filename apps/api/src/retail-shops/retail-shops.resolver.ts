@@ -68,7 +68,7 @@ export class RetailShopsResolver {
         },
       };
     } catch (e) {
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading retailshops!');
     }
   }
 
