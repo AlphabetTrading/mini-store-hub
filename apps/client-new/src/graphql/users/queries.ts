@@ -37,7 +37,7 @@ export interface UsersVars {
     take?: number;
     skip?: number;
   };
-  orderBy: {
+  orderBy?: {
     firstName?: string;
     createdAt?: string;
     lastName?: string;

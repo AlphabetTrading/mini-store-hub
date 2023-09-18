@@ -143,7 +143,7 @@ const Page = (props: Props) => {
                       <Typography variant="h6">Basic details</Typography>
                     </Grid>
 
-                    <Grid xs={12} md={8}>
+                    <Grid item xs={12} md={8}>
                       <Stack spacing={3}>
                         <TextField
                           error={!!(formik.touched.name && formik.errors.name)}
@@ -228,17 +228,19 @@ const Page = (props: Props) => {
                               formik.errors.parentCategory
                             }
                             label="Parent Category"
-                            name="category"
+                            name="parentCategory"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.parentCategory?.name}
                             select
                           >
-                            {categoryData?.categories.items.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
+                            {categoryData
+                              ? categoryData.categories.items.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.name}
+                                  </MenuItem>
+                                ))
+                              : []}
                           </TextField>
                         </Stack>
                       </Stack>

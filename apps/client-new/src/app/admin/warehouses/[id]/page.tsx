@@ -35,7 +35,7 @@ import StockListTable from "@/components/stock/stock-list-table";
 import {
   WarehouseStockData,
   WarehouseStockVars,
-  WAREHOUSE_STOCK,
+  WAREHOUSE_STOCKS,
 } from "@/graphql/products/queries";
 import Pagination from "@/components/Pagination";
 import {
@@ -121,7 +121,7 @@ const Page = ({ params }: Props) => {
   const [
     getWarehouseData,
     { data: warehouseData, loading: warehouseLoading, error: warehouseError },
-  ] = useLazyQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
+  ] = useLazyQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCKS, {
     variables: {
       filterWarehouseStockInput: {
         warehouse: {

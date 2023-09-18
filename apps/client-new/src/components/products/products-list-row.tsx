@@ -41,6 +41,7 @@ import * as Yup from "yup";
 import CustomChip from "../custom-chip";
 import { showAlert } from "@/helpers/showAlert";
 import { ImageOutlined } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 
 type Props = {
   product: Product;
@@ -77,6 +78,7 @@ const validationSchema = Yup.object({
 });
 
 const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
+  const router = useRouter();
   const { data, loading, error } = useQuery<CategoriesData>(CATEGORIES);
   const [
     updateProduct,
@@ -121,10 +123,11 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
   return (
     <>
       <TableRow
-        component={NextLink}
-        href={`/admin/products/${product.id}`}
+        sx={{
+          textDecoration: "none",
+        }}
         hover
-        sx={{ textDecoration: "none" }}
+        onClick={() => router.push(`/admin/products/${product.id}`)}
       >
         <TableCell>
           {/* <IconButton
