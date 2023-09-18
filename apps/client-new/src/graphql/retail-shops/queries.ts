@@ -1,13 +1,38 @@
 import { gql } from "@apollo/client";
 import { RetailShop } from "../../../types/retail-shop";
+import { Meta } from "../../../types/common";
+
+export interface RetailShopsVars {
+  filterRetailShopInput?: {
+    name?: {
+      contains: string;
+    };
+  };
+  orderBy?: {
+    name?: string;
+    updatedAt?: string;
+  };
+  paginationInput: {
+    skip: number;
+    take: number;
+  };
+}
 
 export interface RetailShopsData {
-  retailShops: { items: RetailShop[] };
+  retailShops: { items: RetailShop[]; meta: Meta };
 }
 
 export const RETAIL_SHOPS = gql`
-  query RetailShops {
-    retailShops {
+  query RetailShops(
+    $filterRetailShopInput: FilterRetailShopInput
+    $orderBy: OrderByRetailShopInput
+    $paginationInput: PaginationInput
+  ) {
+    retailShops(
+      filterRetailShopInput: $filterRetailShopInput
+      orderBy: $orderBy
+      paginationInput: $paginationInput
+    ) {
       items {
         id
         name
@@ -23,6 +48,11 @@ export const RETAIL_SHOPS = gql`
           lat
           lng
         }
+      }
+      meta {
+        count
+        limit
+        page
       }
     }
   }

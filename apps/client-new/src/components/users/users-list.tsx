@@ -4,7 +4,7 @@ import { UsersData, USERS } from "@/graphql/users/queries";
 import { useQuery } from "@apollo/client";
 import { Typography, Box, Card, CircularProgress } from "@mui/material";
 import error from "next/error";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CustomTabPanel from "../custom-tab-panel";
 import StateHandler from "../state-handler";
 import UsersListTable from "./users-list-table";
@@ -36,12 +36,15 @@ const UsersList = ({ roleIndex }: Props) => {
     filter: "firstName|asc",
   });
 
-  const roles = [
-    undefined,
-    UserRole.ADMIN,
-    UserRole.RETAIL_SHOP_MANAGER,
-    UserRole.WAREHOUSE_MANAGER,
-  ];
+  const roles = useMemo(
+    () => [
+      undefined,
+      UserRole.ADMIN,
+      UserRole.RETAIL_SHOP_MANAGER,
+      UserRole.WAREHOUSE_MANAGER,
+    ],
+    []
+  );
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -93,18 +96,16 @@ const UsersList = ({ roleIndex }: Props) => {
         loading={loading}
       >
         <Box sx={{ width: "100%" }}>
-          <CustomTabPanel value={roleIndex} index={roleIndex}>
-            <Card>
-              <UsersListTable users={data?.users.items} />
-              <Pagination
-                meta={data?.users.meta!}
-                page={page}
-                setPage={setPage}
-                rowsPerPage={rowsPerPage}
-                setRowsPerPage={setRowsPerPage}
-              />
-            </Card>
-          </CustomTabPanel>
+          <Card>
+            <UsersListTable users={data?.users.items} />
+            <Pagination
+              meta={data?.users.meta!}
+              page={page}
+              setPage={setPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+            />
+          </Card>
         </Box>
       </StateHandler>
     </Box>

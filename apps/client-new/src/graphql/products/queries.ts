@@ -8,8 +8,16 @@ export interface WarehouseStockVars {
       id: string;
     };
     product?: {
-      name: {
+      name?: {
         contains: string;
+      };
+      serialNumber?: {
+        contains: string;
+      };
+      category?: {
+        name?: {
+          contains: string;
+        };
       };
     };
   };
@@ -48,7 +56,7 @@ export interface WarehouseStockData {
   };
 }
 
-export const WAREHOUSE_STOCK = gql`
+export const WAREHOUSE_STOCKS = gql`
   query WarehouseStocks(
     $paginationInput: PaginationInput
     $filterWarehouseStockInput: FilterWarehouseStockInput

@@ -22,7 +22,7 @@ import {
 import ItemsSummaryTable from "@/components/transfer-items/items-summary-table";
 
 import { useMutation } from "@apollo/client";
-import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
+import { WAREHOUSE_STOCKS } from "@/graphql/products/queries";
 import TransferItemsDrawer from "@/components/modals/transfer-items-drawer";
 import { StockItem } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
@@ -123,7 +123,7 @@ const Page = (props: Props) => {
       },
       refetchQueries: [
         {
-          query: WAREHOUSE_STOCK,
+          query: WAREHOUSE_STOCKS,
           variables: {
             filterWarehouseStockInput: {
               warehouse: {

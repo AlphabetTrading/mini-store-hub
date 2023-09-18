@@ -38,29 +38,29 @@ const TopSellingProducts = (props: Props) => {
   return (
     <Card>
       <CardHeader title="Top Selling Products" />
-      <TableContainer sx={{ overflowX: "auto" }}>
-        <Table sx={{ minWidth: 800 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Product</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Items Sold</TableCell>
-              <TableCell>Total Revenue</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <Stack
-                sx={{
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </Stack>
-            ) : (
-              data?.findProductsByTopSell.items?.map(
+      {loading ? (
+        <Stack
+          sx={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Stack>
+      ) : (
+        <TableContainer sx={{ overflowX: "auto" }}>
+          <Table sx={{ minWidth: 800 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Product</TableCell>
+                <TableCell>Category</TableCell>
+                <TableCell>Items Sold</TableCell>
+                <TableCell>Total Revenue</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data?.findProductsByTopSell.items?.map(
                 (product: Product, index: number) => {
                   var quantity = 0;
                   var totalSale = 0;
@@ -86,11 +86,11 @@ const TopSellingProducts = (props: Props) => {
                     </TableRow>
                   );
                 }
-              )
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Card>
   );
 };

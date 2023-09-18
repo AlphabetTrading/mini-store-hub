@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../../../types/user";
+import { User, UserRole } from "../../../types/user";
 import {
   Box,
   Link,
@@ -28,6 +28,7 @@ import {
 import * as Yup from "yup";
 import StateHandler from "../state-handler";
 import { useRouter } from "next/navigation";
+import { USERS, UsersData, UsersVars } from "@/graphql/users/queries";
 type Props = {
   initialValues: RetailShopInputValues;
   onSubmit: (
@@ -67,12 +68,19 @@ const RetailShopCreateEditForm = (props: Props) => {
     data,
     error: managersError,
     loading: managersLoading,
-  } = useQuery<RetailShopManagersData>(RETAIL_SHOP_MANAGERS);
+  } = useQuery<UsersData, UsersVars>(USERS, {
+    variables: {
+      filterUserInput: {
+        role: UserRole.RETAIL_SHOP_MANAGER,
+      },
+    },
+  });
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit,
   });
+
   const router = useRouter();
   return (
     <Box component="main" sx={{ py: 8 }}>
@@ -106,7 +114,7 @@ const RetailShopCreateEditForm = (props: Props) => {
                         <Typography variant="h6">Basic details</Typography>
                       </Grid>
 
-                      <Grid xs={12} md={8}>
+                      <Grid item xs={12} md={8}>
                         <Stack spacing={3}>
                           <TextField
                             error={
@@ -149,10 +157,17 @@ const RetailShopCreateEditForm = (props: Props) => {
                               );
                             }}
                             getOptionLabel={(option) =>
-                              option.firstName + " " + option.lastName
+                              option?.firstName + " " + option?.lastName
                             }
-                            options={data?.retailShopManagers || []}
+                            options={data?.users.items || []}
                             sx={{ width: 300 }}
+                            renderOption={(props, option) => {
+                              return (
+                                <li {...props} key={option.id}>
+                                  {option.firstName + " " + option.lastName}
+                                </li>
+                              );
+                            }}
                             renderInput={(params: any) => (
                               <TextField
                                 {...params}
@@ -185,7 +200,7 @@ const RetailShopCreateEditForm = (props: Props) => {
                         <Typography variant="h6">Location details</Typography>
                       </Grid>
 
-                      <Grid xs={12} md={8} spacing={2}>
+                      <Grid item xs={12} md={8}>
                         <Stack spacing={3}>
                           <TextField
                             error={
