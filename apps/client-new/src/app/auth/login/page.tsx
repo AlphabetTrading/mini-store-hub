@@ -30,12 +30,7 @@ const validationSchema = Yup.object({
   //   "Phone number must start with 09 or 07 and have 10 digits"
   // ),
   phoneNumber: Yup.string().required("Phone number is required"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters long")
-    .matches(
-      /^(?=.*[a-zA-Z])(?=.*\d)/,
-      "Password must contain at least one letter and one number"
-    ),
+  password: Yup.string().required("Password is required"),
 });
 const initialValues: Values = {
   phoneNumber: "",

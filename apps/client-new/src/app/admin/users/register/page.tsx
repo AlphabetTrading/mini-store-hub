@@ -33,7 +33,7 @@ import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { showAlert } from "@/helpers/showAlert";
 import { UserRole } from "../../../../../types/user";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 interface Values {

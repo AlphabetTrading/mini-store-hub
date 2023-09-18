@@ -35,7 +35,7 @@ import {
 } from "@/graphql/warehouses/mutations";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
+import { WAREHOUSE_STOCKS } from "@/graphql/products/queries";
 import { StockItem } from "../../../../../../types/product";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
@@ -128,7 +128,7 @@ const Page = ({ params }: Props) => {
         console.log(error);
       },
       refetchQueries: [
-        { query: WAREHOUSE_STOCK },
+        { query: WAREHOUSE_STOCKS },
         {
           query: GET_TOTAL_VALUATION_OF_WAREHOUSE,
           variables: {

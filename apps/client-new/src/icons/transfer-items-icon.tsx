@@ -22,10 +22,10 @@ const TransferItemsIcon = () => (
         y2="512"
         gradientUnits="userSpaceOnUse"
       >
-        <stop offset="0" stop-color="#01f1fe"></stop>
-        <stop offset="1" stop-color="#4fadfe"></stop>
+        <stop offset="0" stopColor="#01f1fe"></stop>
+        <stop offset="1" stopColor="#4fadfe"></stop>
       </linearGradient>
-      <g fill-rule="evenodd" clip-rule="evenodd">
+      <g fillRule="evenodd" clipRule="evenodd">
         <circle
           cx="256"
           cy="256"

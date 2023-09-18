@@ -1,5 +1,5 @@
 import {
-  WAREHOUSE_STOCK,
+  WAREHOUSE_STOCKS,
   WarehouseStockData,
   WarehouseStockVars,
 } from "@/graphql/products/queries";
@@ -67,7 +67,7 @@ const TransferItemsDrawer = ({
     data: itemsData,
     loading: itemsLoading,
     error: itemsError,
-  } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
+  } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCKS, {
     variables: {
       filterWarehouseStockInput: {
         warehouse: {

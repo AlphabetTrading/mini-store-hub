@@ -69,8 +69,7 @@ const ProductCreateEditForm = (props: Props) => {
     validationSchema,
     onSubmit,
   });
-  console.log(error);
-  console.log(initialValues);
+
   const [
     getCategories,
     {
@@ -122,7 +121,7 @@ const ProductCreateEditForm = (props: Props) => {
                       <Typography variant="h6">Basic details</Typography>
                     </Grid>
 
-                    <Grid xs={12} md={8}>
+                    <Grid item xs={12} md={8}>
                       <Stack spacing={3}>
                         <TextField
                           error={!!(formik.touched.name && formik.errors.name)}
@@ -258,7 +257,7 @@ const ProductCreateEditForm = (props: Props) => {
                       <Typography variant="h6">Measurement details</Typography>
                     </Grid>
 
-                    <Grid xs={12} md={8}>
+                    <Grid item xs={12} md={8}>
                       <TextField
                         error={!!(formik.touched.unit && formik.errors.unit)}
                         fullWidth
@@ -267,7 +266,9 @@ const ProductCreateEditForm = (props: Props) => {
                         name="unit"
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
-                        value={formik.values.unit}
+                        value={
+                          formik.values.unit ? formik.values.unit : Unit.PIECES
+                        }
                         select
                       >
                         {Object.values(Unit).map((option) => (
