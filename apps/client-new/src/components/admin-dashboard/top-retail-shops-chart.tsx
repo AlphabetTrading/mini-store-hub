@@ -15,6 +15,7 @@ import {
   TopSellingRetailShopVars,
 } from "@/graphql/admin/queries";
 import { gql, useQuery } from "@apollo/client";
+import StateHandler from "../state-handler";
 
 type Props = {};
 
@@ -106,14 +107,13 @@ export const TopRetailShops = (props: Props) => {
 
   return (
     <Card>
-      <CardHeader title="Top Selling Retail Shop" />
-      {loading ? (
-        <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
-          <CircularProgress />
-        </Stack>
-      ) : (
-        data &&
-        data.retailShopSortByTotalSales.items?.length > 0 && (
+      <CardHeader title="Top Selling Retail Shops" />
+      <StateHandler
+        loading={loading}
+        error={error}
+        empty={data?.retailShopSortByTotalSales.items?.length == 0}
+      >
+        {data && (
           <CardContent>
             <Chart
               height={200}
@@ -122,7 +122,6 @@ export const TopRetailShops = (props: Props) => {
               type="pie"
             />
             {chartSeries.map((item: any, index: number) => {
-              //   const amount = numeral(item).format('$0,0.00');
               return (
                 <Box
                   key={index}
@@ -151,8 +150,8 @@ export const TopRetailShops = (props: Props) => {
               );
             })}
           </CardContent>
-        )
-      )}
+        )}
+      </StateHandler>
     </Card>
     // </Box>
   );

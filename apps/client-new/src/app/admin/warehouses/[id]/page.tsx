@@ -196,7 +196,6 @@ const Page = ({ params }: Props) => {
         });
       },
       onCompleted(data, clientOptions) {
-        console.log(data);
         showAlert("deactivated a", "warehouse");
       },
       onError(error) {
@@ -242,7 +241,6 @@ const Page = ({ params }: Props) => {
         });
       },
       onCompleted(data, clientOptions) {
-        console.log(data);
 
         showAlert("activated a", "warehouse");
       },
