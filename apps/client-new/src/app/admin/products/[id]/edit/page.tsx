@@ -44,7 +44,6 @@ const Page = ({ params }: Props) => {
       productId: params.id,
     },
     onCompleted: (data) => {
-      console.log(data);
       setInitialValues({
         unit: data?.product.unit || null,
         name: data?.product.name || "",

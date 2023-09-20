@@ -86,7 +86,6 @@ const ProductCreateEditForm = (props: Props) => {
       (async () => {
         await getCategories({
           onCompleted: (data) => {
-            console.log(data);
             setOptions(data.categories.items);
           },
           onError(error) {

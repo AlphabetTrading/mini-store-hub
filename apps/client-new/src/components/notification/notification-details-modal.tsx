@@ -47,7 +47,6 @@ const NotificationDetails = (props: Props) => {
           notificationId: notification.id,
         },
         update(cache, { data }) {
-          console.log(data);
           const existingNotifications =
             cache.readQuery<NotificationByUserIdData>({
               query: NOTIFICATIONS_BY_USERID,
