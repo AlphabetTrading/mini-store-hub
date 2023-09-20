@@ -11,11 +11,15 @@ import { GoodsTransfer } from './models/goods-transfer.model';
 import { Prisma } from '@prisma/client';
 import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
 
-const goodsTransferInclude = {
+const goodsTransferInclude: Prisma.GoodsTransferInclude = {
   destinationWarehouse: true,
   goods: {
     include: {
-      product: true,
+      product: {
+        include: {
+          category: true,
+        },
+      },
     },
   },
   retailShop: true,

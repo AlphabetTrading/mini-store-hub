@@ -592,6 +592,11 @@ type PaginationProducts {
   meta: PaginationInfo
 }
 
+type PaginationProductsWithExtraInfo {
+  items: [ProductRankWithExtraInfo!]!
+  meta: PaginationInfo
+}
+
 type PaginationRetailShopStocks {
   items: [RetailShopStock!]!
   meta: PaginationInfo
@@ -669,6 +674,33 @@ type Product {
   warehouseStock: [WarehouseStock!]
 }
 
+type ProductRankWithExtraInfo {
+  activePrice: PriceHistory
+  activePriceId: String
+  amharicDescription: String
+  amharicName: String
+  category: Category
+  categoryId: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  description: String!
+  goods: [Goods!]
+  id: ID!
+  images: [String!]
+  name: String!
+  priceHistory: [PriceHistory!]
+  retailShopStock: [RetailShopStock!]
+  saleTransactionItem: [SaleTransactionItem!]
+  serialNumber: String!
+  unit: UnitType!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  value: Float
+  warehouseStock: [WarehouseStock!]
+}
+
 type Query {
   allNotificationsByUserId(userId: String!): [Notification!]!
   categories(filterCategoryInput: FilterCategoryInput, orderBy: OrderByCategoryInput, paginationInput: PaginationInput): PaginationCategories!
@@ -678,13 +710,13 @@ type Query {
   findLowStockByRetailShopId(paginationInput: PaginationInput, percentage: Float, retailShopId: String!): PaginationRetailShopStocks!
   findLowStockByWarehouseId(paginationInput: PaginationInput, percentage: Float, warehouseId: String!): PaginationWarehouseStocks!
   findOutgoingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
-  findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
+  findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProductsWithExtraInfo!
   findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
   findProductsBySoldQuantityAndWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
-  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
-  findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProducts!
-  findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
-  findProductsByTopSellAndByWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
+  findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProductsWithExtraInfo!
+  findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProductsWithExtraInfo!
+  findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProductsWithExtraInfo!
+  findProductsByTopSellAndByWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProductsWithExtraInfo!
   getAllNotifications: [Notification!]!
   getRetailShopByManagerId(userId: String): RetailShop!
   getUsersNotificationDetailByUserIdAndNotificationId(notificationId: String!, userId: String!): Notification!
@@ -876,7 +908,7 @@ type SaleTransactionItem {
   productId: String!
   quantity: Float!
   saleTransaction: SaleTransaction!
-  soldPrice: PriceHistory
+  soldPriceHistory: PriceHistory
   soldPriceHistoryId: String!
   subTotal: Float!
 

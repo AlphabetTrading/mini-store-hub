@@ -280,9 +280,37 @@ export class RetailShopStockService {
           },
         },
       },
-      skip,
-      take,
     });
+
+    retailShopStocks.sort((retailShopA, retailShopB) => {
+      return (
+        retailShopA.maxQuantity * (percentage / 100) -
+        retailShopB.maxQuantity * (percentage / 100)
+      );
+    });
+
+    if (take) return retailShopStocks.slice(skip * take, (skip + 1) * take);
+
+    return retailShopStocks;
+
+    // const retailShopStocks = await this.prisma.retailShopStock.findMany({
+    //   where: {
+    //     retailShopId,
+    //     quantity: {
+    //       lte: retailShopStock.maxQuantity * (percentage / 100),
+    //     },
+    //   },
+    //   include: {
+    //     ...retailShopStockInclude,
+    //     product: {
+    //       include: {
+    //         activePrice: true,
+    //       },
+    //     },
+    //   },
+    //   skip,
+    //   take,
+    // });
 
     return retailShopStocks;
   }
