@@ -22,21 +22,21 @@ import StateHandler from "../state-handler";
 import CustomChip from "../custom-chip";
 
 type Props = {
-    retailShopId: string
+  retailShopId: string;
 };
 
-const RetailShopTopSellingProducts= ({retailShopId}: Props) => {
+const RetailShopTopSellingProducts = ({ retailShopId }: Props) => {
   const { data, loading, error } = useQuery<
     RSTopSellingProductsData,
     RSTopSellingProductsVars
-  >(RETAIL_SHOP_TOP_SELLING_PRODUCTS,{
-    variables:{
-        retailShopId:retailShopId,
-        paginationInput:{
-            skip:0,
-            take:5
-        }
-    }
+  >(RETAIL_SHOP_TOP_SELLING_PRODUCTS, {
+    variables: {
+      retailShopId: retailShopId,
+      paginationInput: {
+        skip: 0,
+        take: 5,
+      },
+    },
   });
   return (
     <Card>
@@ -78,7 +78,7 @@ const RetailShopTopSellingProducts= ({retailShopId}: Props) => {
                         </Stack>
                       </TableCell>
                       <TableCell>
-                        <CustomChip label={product.category?.name||""} />
+                        <CustomChip label={product.category?.name || ""} />
                       </TableCell>
                       <TableCell>{quantity}</TableCell>
                       <TableCell>{totalSale}</TableCell>

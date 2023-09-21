@@ -78,7 +78,7 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
             </Typography>
           </Box>
         </Box>
-        <Divider /> 
+        <Divider />
         <Table>
           <TableHead>
             <TableRow>
@@ -90,71 +90,75 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {saleTransaction.saleTransactionItems.map((saleTransactionItem,idx) => {
-              const { product, subTotal, quantity } = saleTransactionItem;
-              return (
-                <TableRow key={idx}>
-                  <TableCell>
-                    <Stack direction="row" alignItems="center">
-                      <>
-                        {product.images.length > 0 ? (
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              backgroundColor: "neutral.50",
-                              backgroundImage: `url("${product.images[0]}")`,
-                              backgroundPosition: "center",
-                              backgroundSize: "cover",
-                              borderRadius: 1,
-                              display: "flex",
-                              height: 70,
-                              justifyContent: "center",
-                              overflow: "hidden",
-                              width: 70,
-                            }}
-                          />
-                        ) : (
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              backgroundColor: "neutral.50",
-                              borderRadius: 1,
-                              display: "flex",
-                              height: 70,
-                              justifyContent: "center",
-                              width: 70,
-                            }}
-                          >
-                            <SvgIcon>
-                              <ImageOutlined />
-                            </SvgIcon>
-                          </Box>
-                        )}
-                      </>
-                      <Box
-                        sx={{
-                          cursor: "pointer",
-                          ml: 2,
-                        }}
-                      >
-                        <Typography variant="subtitle2">
-                          {product.name}
-                        </Typography>
-                        <Typography color="text.secondary" variant="body2">
-                          {product.serialNumber}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <CustomChip label={product.unit || ""} />
-                  </TableCell>
-                  <TableCell>{quantity}</TableCell>
-                  <TableCell>{saleTransactionItem.soldPrice?.price}</TableCell>
-                  <TableCell>{subTotal}</TableCell>
-                </TableRow>
-              );
-            })}
+            {saleTransaction.saleTransactionItems.map(
+              (saleTransactionItem, idx) => {
+                const { product, subTotal, quantity } = saleTransactionItem;
+                return (
+                  <TableRow key={idx}>
+                    <TableCell>
+                      <Stack direction="row" alignItems="center">
+                        <>
+                          {product.images.length > 0 ? (
+                            <Box
+                              sx={{
+                                alignItems: "center",
+                                backgroundColor: "neutral.50",
+                                backgroundImage: `url("${product.images[0]}")`,
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                borderRadius: 1,
+                                display: "flex",
+                                height: 70,
+                                justifyContent: "center",
+                                overflow: "hidden",
+                                width: 70,
+                              }}
+                            />
+                          ) : (
+                            <Box
+                              sx={{
+                                alignItems: "center",
+                                backgroundColor: "neutral.50",
+                                borderRadius: 1,
+                                display: "flex",
+                                height: 70,
+                                justifyContent: "center",
+                                width: 70,
+                              }}
+                            >
+                              <SvgIcon>
+                                <ImageOutlined />
+                              </SvgIcon>
+                            </Box>
+                          )}
+                        </>
+                        <Box
+                          sx={{
+                            cursor: "pointer",
+                            ml: 2,
+                          }}
+                        >
+                          <Typography variant="subtitle2">
+                            {product.name}
+                          </Typography>
+                          <Typography color="text.secondary" variant="body2">
+                            {product.serialNumber}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <CustomChip label={product.unit || ""} />
+                    </TableCell>
+                    <TableCell>{quantity}</TableCell>
+                    <TableCell>
+                      {saleTransactionItem.soldPrice?.price}
+                    </TableCell>
+                    <TableCell>{subTotal}</TableCell>
+                  </TableRow>
+                );
+              }
+            )}
           </TableBody>
         </Table>
       </Card>

@@ -241,7 +241,6 @@ const Page = ({ params }: Props) => {
         });
       },
       onCompleted(data, clientOptions) {
-
         showAlert("activated a", "warehouse");
       },
       onError(error) {
