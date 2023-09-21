@@ -2,6 +2,7 @@ import React from "react";
 import RetailShopTopSellingProducts from "./retail-shop-top-selling-products";
 import { Grid } from "@mui/material";
 import RetailShopTopRevenueProducts from "./retail-shop-top-revenue-products";
+import RetailShopInsightsStats from "./retail-shop-insights-stat";
 
 type Props = {
   retailShopId: string;
@@ -10,6 +11,9 @@ type Props = {
 const RetailShopInsights = ({ retailShopId }: Props) => {
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12} md={12}>
+        <RetailShopInsightsStats retailShopId={retailShopId} />
+      </Grid>
       <Grid item xs={12} md={6}>
         <RetailShopTopSellingProducts retailShopId={retailShopId} />
       </Grid>

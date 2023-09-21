@@ -59,7 +59,7 @@ const RetailShopLowStock = (props: Props) => {
             <TableBody>
               {data?.findLowStockByRetailShopId.items?.map(
                 (stockItem: StockItem, index: number) => {
-                    const {product,quantity} = stockItem;
+                  const { product, quantity } = stockItem;
                   return (
                     <TableRow key={index}>
                       <TableCell width="25%">

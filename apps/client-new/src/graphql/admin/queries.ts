@@ -197,3 +197,62 @@ export const GET_ADMIN_DASHBOARD_RETAIL_SHOPS_BY_TOTAL_TRANSACTIONS = gql`
     }
   }
 `;
+
+export interface RetailShopInsightsStatsVars {
+  retailShopId: string;
+  startDate: string;
+  prevStartDate: string;
+  endDate: string;
+  prevEndDate: string;
+}
+
+export interface RetailShopInsightsStatsData {
+  totalProfitByDateAndRetailShop: number;
+  totalPrevProfitByDateAndRetailShop: number;
+  totalSalesByDateAndRetailShop: number;
+  totalPrevSalesByDateAndRetailShop: number;
+  totalSoldProductsByRetailShopAndDate: number;
+  totalPrevSoldProductsByRetailShopAndDate: number;
+}
+
+export const GET_ADMIN_DASHBOARD_RETAIL_SHOPS_INSIGHTS_STATS = gql`
+  query Query(
+    $retailShopId: String!
+    $startDate: String!
+    $prevStartDate: String!
+    $endDate: String!
+    $prevEndDate: String!
+  ) {
+    totalProfitByDateAndRetailShop: totalProfitByDateAndRetailShop(
+      endDate: $endDate
+      retailShopId: $retailShopId
+      startDate: $startDate
+    )
+    totalPrevProfitByDateAndRetailShop: totalProfitByDateAndRetailShop(
+      endDate: $prevEndDate
+      retailShopId: $retailShopId
+      startDate: $prevStartDate
+    )
+    totalSalesByDateAndRetailShop: totalSalesByDateAndRetailShop(
+      endDate: $endDate
+      retailShopId: $retailShopId
+      startDate: $startDate
+    )
+    totalPrevSalesByDateAndRetailShop: totalSalesByDateAndRetailShop(
+      endDate: $prevEndDate
+      retailShopId: $retailShopId
+      startDate: $prevStartDate
+    )
+
+    totalSoldProductsByRetailShopAndDate: totalSoldProductsByRetailShopAndDate(
+      endDate: $endDate
+      retailShopId: $retailShopId
+      startDate: $startDate
+    )
+    totalPrevSoldProductsByRetailShopAndDate: totalSoldProductsByRetailShopAndDate(
+      endDate: $prevEndDate
+      retailShopId: $retailShopId
+      startDate: $prevStartDate
+    )
+  }
+`;
