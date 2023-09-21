@@ -24,7 +24,13 @@ const StatCard = ({ imgSrc, timeFrame, stat, value, pastValue }: Props) => {
           </Typography>
           <Stack direction="row">
             <Typography color="text.primary" variant="h5">
-              {value ? value.toLocaleString() : 0}
+              {value
+                ? stat === "gross profit"
+                  ? value.toFixed(1) + "%"
+                  : value.toLocaleString()
+                : stat === "gross profit"
+                ? 0 + "%"
+                : 0}
             </Typography>
             <Stack direction="row" spacing={0} sx={{ alignItems: "center" }}>
               {difference !== 0 && pastValue !== 0 ? (

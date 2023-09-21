@@ -22,7 +22,10 @@ import StateHandler from "../state-handler";
 import dayjs from "dayjs";
 import CustomChip from "../custom-chip";
 import RetailShopSaleDetail from "./retail-shop-sale-detail";
-import { SaleTransaction, SaleTransactionItem } from "../../../types/saleTransaction";
+import {
+  SaleTransaction,
+  SaleTransactionItem,
+} from "../../../types/saleTransaction";
 
 type Props = {
   retailShopId: string;
@@ -35,9 +38,8 @@ const RetailShopSalesTable = (props: Props) => {
     query: "",
     filter: "updatedAt|desc",
   });
-  const [saleTransaction, setSaleTransaction] = useState<
-    SaleTransaction | null
-  >(null);
+  const [saleTransaction, setSaleTransaction] =
+    useState<SaleTransaction | null>(null);
 
   const { data, loading, error, fetchMore } = useQuery<
     RetailShopSaleTransactionsData,
@@ -134,9 +136,7 @@ const RetailShopSalesTable = (props: Props) => {
                               size="small"
                               variant="outlined"
                               onClick={() =>
-                                setSaleTransaction(
-                                  saleTransaction
-                                )
+                                setSaleTransaction(saleTransaction)
                               }
                             >
                               View

@@ -304,10 +304,10 @@ export interface RSLowStockProductsVars {
     take?: number;
   };
 }
-export interface RSLowStockProductsData{
-  findLowStockByRetailShopId:{
-    items:StockItem[]
-  }
+export interface RSLowStockProductsData {
+  findLowStockByRetailShopId: {
+    items: StockItem[];
+  };
 }
 
 export const RETAIL_SHOP_LOW_STOCK_PRODUCTS = gql`
