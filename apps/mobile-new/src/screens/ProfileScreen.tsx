@@ -13,6 +13,7 @@ type Props = {};
 const ProfileScreen = (props: Props) => {
   const authState = useAuth();
   const { data, loading, error, refetch } = useQuery(GET_ME_QUERY);
+  console.log(data, error);
   const { t, locale } = useLocalization();
   const { theme } = useAppTheme();
 
@@ -63,6 +64,7 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
             }}
           >
             {t("fullName")}
@@ -83,7 +85,7 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
               {`${data.me.firstName} ${data.me.lastName}`}
@@ -94,6 +96,8 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
             Phone Number
@@ -114,7 +118,7 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
               {data.me.phone}
@@ -125,6 +129,8 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
             Address
@@ -145,7 +151,7 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
               {data.me.userProfile?.address?.formattedAddress}
@@ -157,6 +163,8 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
             Retail Shop ID
@@ -177,7 +185,7 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
               {data.me.retailShop?.id}
@@ -189,6 +197,8 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
             Retail Shop Location
@@ -209,9 +219,10 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
+              {JSON.stringify(data.me.retailShop?.address?.location)}
               {data.me.retailShop?.address?.formattedAddress}
             </Text>
           </View>

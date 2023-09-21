@@ -142,7 +142,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
           </Svg>
         </View>
       </View>
-      <View
+      {/* <View
         style={{
           borderRadius: 12,
           justifyContent: "center",
@@ -188,8 +188,8 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             />
           </Svg>
         </View>
-      </View>
-      <View
+      </View> */}
+      {/* <View
         style={{
           borderRadius: 12,
           justifyContent: "center",
@@ -241,7 +241,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             />
           </Svg>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };

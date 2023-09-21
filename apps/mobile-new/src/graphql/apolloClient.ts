@@ -15,7 +15,6 @@ export const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
   "http://mini-store-env.eba-mxhxxem2.us-east-1.elasticbeanstalk.com/graphql/";
 
-// export const BASE_URL = "https://122a-196-188-33-23.ngrok-free.app/graphql";
 const retryLink = new RetryLink({
   delay: {
     initial: 300,

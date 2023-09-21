@@ -12,6 +12,14 @@ export const GET_ME_QUERY = gql`
       phone
       retailShop {
         id
+        name
+        address {
+          city
+          formattedAddress
+          id
+          street
+          updatedAt
+        }
       }
       role
       createdAt

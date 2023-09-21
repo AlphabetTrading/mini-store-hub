@@ -17,8 +17,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 const userIncludeObject: Prisma.UserInclude = {
   userProfile: { include: { address: true } },
   notificationTokens: true,
-  warehouse: true,
-  retailShop: true,
+  warehouse: {
+    include: {
+      address: true,
+    },
+  },
+  retailShop: {
+    include: {
+      address: true,
+    },
+  },
   notifications: true,
 };
 

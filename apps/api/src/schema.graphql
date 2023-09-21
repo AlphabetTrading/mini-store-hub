@@ -711,8 +711,8 @@ type Query {
   findLowStockByWarehouseId(paginationInput: PaginationInput, percentage: Float, warehouseId: String!): PaginationWarehouseStocks!
   findOutgoingGoodsTransferByWarehouseId(orderBy: OrderByGoodsTransferInput, paginationInput: PaginationInput, warehouseId: String!): PaginationGoodsTransfer!
   findProductsBySoldQuantity(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProductsWithExtraInfo!
-  findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProducts!
-  findProductsBySoldQuantityAndWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProducts!
+  findProductsBySoldQuantityAndRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProductsWithExtraInfo!
+  findProductsBySoldQuantityAndWarehouse(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, warehouseId: String!): PaginationProductsWithExtraInfo!
   findProductsByTopProfit(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProductsWithExtraInfo!
   findProductsByTopSell(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput): PaginationProductsWithExtraInfo!
   findProductsByTopSellAndByRetailShop(filterProductInput: FilterProductInput, orderBy: OrderByProductInput, paginationInput: PaginationInput, retailShopId: String!): PaginationProductsWithExtraInfo!

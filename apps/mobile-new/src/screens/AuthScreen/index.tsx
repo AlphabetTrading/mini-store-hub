@@ -73,6 +73,7 @@ const LoginScreen = ({ }: any) => {
       }
     },
     onError: (error) => {
+      console.log(error)
       notifyMessage("Error: " + error.message);
     },
     errorPolicy: "all"

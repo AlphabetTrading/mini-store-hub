@@ -43,15 +43,31 @@ const SingleItem = ({ item, index }: Props) => {
                     in-{item.unit}
                 </Text>
             </View>
-            <Text
+            <View
                 style={{
-                    fontSize: 16,
-                    fontFamily: "InterMedium",
-                    color: theme.colors.text,
+                    alignItems: "flex-end",
                 }}
             >
-                {item.serialNumber}
-            </Text>
+
+                <Text
+                    style={{
+                        fontSize: 16,
+                        fontFamily: "InterMedium",
+                        color: theme.colors.text,
+                    }}
+                >
+                    Serial-Number: {item.serialNumber}
+                </Text>
+                <Text
+                    style={{
+                        fontSize: 16,
+                        fontFamily: "InterMedium",
+                        color: theme.colors.text,
+                    }}
+                >
+                    {item.value}
+                </Text>
+            </View>
         </View>
     )
 }

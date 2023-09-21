@@ -75,7 +75,7 @@ export class ProductsService {
     );
 
     productsWithTotalSales.sort((a, b) => {
-      return a.value - b.value;
+      return b.value - a.value;
     });
     if (take)
       return productsWithTotalSales.slice(skip * take, (skip + 1) * take);

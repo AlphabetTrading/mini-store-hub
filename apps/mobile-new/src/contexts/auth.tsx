@@ -8,6 +8,7 @@ import React, {
 import * as Notifications from "expo-notifications";
 import * as SecureStore from "expo-secure-store";
 import {
+  BASE_URL,
   apolloClient, getTokensFromStorage,
 } from "../graphql/apolloClient";
 import Constants from "expo-constants";
@@ -153,7 +154,7 @@ export function AuthContextProvider(props: ProviderProps) {
         }
       }, 3000);
       const res = await fetch(
-        "https://mini-store-hub-api.onrender.com/graphql/",
+        BASE_URL,
         requestOptions
       );
       const data = await res.json();
