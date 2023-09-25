@@ -9,7 +9,7 @@ import {
   CardHeader,
   Card,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomChip from "../custom-chip";
 import dayjs from "dayjs";
 import {
@@ -23,21 +23,46 @@ import {
   WarehouseTransactionHistoryVars,
   WAREHOUSE_TRANSACTION_HISTORY,
 } from "@/graphql/transfer-goods/queries";
+import TransactionHistoryDetail from "./transasction-history-detail";
+import Pagination from "../Pagination";
 
 type Props = {
   warehouseId: string;
 };
 
 const TransactionHistoryTable = ({ warehouseId }: Props) => {
-  const { data, loading, error } = useQuery<
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { data, loading, error, fetchMore } = useQuery<
     WarehouseTransactionHistoryData,
     WarehouseTransactionHistoryVars
   >(WAREHOUSE_TRANSACTION_HISTORY, {
     variables: {
       warehouseId: warehouseId,
+      paginationInput: {
+        skip: page * rowsPerPage,
+        take: rowsPerPage,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     },
   });
-  const transactionHistory: TransactionHistory[] =
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        paginationInput: {
+          skip: page * rowsPerPage,
+          take: rowsPerPage,
+        },
+      },
+    });
+  }, [rowsPerPage, page]);
+
+  const [transactionHistory, setTransactionHistory] =
+    useState<TransactionHistory | null>(null);
+
+  const transactionHistoryList: TransactionHistory[] =
     data?.findGoodsTransferByWarehouseId.items || [];
 
   const statusMap = {
@@ -49,23 +74,41 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
     WarehouseToRetailShop: "Outgoing Goods",
   };
 
-  return (
+  return transactionHistory ? (
+    <TransactionHistoryDetail
+      closeDetail={() => setTransactionHistory(null)}
+      transactionHistory={transactionHistory}
+    />
+  ) : (
     <Card>
       <CardHeader title="Latest Transactions" />
       <StateHandler
         loading={loading}
         error={error}
-        empty={transactionHistory.length === 0}
+        empty={transactionHistoryList.length === 0}
       >
         <Table>
           <TableBody>
-            {[...(transactionHistory || [])].reverse().map((item, idx) => {
-              const day: string = dayjs(item?.createdAt).format("DD");
-              const month: string = dayjs(item?.createdAt).format("MMM");
-              const time: string = dayjs(item?.createdAt).format("hh:mm A");
+            {transactionHistoryList.map((transactionHistory, idx) => {
+              const day: string = dayjs(transactionHistory?.createdAt).format(
+                "DD"
+              );
+              const month: string = dayjs(transactionHistory?.createdAt).format(
+                "MMM"
+              );
+              const time: string = dayjs(transactionHistory?.createdAt).format(
+                "hh:mm A"
+              );
 
               return (
-                <TableRow key={idx}>
+                <TableRow
+                  key={idx}
+                  onClick={() => setTransactionHistory(transactionHistory)}
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                  hover
+                >
                   <TableCell sx={{ display: "flex", alignItems: "center" }}>
                     <Box
                       sx={{
@@ -84,9 +127,10 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
                     </Box>
                     <Box sx={{ ml: 2 }}>
                       <Typography variant="subtitle2">
-                        {item.transferType == TransferType.WarehouseToWarehouse
+                        {transactionHistory.transferType ==
+                        TransferType.WarehouseToWarehouse
                           ? "Warehouse"
-                          : item.retailShop?.name}
+                          : transactionHistory.retailShop?.name}
                       </Typography>
                       <Typography color="text.secondary" variant="body2">
                         {time}
@@ -95,8 +139,8 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
                   </TableCell>
                   <TableCell align="right">
                     <CustomChip
-                      label={statusTextMap[item.transferType]}
-                      status={statusMap[item.transferType]}
+                      label={statusTextMap[transactionHistory.transferType]}
+                      status={statusMap[transactionHistory.transferType]}
                     />
                   </TableCell>
                 </TableRow>
@@ -104,6 +148,13 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
             })}
           </TableBody>
         </Table>
+        <Pagination
+          meta={data?.findGoodsTransferByWarehouseId.meta}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+        />
       </StateHandler>
     </Card>
   );
