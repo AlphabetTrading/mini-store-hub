@@ -1,31 +1,15 @@
-import React from "react";
-import {
-  SaleTransaction,
-  SaleTransactionItem,
-} from "../../../types/saleTransaction";
-import {
-  Box,
-  Card,
-  Divider,
-  IconButton,
-  Stack,
-  SvgIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import { ArrowBack, ImageOutlined } from "@mui/icons-material";
-import CustomChip from "../custom-chip";
+import React from 'react'
+import { TransactionHistory } from '../../../types/transaction-history'
+import { ArrowBack, ImageOutlined } from '@mui/icons-material'
+import { IconButton, SvgIcon, Card, Box, Typography, Divider, Table, TableHead, TableRow, TableCell, TableBody, Stack } from '@mui/material'
+import CustomChip from '../custom-chip'
 
 type Props = {
-  saleTransaction: SaleTransaction;
-  closeDetail: () => void;
-};
+  closeDetail: () => void
+  transactionHistory: TransactionHistory
+}
 
-const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
+const TransactionHistoryDetail = ({closeDetail,transactionHistory}: Props) => {
   return (
     <div>
       <IconButton onClick={closeDetail}>
@@ -34,7 +18,7 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
         </SvgIcon>
       </IconButton>
       <Card>
-        <Box sx={{ display: "flex" }}>
+        {/* <Box sx={{ display: "flex" }}>
           <Box
             sx={{
               p: 3,
@@ -45,7 +29,7 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
             }}
           >
             <Typography align="center" variant="h5">
-              {saleTransaction.totalPrice}
+              {transactionHistory.totalPrice}
             </Typography>
             <Typography
               align="center"
@@ -77,7 +61,7 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
               Total Items
             </Typography>
           </Box>
-        </Box>
+        </Box> */}
         <Divider />
         <Table>
           <TableHead>
@@ -86,13 +70,13 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
               <TableCell>Unit</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Price</TableCell>
-              <TableCell>Total Price</TableCell>
+          
             </TableRow>
           </TableHead>
           <TableBody>
-            {saleTransaction.saleTransactionItems.map(
-              (saleTransactionItem, idx) => {
-                const { product, subTotal, quantity } = saleTransactionItem;
+            {transactionHistory.goods.map(
+              (stockItem, idx) => {
+                const { product, quantity } = stockItem;
                 return (
                   <TableRow key={idx}>
                     <TableCell>
@@ -151,10 +135,10 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
                       <CustomChip label={product.unit || ""} />
                     </TableCell>
                     <TableCell>{quantity}</TableCell>
-                    <TableCell>
-                      {saleTransactionItem.soldPriceHistory?.price}
+                   <TableCell>
+                      {product.activePrice?.price}
                     </TableCell>
-                    <TableCell>{subTotal}</TableCell>
+                    
                   </TableRow>
                 );
               }
@@ -164,6 +148,5 @@ const RetailShopSaleDetail = ({ saleTransaction, closeDetail }: Props) => {
       </Card>
     </div>
   );
-};
-
-export default RetailShopSaleDetail;
+            }
+export default TransactionHistoryDetail
