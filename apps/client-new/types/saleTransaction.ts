@@ -5,7 +5,7 @@ export interface SaleTransactionItem {
   quantity: number;
   product: Product;
   subTotal: number;
-  soldPrice: PriceHistory;
+  soldPriceHistory: PriceHistory;
 }
 
 export interface SaleTransaction {

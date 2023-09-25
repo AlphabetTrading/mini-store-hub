@@ -26,6 +26,7 @@ const RetailShopsListRow = ({
       sx={{
         textDecoration: "none",
         position: "relative",
+        cursor: "pointer",
       }}
       hover
       onClick={() => router.push(`/admin/retail-shops/${retailShop.id}`)}

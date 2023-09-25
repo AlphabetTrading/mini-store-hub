@@ -210,7 +210,7 @@ export const RETAIL_SHOP_SALE_TRANSACTIONS = gql`
             serialNumber
             unit
           }
-          soldPrice {
+          soldPriceHistory {
             price
           }
           subTotal
