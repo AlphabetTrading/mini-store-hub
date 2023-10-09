@@ -226,17 +226,15 @@ export class GoodsTransfersResolver {
     @Args('id') id: string,
     @Args('data') data: UpdateGoodsTransferInput,
   ) {
-    if (!data.transferType) {
-      throw new Error('Transfer Type cannot be empty');
-    }
+    const goodsTransfer = await this.goodsTransfersService.findOne(id);
 
-    if (data.transferType === TransferType.WarehouseToRetailShop) {
-      if (!data.sourceWarehouseId) {
+    if (goodsTransfer.transferType === TransferType.WarehouseToRetailShop) {
+      if (!goodsTransfer.sourceWarehouseId) {
         throw new Error('Warehouse Id cannot be empty');
       }
       return this.goodsTransfersService.updateTransferToRetailShop(id, data);
     } else {
-      if (!data.destinationWarehouseId) {
+      if (!goodsTransfer.destinationWarehouseId) {
         throw new Error('Warehouse Id cannot be empty');
       }
       return this.goodsTransfersService.updateTransferToWarehouse(id, data);

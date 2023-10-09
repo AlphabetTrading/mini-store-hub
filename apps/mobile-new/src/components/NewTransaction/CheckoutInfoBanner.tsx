@@ -54,13 +54,13 @@ const CheckoutInfoBanner = ({ checkoutItems, setCheckoutItems }: Props) => {
           const { id, totalPrice } = data.createSaleTransaction;
           setCheckoutItems([]);
           navigation.navigate("Root", {
-            screen: "SalesRoot",
+            screen: "TransactionsRoot",
           });
           await AsyncStorageUtils.removeItem("checkout");
           navigation.navigate("Root", {
-            screen: "SalesRoot",
+            screen: "TransactionsRoot",
             params: {
-              screen: "TransactionDetailScreen",
+              screen: "SalesTransactionDetailScreen",
               params: {
                 transactionID: id,
                 totalPrice,

@@ -22,7 +22,12 @@ const SingleItem = ({ item, index }: Props) => {
                 borderRadius: 6,
             }}
         >
-            <View>
+            <View
+                style={{
+                    flex: 1,
+                    gap: 5,
+                }}
+            >
                 <Text
                     style={{
                         fontFamily: "InterMedium",
@@ -43,8 +48,11 @@ const SingleItem = ({ item, index }: Props) => {
                     in-{item.unit}
                 </Text>
             </View>
+
             <View
                 style={{
+                    flex: 1,
+                    gap: 5,
                     alignItems: "flex-end",
                 }}
             >

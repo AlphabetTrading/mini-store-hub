@@ -9,6 +9,7 @@ type Props = {
 
 export const ApolloContextProvider = (props: Props) => {
   const [cacheReady, setCacheReady] = useState(false);
+
   const client = apolloClient();
 
   const initializeCache = useCallback(

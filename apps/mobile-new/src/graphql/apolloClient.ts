@@ -97,11 +97,7 @@ export const apolloClient = () => {
     link: ApolloLink.from([retryLink, authLink, link]),
     cache,
     // connectToDevTools: process.env.NODE_ENV === "development",
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: "cache-and-network",
-      },
-    },
+    defaultOptions: {},
   });
 
   return client;

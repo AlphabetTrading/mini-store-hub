@@ -298,6 +298,10 @@
   "unitPrice": "ነጠላ ዋጋ",
   "clearAll": "ሁሉንም አጽዳ",
   "submitting": "እየተጫኑ ነው...",
-  "refresh": "አስቀድሞ ይጫኑ",
-  "somethingWentWrong": "የሆነ ስህተት ተከስቷል"
+  "refresh": "እንደገና ይጫኑ",
+  "somethingWentWrong": "የሆነ ስህተት ተከስቷል",
+  "incomingTransactions": "ገቢ እቃዎች ዝርዝር",
+  "outgoingTransactions": "ሽያጭ ዝርዝር",
+  "transactions": "ዝርዝር",
+  "from": "ከ"
 }

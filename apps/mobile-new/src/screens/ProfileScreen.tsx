@@ -3,7 +3,6 @@ import React from "react";
 import { BaseLayout } from "../components/BaseLayout";
 import { GET_ME_QUERY } from "../graphql/queries/userQueries";
 import { useQuery } from "@apollo/client";
-import { useAuth } from "../contexts/auth";
 import { useLocalization } from "../contexts/localization";
 import { useAppTheme } from "../contexts/preference";
 import { ActivityIndicator } from "react-native-paper";
@@ -11,7 +10,6 @@ import { ActivityIndicator } from "react-native-paper";
 type Props = {};
 
 const ProfileScreen = (props: Props) => {
-  const authState = useAuth();
   const { data, loading, error, refetch } = useQuery(GET_ME_QUERY);
   console.log(data, error);
   const { t, locale } = useLocalization();
@@ -30,7 +28,7 @@ const ProfileScreen = (props: Props) => {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="small" />
+          <ActivityIndicator size="small" color={theme.colors.tint} />
         </View>
       ) : (
         <View style={styles.container}>
@@ -100,7 +98,7 @@ const ProfileScreen = (props: Props) => {
 
             }}
           >
-            Phone Number
+            {t("phone")}
           </Text>
           <View
             style={{
@@ -133,7 +131,7 @@ const ProfileScreen = (props: Props) => {
 
             }}
           >
-            Address
+            {t("address")}
           </Text>
           <View
             style={{
@@ -167,7 +165,7 @@ const ProfileScreen = (props: Props) => {
 
             }}
           >
-            Retail Shop ID
+            Retail Shop Name
           </Text>
           <View
             style={{
@@ -188,7 +186,9 @@ const ProfileScreen = (props: Props) => {
                 color: theme.colors.text,
               }}
             >
-              {data.me.retailShop?.id}
+              {/* {data.me.retailShop?.id} */}
+              {data.me.retailShop[0].name}
+
             </Text>
           </View>
 
@@ -198,7 +198,6 @@ const ProfileScreen = (props: Props) => {
               textTransform: "capitalize",
               fontFamily: "InterBold",
               color: theme.colors.text,
-
             }}
           >
             Retail Shop Location
@@ -222,8 +221,7 @@ const ProfileScreen = (props: Props) => {
                 color: theme.colors.text,
               }}
             >
-              {JSON.stringify(data.me.retailShop?.address?.location)}
-              {data.me.retailShop?.address?.formattedAddress}
+              {data.me.retailShop[0].address.formattedAddress}
             </Text>
           </View>
         </View>

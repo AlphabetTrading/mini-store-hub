@@ -229,5 +229,9 @@
   "refresh": "Refresh",
   "noNotifications": "No Notifications",
   "somethingWentWrong": "Something went wrong",
-  "insightsDetail": "Insights Detail"
+  "insightsDetail": "Insights Detail",
+  "incomingTransactions": "Incoming",
+  "outgoingTransactions": "Sales",
+  "transactions": "Transactions",
+  "from": "From"
 }

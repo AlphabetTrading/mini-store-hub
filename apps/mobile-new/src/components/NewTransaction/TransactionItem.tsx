@@ -11,6 +11,7 @@ import { Entypo } from "@expo/vector-icons";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
 import { useAppTheme } from "../../contexts/preference";
 import { useLocalization } from "../../contexts/localization";
+import QuantityControl from "./QuantityControl";
 
 export interface CheckoutItem {
   id?: string;
@@ -21,6 +22,7 @@ export interface CheckoutItem {
     id: string;
     name: string;
     amharicName: string;
+    unit: string;
     activePrice: {
       price: number;
       purchasedPrice: number;
@@ -134,6 +136,8 @@ const TransactionItem = ({
       });
     });
   };
+
+
   return (
     <View
       style={{
@@ -218,7 +222,26 @@ const TransactionItem = ({
               </Text>
             </View>
           </View>
-          <View
+          <QuantityControl
+            onChange={(value: any) => {
+              setCheckoutItems((prev: CheckoutItem[]) => {
+                return prev.map((item) => {
+                  if (item.productId === checkoutItem.productId) {
+                    return {
+                      ...item,
+                      selectedQuantity: value,
+                    };
+                  } else {
+                    return item;
+                  }
+                }
+                );
+              });
+            }
+            }
+            productItem={checkoutItem}
+          />
+          {/* <View
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -254,7 +277,7 @@ const TransactionItem = ({
                 <Entypo name="plus" size={24} color={theme.colors.text} />
               </Pressable>
             </View>
-          </View>
+          </View> */}
         </View>
       </Swipeable>
     </View>

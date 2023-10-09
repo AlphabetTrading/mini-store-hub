@@ -1,6 +1,6 @@
 import React from "react";
-import { StatusBar } from "expo-status-bar";
 import "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
 import Navigation from "./src/routes";
 import { AuthContextProvider } from "./src/contexts/auth";
