@@ -13,10 +13,13 @@ export const GET_ME_QUERY = gql`
       retailShop {
         id
         name
+        amharicName
+        status
         address {
+          id
           city
           formattedAddress
-          id
+          amharicFormattedAddress
           street
           updatedAt
         }
@@ -31,9 +34,10 @@ export const GET_ME_QUERY = gql`
         photoUrl
         idUrl
         address {
+          id
           city
           formattedAddress
-          id
+          amharicFormattedAddress
           street
           updatedAt
         }

@@ -19,7 +19,6 @@ const AllSellingItems = ({
         insightsType,
     );
     const { theme } = useAppTheme();
-    const { t, locale } = useLocalization();
 
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {

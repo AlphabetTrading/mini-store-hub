@@ -279,9 +279,9 @@
   "city": "ከተማ",
   "state": "ክልል",
   "country": "ሀገር",
-  "retailShopId": "የሪቴል የቤት መለያ ቁጥር",
-  "retailShopName": "የሪቴል የቤት ስም",
-  "retailShopAddress": "የሪቴል የቤት አድራሻ",
+  "retailShopId": "የሱቅ መለያ ቁጥር",
+  "retailShopName": "የሱቅ ስም",
+  "retailShopAddress": "የሱቅ አድራሻ",
   "selectItems": "እቃዎችን ይምረጡ",
   "selectCategory": "ምድብ ይምረጡ",
   "remove": "አጥፋ",
@@ -303,5 +303,14 @@
   "incomingTransactions": "ገቢ እቃዎች ዝርዝር",
   "outgoingTransactions": "ሽያጭ ዝርዝር",
   "transactions": "ዝርዝር",
-  "from": "ከ"
+  "from": "ከ",
+  "serialNumber": "ኮድ",
+  "pieces": "ግራም",
+  "meter": "ሜተር",
+  "kilogram": "ኪሎጂራም",
+  "litre": "ሊትር",
+  "gram": "ግራም",
+  "unit": "አካል",
+  "bottle": "ባትል",
+  "retailShopLocation": "የሱቅ አድራሻ"
 }

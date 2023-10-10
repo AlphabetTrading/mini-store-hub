@@ -3,10 +3,12 @@ import React from 'react'
 import { notifyMessage } from '../Toast';
 import InputSpinner from 'react-native-input-spinner';
 
-type Props = {}
+type Props = {
+    productItem: any,
+    onChange: (value: any) => void
+}
 
-const QuantityControl = React.memo(({ productItem, onChange }: any) => {
-    console.log(productItem, " product item")
+const QuantityControl = React.memo(({ productItem, onChange, }: Props) => {
     return (
         <View
             style={{
@@ -29,7 +31,7 @@ const QuantityControl = React.memo(({ productItem, onChange }: any) => {
                     colorMin={"#40c5f4"}
                     value={productItem.selectedQuantity}
                     onChange={onChange}
-                    height={40}
+                    height={36}
                     inputStyle={{
                         minWidth: 40,
                     }}

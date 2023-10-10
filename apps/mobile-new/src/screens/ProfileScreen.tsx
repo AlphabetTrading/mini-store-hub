@@ -11,7 +11,6 @@ type Props = {};
 
 const ProfileScreen = (props: Props) => {
   const { data, loading, error, refetch } = useQuery(GET_ME_QUERY);
-  console.log(data, error);
   const { t, locale } = useLocalization();
   const { theme } = useAppTheme();
 
@@ -73,10 +72,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
-              paddingHorizontal: 20,
+              padding: 15, paddingHorizontal: 20,
             }}
           >
             <Text
@@ -86,7 +84,9 @@ const ProfileScreen = (props: Props) => {
                 color: theme.colors.text,
               }}
             >
-              {`${data.me.firstName} ${data.me.lastName}`}
+              {
+                locale.includes("en") ? data.me.firstName + " " + data.me.lastName : data.me.amharicFirstName + " " + data.me.amharicLastName
+              }
             </Text>
           </View>
           <Text
@@ -106,10 +106,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
-              paddingHorizontal: 20,
+              padding: 15, paddingHorizontal: 20,
             }}
           >
             <Text
@@ -139,10 +138,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
-              paddingHorizontal: 20,
+              padding: 15, paddingHorizontal: 20,
             }}
           >
             <Text
@@ -165,7 +163,7 @@ const ProfileScreen = (props: Props) => {
 
             }}
           >
-            Retail Shop Name
+            {t("retailShopName")}
           </Text>
           <View
             style={{
@@ -173,9 +171,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
+              padding: 15,
               paddingHorizontal: 20,
             }}
           >
@@ -186,9 +184,9 @@ const ProfileScreen = (props: Props) => {
                 color: theme.colors.text,
               }}
             >
-              {/* {data.me.retailShop?.id} */}
-              {data.me.retailShop[0].name}
-
+              {
+                locale.includes("en") ? data.me.retailShop[0].name : data.me.retailShop[0].amharicName ?? data.me.retailShop[0].name
+              }
             </Text>
           </View>
 
@@ -200,7 +198,7 @@ const ProfileScreen = (props: Props) => {
               color: theme.colors.text,
             }}
           >
-            Retail Shop Location
+            {t("retailShopAddress")}
           </Text>
           <View
             style={{
@@ -208,9 +206,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
+              padding: 15,
               paddingHorizontal: 20,
             }}
           >
@@ -221,7 +219,9 @@ const ProfileScreen = (props: Props) => {
                 color: theme.colors.text,
               }}
             >
-              {data.me.retailShop[0].address.formattedAddress}
+              {
+                locale.includes("en") ? data.me.retailShop[0].address.formattedAddress : data.me.retailShop[0].address.amharicFormattedAddress ?? data.me.retailShop[0].address.formattedAddress
+              }
             </Text>
           </View>
         </View>

@@ -10,7 +10,7 @@ type Props = {
 
 const SingleItem = ({ item, index }: Props) => {
     const { theme } = useAppTheme()
-    const { locale } = useLocalization()
+    const { t, locale } = useLocalization()
     return (
         <View
             style={{
@@ -64,7 +64,7 @@ const SingleItem = ({ item, index }: Props) => {
                         color: theme.colors.text,
                     }}
                 >
-                    Serial-Number: {item.serialNumber}
+                    {t("serialNumber")}: {item.serialNumber}
                 </Text>
                 <Text
                     style={{

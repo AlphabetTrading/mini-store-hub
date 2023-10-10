@@ -34,27 +34,8 @@ const SingleProductItemCard = React.memo(({
     alreadySelected && alreadySelected.find((i) => i.id === item.id) !== undefined;
   const [productItem, setProductItem] = useState<CheckoutItem>({
     ...item,
-    // selectedQuantity: 1
-    selectedQuantity: isSelected && (alreadySelected.find((i) => i.id === item.id) ? alreadySelected.find((i) => i.id === item.id).selectedQuantity : 1),
+    selectedQuantity: isSelected ? (alreadySelected.find((i) => i.id === item.id) ? alreadySelected.find((i) => i.id === item.id).selectedQuantity : 1) : 1,
   });
-
-  console.log(isSelected, productItem, "isSelected")
-
-  const initial = useCallback(() => {
-    if (isSelected) {
-      setProductItem((prev: any) => {
-        return {
-          ...prev,
-          selectedQuantity: alreadySelected.find((i) => i.id === item.id) ? alreadySelected.find((i) => i.id === item.id).selectedQuantity : 1,
-        };
-      });
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   initial();
-  // }, [initial]);
-
 
   useEffect(() => {
     updateItem(productItem);
@@ -169,11 +150,10 @@ const SingleProductItemCard = React.memo(({
                     justifyContent: "space-around",
                     alignItems: "flex-end",
                     gap: 10,
-
                   }}
                 >
                   <QuantityControl
-                    productItem={productItem}
+                    productItem={alreadySelected.find((i) => i.id === item.id)}
                     onChange={
                       (num: any) => {
                         setProductItem((prev: any) => {

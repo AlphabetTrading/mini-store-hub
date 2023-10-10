@@ -224,6 +224,15 @@ const AddTransactionItemsScreen = () => {
                   width: "100%",
                 }}
               >
+                {/* <Text
+                  style={{
+                    fontSize: 18,
+                    fontFamily: "InterMedium",
+                    color: theme.colors.text,
+                  }}
+                >
+                  {JSON.stringify(alreadySelected[0], null, 2)}
+                </Text> */}
                 <FlatList
                   contentContainerStyle={styles.container}
                   refreshControl={

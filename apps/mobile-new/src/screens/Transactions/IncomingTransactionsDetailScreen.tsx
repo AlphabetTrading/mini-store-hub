@@ -21,7 +21,6 @@ type Props = {};
 
 const IncomingTransactionsDetailScreen = ({ route, navigation }: any) => {
   const { transactionID, totalPrice } = route.params;
-  console.log(transactionID)
   useEffect(() => {
     navigation.getParent()?.setOptions({
       tabBarStyle: {

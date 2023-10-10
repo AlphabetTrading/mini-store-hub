@@ -20,7 +20,6 @@ const MostSoldItems = ({
         retailShopID,
         insightsType,
     );
-    console.log(data, error)
     React.useEffect(() => {
         if (isRefreshing) {
             refetch();
