@@ -160,7 +160,7 @@ export class AuthService {
   }
 
   validateUser(userId: string): Promise<User> {
-    return this.prisma.user.findUnique({
+   return this.prisma.user.findUnique({
       where: { id: userId },
       include: userIncludeObject,
     });

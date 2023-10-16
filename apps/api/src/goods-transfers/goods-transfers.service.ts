@@ -17,6 +17,7 @@ const goodsTransferInclude: Prisma.GoodsTransferInclude = {
     include: {
       product: {
         include: {
+          activePrice: true,
           category: true,
         },
       },

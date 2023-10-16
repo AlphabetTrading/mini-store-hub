@@ -63,6 +63,7 @@ export class RetailShopStockResolver {
         },
       ],
     };
+
     try {
       const warehouseStocks =
         await this.retailShopStockService.findByRetailShopId({

@@ -781,6 +781,7 @@ export class SaleTransactionsService {
     const notification_tokens =
       await this.notificationService.getNotificationTokensByUserId(userId);
     const { goods, retailShopId } = data;
+
     const retailShop = await this.prisma.retailShop.findUnique({
       where: { id: retailShopId },
     });
@@ -886,6 +887,7 @@ export class SaleTransactionsService {
         }
       }
     });
+
     // calculate total price
     let totalPrice = 0;
 
@@ -945,12 +947,157 @@ export class SaleTransactionsService {
   async update(id: string, data: UpdateSaleTransactionInput) {
     const saleTransaction = await this.prisma.saleTransaction.findUnique({
       where: { id },
+      include: {
+        saleTransactionItems: true,
+      },
     });
     if (!saleTransaction) {
       throw new NotFoundException('Sale transaction not found');
     }
 
-    return this.prisma.saleTransaction.update({ where: { id }, data });
+    const { goods, retailShopId } = data;
+
+    return await this.prisma.$transaction(async (tx) => {
+      // decrease the stock of the retail shop with the previous goods
+      for (const saleTransactionItem of saleTransaction.saleTransactionItems) {
+        const { productId, quantity } = saleTransactionItem;
+
+        console.log(saleTransaction, ' sale transaction')
+
+        // check if the product exists
+        const product = await tx.retailShopStock.findUnique({
+          where: {
+            productId_retailShopId: {
+              retailShopId: saleTransaction.retailShopId,
+              productId: productId,
+            },
+          },
+          include: {
+            activePrice: true,
+          },
+        });
+        if (!product) {
+          throw new NotFoundException('Product not found on retail shop');
+        }
+
+        await tx.retailShopStock.update({
+          where: {
+            productId_retailShopId: {
+              retailShopId: saleTransaction.retailShopId,
+              productId: productId,
+            },
+          },
+          data: {
+            quantity: {
+              increment: quantity,
+            },
+          },
+        });
+      }
+
+      // check if retail shop has enough stock
+      for (const good of goods) {
+        const { productId, quantity } = good;
+        const retailShopStock = await this.prisma.retailShopStock.findUnique({
+          where: {
+            productId_retailShopId: {
+              retailShopId: retailShopId ?? saleTransaction.retailShopId,
+              productId: productId,
+            },
+          },
+          include: {
+            product: {
+              include: {
+                activePrice: true,
+              },
+            },
+          },
+        });
+
+        if (retailShopStock.quantity < quantity) {
+          throw new NotFoundException(
+            retailShopStock.product.name + ' has no enough stock',
+          );
+        }
+
+        if (!retailShopStock.product.activePrice) {
+          throw new NotFoundException('Product has no active price');
+        }
+
+        // update the retail shop stock with the new goods, and create the transaction
+        await tx.retailShopStock.update({
+          where: {
+            productId_retailShopId: {
+              retailShopId: retailShopId ?? saleTransaction.retailShopId,
+              productId: productId,
+            },
+          },
+          data: {
+            quantity: {
+              decrement: quantity,
+            },
+          },
+        });
+      }
+
+      // calculate total price
+      let totalPrice = 0;
+
+      const goodsWithSubTotal = goods.map(async (good) => {
+        if (good.quantity <= 0) {
+          throw new BadRequestException('Invalid quantity');
+        }
+        const product = await tx.product.findUnique({
+          where: { id: good.productId },
+          include: {
+            activePrice: { include: {} },
+          },
+        });
+        if (!product) {
+          throw new NotFoundException('Product price not found');
+        }
+        if (!product) {
+          throw new NotFoundException('Product not found');
+        }
+        if (!product.activePrice) {
+          throw new NotFoundException('Product has no active price');
+        }
+
+        if (product.activePrice.purchasedPrice === null) {
+          throw new NotFoundException('Product has no purchased price');
+        }
+        const subTotal = product.activePrice.price * good.quantity;
+        totalPrice += subTotal;
+        return {
+          ...good,
+          subTotal: subTotal,
+          soldPriceHistoryId: product.activePrice.id,
+        };
+      });
+      const goodsWithSubTotalResolved = await Promise.all(goodsWithSubTotal);
+      return await tx.saleTransaction.update({
+        where: { id },
+        data: {
+          totalPrice,
+          retailShop: {
+            connect: {
+              id: retailShopId ?? saleTransaction.retailShopId,
+            },
+          },
+          saleTransactionItems: {
+            deleteMany: {
+              saleTransactionId: saleTransaction.id,
+            },
+            createMany: {
+              data: goodsWithSubTotalResolved,
+            },
+          },
+        },
+        include: {
+          saleTransactionItems: true,
+        },
+      });
+    });
   }
   async remove(id: string) {
     const saleTransaction = await this.prisma.saleTransaction.findUnique({

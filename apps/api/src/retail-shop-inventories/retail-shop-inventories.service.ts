@@ -245,7 +245,7 @@ export class RetailShopStockService {
       }, 0),
     };
   }
-
+ 
   async findLowStockItems({
     retailShopId,
     percentage,
