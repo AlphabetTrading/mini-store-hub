@@ -22,14 +22,23 @@ import {
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import { StockItem } from "../../../types/product";
+import {
+
+  RetailShopStockData,
+} from "@/graphql/retail-shops/queries";
+import { SelectedWarehouseStockItem } from "./transfer-items-drawer";
+import StateHandler from "../state-handler";
+
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleAddItem: (item: StockItem, quantity: number) => void;
   selectedItemsId: string[];
-  warehouseId:string;
-  warehouseStocks:StockItem[];
-  setSelectedItems?: React.Dispatch<React.SetStateAction<SelectedWarehouseStockItem[]>>;
+  retailShopId: string;
+  setSelectedItems?: React.Dispatch<
+    React.SetStateAction<SelectedWarehouseStockItem[]>
+  >;
+  retailShopStocks: StockItem[];
 };
 interface Values {
   quantity: number;
@@ -39,23 +48,18 @@ const initialValues: Values = {
   quantity: 1,
   itemId: "",
 };
-export interface SelectedWarehouseStockItem {
-  warehouseStock: StockItem;
-  selectedQuantity: number;
-}
 
-const TransferItemsDrawer = ({
+const SaleTransactionItemsDrawer = ({
   open,
   setOpen,
   handleAddItem,
   selectedItemsId,
   setSelectedItems,
-  warehouseId,
-  warehouseStocks
+  retailShopId,
+  retailShopStocks,
 }: Props) => {
-
   const generateValidationSchema = (values: Values) => {
-    const maxQuantity = warehouseStocks.find(
+    const maxQuantity = retailShopStocks.find(
       (item) => item.product.id === values.itemId
     )?.quantity as number;
     let errors: any = {};
@@ -71,14 +75,13 @@ const TransferItemsDrawer = ({
   };
 
 
-
   const formik = useFormik({
     initialValues,
     validate(values) {
       return generateValidationSchema(values);
     },
     onSubmit: (values, helpers) => {
-      const item: StockItem = warehouseStocks.find(
+      const item: StockItem = retailShopStocks.find(
         (i) => i.product.id === values.itemId
       ) as StockItem;
 
@@ -113,7 +116,8 @@ const TransferItemsDrawer = ({
               }}
               sx={{ maxHeight: 350, display: "block", overflow: "auto", pl: 1 }}
             >
-                {warehouseStocks
+        
+                {retailShopStocks
                   ?.filter((item) => !selectedItemsId.includes(item.product.id))
                   .map((item, idx) => (
                     <Paper
@@ -150,8 +154,8 @@ const TransferItemsDrawer = ({
                         value={item.product.id}
                       />
                     </Paper>
-))}
-        
+                  ))}
+          
             </Stack>
           </Card>
           <TextField
@@ -185,4 +189,4 @@ const TransferItemsDrawer = ({
   );
 };
 
-export default TransferItemsDrawer;
+export default SaleTransactionItemsDrawer;

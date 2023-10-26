@@ -1,8 +1,16 @@
 import {
+  Alert,
+  AlertTitle,
+  Button,
   Card,
+  CardActionArea,
   CardHeader,
+  CircularProgress,
+  Container,
   Divider,
   Grid,
+  IconButton,
+  SvgIcon,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -13,11 +21,8 @@ import {
   WarehouseData,
   WarehouseVars,
   WAREHOUSE,
-  WAREHOUSE_VALUATION,
-  WarehouseValuationData,
-  WarehouseValuationVars,
 } from "@/graphql/warehouses/queries";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
 import {
   GET_STOCK_DISTRIBUTION,
@@ -30,6 +35,17 @@ import {
 import dayjs from "dayjs";
 import { StockDistribution } from "../warehouse-manager-dashboard/stock-distribution-chart";
 import { Warehouse } from "../../../types/warehouse";
+import {
+  DeactivateWarehouseData,
+  DeactivateWarehouseVars,
+  DEACTIVATE_WAREHOUSE,
+  ActivateWarehouseData,
+  ActivateWarehouseVars,
+  ACTIVATE_WAREHOUSE,
+} from "@/graphql/warehouses/mutations";
+import { showAlert } from "@/helpers/showAlert";
+import NextLink from "next/link";
+import EditIcon from "@mui/icons-material/Edit";
 
 type Props = {
   warehouse: Warehouse;
@@ -65,6 +81,112 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
       },
     }
   );
+  const [
+    deactivateWarehouse,
+    {
+      error: deactivateError,
+      loading: deactivateLoading,
+      reset: deactivateReset,
+    },
+  ] = useMutation<DeactivateWarehouseData, DeactivateWarehouseVars>(
+    DEACTIVATE_WAREHOUSE
+  );
+  const [
+    activateWarehouse,
+    { error: activateError, loading: activateLoading, reset: activateReset },
+  ] = useMutation<ActivateWarehouseData, ActivateWarehouseVars>(
+    ACTIVATE_WAREHOUSE
+  );
+  const handleDeactivate = async () => {
+    await deactivateWarehouse({
+      variables: {
+        deactivateWarehouseId: warehouse.id,
+      },
+      update(cache, { data }) {
+        const existingWarehouse: WarehouseData = cache.readQuery<
+          WarehouseData,
+          WarehouseVars
+        >({
+          query: WAREHOUSE,
+          variables: {
+            warehouseId: warehouse.id,
+          },
+        }) as WarehouseData;
+
+        const newWarehouse: WarehouseData = {
+          ...existingWarehouse,
+          warehouse: {
+            ...existingWarehouse?.warehouse,
+            status: data?.deactivateWarehouse.status,
+          },
+        };
+        cache.writeQuery<WarehouseData>({
+          query: WAREHOUSE,
+          variables: {
+            retailShopId: warehouse.id,
+          },
+          data: {
+            warehouse: newWarehouse.warehouse,
+          },
+        });
+      },
+      onCompleted(data, clientOptions) {
+        showAlert("deactivated a", "warehouse");
+      },
+      onError(error) {
+        console.log(error);
+        setTimeout(() => {
+          deactivateReset();
+        }, 3000);
+      },
+    });
+  };
+
+  const handleActivate = async () => {
+    await activateWarehouse({
+      variables: {
+        activateWarehouseId: warehouse.id,
+      },
+      update(cache, { data }) {
+        const existingWarehouse: WarehouseData = cache.readQuery<
+          WarehouseData,
+          WarehouseVars
+        >({
+          query: WAREHOUSE,
+          variables: {
+            warehouseId: warehouse.id,
+          },
+        }) as WarehouseData;
+
+        const newWarehouse: WarehouseData = {
+          ...existingWarehouse,
+          warehouse: {
+            ...existingWarehouse?.warehouse,
+            status: data?.activateWarehouse.status,
+          },
+        };
+        cache.writeQuery<WarehouseData>({
+          query: WAREHOUSE,
+          variables: {
+            retailShopId: warehouse.id,
+          },
+          data: {
+            warehouse: newWarehouse.warehouse,
+          },
+        });
+      },
+      onCompleted(data, clientOptions) {
+        showAlert("activated a", "warehouse");
+      },
+      onError(error) {
+        console.log(error);
+        setTimeout(() => {
+          activateReset();
+        }, 3000);
+      },
+    });
+  };
+
   const valuation = valuationData?.totalValuationByWarehouseId.totalValuation;
 
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
@@ -74,7 +196,22 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
     <Grid container>
       <Grid item xs={12} lg={6} sx={{ paddingRight: 4 }}>
         <Card>
-          <CardHeader title="Basic info" />
+          <CardHeader
+            title="Basic info"
+            action={
+              <IconButton aria-label="settings">
+                <Button
+                  variant="contained"
+                  component={NextLink}
+                  endIcon={<SvgIcon>{<EditIcon />}</SvgIcon>}
+                  href={`/admin/warehouses/${warehouse.id}/edit`}
+                >
+                  Edit
+                </Button>
+              </IconButton>
+            }
+          />
+
           <StateHandler
             loading={valuationLoading}
             empty={false}
@@ -149,7 +286,33 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
                 }
               />
               <Divider />
+              <PropertyListItem align={align} label="Data Management">
+                <Button
+                  variant="outlined"
+                  color={warehouse.status ? "error" : "primary"}
+                  disabled={deactivateLoading || activateLoading}
+                  // endIcon={<SvgIcon>{<DeleteOutlineIcon />}</SvgIcon>}
+                  onClick={() =>
+                    warehouse.status ? handleDeactivate() : handleActivate()
+                  }
+                >
+                  {(deactivateLoading || activateLoading) && (
+                    <CircularProgress
+                      size={16}
+                      sx={{ mr: 1, color: "neutral.500" }}
+                    />
+                  )}
+                  {warehouse.status ? "Deactivate" : "Activate"}
+                </Button>
+              </PropertyListItem>
             </PropertyList>
+            {/* <Container maxWidth="xl"> */}
+            {(activateError || deactivateError) && (
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {activateError?.message || deactivateError?.message}
+              </Alert>
+            )}
           </StateHandler>
         </Card>
       </Grid>

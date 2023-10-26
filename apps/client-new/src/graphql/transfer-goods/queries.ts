@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
-import { TransactionHistory } from "../../../types/transaction-history";
+import { GoodsTransfer } from "../../../types/goods-transfer";
 import { Meta } from "../../../types/common";
 
 export interface WarehouseTransactionHistoryData {
-  findGoodsTransferByWarehouseId: { items: TransactionHistory[]; meta: Meta };
+  findGoodsTransferByWarehouseId: { items: GoodsTransfer[]; meta: Meta };
 }
 
 export interface WarehouseTransactionHistoryVars {
@@ -30,6 +30,13 @@ export const WAREHOUSE_TRANSACTION_HISTORY = gql`
     ) {
       items {
         transferType
+        destinationWarehouse {
+          id
+        }
+        sourceWarehouse {
+          id
+        }
+
         id
         createdAt
         retailShop {
@@ -42,6 +49,7 @@ export const WAREHOUSE_TRANSACTION_HISTORY = gql`
           product {
             name
             id
+            serialNumber
             images
             activePrice {
               price

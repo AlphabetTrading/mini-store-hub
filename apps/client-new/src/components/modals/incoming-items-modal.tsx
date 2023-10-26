@@ -1,10 +1,7 @@
 import {
-  Alert,
-  AlertTitle,
   Box,
   Button,
   Card,
-  CircularProgress,
   Divider,
   FormControlLabel,
   Input,
@@ -14,12 +11,6 @@ import {
   RadioGroup,
   Stack,
   SvgIcon,
-  Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -29,18 +20,18 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import {
   PRODUCTS,
-  ProductVars,
   ProductsData,
 } from "@/graphql/products/queries";
 import { Product, StockItem } from "../../../types/product";
 import StateHandler from "../state-handler";
 import { useEffect, useState } from "react";
+import { SaleTransactionItem } from "../../../types/sale-transaction";
 
 type Props = {
   open: boolean;
   handleClose: () => void;
-  handleAddItem: (stockItem: StockItem) => void;
-  selectedStockItems: StockItem[];
+  handleAddItem:( (stockItem: StockItem ) => void) | ((stockItem: SaleTransactionItem ) => void);
+  selectedStockItems: StockItem[] | SaleTransactionItem[];
 };
 interface Values {
   itemId: string;
