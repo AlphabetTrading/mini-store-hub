@@ -12,10 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import CustomChip from "../custom-chip";
 import dayjs from "dayjs";
-import {
-  TransactionHistory,
-  TransferType,
-} from "../../../types/transaction-history";
+import { GoodsTransfer, TransferType } from "../../../types/goods-transfer";
 import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
 import {
@@ -25,6 +22,7 @@ import {
 } from "@/graphql/transfer-goods/queries";
 import TransactionHistoryDetail from "./transasction-history-detail";
 import Pagination from "../Pagination";
+import TransactionHistoryOutgoing from "./transaction-history-outgoing";
 
 type Props = {
   warehouseId: string;
@@ -47,6 +45,7 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
         createdAt: "desc",
       },
     },
+    fetchPolicy: "cache-and-network",
   });
   useEffect(() => {
     fetchMore({
@@ -60,9 +59,9 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
   }, [rowsPerPage, page]);
 
   const [transactionHistory, setTransactionHistory] =
-    useState<TransactionHistory | null>(null);
+    useState<GoodsTransfer | null>(null);
 
-  const transactionHistoryList: TransactionHistory[] =
+  const transactionHistoryList: GoodsTransfer[] =
     data?.findGoodsTransferByWarehouseId.items || [];
 
   const statusMap = {
@@ -75,10 +74,23 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
   };
 
   return transactionHistory ? (
-    <TransactionHistoryDetail
-      closeDetail={() => setTransactionHistory(null)}
-      transactionHistory={transactionHistory}
-    />
+    <>
+      {transactionHistory.transferType == TransferType.WarehouseToWarehouse && (
+        <TransactionHistoryDetail
+          closeDetail={() => setTransactionHistory(null)}
+          transactionHistory={transactionHistory}
+        />
+      )}
+      {transactionHistory.transferType ==
+        TransferType.WarehouseToRetailShop && (
+        <TransactionHistoryOutgoing
+          warehoueId={warehouseId}
+          closeDetail={() => setTransactionHistory(null)}
+          transactionHistory={transactionHistory}
+        />
+      )}
+     
+    </>
   ) : (
     <Card>
       <CardHeader title="Latest Transactions" />

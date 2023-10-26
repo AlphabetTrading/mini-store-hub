@@ -1,4 +1,5 @@
 import { Category } from "./categories";
+import { SaleTransactionItem } from "./sale-transaction";
 
 export interface Product {
   id: string;
@@ -15,11 +16,6 @@ export interface Product {
   images: string[];
 }
 
-export interface SaleTransactionItem {
-  id: string;
-  subTotal: number;
-  quantity: number;
-}
 
 export interface PriceHistory {
   id: string;

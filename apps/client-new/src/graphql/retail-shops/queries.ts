@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { RetailShop } from "../../../types/retail-shop";
 import { Meta } from "../../../types/common";
 import { StockItem, Product } from "../../../types/product";
-import { SaleTransaction } from "../../../types/saleTransaction";
+import { SaleTransaction } from "../../../types/sale-transaction";
 
 export interface RetailShopsVars {
   filterRetailShopInput?: {
@@ -119,10 +119,10 @@ export const RETAIL_SHOP_VALUATION = gql`
 `;
 
 export interface RetailShopStockVars {
-  filterRetailShopStockInput?: {
-    retailShopId?: string;
+  filterRetailShopStockInput: {
+    retailShopId: string;
   };
-  paginationInput: {
+  paginationInput?: {
     skip?: number;
     take?: number;
   };
@@ -173,58 +173,7 @@ export const RETAIL_SHOP_STOCK = gql`
   }
 `;
 
-export interface RetailShopSaleTransactionsVars {
-  retailShopId: string;
-  paginationInput?: {
-    take?: number;
-    skip?: number;
-  };
-}
 
-export interface RetailShopSaleTransactionsData {
-  saleTransactionsByRetailShop: {
-    items: SaleTransaction[];
-    meta: Meta;
-  };
-}
-
-export const RETAIL_SHOP_SALE_TRANSACTIONS = gql`
-  query SaleTransactionsByRetailShop(
-    $retailShopId: String!
-    $paginationInput: PaginationInput
-  ) {
-    saleTransactionsByRetailShop(
-      retailShopId: $retailShopId
-      paginationInput: $paginationInput
-    ) {
-      items {
-        createdAt
-        totalPrice
-        saleTransactionItems {
-          quantity
-          id
-          product {
-            id
-            name
-            images
-            serialNumber
-            unit
-          }
-          soldPriceHistory {
-            price
-          }
-          subTotal
-        }
-        id
-      }
-      meta {
-        count
-        limit
-        page
-      }
-    }
-  }
-`;
 export interface RSTopSellingProductsData {
   findProductsBySoldQuantityAndRetailShop: {
     items: Product[];

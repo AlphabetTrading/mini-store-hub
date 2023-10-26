@@ -1,11 +1,11 @@
 import { PriceHistory, Product } from "./product";
 
 export interface SaleTransactionItem {
-  id: string;
+  id?: string;
   quantity: number;
   product: Product;
-  subTotal: number;
-  soldPriceHistory: PriceHistory;
+  subTotal?: number;
+  soldPriceHistory?: PriceHistory;
 }
 
 export interface SaleTransaction {

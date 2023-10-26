@@ -6,16 +6,16 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
 import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
+import { SelectedWarehouseStockItem } from "../modals/transfer-items-drawer";
 
 type Props = {
-  selectedWarehouseItem: SelectedWarehouseItem;
+  selectedWarehouseItem: SelectedWarehouseStockItem;
   handleRemoveItem(id: string): void;
   setSelectedItems: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseItem[]>
+    React.SetStateAction<SelectedWarehouseStockItem[]>
   >;
-  selectedItems: SelectedWarehouseItem[];
+  selectedItems: SelectedWarehouseStockItem[];
 };
 
 const ItemsSummaryRow = ({
@@ -25,7 +25,7 @@ const ItemsSummaryRow = ({
   selectedItems,
 }: Props) => {
   const handleItemQuantityChange = (
-    selectedItem: SelectedWarehouseItem,
+    selectedItem: SelectedWarehouseStockItem,
     val: number
   ) => {
     if (selectedItem.selectedQuantity + val <= 0) {
