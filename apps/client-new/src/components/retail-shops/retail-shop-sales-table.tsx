@@ -12,20 +12,14 @@ import {
 } from "@mui/material";
 import React, { use, useEffect, useState } from "react";
 import Pagination from "../Pagination";
-import {
-  RETAIL_SHOP_SALE_TRANSACTIONS,
-  RetailShopSaleTransactionsData,
-  RetailShopSaleTransactionsVars,
-} from "@/graphql/retail-shops/queries";
 import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
 import dayjs from "dayjs";
-import CustomChip from "../custom-chip";
 import RetailShopSaleDetail from "./retail-shop-sale-detail";
 import {
   SaleTransaction,
-  SaleTransactionItem,
-} from "../../../types/saleTransaction";
+} from "../../../types/sale-transaction";
+import { RetailShopSaleTransactionsData, RetailShopSaleTransactionsVars, RETAIL_SHOP_SALE_TRANSACTIONS } from "@/graphql/sale-transaction/queries";
 
 type Props = {
   retailShopId: string;
@@ -52,6 +46,7 @@ const RetailShopSalesTable = (props: Props) => {
         take: rowsPerPage,
       },
     },
+    fetchPolicy: "cache-and-network",
   });
 
   useEffect(() => {
@@ -71,6 +66,7 @@ const RetailShopSalesTable = (props: Props) => {
         <RetailShopSaleDetail
           saleTransaction={saleTransaction}
           closeDetail={() => setSaleTransaction(null)}
+          retailShopId={props.retailShopId}
         />
       ) : (
         <StateHandler
@@ -93,6 +89,7 @@ const RetailShopSalesTable = (props: Props) => {
                 <TableBody>
                   {data?.saleTransactionsByRetailShop.items.map(
                     (saleTransaction, idx) => {
+                      console.log(saleTransaction);
                       return (
                         <TableRow key={idx}>
                           <TableCell width={100}>

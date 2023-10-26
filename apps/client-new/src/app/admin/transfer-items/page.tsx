@@ -21,15 +21,9 @@ import {
 } from "@mui/material";
 import ItemsSummaryTable from "@/components/transfer-items/items-summary-table";
 
-import { useMutation, useQuery } from "@apollo/client";
-import {
-  WAREHOUSE_STOCKS,
-  WarehouseStockData,
-  WarehouseStockVars,
-} from "@/graphql/products/queries";
-import TransferItemsDrawer, {
-  SelectedWarehouseStockItem,
-} from "@/components/modals/transfer-items-drawer";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { WAREHOUSE_STOCKS, WarehouseStockData, WarehouseStockVars } from "@/graphql/products/queries";
+import TransferItemsDrawer, { SelectedWarehouseStockItem } from "@/components/modals/transfer-items-drawer";
 import { StockItem } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
 import {
@@ -37,60 +31,66 @@ import {
   TransferGoodsData,
   TransferGoodsVars,
 } from "@/graphql/transfer-goods/mutations";
-import { useSession } from "next-auth/react";
 import { TransferType } from "../../../../types/goods-transfer";
 import { showAlert } from "@/helpers/showAlert";
 import SearchIcon from "@mui/icons-material/Search";
 import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
 import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries";
+import WarehouseRadioGroup from "@/components/transfer-items/warehouse-radio-group";
 
 type Props = {};
 
+
+
 const Page = (props: Props) => {
-  const { data: sessionData } = useSession();
-  const warehouseId = (sessionData?.user as any).warehouseId || "";
   const [transferGoodsToRetailshop, { data, error, loading }] = useMutation<
     TransferGoodsData,
     TransferGoodsVars
   >(TRANSFER_GOODS);
 
-  const {
-    data: itemsData,
-    loading: itemsLoading,
-    error: itemsError,
-  } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCKS, {
-    variables: {
-      filterWarehouseStockInput: {
-        warehouse: {
-          id: warehouseId,
-        },
-      },
-    },
-  });
+  const [
+    getWarehouseStockData,
+    { data: itemsData, loading: itemsLoading, error: itemsError },
+  ] = useLazyQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCKS);
 
   const [warehouseStocks, setWarehouseStocks] = useState<StockItem[]>([]);
+
+  const [selectedWarehouse, setSelectedWarehouse] = useState<string | null>(
+    null
+  );
+  useEffect(() => {
+    getWarehouseStockData({ variables: {
+      filterWarehouseStockInput: {
+        warehouse: {
+          id: selectedWarehouse||"",
+        },
+      },
+    },})
+  }, [selectedWarehouse])
+  
+
   useEffect(() => {
     if (itemsData) {
-      setWarehouseStocks(
-        JSON.parse(JSON.stringify(itemsData.warehouseStocks.items))
-      );
+      setWarehouseStocks(JSON.parse(JSON.stringify(itemsData.warehouseStocks.items)));
     }
   }, [itemsData]);
 
-  const [selectedItems, setSelectedItems] = useState<
-    SelectedWarehouseStockItem[]
-  >([]);
+
+  const [selectedItems, setSelectedItems] = useState<SelectedWarehouseStockItem[]>(
+    []
+  );
   const [selectedRetailShop, setSelectedRetailShop] = useState<string | null>(
     null
   );
   const [formError, setFormError] = useState<{
     retailShop: string;
     items: string;
-  }>({ retailShop: "", items: "" });
+    warehouse: string;
+  }>({ retailShop: "", items: "", warehouse: "" });
 
-  const [filteredItems, setFilteredItems] = useState<
-    SelectedWarehouseStockItem[]
-  >([]);
+  const [filteredItems, setFilteredItems] = useState<SelectedWarehouseStockItem[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -117,19 +117,33 @@ const Page = (props: Props) => {
 
   const handleTransferItems = async () => {
     if (selectedItems.length === 0) {
-      setFormError({ retailShop: "", items: "Select at least one item" });
+      setFormError({
+        retailShop: "",
+        items: "Select at least one item",
+        warehouse: "",
+      });
       return;
     }
     if (!selectedRetailShop) {
       setFormError({
         items: "",
         retailShop: "Select a retail shop",
+        warehouse: "",
+      });
+      return;
+    }
+    if (!selectedWarehouse) {
+      setFormError({
+        items: "",
+        retailShop: "",
+        warehouse: "Select a warehouse",
       });
       return;
     }
     setFormError({
       items: "",
       retailShop: "",
+      warehouse: "",
     });
     await transferGoodsToRetailshop({
       variables: {
@@ -140,7 +154,7 @@ const Page = (props: Props) => {
             // price: item.warehouseStock.product.activePrice.price,
           })),
           retailShopId: selectedRetailShop!,
-          sourceWarehouseId: warehouseId,
+          sourceWarehouseId: selectedWarehouse || "",
           transferType: TransferType.WarehouseToRetailShop,
         },
       },
@@ -150,7 +164,7 @@ const Page = (props: Props) => {
           variables: {
             filterWarehouseStockInput: {
               warehouse: {
-                id: (sessionData?.user as any).warehouseId || "",
+                id: selectedWarehouse || "",
               },
             },
           },
@@ -158,19 +172,21 @@ const Page = (props: Props) => {
         {
           query: GET_TOTAL_VALUATION_OF_WAREHOUSE,
           variables: {
-            warehouseId: warehouseId,
+            warehouseId: selectedWarehouse,
           },
         },
         {
           query: WAREHOUSE_TRANSACTION_HISTORY,
           variables: {
-            warehouseId: warehouseId,
+            warehouseId: selectedWarehouse,
           },
         },
       ],
       onCompleted: (data) => {
         setSelectedItems([]);
         setSelectedRetailShop(null);
+        setSelectedWarehouse(null);
+
         showAlert("transferred a", "stock");
       },
     });
@@ -204,56 +220,29 @@ const Page = (props: Props) => {
               <Stack spacing={1}>
                 <Typography variant="h4">Transfer Items</Typography>
                 <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-                  <Link component={NextLink} href={"/dashboard"}>
+                  <Link component={NextLink} href={"/admin/dashboard"}>
                     Dashboard
                   </Link>
-                  <Link component={NextLink} href={"/transfer-items"}>
+                  <Link component={NextLink} href={"/admin/transfer-items"}>
                     Transfer Items
                   </Link>
                   <Typography>List</Typography>
                 </Breadcrumbs>
               </Stack>
             </Stack>
-
             <Grid container spacing={2}>
-              <Grid item sm={12} md={8}>
+              <Grid item sm={12} md={8} xs={12}>
                 <Card>
-                  <CardHeader
-                    action={
-                      <Button variant="contained" onClick={() => setOpen(true)}>
-                        Add
-                      </Button>
-                    }
-                    title="Selected Products"
-                  />
-                  <Stack
-                    alignItems="center"
-                    spacing={2}
-                    sx={{ p: 2 }}
-                    direction="row"
-                  >
-                    <SvgIcon>
-                      <SearchIcon />
-                    </SvgIcon>
-                    <Input
-                      disableUnderline
-                      placeholder="Search by name or serial number"
-                      value={searchQuery}
-                      fullWidth
-                      onChange={handleChange}
-                    />
-                  </Stack>
-                  <ItemsSummaryTable
-                    handleRemoveItem={handleRemoveItem}
-                    filteredItems={filteredItems}
-                    selectedItems={selectedItems}
-                    setSelectedItems={setSelectedItems}
+                  <CardHeader title="From: Warehouse" />
+                  <WarehouseRadioGroup
+                    selectedWarehouse={selectedWarehouse}
+                    setSelectedWarehouse={setSelectedWarehouse}
                   />
                 </Card>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item sm={12} md={4} xs={12}>
                 <Card>
-                  <CardHeader title="Retail Shops" />
+                  <CardHeader title="To: Retail Shop" />
                   <RetailShopsList
                     selectedRetailShop={selectedRetailShop}
                     setSelectedRetailShop={setSelectedRetailShop}
@@ -261,6 +250,39 @@ const Page = (props: Props) => {
                 </Card>
               </Grid>
             </Grid>
+            <Card>
+              <CardHeader
+                action={
+                  <Button variant="contained" onClick={() => setOpen(true)}>
+                    Add
+                  </Button>
+                }
+                title="Selected Products"
+              />
+              <Stack
+                alignItems="center"
+                spacing={2}
+                sx={{ p: 2 }}
+                direction="row"
+              >
+                <SvgIcon>
+                  <SearchIcon />
+                </SvgIcon>
+                <Input
+                  disableUnderline
+                  placeholder="Search by name or serial number"
+                  value={searchQuery}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Stack>
+              <ItemsSummaryTable
+                handleRemoveItem={handleRemoveItem}
+                filteredItems={filteredItems}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
+              />
+            </Card>
           </Stack>
           <Button
             disabled={loading}
@@ -282,6 +304,12 @@ const Page = (props: Props) => {
               {formError.retailShop}
             </Alert>
           )}
+          {formError.warehouse && (
+            <Alert color="error">
+              <AlertTitle>Error</AlertTitle>
+              {formError.warehouse}
+            </Alert>
+          )}
           {formError.items && (
             <Alert color="error">
               <AlertTitle>Error</AlertTitle>
@@ -297,14 +325,15 @@ const Page = (props: Props) => {
         </Container>
       </Box>
       <TransferItemsDrawer
-        warehouseStocks={warehouseStocks}
         selectedItemsId={selectedItems.map(
           (item) => item.warehouseStock.product.id
         )}
         handleAddItem={handleAddItem}
         open={open}
         setOpen={setOpen}
-        warehouseId={warehouseId}
+        setSelectedItems={setSelectedItems}
+        warehouseId={selectedWarehouse || ""}
+        warehouseStocks={warehouseStocks}
       />
     </>
   );

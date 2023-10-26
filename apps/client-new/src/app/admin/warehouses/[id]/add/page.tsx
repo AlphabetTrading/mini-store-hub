@@ -27,18 +27,16 @@ import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { AddIncomingItemModal } from "@/components/modals/incoming-items-modal";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   REGISTER_INCOMING_STOCK,
   RegisterIncomingStockData,
   RegisterIncomingStockVars,
 } from "@/graphql/warehouses/mutations";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { WAREHOUSE_STOCKS } from "@/graphql/products/queries";
 import { StockItem } from "../../../../../../types/product";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
+import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
 import CustomChip from "@/components/custom-chip";
 import { showAlert } from "@/helpers/showAlert";
 import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
@@ -88,10 +86,11 @@ const Page = ({ params }: Props) => {
       if (item.quantity + val <= 0) {
         return prev.filter((i) => i.product.id !== item.product.id);
       }
-      return [
-        ...prev.filter((i) => i.product.id !== item.product.id),
-        { ...item, quantity: item.quantity + val },
-      ];
+      return prev.map((i) => {
+        if (i.product.id === item.product.id) {
+          return { ...i, quantity: i.quantity + val };
+        } else return i;
+      });
     });
   };
 
