@@ -64,7 +64,7 @@ const Page = (props: Props) => {
   return (
     <>
       <NotificationDetails
-        isMyNotification={currentTab === 0}
+        isMyNotification={currentTab === 1}
         handleClose={() => {
           setOpen(false);
           setNotification(null);

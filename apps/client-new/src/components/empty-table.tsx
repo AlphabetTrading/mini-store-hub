@@ -2,10 +2,10 @@ import { TableRow, TableCell, Box, Typography } from "@mui/material";
 import React from "react";
 
 type Props = {
-  colspan: number;
+    colspan: number;
 };
 
-const EmptyTable = ({ colspan }: Props) => {
+const EmptyTable = ({colspan}: Props) => {
   return (
     <TableRow>
       <TableCell colSpan={6} align="center" sx={{ pb: 8 }}>

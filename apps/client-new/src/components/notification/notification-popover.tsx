@@ -2,6 +2,8 @@ import {
   Popover,
   Stack,
   Typography,
+  Tooltip,
+  IconButton,
   SvgIcon,
   Box,
   List,
@@ -11,7 +13,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { Notification } from "../../../types/notification";
+import { Notification, RecipientType } from "../../../types/notification";
 import NotificationDetails from "./notification-details-modal";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -84,6 +86,13 @@ export const NotificationsPopover = (props: Props) => {
               const createdAt = dayjs(notification.createdAt).format(
                 "MMM dd, h:mm a"
               );
+              const isRead =
+                notification.recipientType === RecipientType.USER
+                  ? notification.isRead
+                  : notification.notificationReads.some(
+                      (n) => n.userId === (sessionData?.user as any).id
+                    );
+
               return (
                 <ListItem
                   divider
@@ -100,7 +109,7 @@ export const NotificationsPopover = (props: Props) => {
                     "& .MuiListItemSecondaryAction-root": {
                       top: "24%",
                     },
-                    ...(!notification.isRead && {
+                    ...(!isRead && {
                       "&:hover": {
                         backgroundColor: "primary.light",
                       },
@@ -151,7 +160,7 @@ export const NotificationsPopover = (props: Props) => {
                               mr: 0.5,
                               minWidth: 200,
                               maxWidth: 300,
-                              ...(!notification.isRead && {
+                              ...(!isRead && {
                                 fontWeight: 700,
                               }),
                             }}
@@ -165,7 +174,7 @@ export const NotificationsPopover = (props: Props) => {
                             sx={{
                               minWidth: 200,
                               maxWidth: 300,
-                              ...(!notification.isRead && {
+                              ...(!isRead && {
                                 fontWeight: 600,
                               }),
                             }}

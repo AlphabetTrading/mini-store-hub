@@ -82,46 +82,48 @@ export const StockDistribution = ({ stockItems, total }: Props) => {
   const chartOptions = useChartOptions();
 
   return (
-    <Card>
-      <CardHeader title="Stock Distribution" />
-      <CardContent>
-        <Chart
-          height={260}
-          options={chartOptions}
-          series={chartSeries}
-          type="pie"
-        />
-        {chartSeries?.map((item, index) => {
-          const amount = item;
+    <Container maxWidth="md">
+      <Card>
+        <CardHeader title="Stock Distribution" />
+        <CardContent>
+          <Chart
+            height={260}
+            options={chartOptions}
+            series={chartSeries}
+            type="pie"
+          />
+          {chartSeries?.map((item, index) => {
+            const amount = item;
 
-          return (
-            <Box
-              key={index}
-              sx={{
-                alignItems: "center",
-                display: "flex",
-                p: 1,
-              }}
-            >
+            return (
               <Box
+                key={index}
                 sx={{
-                  backgroundColor: chartOptions.colors[index],
-                  borderRadius: "50%",
-                  height: 8,
-                  width: 8,
+                  alignItems: "center",
+                  display: "flex",
+                  p: 1,
                 }}
-              />
-              <Typography sx={{ ml: 2 }} variant="subtitle2">
-                {labels![index]}
-              </Typography>
-              <Box sx={{ flexGrow: 1 }} />
-              <Typography color="text.secondary" variant="subtitle2">
-                {amount}
-              </Typography>
-            </Box>
-          );
-        })}
-      </CardContent>
-    </Card>
+              >
+                <Box
+                  sx={{
+                    backgroundColor: chartOptions.colors[index],
+                    borderRadius: "50%",
+                    height: 8,
+                    width: 8,
+                  }}
+                />
+                <Typography sx={{ ml: 2 }} variant="subtitle2">
+                  {labels![index]}
+                </Typography>
+                <Box sx={{ flexGrow: 1 }} />
+                <Typography color="text.secondary" variant="subtitle2">
+                  {amount}
+                </Typography>
+              </Box>
+            );
+          })}
+        </CardContent>
+      </Card>
+    </Container>
   );
 };

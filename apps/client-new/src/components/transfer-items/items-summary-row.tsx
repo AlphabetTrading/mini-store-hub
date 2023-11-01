@@ -6,16 +6,16 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
 import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
-import { SelectedWarehouseStockItem } from "../modals/transfer-items-drawer";
 
 type Props = {
-  selectedWarehouseItem: SelectedWarehouseStockItem;
+  selectedWarehouseItem: SelectedWarehouseItem;
   handleRemoveItem(id: string): void;
   setSelectedItems: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseStockItem[]>
+    React.SetStateAction<SelectedWarehouseItem[]>
   >;
-  selectedItems: SelectedWarehouseStockItem[];
+  selectedItems: SelectedWarehouseItem[];
 };
 
 const ItemsSummaryRow = ({
@@ -25,7 +25,7 @@ const ItemsSummaryRow = ({
   selectedItems,
 }: Props) => {
   const handleItemQuantityChange = (
-    selectedItem: SelectedWarehouseStockItem,
+    selectedItem: SelectedWarehouseItem,
     val: number
   ) => {
     if (selectedItem.selectedQuantity + val <= 0) {
@@ -63,10 +63,8 @@ const ItemsSummaryRow = ({
     <TableRow>
       <TableCell>
         <Stack>
-          <Typography variant="body2">{warehouseStock.product.name}</Typography>
-          <Typography variant="body2" color="text.secondary">
-            SN- {warehouseStock.product.serialNumber}
-          </Typography>
+          <Typography  variant="body2">{warehouseStock.product.name}</Typography>
+          <Typography variant="body2" color="text.secondary">SN- {warehouseStock.product.serialNumber}</Typography>
         </Stack>
       </TableCell>
       <TableCell>{warehouseStock.product.activePrice?.price}</TableCell>

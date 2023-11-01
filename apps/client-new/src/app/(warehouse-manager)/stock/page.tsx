@@ -14,7 +14,7 @@ import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
 import AddIcon from "@mui/icons-material/Add";
 import {
-  WAREHOUSE_STOCKS,
+  WAREHOUSE_STOCK,
   WarehouseStockData,
   WarehouseStockVars,
 } from "@/graphql/products/queries";
@@ -26,14 +26,8 @@ import StateHandler from "@/components/state-handler";
 import StockListTable from "@/components/stock/stock-list-table";
 
 type Props = {};
-type OrderBySelectorReturnType =
-  | { product: { name: string } }
-  | { product: { serialNumber: string } }
-  | { updatedAt: string }
-  | { product: { category: { name: string } } }
-  | undefined;
 
-const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
+const OrderBySelector = (filter: string) => {
   const filterType = filter.split("|")[0];
   switch (filterType) {
     case "name":
@@ -50,25 +44,13 @@ const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
           },
         },
       };
-    case "updatedAt":
-      return {
-        updatedAt: filter.split("|")[1],
-      };
-    case "serialNumber":
-      return {
-        product: {
-          serialNumber: filter.split("|")[1],
-        },
-      };
-    default:
-      return undefined;
   }
 };
 
 const Page = (props: Props) => {
   const [filter, setFilter] = useState({
     query: "",
-    filter: "updatedAt|desc",
+    filter: "name|asc",
   });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -77,7 +59,7 @@ const Page = (props: Props) => {
   const { data, loading, error, refetch } = useQuery<
     WarehouseStockData,
     WarehouseStockVars
-  >(WAREHOUSE_STOCKS, {
+  >(WAREHOUSE_STOCK, {
     variables: {
       filterWarehouseStockInput: {
         warehouse: {
@@ -104,10 +86,8 @@ const Page = (props: Props) => {
             name: {
               contains: filter.query,
             },
-            category: {
-              name: {
-                contains: filter.query,
-              },
+            serialNumber: {
+              contains: filter.query,
             },
           },
         },
@@ -143,14 +123,14 @@ const Page = (props: Props) => {
               </Breadcrumbs>
             </Stack>
             <Stack>
-              {/* <Button
+              <Button
                 variant="contained"
                 component={NextLink}
                 href={"/stock/add"}
                 startIcon={<AddIcon />}
               >
                 Add New Items
-              </Button> */}
+              </Button>
             </Stack>
           </Stack>
           <ProductsListSearch filter={filter} setFilter={setFilter} />

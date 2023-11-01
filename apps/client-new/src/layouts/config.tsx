@@ -94,15 +94,6 @@ export const useNavigationItems = () => {
               <Chip color="primary" label={count} size="small" />
             ),
         },
-        {
-          title: "Transfer Items",
-          path: "/admin/transfer-items",
-          icon: (
-            <SvgIcon fontSize="small">
-              <TransferItemsIcon />
-            </SvgIcon>
-          ),
-        },
       ],
       warehouseManager: [
         {

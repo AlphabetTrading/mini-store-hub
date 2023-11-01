@@ -8,16 +8,11 @@ export interface WarehouseStockVars {
       id: string;
     };
     product?: {
-      name?: {
+      name: {
         contains: string;
       };
-      serialNumber?: {
+      serialNumber: {
         contains: string;
-      };
-      category?: {
-        name?: {
-          contains: string;
-        };
       };
     };
   };
@@ -56,7 +51,7 @@ export interface WarehouseStockData {
   };
 }
 
-export const WAREHOUSE_STOCKS = gql`
+export const WAREHOUSE_STOCK = gql`
   query WarehouseStocks(
     $paginationInput: PaginationInput
     $filterWarehouseStockInput: FilterWarehouseStockInput
@@ -110,11 +105,6 @@ export interface ProductsVars {
     name?: {
       contains: string;
     };
-    category?: {
-      name?: {
-        contains: string;
-      };
-    };
     serialNumber?: {
       contains: string;
     };
@@ -152,7 +142,6 @@ export const PRODUCTS = gql`
         name
         amharicName
         id
-        images
         priceHistory {
           createdAt
           id
@@ -196,10 +185,7 @@ export const PRODUCT = gql`
       name
       serialNumber
       unit
-      images
       description
-      amharicName
-      amharicDescription
       activePrice {
         id
         price
