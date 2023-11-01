@@ -89,14 +89,40 @@ export const UPDATE_WAREHOUSE = gql`
   }
 `;
 
-export interface DeleteWarehouseVars {
-  deleteWarehouseId: string;
+export interface ActivateWarehouseVars {
+  activateWarehouseId: string;
+}
+export interface ActivateWarehouseData {
+  activateWarehouse: {
+    id: string;
+    status: boolean;
+  };
 }
 
-export const DELETE_WAREHOUSE = gql`
-  mutation DeleteWarehouse($deleteWarehouseId: String!) {
-    deleteWarehouse(id: $deleteWarehouseId) {
+export interface DeactivateWarehouseVars {
+  deactivateWarehouseId: string;
+}
+export interface DeactivateWarehouseData {
+  deactivateWarehouse: {
+    id: string;
+    status: boolean;
+  };
+}
+
+export const ACTIVATE_WAREHOUSE = gql`
+  mutation ActivateWarehouse($activateWarehouseId: String!) {
+    activateWarehouse(id: $activateWarehouseId) {
       id
+      status
+    }
+  }
+`;
+
+export const DEACTIVATE_WAREHOUSE = gql`
+  mutation DeactivateWarehouse($deactivateWarehouseId: String!) {
+    deactivateWarehouse(id: $deactivateWarehouseId) {
+      id
+      status
     }
   }
 `;

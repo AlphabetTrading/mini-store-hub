@@ -1,10 +1,16 @@
-import { Alert, AlertTitle, Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import React from "react";
 
 type Props = {
   loading: boolean;
-  error: any;
-  empty: boolean;
+  error?: any;
+  empty?: boolean;
   children: React.ReactNode;
 };
 
@@ -30,9 +36,16 @@ const StateHandler = (props: Props) => {
     );
   }
   if (props.empty) {
-    return <Typography sx={{
-      pl: 2,  
-    }} variant="body2">No Records</Typography>;
+    return (
+      <Typography
+        sx={{
+          pl: 2,
+        }}
+        variant="body2"
+      >
+        No Records
+      </Typography>
+    );
   }
   return <>{props.children}</>;
 };

@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { User } from "../../../types/user";
+import { User, UserRole } from "../../../types/user";
 import { Meta } from "../../../types/common";
 
 export const GET_ME = gql`
@@ -20,7 +20,31 @@ export const GET_ME = gql`
     }
   }
 `;
-
+export interface UsersVars {
+  filterUserInput?: {
+    firstName?: {
+      contains: string;
+    };
+    lastName?: {
+      contains: string;
+    };
+    phone?: {
+      contains: string;
+    };
+    role?: UserRole;
+  };
+  paginationInput?: {
+    take?: number;
+    skip?: number;
+  };
+  orderBy?: {
+    firstName?: string;
+    createdAt?: string;
+    lastName?: string;
+    phone?: string;
+    updatedAt?: string;
+  };
+}
 export interface UsersData {
   users: {
     items: User[];
@@ -29,8 +53,16 @@ export interface UsersData {
 }
 
 export const USERS = gql`
-  query Users($paginationInput: PaginationInput) {
-    users(paginationInput: $paginationInput) {
+  query Users(
+    $filterUserInput: FilterUserInput
+    $orderBy: OrderByUserInput
+    $paginationInput: PaginationInput
+  ) {
+    users(
+      filterUserInput: $filterUserInput
+      orderBy: $orderBy
+      paginationInput: $paginationInput
+    ) {
       items {
         id
         firstName
@@ -44,6 +76,7 @@ export const USERS = gql`
             lat
             lng
           }
+          photoUrl
         }
         retailShop {
           name

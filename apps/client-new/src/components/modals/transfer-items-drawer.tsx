@@ -1,9 +1,9 @@
 import {
-  WAREHOUSE_STOCK,
+  WAREHOUSE_STOCKS,
   WarehouseStockData,
   WarehouseStockVars,
 } from "@/graphql/products/queries";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import {
   Drawer,
   Stack,
@@ -20,16 +20,16 @@ import {
   Alert,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React from "react";
-import { Product, StockItem } from "../../../types/product";
-import { useSession } from "next-auth/react";
-import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
-
+import React, { useEffect } from "react";
+import { StockItem } from "../../../types/product";
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleAddItem: (item: StockItem, quantity: number) => void;
   selectedItemsId: string[];
+  warehouseId:string;
+  warehouseStocks:StockItem[];
+  setSelectedItems?: React.Dispatch<React.SetStateAction<SelectedWarehouseStockItem[]>>;
 };
 interface Values {
   quantity: number;
@@ -39,17 +39,23 @@ const initialValues: Values = {
   quantity: 1,
   itemId: "",
 };
+export interface SelectedWarehouseStockItem {
+  warehouseStock: StockItem;
+  selectedQuantity: number;
+}
 
 const TransferItemsDrawer = ({
   open,
   setOpen,
   handleAddItem,
   selectedItemsId,
+  setSelectedItems,
+  warehouseId,
+  warehouseStocks
 }: Props) => {
-  const { data: sessionData } = useSession();
 
   const generateValidationSchema = (values: Values) => {
-    const maxQuantity = itemsData?.warehouseStocks.items.find(
+    const maxQuantity = warehouseStocks.find(
       (item) => item.product.id === values.itemId
     )?.quantity as number;
     let errors: any = {};
@@ -63,19 +69,8 @@ const TransferItemsDrawer = ({
     }
     return errors;
   };
-  const {
-    data: itemsData,
-    loading: itemsLoading,
-    error: itemsError,
-  } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCK, {
-    variables: {
-      filterWarehouseStockInput: {
-        warehouse: {
-          id: (sessionData?.user as any).warehouseId || "",
-        },
-      },
-    },
-  });
+
+
 
   const formik = useFormik({
     initialValues,
@@ -83,7 +78,7 @@ const TransferItemsDrawer = ({
       return generateValidationSchema(values);
     },
     onSubmit: (values, helpers) => {
-      const item: StockItem = itemsData?.warehouseStocks.items.find(
+      const item: StockItem = warehouseStocks.find(
         (i) => i.product.id === values.itemId
       ) as StockItem;
 
@@ -109,34 +104,16 @@ const TransferItemsDrawer = ({
         <Stack sx={{ px: 4, py: 8 }} spacing={2}>
           <Typography variant="h6">Add Item</Typography>
           <Card sx={{ p: 4 }}>
-            <Stack  
+            <Stack
               component={RadioGroup}
               spacing={1}
               value={formik.values.itemId.toString()}
               onChange={(event) => {
                 formik.setFieldValue("itemId", event.currentTarget.value);
               }}
-              sx={{ maxHeight:350, display: "block", overflow:"auto",pl:1}}
+              sx={{ maxHeight: 350, display: "block", overflow: "auto", pl: 1 }}
             >
-              {itemsLoading ? (
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  sx={{ pb: 4, pt: 2 }}
-                >
-                  <CircularProgress />
-                </Box>
-              ) : !itemsData || itemsError ? (
-                <Alert severity="error">
-                  <div>
-                    <Typography color="inherit" variant="subtitle2">
-                      {itemsError?.message}
-                    </Typography>
-                  </div>
-                </Alert>
-              ) : (
-                itemsData?.warehouseStocks.items
+                {warehouseStocks
                   ?.filter((item) => !selectedItemsId.includes(item.product.id))
                   .map((item, idx) => (
                     <Paper
@@ -146,7 +123,6 @@ const TransferItemsDrawer = ({
                         display: "flex",
                         px: 2,
                         py: 1,
-                       
                       }}
                       variant="outlined"
                     >
@@ -174,8 +150,8 @@ const TransferItemsDrawer = ({
                         value={item.product.id}
                       />
                     </Paper>
-                  ))
-              )}
+))}
+        
             </Stack>
           </Card>
           <TextField
