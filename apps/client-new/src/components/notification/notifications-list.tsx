@@ -17,12 +17,20 @@ const NotificationsList = ({
   setOpen,
   isMyNotification,
 }: Props) => {
-  console.log(notifications);
   const { data: sessionData } = useSession();
   const userId = (sessionData?.user as any).id || "";
   return (
     <Box>
       {notifications.map((notification, idx) => {
+        // const isSelected = selected.includes(emailId);
+        const isRead = notification.notificationReads.some(
+          (n) => userId === n.userId
+        );
+        // const href =
+        //   currentLabelId && currentLabelId !== "inbox"
+        //     ? paths.dashboard.mail + `?emailId=${emailId}&label=${currentLabelId}`
+        //     : paths.dashboard.mail + `?emailId=${emailId}`;
+
         return (
           <Box
             onClick={() => {
@@ -33,7 +41,7 @@ const NotificationsList = ({
           >
             <NotificationItem
               isMyNotification={isMyNotification}
-              isRead={notification.isRead}
+              isRead={isRead}
               notification={notification}
             />
           </Box>

@@ -4,7 +4,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TableContainer,
 } from "@mui/material";
 import React from "react";
 import { Warehouse } from "../../../types/warehouse";
@@ -16,22 +15,20 @@ type Props = {
 
 const WarehousesListTable = ({ warehouses }: Props) => {
   return (
-    <TableContainer sx={{ overflow: "auto" }}>
-      <Table sx={{ minWidth: 800 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Manager</TableCell>
-            <TableCell>Location Description</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {warehouses.map((warehouse) => (
-            <WarehousesListRow key={warehouse.id} warehouse={warehouse} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Name</TableCell>
+          <TableCell>Manager</TableCell>
+          <TableCell>Location Description</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {warehouses.map((warehouse) => (
+          <WarehousesListRow key={warehouse.id} warehouse={warehouse} />
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 

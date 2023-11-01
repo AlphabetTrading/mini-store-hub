@@ -1,7 +1,6 @@
 import {
   Alert,
   AlertTitle,
-  Box,
   Button,
   CardContent,
   CircularProgress,
@@ -12,7 +11,6 @@ import {
   Link,
   MenuItem,
   Stack,
-  SvgIcon,
   Switch,
   TableCell,
   TableRow,
@@ -25,7 +23,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import NextLink from "next/link";
 import { Product } from "../../../types/product";
-import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
+import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   DELETE_PRODUCT,
@@ -40,8 +38,6 @@ import { PRODUCTS } from "@/graphql/products/queries";
 import * as Yup from "yup";
 import CustomChip from "../custom-chip";
 import { showAlert } from "@/helpers/showAlert";
-import { ImageOutlined } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
 
 type Props = {
   product: Product;
@@ -78,13 +74,27 @@ const validationSchema = Yup.object({
 });
 
 const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
-  const router = useRouter();
-  const { data, loading, error } = useQuery<CategoriesData>(CATEGORIES);
+  const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
   const [
     updateProduct,
     { loading: updateLoading, error: updateError, reset: updateReset },
   ] = useMutation<UpdateProductData, UpdateProductVars>(UPDATE_PRODUCT);
-
+  const [
+    deleteProduct,
+    { loading: deleteLoading, error: deleteError, reset: deleteReset },
+  ] = useMutation<DeleteProductData, DeleteProductVars>(DELETE_PRODUCT);
+  const handleDeleteProduct = async () => {
+    await deleteProduct({
+      variables: {
+        deleteProductId: product.id,
+      },
+      refetchQueries: [{ query: PRODUCTS }],
+      onCompleted: () => {
+        showAlert("removed a", "product");
+        handleItemToggle(product.id);
+      },
+    });
+  };
   const initialValues: Values = {
     unit: product.unit,
     serialNumber: product.serialNumber,
@@ -122,15 +132,9 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
   });
   return (
     <>
-      <TableRow
-        sx={{
-          textDecoration: "none",
-        }}
-        hover
-        onClick={() => router.push(`/admin/products/${product.id}`)}
-      >
+      <TableRow>
         <TableCell>
-          {/* <IconButton
+          <IconButton
             onClick={() => {
               handleItemToggle(product.id);
               updateReset();
@@ -138,61 +142,10 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
             }}
           >
             {selected ? <ExpandMore /> : <ChevronRightIcon />}
-          </IconButton> */}
+          </IconButton>
         </TableCell>
-        <TableCell width="25%">
-          <Box
-            sx={{
-              alignItems: "center",
-              display: "flex",
-            }}
-          >
-            {product.images.length > 0 ? (
-              <Box
-                sx={{
-                  alignItems: "center",
-                  backgroundColor: "neutral.50",
-                  backgroundImage: `url("${product.images[0]}")`,
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                  borderRadius: 1,
-                  display: "flex",
-                  height: 80,
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  width: 80,
-                }}
-              />
-            ) : (
-              <Box
-                sx={{
-                  alignItems: "center",
-                  backgroundColor: "neutral.50",
-                  borderRadius: 1,
-                  display: "flex",
-                  height: 80,
-                  justifyContent: "center",
-                  width: 80,
-                }}
-              >
-                <SvgIcon>
-                  <ImageOutlined />
-                </SvgIcon>
-              </Box>
-            )}
-            <Box
-              sx={{
-                cursor: "pointer",
-                ml: 2,
-              }}
-            >
-              <Typography variant="subtitle2">{product.name}</Typography>
-              <Typography color="text.secondary" variant="body2">
-                {product.serialNumber}
-              </Typography>
-            </Box>
-          </Box>
-        </TableCell>
+        <TableCell align="left">{product.name}</TableCell>
+        <TableCell align="left">{product.serialNumber}</TableCell>
         <TableCell align="left">
           <CustomChip label={product.category.name} />
         </TableCell>
@@ -204,7 +157,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
         </TableCell>
         <TableCell align="left">{product.activePrice?.price}</TableCell>
       </TableRow>
-      {/* {selected && (
+      {selected && (
         <TableRow>
           <TableCell
             colSpan={8}
@@ -358,8 +311,34 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={0}>
                       <Grid item md={6} xs={12}>
+                        {/* <TextField
+                        defaultValue={product.price}
+                        fullWidth
+                        label="Old price"
+                        name="old-price"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              {product.currency}
+                            </InputAdornment>
+                          ),
+                        }}
+                        type="number"
+                      /> */}
                       </Grid>
                       <Grid item md={6} xs={12}>
+                        {/* <TextField
+                        defaultValue={product.price}
+                        fullWidth
+                        label="New price"
+                        name="new-price"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">$</InputAdornment>
+                          ),
+                        }}
+                        type="number"
+                      /> */}
                       </Grid>
                       <Grid item md={6} xs={12}>
                         <Button
@@ -442,7 +421,7 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
             </form>
           </TableCell>
         </TableRow>
-      )} */}
+      )}
     </>
   );
 };

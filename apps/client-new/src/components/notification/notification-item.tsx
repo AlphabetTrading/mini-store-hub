@@ -16,6 +16,10 @@ const NotificationItem = ({
   isRead,
   isMyNotification,
 }: Props) => {
+  const isNotificationRead =
+    notification.recipientType === RecipientType.USER
+      ? notification.isRead
+      : isRead;
   return (
     <Box
       sx={{
@@ -25,7 +29,7 @@ const NotificationItem = ({
         borderBottomColor: "divider",
         display: "flex",
         p: 2,
-        ...(!isRead &&
+        ...(!isNotificationRead &&
           isMyNotification && {
             position: "relative",
             "&:before": {
@@ -107,7 +111,7 @@ const NotificationItem = ({
                     minWidth: 100,
                     maxWidth: 400,
                     mr: 1,
-                    ...(!isRead &&
+                    ...(!isNotificationRead &&
                       isMyNotification && {
                         fontWeight: 700,
                       }),
@@ -121,7 +125,7 @@ const NotificationItem = ({
                 <Typography
                   color="text.secondary"
                   sx={{
-                    ...(!isRead &&
+                    ...(!isNotificationRead &&
                       isMyNotification && {
                         fontWeight: 700,
                       }),
@@ -135,7 +139,7 @@ const NotificationItem = ({
               <Typography
                 color="text.secondary"
                 sx={{
-                  ...(!isRead &&
+                  ...(!isNotificationRead &&
                     isMyNotification && {
                       fontWeight: 600,
                     }),

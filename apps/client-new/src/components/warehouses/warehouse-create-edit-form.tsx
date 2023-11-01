@@ -24,13 +24,10 @@ import * as Yup from "yup";
 import { ApolloError, useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import {
-  USERS,
-  UsersData,
-  UsersVars,
   WAREHOUSE_MANAGERS,
   WarehouseManagersData,
 } from "@/graphql/users/queries";
-import { User, UserRole } from "../../../types/user";
+import { User } from "../../../types/user";
 
 type Props = {
   onSubmit: (
@@ -69,12 +66,7 @@ export interface WarehouseInputValues {
 const WarehouseCreateEditForm = (props: Props) => {
   const { onSubmit, initialValues, loading, error, title } = props;
   const router = useRouter();
-  const { data } = useQuery<UsersData, UsersVars>(USERS, {
-    variables: {
-      filterUserInput: {
-        role: UserRole.WAREHOUSE_MANAGER,
-      },
-    },
+  const { data } = useQuery<WarehouseManagersData>(WAREHOUSE_MANAGERS, {
     fetchPolicy: "cache-and-network",
   });
   const formik = useFormik({
@@ -107,7 +99,7 @@ const WarehouseCreateEditForm = (props: Props) => {
                       <Typography variant="h6">Basic details</Typography>
                     </Grid>
 
-                    <Grid item xs={12} md={8}>
+                    <Grid xs={12} md={8}>
                       <Stack spacing={3}>
                         <TextField
                           error={!!(formik.touched.name && formik.errors.name)}
@@ -146,15 +138,8 @@ const WarehouseCreateEditForm = (props: Props) => {
                           getOptionLabel={(option) =>
                             option.firstName + " " + option.lastName
                           }
-                          options={data?.users.items || []}
+                          options={data?.warehouseManagers || []}
                           sx={{ width: 300 }}
-                          renderOption={(props, option) => {
-                            return (
-                              <li {...props} key={option.id}>
-                                {option.firstName + " " + option.lastName}
-                              </li>
-                            );
-                          }}
                           renderInput={(params: any) => (
                             <TextField
                               {...params}
@@ -187,7 +172,7 @@ const WarehouseCreateEditForm = (props: Props) => {
                       <Typography variant="h6">Location details</Typography>
                     </Grid>
 
-                    <Grid item xs={12} md={8}>
+                    <Grid xs={12} md={8} spacing={2}>
                       <Stack spacing={3}>
                         <TextField
                           error={!!(formik.touched.city && formik.errors.city)}

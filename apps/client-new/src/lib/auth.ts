@@ -2,8 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getClient } from "./client";
 import { gql } from "@apollo/client";
-import jwtDecode from "jwt-decode";
-import { UserRole } from "../../types/user";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -46,6 +45,8 @@ export const authOptions: NextAuthOptions = {
               }
             }
           `;
+
+          console.log(credentials, "Bef");
           const {
             data: { login },
           } = await getClient().mutate({
@@ -57,12 +58,7 @@ export const authOptions: NextAuthOptions = {
               },
             },
           });
-
-          if (
-            login.user.role !== UserRole.ADMIN &&
-            login.user.role !== UserRole.WAREHOUSE_MANAGER
-          )
-            return null;
+          console.log(credentials, login, "After");
           return {
             id: login.user.id,
             user: {
@@ -102,17 +98,13 @@ export const authOptions: NextAuthOptions = {
         return {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
+          accessTokenExpires: Date.now() + 60 * 60 * 24 * 30,
           ...user,
         };
       }
 
       // Return previous token if the access token has not expired yet
-      const { accessToken, refreshToken } = token as any;
-      const { exp } = jwtDecode(accessToken) as any;
-      const expirationTime = exp * 1000 - 60000;
-
-      if (Date.now() < expirationTime) {
-        console.log("data");
+      if (Date.now() < (token as any).accessTokenExpires) {
         return token;
       }
 
@@ -122,13 +114,24 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-async function refreshAccessToken(token: any) {
+async function refreshAccessToken(token: JWT) {
   try {
     const refreshMutation = gql`
       mutation RefreshToken($refreshToken: JWT!) {
         refreshToken(refreshToken: $refreshToken) {
           accessToken
           refreshToken
+          user {
+            id
+            firstName
+            lastName
+            phone
+            username
+            role
+            warehouse {
+              id
+            }
+          }
         }
       }
     `;
@@ -137,7 +140,9 @@ async function refreshAccessToken(token: any) {
     } = await getClient().mutate({
       mutation: refreshMutation,
       variables: {
-        refreshToken: token.refreshToken,
+        data: {
+          refreshToken: token.refreshToken,
+        },
       },
     });
 
@@ -145,6 +150,17 @@ async function refreshAccessToken(token: any) {
       ...token,
       accessToken: refresh.accessToken,
       refreshToken: refresh.refreshToken,
+      user: {
+        username: refresh.user.username,
+        phone: refresh.user.phone,
+        name: `${refresh.user.firstName} ${refresh.user.lastName}`,
+        role: refresh.user.role,
+        id: refresh.user.id,
+        warehouseId:
+          refresh.user.warehouse.length > 0
+            ? refresh.user.warehouse[0].id
+            : null,
+      },
     };
   } catch (e) {
     console.log("Refresh Error", e);

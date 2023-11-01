@@ -1,11 +1,8 @@
 import {
   Alert,
   AlertTitle,
-  Box,
   Button,
-  Card,
   CardContent,
-  CardHeader,
   CircularProgress,
   Divider,
   Grid,
@@ -14,20 +11,30 @@ import {
   Link,
   MenuItem,
   Stack,
-  SvgIcon,
   Switch,
   TableCell,
   TableRow,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
+import NextLink from "next/link";
+import { Product } from "../../../types/product";
+import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
 import { useMutation, useQuery } from "@apollo/client";
+import {
+  DELETE_PRODUCT,
+  DeleteProductData,
+  DeleteProductVars,
+  UPDATE_PRODUCT,
+  UpdateProductData,
+  UpdateProductVars,
+} from "@/graphql/products/mutations";
 import { useFormik } from "formik";
+import { PRODUCTS } from "@/graphql/products/queries";
 import * as Yup from "yup";
 import { Category } from "../../../types/categories";
 import {
@@ -40,9 +47,6 @@ import {
 } from "@/graphql/categories/mutations";
 import dayjs from "dayjs";
 import { showAlert } from "@/helpers/showAlert";
-import { ImageOutlined } from "@mui/icons-material";
-import FileDropZone from "../file-drop-zone";
-import { UploadFileData, UPLOAD_FILE } from "@/graphql/file/mutations";
 
 type Props = {
   category: Category;
@@ -56,7 +60,6 @@ interface Values {
   description: string;
   amharicDescription: string;
   parentId?: string;
-  image?: string;
 }
 
 const validationSchema = Yup.object({
@@ -71,6 +74,7 @@ const validationSchema = Yup.object({
 });
 
 const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
+  const { data, loading, error } = useQuery<CategoryData>(CATEGORIES);
   const [
     deleteCategory,
     {
@@ -80,7 +84,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
       reset: deleteReset,
     },
   ] = useMutation<DeleteCategoryData, DeleteCategoryVars>(DELETE_CATEGORY);
-  const [photo, setPhoto] = useState<any>(category.image);
+
   const [
     updateCategory,
     { loading: updateLoading, error: updateError, reset: updateReset },
@@ -99,11 +103,6 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
     });
   };
 
-  const [
-    uploadPhoto,
-    { error: uploadPhotoError, loading: uploadPhotoLoading },
-  ] = useMutation<UploadFileData>(UPLOAD_FILE);
-
   const initialValues: Values = {
     name: category.name,
     amharicName: category.amharicName,
@@ -115,23 +114,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: async (values, formikHelpers) => {
-      if (photo && typeof photo !== "string") {
-        await uploadPhoto({
-          variables: {
-            file: photo,
-          },
-          onCompleted: (data) => {
-            console.log(data, "photo");
-            showAlert("uploaded a", "photo");
-            values.image = data.uploadFile;
-          },
-        });
-      }
-      if (!photo) {
-        values.image = "";
-      }
-
+    onSubmit(values, formikHelpers) {
       updateCategory({
         variables: {
           updateCategoryId: category.id,
@@ -140,7 +123,6 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
             description: values.description,
             amharicName: values.amharicName,
             amharicDescription: values.amharicDescription,
-            image: values.image,
           },
         },
         refetchQueries: [CATEGORIES],
@@ -166,57 +148,7 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
             {selected ? <ExpandMore /> : <ChevronRightIcon />}
           </IconButton>
         </TableCell>
-        <TableCell width="25%">
-          <Box
-            sx={{
-              alignItems: "center",
-              display: "flex",
-            }}
-          >
-            {category.image ? (
-              <Box
-                sx={{
-                  alignItems: "center",
-                  backgroundColor: "neutral.50",
-                  backgroundImage: `url("${category.image}")`,
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                  borderRadius: 1,
-                  display: "flex",
-                  height: 80,
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  width: 80,
-                }}
-              />
-            ) : (
-              <Box
-                sx={{
-                  alignItems: "center",
-                  backgroundColor: "neutral.50",
-                  borderRadius: 1,
-                  display: "flex",
-                  height: 80,
-                  justifyContent: "center",
-                  width: 80,
-                }}
-              >
-                <SvgIcon>
-                  <ImageOutlined />
-                </SvgIcon>
-              </Box>
-            )}
-            <Box
-              sx={{
-                cursor: "pointer",
-                ml: 2,
-              }}
-            >
-              <Typography variant="subtitle2">{category.name}</Typography>
-            </Box>
-          </Box>
-        </TableCell>
-        {/* <TableCell align="left">{category.name}</TableCell> */}
+        <TableCell align="left">{category.name}</TableCell>
         <TableCell align="left">{category.description}</TableCell>
         <TableCell align="left">
           {dayjs(category.createdAt).format("DD/MM/YYYY")}
@@ -243,36 +175,8 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
             <form onSubmit={formik.handleSubmit}>
               <CardContent>
                 <Grid container spacing={3}>
-                  <Grid item md={12} xs={12}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Typography variant="h6">Basic details</Typography>
-                      <div>
-                        <Button
-                          disabled={deleteLoading}
-                          onClick={() => {
-                            handleDeleteProduct();
-                          }}
-                          color="error"
-                        >
-                          {deleteLoading && (
-                            <CircularProgress
-                              sx={{
-                                color: "neutral.400",
-                                // display: loading ? "block" : "none",
-                                width: "25px !important",
-                                height: "25px !important",
-                                mr: 1,
-                              }}
-                            />
-                          )}
-                          Delete Category
-                        </Button>
-                      </div>
-                    </Stack>
+                  <Grid item md={8} xs={12}>
+                    <Typography variant="h6">Basic details</Typography>
                     <Divider sx={{ my: 2 }} />
                     <Grid container spacing={3}>
                       <Grid item md={6} xs={12}>
@@ -354,12 +258,6 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                         />
                       </Grid>
                     </Grid>
-                    <Card>
-                      <CardHeader title="Upload Photo" />
-                      <CardContent sx={{ pt: 0 }}>
-                        <FileDropZone setFile={setPhoto} file={photo} />
-                      </CardContent>
-                    </Card>
                   </Grid>
                 </Grid>
               </CardContent>
@@ -375,9 +273,9 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                     onClick={() => {}}
                     type="submit"
                     variant="contained"
-                    disabled={formik.isSubmitting}
+                    disabled={updateLoading}
                   >
-                    {formik.isSubmitting && (
+                    {updateLoading && (
                       <CircularProgress
                         sx={{
                           color: "neutral.400",
@@ -399,6 +297,28 @@ const CategoriesListRow = ({ category, handleItemToggle, selected }: Props) => {
                     Cancel
                   </Button>
                 </Stack>
+                <div>
+                  <Button
+                    disabled={deleteLoading}
+                    onClick={() => {
+                      handleDeleteProduct();
+                    }}
+                    color="error"
+                  >
+                    {deleteLoading && (
+                      <CircularProgress
+                        sx={{
+                          color: "neutral.400",
+                          // display: loading ? "block" : "none",
+                          width: "25px !important",
+                          height: "25px !important",
+                          mr: 1,
+                        }}
+                      />
+                    )}
+                    Delete Category
+                  </Button>
+                </div>
               </Stack>
               {(deleteError || updateError) && (
                 <Alert severity="error">

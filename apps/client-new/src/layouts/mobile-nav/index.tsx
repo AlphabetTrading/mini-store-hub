@@ -45,8 +45,6 @@ export const MobileNav = ({
       variant="temporary"
       onClose={onClose}
       open={open}
-      onClick={() => onClose()}
-      onKeyDown={() => onClose()}
     >
       {/* <Scrollbar
         sx={{
@@ -65,6 +63,7 @@ export const MobileNav = ({
             //   href={paths.index}
             alignItems="center"
             justifyContent="center"
+ 
             sx={{
               borderColor: "var(--nav-logo-border)",
               borderRadius: 1,

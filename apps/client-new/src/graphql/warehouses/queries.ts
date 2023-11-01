@@ -13,7 +13,6 @@ export const WAREHOUSES = gql`
       items {
         id
         name
-        status
         address {
           city
           formattedAddress
@@ -44,7 +43,6 @@ export const WAREHOUSE = gql`
     warehouse(id: $warehouseId) {
       id
       name
-      status
       amharicName
       createdAt
       address {

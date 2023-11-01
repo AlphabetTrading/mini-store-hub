@@ -1,5 +1,4 @@
-import { Category } from "./categories";
-import { SaleTransactionItem } from "./sale-transaction";
+import { Meta } from "./common";
 
 export interface Product {
   id: string;
@@ -9,13 +8,10 @@ export interface Product {
   amharicName: string;
   description: string;
   amharicDescription: string;
-  category: Category;
+  category: { id: string; name: string };
   activePrice: PriceHistory;
   priceHistory: PriceHistory[];
-  saleTransactionItem?: SaleTransactionItem[];
-  images: string[];
 }
-
 
 export interface PriceHistory {
   id: string;

@@ -27,34 +27,33 @@ import NextLink from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { AddIncomingItemModal } from "@/components/modals/incoming-items-modal";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   REGISTER_INCOMING_STOCK,
   RegisterIncomingStockData,
   RegisterIncomingStockVars,
 } from "@/graphql/warehouses/mutations";
 import { useRouter } from "next/navigation";
-import { WAREHOUSE_STOCKS } from "@/graphql/products/queries";
-import { StockItem } from "../../../../../../types/product";
-import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
+import { useSession } from "next-auth/react";
+import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
+import { StockItem } from "../../../../../types/product";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
 import CustomChip from "@/components/custom-chip";
 import { showAlert } from "@/helpers/showAlert";
 import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
 import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries";
 import EmptyTable from "@/components/empty-table";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Props = {};
 
-const Page = ({ params }: Props) => {
+const Page = (props: Props) => {
+  const { data: sessionData } = useSession();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStockItems, setSelectedStockItems] = useState<StockItem[]>([]);
   const [filteredStockItems, setFilteredStockItems] = useState<StockItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const warehouseId = params.id;
+  const warehouseId = (sessionData?.user as any).warehouseId || "";
 
   useEffect(() => {
     setFilteredStockItems(
@@ -86,11 +85,10 @@ const Page = ({ params }: Props) => {
       if (item.quantity + val <= 0) {
         return prev.filter((i) => i.product.id !== item.product.id);
       }
-      return prev.map((i) => {
-        if (i.product.id === item.product.id) {
-          return { ...i, quantity: i.quantity + val };
-        } else return i;
-      });
+      return [
+        ...prev.filter((i) => i.product.id !== item.product.id),
+        { ...item, quantity: item.quantity + val },
+      ];
     });
   };
 
@@ -120,14 +118,14 @@ const Page = ({ params }: Props) => {
         },
       },
       onCompleted: (data) => {
-        router.back();
+        router.push("/stock");
         showAlert("added a", "stock");
       },
       onError(error, clientOptions) {
         console.log(error);
       },
       refetchQueries: [
-        { query: WAREHOUSE_STOCKS },
+        { query: WAREHOUSE_STOCK },
         {
           query: GET_TOTAL_VALUATION_OF_WAREHOUSE,
           variables: {
@@ -161,18 +159,15 @@ const Page = ({ params }: Props) => {
               alignItems="center"
             >
               <Stack spacing={1}>
-                <Typography variant="h4">Process Incoming Items</Typography>
+                <Typography variant="h4">Register Incoming Items</Typography>
                 <Breadcrumbs separator={<BreadcrumbsSeparator />}>
-                  <Link component={NextLink} href={"/admin/dashboard"}>
+                  <Link component={NextLink} href={"/dashboard"}>
                     Dashboard
                   </Link>
-                  <Link
-                    component={NextLink}
-                    href={`/admin/warehouses/${params.id}`}
-                  >
+                  <Link component={NextLink} href={"/stock"}>
                     Stock
                   </Link>
-                  <Typography>Process Incoming Items</Typography>
+                  <Typography>Register Incoming Items</Typography>
                 </Breadcrumbs>
               </Stack>
               <Button
@@ -204,8 +199,8 @@ const Page = ({ params }: Props) => {
                   onChange={handleChange}
                 />
               </Stack>
-              <TableContainer style={{ overflowX: "auto" }}>
-                <Table sx={{ minWidth: 1200 }}>
+              <TableContainer style={{ maxHeight: 400 }}>
+                <Table stickyHeader sx={{ minWidth: 1200 }}>
                   <TableHead>
                     <TableRow>
                       <TableCell>Product Name</TableCell>
@@ -219,7 +214,7 @@ const Page = ({ params }: Props) => {
                   </TableHead>
                   <TableBody sx={{ maxHeight: 20 }}>
                     {filteredStockItems.length === 0 ? (
-                      <EmptyTable colspan={7} />
+                      <EmptyTable colspan={7}/>
                     ) : (
                       filteredStockItems.map((item: StockItem, idx: number) => (
                         <TableRow key={idx}>

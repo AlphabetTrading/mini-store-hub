@@ -3,7 +3,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
 } from "@mui/material";
@@ -26,10 +25,11 @@ const ManagersListTable = ({ retailShopManagers }: Props) => {
   // };
 
   return (
-    <TableContainer sx={{ overflow: "auto" }}>
+    <div>
       <Table sx={{ minWidth: 1200 }}>
         <TableHead>
           <TableRow>
+            <TableCell />
             <TableCell>First Name</TableCell>
             <TableCell>Last Name</TableCell>
             <TableCell>Phone</TableCell>
@@ -47,7 +47,7 @@ const ManagersListTable = ({ retailShopManagers }: Props) => {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
+    </div>
   );
 };
 

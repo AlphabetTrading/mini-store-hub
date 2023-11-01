@@ -27,14 +27,6 @@ type Props = {
 
 const sortOptions = [
   {
-    label: "Creation Date (Newer-Older)",
-    value: "createdAt|desc",
-  },
-  {
-    label: "Creation Date (Older-Newer)",
-    value: "createdAt|asc",
-  },
-  {
     label: "Name (A-Z)",
     value: "name|asc",
   },

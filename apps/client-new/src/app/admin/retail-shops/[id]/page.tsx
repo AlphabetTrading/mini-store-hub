@@ -7,85 +7,56 @@ import {
   Stack,
   Typography,
   Breadcrumbs,
+  Button,
+  SvgIcon,
   Alert,
   AlertTitle,
-  Divider,
-  Tab,
-  Tabs,
-  Card,
-  Grid,
+  CircularProgress,
 } from "@mui/material";
 import NextLink from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import EditIcon from "@mui/icons-material/Edit";
 import RetailShopBasicDetails from "@/components/retail-shops/retail-shop-basic-details";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
-  RETAIL_SHOP,
-  RETAIL_SHOP_STOCK,
-  RetailShopData,
-  RetailShopStockData,
-  RetailShopStockVars,
-  RetailShopVars,
-} from "@/graphql/retail-shops/queries";
-import StateHandler from "@/components/state-handler";
-import StockListTable from "@/components/stock/stock-list-table";
-import Pagination from "@/components/Pagination";
-import RetailShopSalesTable from "@/components/retail-shops/retail-shop-sales-table";
-import RetailShopInsights from "@/components/retail-shops/retail-shop-insights";
-import RetailShopLowStock from "@/components/retail-shops/retail-shop-low-stock";
+  DELETE_RETAIL_SHOP,
+  DeleteRetailShopVars,
+} from "@/graphql/retail-shops/mutations";
+import { useMutation } from "@apollo/client";
+import { ref } from "yup";
+import { RETAIL_SHOPS } from "@/graphql/retail-shops/queries";
+import { useRouter } from "next/navigation";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {
   params: {
     id: string;
   };
 };
-const tabs = [
-  { label: "Details", value: "details" },
-  { label: "Stock", value: "stock" },
-  { label: "Sales", value: "sales" },
-  { label: "Insights", value: "insights" },
-];
 
 const Page = ({ params }: Props) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [filter, setFilter] = useState({
-    query: "",
-    filter: "updatedAt|desc",
-  });
-  const [currentTab, setCurrentTab] = useState("details");
-  const handleTabsChange = useCallback((event: any, value: string) => {
-    setCurrentTab(value);
-  }, []);
-
-  const { data, error, loading } = useQuery<RetailShopData, RetailShopVars>(
-    RETAIL_SHOP,
-    {
+  const router = useRouter();
+  const [deleteRetailShop, { error, loading, reset }] = useMutation<
+    {},
+    DeleteRetailShopVars
+  >(DELETE_RETAIL_SHOP);
+  const handleDelete = async () => {
+    await deleteRetailShop({
       variables: {
-        retailShopId: params.id,
+        deleteRetailShopId: params.id,
       },
-    }
-  );
-  const [
-    getStock,
-    { data: stockData, error: stockError, loading: stockLoading },
-  ] = useLazyQuery<RetailShopStockData, RetailShopStockVars>(RETAIL_SHOP_STOCK);
-  useEffect(() => {
-    if (currentTab === "stock") {
-      getStock({
-        variables: {
-          filterRetailShopStockInput: {
-            retailShopId: params.id,
-          },
-          paginationInput: {
-            skip: page * rowsPerPage,
-            take: rowsPerPage,
-          },
-        },
-      });
-    }
-  }, [currentTab]);
-  
+      refetchQueries: [{query:RETAIL_SHOPS}],
+      onCompleted(data, clientOptions) {
+        showAlert("removed a", "retail shop");
+        router.back();
+      },
+      onError(error) {
+        setTimeout(() => {
+          reset();
+        }, 3000);
+      },
+    });
+  };
 
   return (
     <Box
@@ -95,7 +66,7 @@ const Page = ({ params }: Props) => {
         py: 8,
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         {error && (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
@@ -121,70 +92,34 @@ const Page = ({ params }: Props) => {
                 <Typography>Detail</Typography>
               </Breadcrumbs>
             </Stack>
-
+            <Stack alignItems="center" direction="row" spacing={2}>
+              <Button
+                variant="outlined"
+                color="error"
+                disabled={loading}
+                // endIcon={<SvgIcon>{<DeleteOutlineIcon />}</SvgIcon>}
+                onClick={() => handleDelete()}
+              >
+                {loading && (
+                  <CircularProgress
+                    size={16}
+                    sx={{ mr: 1, color: "neutral.500" }}
+                  />
+                )}
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                component={NextLink}
+                endIcon={<SvgIcon>{<EditIcon />}</SvgIcon>}
+                href={`/admin/retail-shops/${params.id}/edit`}
+              >
+                Edit
+              </Button>
+            </Stack>
           </Stack>
-          <div>
-            <Tabs
-              indicatorColor="primary"
-              onChange={handleTabsChange}
-              scrollButtons="auto"
-              sx={{ mt: 3 }}
-              textColor="primary"
-              value={currentTab}
-              variant="scrollable"
-            >
-              {tabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
-            </Tabs>
-            <Divider />
-          </div>
-          {currentTab === "details" && (
-            <StateHandler loading={loading} error={error} empty={false}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  {data && (
-                    <RetailShopBasicDetails retailShop={data?.retailShop} />
-                  )}
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <RetailShopLowStock retailShopId={params.id} />
-                </Grid>
-              </Grid>
-            </StateHandler>
-          )}
-          {currentTab === "stock" && (
-            <StateHandler
-              error={stockError}
-              loading={stockLoading}
-              empty={
-                stockData?.retailShopStockByRetailShopId.items.length === 0
-              }
-            >
-              <Card>
-                <StockListTable
-                  warehouseStocks={
-                    stockData?.retailShopStockByRetailShopId.items || []
-                  }
-                />
-                <Pagination
-                  meta={stockData?.retailShopStockByRetailShopId.meta}
-                  page={page}
-                  setPage={setPage}
-                  rowsPerPage={rowsPerPage}
-                  setRowsPerPage={setRowsPerPage}
-                />
-              </Card>
-            </StateHandler>
-          )}
-          {currentTab === "sales" && (
-            <RetailShopSalesTable retailShopId={params.id} />
-          )}
-
-          {currentTab === "insights" && (
-            <RetailShopInsights retailShopId={params.id} />
-          )}
+          <RetailShopBasicDetails retailShopId={params.id} />
+          {/*<TransactionHistoryTable warehouseId={params.id} /> */}
         </Stack>
       </Container>
     </Box>

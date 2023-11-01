@@ -24,10 +24,10 @@ type Props = {
 };
 
 const FileDropZone = ({ file, setFile }: Props) => {
+  console.log(file);
   const onDrop = useCallback((acceptedFiles: any) => {
     setFile(acceptedFiles[0]);
   }, []);
-  console.log(file);
 
   const {
     getRootProps,
@@ -120,12 +120,7 @@ const FileDropZone = ({ file, setFile }: Props) => {
               }}
             >
               <ListItemIcon>
-                <img
-                  src={
-                    typeof file == "string" ? file : URL.createObjectURL(file)
-                  }
-                  height={50}
-                />
+                <img src={file} width={50} />
                 <img src="/assets/icons/file.svg" width={50} />
               </ListItemIcon>
               <ListItemText

@@ -6,11 +6,7 @@ import { MobileNav } from "@/layouts/mobile-nav";
 import { Theme, styled, useMediaQuery } from "@mui/material";
 import React from "react";
 import { useNavigationItems } from "@/layouts/config";
-import {
-  NotificationByUserIdData,
-  NotificationByUserIdVars,
-  NOTIFICATIONS_BY_USERID,
-} from "@/graphql/notifications/queries";
+import { NotificationByUserIdData, NotificationByUserIdVars, NOTIFICATIONS_BY_USERID } from "@/graphql/notifications/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 
@@ -32,12 +28,13 @@ const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
   const navigationData = useNavigationItems();
-
+ 
   return (
     <>
       <TopNav
         // color={navColor}
 
+    
         onMobileNav={mobileNav.handleOpen}
         navigationItems={navigationData.warehouseManager}
         // sections={sections}
