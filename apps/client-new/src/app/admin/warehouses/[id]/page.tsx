@@ -1,32 +1,39 @@
 "use client";
 import TransactionHistoryTable from "@/components/transaction-history/transaction-history-table";
 import WarehouseBasicDetails from "@/components/warehouses/warehouse-basic-details";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Container,
   Stack,
-  SvgIcon,
   Typography,
   Button,
   Link,
   Breadcrumbs,
-  CircularProgress,
   Alert,
   AlertTitle,
+  Divider,
+  Tab,
+  Tabs,
+  Card,
 } from "@mui/material";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import NextLink from "next/link";
 import BreadcrumbsSeparator from "@/components/breadcrumbs-separator";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
-  DELETE_WAREHOUSE,
-  DeleteWarehouseVars,
-} from "@/graphql/warehouses/mutations";
-import { useMutation } from "@apollo/client";
-import { WAREHOUSES } from "@/graphql/warehouses/queries";
-import { useRouter } from "next/navigation";
-import { showAlert } from "@/helpers/showAlert";
+  WAREHOUSE,
+  WarehouseData,
+  WarehouseVars,
+} from "@/graphql/warehouses/queries";
+import ProductsListSearch from "@/components/products/products-list-search";
+import StateHandler from "@/components/state-handler";
+import StockListTable from "@/components/stock/stock-list-table";
+import {
+  WarehouseStockData,
+  WarehouseStockVars,
+  WAREHOUSE_STOCKS,
+} from "@/graphql/products/queries";
+import Pagination from "@/components/Pagination";
 
 type Props = {
   params: {
@@ -34,30 +41,102 @@ type Props = {
   };
 };
 
-const Page = ({ params }: Props) => {
-  const [deleteWarehouse, { loading, error, reset }] = useMutation<
-    {},
-    DeleteWarehouseVars
-  >(DELETE_WAREHOUSE);
-  const router = useRouter();
+const tabs = [
+  { label: "Details", value: "details" },
+  { label: "Stock", value: "stock" },
+  { label: "Transaction History", value: "transaction" },
+];
+type OrderBySelectorReturnType =
+  | { product: { name: string } }
+  | { product: { category: { name: string } } }
+  | undefined;
 
-  const handleDelete = async () => {
-    await deleteWarehouse({
+const OrderBySelector = (filter: string): OrderBySelectorReturnType => {
+  const filterType = filter.split("|")[0];
+  switch (filterType) {
+    case "name":
+      return {
+        product: {
+          name: filter.split("|")[1],
+        },
+      };
+    case "categoryName":
+      return {
+        product: {
+          category: {
+            name: filter.split("|")[1],
+          },
+        },
+      };
+    default:
+      return undefined;
+  }
+};
+
+const Page = ({ params }: Props) => {
+  const [currentTab, setCurrentTab] = useState("details");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filter, setFilter] = useState({
+    query: "",
+    filter: "updatedAt|desc",
+  });
+  const { data, error, loading } = useQuery<WarehouseData, WarehouseVars>(
+    WAREHOUSE,
+    {
       variables: {
-        deleteWarehouseId: params.id,
+        warehouseId: params.id,
       },
-      refetchQueries: [{query:WAREHOUSES}],
-      onCompleted(data, clientOptions) {
-        showAlert("deleted a", "warehouse");
-        router.replace("/admin/warehouses");
+    }
+  );
+
+  const [
+    getWarehouseData,
+    { data: warehouseData, loading: warehouseLoading, error: warehouseError },
+  ] = useLazyQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCKS, {
+    variables: {
+      filterWarehouseStockInput: {
+        warehouse: {
+          id: params.id,
+        },
       },
-      onError(error) {
-        setTimeout(() => {
-          reset();
-        }, 3000);
+      paginationInput: {
+        skip: page * rowsPerPage,
+        take: rowsPerPage,
       },
-    });
-  };
+      orderBy: OrderBySelector(filter.filter),
+    },
+    fetchPolicy: "cache-and-network",
+  });
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      getWarehouseData({
+        variables: {
+          filterWarehouseStockInput: {
+            warehouse: {
+              id: params.id,
+            },
+            product: {
+              name: {
+                contains: filter.query,
+              },
+            },
+          },
+          paginationInput: {
+            skip: page * rowsPerPage,
+            take: rowsPerPage,
+          },
+          orderBy: OrderBySelector(filter.filter),
+        },
+      });
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [filter, page, rowsPerPage, params.id, getWarehouseData]);
+
+  const handleTabsChange = useCallback((event: any, value: string) => {
+    setCurrentTab(value);
+  }, []);
 
   return (
     <Box
@@ -67,14 +146,8 @@ const Page = ({ params }: Props) => {
         py: 8,
       }}
     >
-      <Container maxWidth="lg">
-        {error && (
-          <Alert severity="error">
-            <AlertTitle>Error</AlertTitle>
-            {error.message}
-          </Alert>
-        )}
-        <Stack spacing={4}>
+      <Container maxWidth="xl">
+        <Stack spacing={1}>
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -87,39 +160,69 @@ const Page = ({ params }: Props) => {
                   Dashboard
                 </Link>
                 <Link component={NextLink} href={"/admin/warehouses"}>
-                  Warehouse
+                  Warehouses
                 </Link>
                 <Typography>Detail</Typography>
               </Breadcrumbs>
             </Stack>
-            <Stack alignItems="center" direction="row" spacing={2}>
-              <Button
-                variant="outlined"
-                color="error"
-                disabled={loading}
-                // endIcon={<SvgIcon>{<DeleteOutlineIcon />}</SvgIcon>}
-                onClick={() => handleDelete()}
-              >
-                {loading && (
-                  <CircularProgress
-                    size={16}
-                    sx={{ mr: 1, color: "neutral.500" }}
-                  />
-                )}
-                Delete
-              </Button>
-              <Button
-                variant="contained"
-                component={NextLink}
-                endIcon={<SvgIcon>{<EditIcon />}</SvgIcon>}
-                href={`/admin/warehouses/${params.id}/edit`}
-              >
-                Edit
-              </Button>
-            </Stack>
           </Stack>
-          <WarehouseBasicDetails warehouseId={params.id} />
-          <TransactionHistoryTable warehouseId={params.id} />
+          <div>
+            <Tabs
+              indicatorColor="primary"
+              onChange={handleTabsChange}
+              scrollButtons="auto"
+              sx={{ mt: 3 }}
+              textColor="primary"
+              value={currentTab}
+              variant="scrollable"
+            >
+              {tabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ))}
+            </Tabs>
+            <Divider />
+          </div>
+          {currentTab === tabs[0].value && (
+            <StateHandler loading={loading} error={error}>
+              {data && <WarehouseBasicDetails warehouse={data?.warehouse} />}{" "}
+            </StateHandler>
+          )}
+          {currentTab === tabs[1].value && (
+            <Stack justifyItems="end">
+              <Stack direction="row" justifyContent="end">
+                <Button
+                  component={NextLink}
+                  sx={{ my: 1 }}
+                  variant="contained"
+                  href={`/admin/warehouses/${params.id}/add`}
+                >
+                  Process Incoming Items
+                </Button>
+              </Stack>
+              <ProductsListSearch filter={filter} setFilter={setFilter} />
+              <StateHandler
+                error={warehouseError}
+                loading={warehouseLoading}
+                empty={warehouseData?.warehouseStocks.items.length == 0}
+              >
+                <Card>
+                  <StockListTable
+                    warehouseStocks={warehouseData?.warehouseStocks.items || []}
+                  />
+                  <Pagination
+                    meta={warehouseData?.warehouseStocks.meta}
+                    page={page}
+                    setPage={setPage}
+                    rowsPerPage={rowsPerPage}
+                    setRowsPerPage={setRowsPerPage}
+                  />
+                </Card>
+              </StateHandler>
+            </Stack>
+          )}
+          {currentTab === tabs[2].value && (
+            <TransactionHistoryTable warehouseId={params.id} />
+          )}
         </Stack>
       </Container>
     </Box>

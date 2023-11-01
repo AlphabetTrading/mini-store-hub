@@ -7,7 +7,14 @@ import { styled, useMediaQuery } from "@mui/material";
 import React from "react";
 import SideNav from "@/layouts/vertical-layout/side-nav";
 import { useNavigationItems } from "@/layouts/config";
-import { NotificationByUserIdData, NotificationByUserIdVars, NOTIFICATIONS_BY_USERID } from "@/graphql/notifications/queries";
+import {
+  NotificationByUserIdData,
+  NotificationByUserIdVars,
+  NOTIFICATIONS_BY_USERID,
+  UNREAD_NOTIFICATIONS_COUNT,
+  UnreadNotificationsCountData,
+  UnreadNotificationsCountVars,
+} from "@/graphql/notifications/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 const SIDE_NAV_WIDTH = 280;
@@ -31,25 +38,28 @@ const VerticalLayoutContainer = styled("div")({
 const Layout = ({ children }: Props) => {
   const mobileNav = useMobileNav();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
-  const {data:sessionData} = useSession();
+  const { data: sessionData } = useSession();
+  const userId = (sessionData?.user as any).id || "";
   const navigationData = useNavigationItems();
-    const { data, error, loading } = useQuery<
+  const { data, error, loading } = useQuery<
     NotificationByUserIdData,
     NotificationByUserIdVars
   >(NOTIFICATIONS_BY_USERID, {
     variables: {
-      userId: (sessionData?.user as any).id || "",
+      userId: userId,
     },
   });
-  const unreadNotifications = data?.allNotificationsByUserId.filter((notification) => {
-    if (notification.recipientType === "USER") {
-      return !notification.isRead;
-    } else {
-      return !notification.notificationReads.some(
-        (n) => n.userId === (sessionData?.user as any).id || ""
-      );
-    }
-  }).length;
+  const { data: notificationCount } = useQuery<
+    UnreadNotificationsCountData,
+    UnreadNotificationsCountVars
+  >(UNREAD_NOTIFICATIONS_COUNT, {
+    variables: {
+      userId: userId,
+    },
+  });
+
+  const unreadNotifications =
+    notificationCount?.unreadNotificationsCountByUserId;
   return (
     <>
       <TopNav onMobileNavOpen={mobileNav.handleOpen} />
@@ -57,13 +67,13 @@ const Layout = ({ children }: Props) => {
         <SideNav
           // color={navColor}
           // sections={sections}
-          unreadNotifications={unreadNotifications||0}
+          unreadNotifications={unreadNotifications || 0}
           navigationItems={navigationData.admin}
         />
       )}
       {!lgUp && (
         <MobileNav
-        unreadNotifications={unreadNotifications||0}
+          unreadNotifications={unreadNotifications || 0}
           navigationItems={navigationData.admin}
           onClose={mobileNav.handleClose}
           open={mobileNav.open}

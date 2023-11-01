@@ -21,9 +21,15 @@ import {
 } from "@mui/material";
 import ItemsSummaryTable from "@/components/transfer-items/items-summary-table";
 
-import { useMutation } from "@apollo/client";
-import { WAREHOUSE_STOCK } from "@/graphql/products/queries";
-import TransferItemsDrawer from "@/components/modals/transfer-items-drawer";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  WAREHOUSE_STOCKS,
+  WarehouseStockData,
+  WarehouseStockVars,
+} from "@/graphql/products/queries";
+import TransferItemsDrawer, {
+  SelectedWarehouseStockItem,
+} from "@/components/modals/transfer-items-drawer";
 import { StockItem } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
 import {
@@ -32,7 +38,7 @@ import {
   TransferGoodsVars,
 } from "@/graphql/transfer-goods/mutations";
 import { useSession } from "next-auth/react";
-import { TransferType } from "../../../../types/transaction-history";
+import { TransferType } from "../../../../types/goods-transfer";
 import { showAlert } from "@/helpers/showAlert";
 import SearchIcon from "@mui/icons-material/Search";
 import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
@@ -40,22 +46,40 @@ import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries"
 
 type Props = {};
 
-export interface SelectedWarehouseItem {
-  warehouseStock: StockItem;
-  selectedQuantity: number;
-}
-
 const Page = (props: Props) => {
+  const { data: sessionData } = useSession();
+  const warehouseId = (sessionData?.user as any).warehouseId || "";
   const [transferGoodsToRetailshop, { data, error, loading }] = useMutation<
     TransferGoodsData,
     TransferGoodsVars
   >(TRANSFER_GOODS);
 
-  const { data: sessionData } = useSession();
+  const {
+    data: itemsData,
+    loading: itemsLoading,
+    error: itemsError,
+  } = useQuery<WarehouseStockData, WarehouseStockVars>(WAREHOUSE_STOCKS, {
+    variables: {
+      filterWarehouseStockInput: {
+        warehouse: {
+          id: warehouseId,
+        },
+      },
+    },
+  });
 
-  const [selectedItems, setSelectedItems] = useState<SelectedWarehouseItem[]>(
-    []
-  );
+  const [warehouseStocks, setWarehouseStocks] = useState<StockItem[]>([]);
+  useEffect(() => {
+    if (itemsData) {
+      setWarehouseStocks(
+        JSON.parse(JSON.stringify(itemsData.warehouseStocks.items))
+      );
+    }
+  }, [itemsData]);
+
+  const [selectedItems, setSelectedItems] = useState<
+    SelectedWarehouseStockItem[]
+  >([]);
   const [selectedRetailShop, setSelectedRetailShop] = useState<string | null>(
     null
   );
@@ -64,11 +88,10 @@ const Page = (props: Props) => {
     items: string;
   }>({ retailShop: "", items: "" });
 
-  const [filteredItems, setFilteredItems] = useState<SelectedWarehouseItem[]>(
-    []
-  );
+  const [filteredItems, setFilteredItems] = useState<
+    SelectedWarehouseStockItem[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const warehouseId = (sessionData?.user as any).warehouseId || "";
 
   useEffect(() => {
     setFilteredItems(
@@ -123,7 +146,7 @@ const Page = (props: Props) => {
       },
       refetchQueries: [
         {
-          query: WAREHOUSE_STOCK,
+          query: WAREHOUSE_STOCKS,
           variables: {
             filterWarehouseStockInput: {
               warehouse: {
@@ -156,7 +179,7 @@ const Page = (props: Props) => {
   const [open, setOpen] = useState(false);
 
   const handleAddItem = (warehouseStock: StockItem, quantity: number) => {
-    const selectedStockItem: SelectedWarehouseItem = {
+    const selectedStockItem: SelectedWarehouseStockItem = {
       warehouseStock: warehouseStock,
       selectedQuantity: quantity,
     };
@@ -193,7 +216,7 @@ const Page = (props: Props) => {
             </Stack>
 
             <Grid container spacing={2}>
-              <Grid item xs={12} md={8}>
+              <Grid item sm={12} md={8}>
                 <Card>
                   <CardHeader
                     action={
@@ -228,7 +251,7 @@ const Page = (props: Props) => {
                   />
                 </Card>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item sm={12} md={4}>
                 <Card>
                   <CardHeader title="Retail Shops" />
                   <RetailShopsList
@@ -274,12 +297,14 @@ const Page = (props: Props) => {
         </Container>
       </Box>
       <TransferItemsDrawer
+        warehouseStocks={warehouseStocks}
         selectedItemsId={selectedItems.map(
           (item) => item.warehouseStock.product.id
         )}
         handleAddItem={handleAddItem}
         open={open}
         setOpen={setOpen}
+        warehouseId={warehouseId}
       />
     </>
   );

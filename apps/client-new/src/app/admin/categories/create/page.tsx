@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardContent,
+  CardHeader,
   CircularProgress,
   Container,
   Grid,
@@ -15,22 +16,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
+import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import { API_URL } from "@/constants/urls";
-import {
-  CREATE_PRODUCT,
-  CreateProductData,
-  CreateProductVars,
-} from "@/graphql/products/mutations";
 import { useMutation } from "@apollo/client";
-import { PRODUCTS } from "@/graphql/products/queries";
 import { useRouter } from "next/navigation";
-import { Unit } from "../../../../../types/product";
 import { Category } from "../../../../../types/categories";
 import {
   CreateCategoryData,
@@ -38,6 +31,8 @@ import {
   CREATE_CATEGORY,
 } from "@/graphql/categories/mutations";
 import { showAlert } from "@/helpers/showAlert";
+import FileDropZone from "@/components/file-drop-zone";
+import { UploadFileData, UPLOAD_FILE } from "@/graphql/file/mutations";
 
 type Props = {};
 
@@ -58,6 +53,7 @@ interface Values {
   description: string;
   amharicDescription: string;
   parentCategory?: Category;
+  imageUrl: string;
 }
 
 const initialValues: Values = {
@@ -65,22 +61,10 @@ const initialValues: Values = {
   amharicName: "",
   description: "",
   amharicDescription: "",
+  imageUrl: "",
 };
 
 const Page = (props: Props) => {
-  // const handleCreateCategory = async () => {
-  //     await createCategory({
-  //       variables: {
-  //       onCompleted: (data) => {
-  //         router.push("/categories");
-  //       },
-  //       onError(error, clientOptions) {
-  //         console.log(error);
-  //       },
-  //       refetchQueries: [CATEGORIES],
-  //   };
-  //     });
-
   const [createCategory, { data, loading }] = useMutation<
     CreateCategoryData,
     CreateCategoryVars
@@ -90,7 +74,12 @@ const Page = (props: Props) => {
     data: categoryData,
     loading: categoryLoading,
     error: categoryError,
-  } = useQuery<CategoryData>(CATEGORIES);
+  } = useQuery<CategoriesData>(CATEGORIES);
+  const [photo, setPhoto] = useState<any>(null);
+  const [
+    uploadPhoto,
+    { error: uploadPhotoError, loading: uploadPhotoLoading },
+  ] = useMutation<UploadFileData>(UPLOAD_FILE);
 
   const router = useRouter();
 
@@ -98,6 +87,17 @@ const Page = (props: Props) => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers) => {
+      if (photo) {
+        await uploadPhoto({
+          variables: {
+            file: photo,
+          },
+          onCompleted: (data) => {
+            showAlert("uploaded a", "photo");
+            values.imageUrl = data.uploadFile;
+          },
+        });
+      }
       await createCategory({
         variables: {
           data: {
@@ -106,6 +106,7 @@ const Page = (props: Props) => {
             name: values.name,
             description: values.description,
             parentId: values.parentCategory?.id,
+            image: values.imageUrl,
           },
         },
         refetchQueries: [CATEGORIES],
@@ -142,7 +143,7 @@ const Page = (props: Props) => {
                       <Typography variant="h6">Basic details</Typography>
                     </Grid>
 
-                    <Grid xs={12} md={8}>
+                    <Grid item xs={12} md={8}>
                       <Stack spacing={3}>
                         <TextField
                           error={!!(formik.touched.name && formik.errors.name)}
@@ -227,22 +228,31 @@ const Page = (props: Props) => {
                               formik.errors.parentCategory
                             }
                             label="Parent Category"
-                            name="category"
+                            name="parentCategory"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.parentCategory?.name}
                             select
                           >
-                            {categoryData?.categories.items.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
+                            {categoryData
+                              ? categoryData.categories.items.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.name}
+                                  </MenuItem>
+                                ))
+                              : []}
                           </TextField>
                         </Stack>
                       </Stack>
                     </Grid>
                   </Grid>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader title="Upload Photo" />
+                <CardContent sx={{ pt: 0 }}>
+                  <FileDropZone setFile={setPhoto} file={photo} />
                 </CardContent>
               </Card>
 

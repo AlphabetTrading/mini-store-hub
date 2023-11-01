@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   CardContent,
   Divider,
@@ -27,6 +28,7 @@ import * as Yup from "yup";
 import { USERS } from "@/graphql/users/queries";
 import NextLink from "next/link";
 import CustomChip from "../custom-chip";
+import { useRouter } from "next/navigation";
 type Props = {
   user: User;
 };
@@ -54,26 +56,37 @@ const validationSchema = Yup.object({
 });
 
 const UsersListRow = ({ user }: Props) => {
+  const router = useRouter();
   return (
-    <>
-      <TableRow
-        component={NextLink}
-        href={`/admin/users/${user.id}`}
-        hover
-        sx={{ textDecoration: "none" }}
-      >
-        <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-        <TableCell>{user.username}</TableCell>
-        <TableCell>
-          <CustomChip label={user.role} />
-        </TableCell>
-        <TableCell>{user.phone}</TableCell>
-        <TableCell>
-          {user?.userProfile?.address?.street}{" "}
-          {user?.userProfile?.address?.city}
-        </TableCell>
-      </TableRow>
-    </>
+    <TableRow
+      hover
+      sx={{ textDecoration: "none" }}
+      onClick={() => router.push(`/admin/users/${user.id}`)}
+    >
+      <TableCell>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Avatar
+            src={user.userProfile?.photoUrl}
+            sx={{
+              height: 50,
+              width: 50,
+            }}
+          >
+            {/* Hanna Samuel */}
+            {/* {getInitials(customer.name)} */}
+          </Avatar>
+          <Typography variant="body2">{`${user.firstName} ${user.lastName}`}</Typography>
+        </Stack>
+      </TableCell>
+      <TableCell>{user.username}</TableCell>
+      <TableCell>
+        <CustomChip label={user.role} />
+      </TableCell>
+      <TableCell>{user.phone}</TableCell>
+      <TableCell>
+        {user?.userProfile?.address?.street} {user?.userProfile?.address?.city}
+      </TableCell>
+    </TableRow>
   );
 };
 

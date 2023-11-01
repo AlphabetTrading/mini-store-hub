@@ -85,7 +85,7 @@ export const NotificationComposer = ({ onClose, open }: Props) => {
     validationSchema,
     validate(values) {
       let errors: any = {};
-      if (values.recipientType===RecipientType.USER && !values.recipient) {
+      if (values.recipientType === RecipientType.USER && !values.recipient) {
         errors.recipient = "Required";
       }
       return errors;
@@ -178,6 +178,13 @@ export const NotificationComposer = ({ onClose, open }: Props) => {
               options={options}
               loading={usersLoading}
               onBlur={formik.handleBlur}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.id}>
+                    {option.firstName}
+                  </li>
+                );
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}

@@ -9,14 +9,17 @@ import {
 } from "@/graphql/notifications/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
-import {Notification} from "../../../types/notification";
+import { Notification } from "../../../types/notification";
 
 type Props = {
   notifications: Notification[];
   unreadNotifications: number;
 };
 
-export const NotificationsButton = ({unreadNotifications,notifications}:Props) => {
+export const NotificationsButton = ({
+  unreadNotifications,
+  notifications,
+}: Props) => {
   const popover = usePopover();
   const { data: sessionData } = useSession();
 

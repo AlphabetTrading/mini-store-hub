@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import FileDropZone from "../file-drop-zone";
 import { useEffect, useState } from "react";
 import { UPLOAD_FILE, UploadFileData } from "@/graphql/file/mutations";
+import { showAlert } from "@/helpers/showAlert";
 
 type Props = {
   user?: User;
@@ -133,6 +134,7 @@ export const UserEditForm = ({ user }: Props) => {
           },
           onCompleted: (data) => {
             console.log(data, "photo");
+            showAlert("uploaded a", "photo");
             values.photoUrl = data.uploadFile;
             // setPhotoUrl(data.uploadFile);
           },
@@ -145,6 +147,7 @@ export const UserEditForm = ({ user }: Props) => {
           },
           onCompleted: (data) => {
             console.log(data, "ID");
+            showAlert("uploaded a", "photo");
             values.idUrl = data.uploadFile;
             // setIdUrl(data.uploadFile);
           },
@@ -180,6 +183,7 @@ export const UserEditForm = ({ user }: Props) => {
             },
           },
           onCompleted: (data) => {
+            showAlert("updated", "user's profile");
             router.back();
           },
           refetchQueries: [USER],

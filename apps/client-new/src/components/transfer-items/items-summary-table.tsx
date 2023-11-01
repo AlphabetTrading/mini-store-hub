@@ -10,16 +10,16 @@ import {
 } from "@mui/material";
 import React from "react";
 import ItemsSummaryRow from "./items-summary-row";
-import { SelectedWarehouseItem } from "@/app/(warehouse-manager)/transfer-items/page";
 import EmptyTable from "../empty-table";
+import { SelectedWarehouseStockItem } from "../modals/transfer-items-drawer";
 
 type Props = {
   handleRemoveItem: (id: string) => void;
-  selectedItems: SelectedWarehouseItem[];
+  selectedItems: SelectedWarehouseStockItem[];
   setSelectedItems: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseItem[]>
+    React.SetStateAction<SelectedWarehouseStockItem[]>
   >;
-  filteredItems: SelectedWarehouseItem[];
+  filteredItems: SelectedWarehouseStockItem[];
 };
 
 const ItemsSummaryTable = ({
@@ -29,8 +29,8 @@ const ItemsSummaryTable = ({
   filteredItems,
 }: Props) => {
   return (
-    <TableContainer style={{ maxHeight: 400 }}>
-      <Table stickyHeader>
+    <TableContainer sx={{ maxHeight: 400, overflow: "auto" }}>
+      <Table stickyHeader sx={{ minWidth: 900 }}>
         <TableHead>
           <TableRow>
             <TableCell>Item Name</TableCell>

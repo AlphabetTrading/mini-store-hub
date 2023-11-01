@@ -19,31 +19,47 @@ import CategoriesListTable from "@/components/categories/categories-list-table";
 import { ProductsData, PRODUCTS } from "@/graphql/products/queries";
 import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
-import { CATEGORIES, CategoryData } from "@/graphql/categories/queries";
+import { CATEGORIES, CategoriesData } from "@/graphql/categories/queries";
 import Pagination from "@/components/Pagination";
+import StateHandler from "@/components/state-handler";
 
 type Props = {};
+
+const OrderBySelector = (filter: string) => {
+  const filterType = filter.split("|")[0];
+  switch (filterType) {
+    case "name":
+      return {
+        name: filter.split("|")[1],
+      };
+    case "createdAt":
+      return {
+        createdAt: filter.split("|")[1],
+      };
+  }
+};
 
 const Page = (props: Props) => {
   const [filter, setFilter] = useState({
     query: "",
-    filter: "name|asc",
+    filter: "createdAt|desc",
   });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { data: sessionData } = useSession();
-  const { data, error, loading, refetch } = useQuery<CategoryData>(CATEGORIES, {
-    variables: {
-      paginationInput: {
-        skip: page * rowsPerPage,
-        take: rowsPerPage,
+  const { data, error, loading, refetch } = useQuery<CategoriesData>(
+    CATEGORIES,
+    {
+      variables: {
+        paginationInput: {
+          skip: page * rowsPerPage,
+          take: rowsPerPage,
+        },
+        orderBy: OrderBySelector(filter.filter),
       },
-      orderBy: {
-        name: filter.filter.split("|")[1],
-      },
-    },
-    // fetchPolicy: "cache-and-network",
-  });
+      fetchPolicy: "cache-and-network",
+    }
+  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -60,9 +76,7 @@ const Page = (props: Props) => {
           skip: page * rowsPerPage,
           take: rowsPerPage,
         },
-        orderBy: {
-          name: filter.filter.split("|")[1],
-        },
+        orderBy: OrderBySelector(filter.filter),
       });
     }, 300);
     return () => clearTimeout(timeout);
@@ -110,24 +124,24 @@ const Page = (props: Props) => {
             }}
           >
             <CategoriesListSearch filter={filter} setFilter={setFilter} />
-            {loading ? (
-              <CircularProgress />
-            ) : !data || error ? (
-              <Typography variant="h4">
-                Failed to fetch {JSON.stringify(error)}
-              </Typography>
-            ) : (
+            <StateHandler
+              empty={data?.categories.items.length === 0}
+              error={error}
+              loading={loading}
+            >
               <>
-                <CategoriesListTable categories={data.categories.items} />
+                <CategoriesListTable
+                  categories={data?.categories.items || []}
+                />
                 <Pagination
-                  meta={data.categories.meta}
+                  meta={data?.categories.meta}
                   page={page}
                   setPage={setPage}
                   rowsPerPage={rowsPerPage}
                   setRowsPerPage={setRowsPerPage}
                 />
               </>
-            )}
+            </StateHandler>
           </Card>
           {/* <Card>
             <ItemListSearch/>
