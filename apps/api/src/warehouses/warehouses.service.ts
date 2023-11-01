@@ -141,6 +141,39 @@ export class WarehousesService {
     });
   }
 
+  async deactivate(id: string) {
+    const warehouse = await this.prisma.warehouse.findUnique({
+      where: { id },
+    });
+
+    if (!warehouse) {
+      throw new NotFoundException('Warehouse not found');
+    }
+
+    return await this.prisma.warehouse.update({
+      where: { id },
+      data: {
+        status: false,
+      },
+    });
+  }
+  async activate(id: string) {
+    const warehouse = this.prisma.warehouse.findUnique({
+      where: { id },
+    });
+
+    if (!warehouse) {
+      throw new NotFoundException('Warehouse not found');
+    }
+
+    return await this.prisma.warehouse.update({
+      where: { id },
+      data: {
+        status: true,
+      },
+    });
+  }
+
   async remove(id: string) {
     const warehouse = await this.prisma.warehouse.findUnique({
       where: { id },

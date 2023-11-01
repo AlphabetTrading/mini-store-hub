@@ -6,7 +6,6 @@ import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { Prisma, TransferType } from '@prisma/client';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
-import { FilterCategoryInput } from 'src/categories/dto/filter-category.input';
 import { FilterGoodsTransferInput } from './dto/filter-goods-transfer.input';
 import { OrderByGoodsTransferInput } from './dto/goods-transfer-order.input';
 import { PaginationGoodsTransfer } from 'src/common/pagination/pagination-info';
@@ -21,7 +20,7 @@ export class GoodsTransfersResolver {
   @Query(() => PaginationGoodsTransfer, { name: 'goodsTransfers' })
   async goodsTransfers(
     @Args('filterGoodsTransferInput', {
-      type: () => FilterCategoryInput,
+      type: () => FilterGoodsTransferInput,
       nullable: true,
     })
     filterGoodsTransferInput?: FilterGoodsTransferInput,
@@ -227,17 +226,15 @@ export class GoodsTransfersResolver {
     @Args('id') id: string,
     @Args('data') data: UpdateGoodsTransferInput,
   ) {
-    if (!data.transferType) {
-      throw new Error('Transfer Type cannot be empty');
-    }
+    const goodsTransfer = await this.goodsTransfersService.findOne(id);
 
-    if (data.transferType === TransferType.WarehouseToRetailShop) {
-      if (!data.sourceWarehouseId) {
+    if (goodsTransfer.transferType === TransferType.WarehouseToRetailShop) {
+      if (!goodsTransfer.sourceWarehouseId) {
         throw new Error('Warehouse Id cannot be empty');
       }
       return this.goodsTransfersService.updateTransferToRetailShop(id, data);
     } else {
-      if (!data.destinationWarehouseId) {
+      if (!goodsTransfer.destinationWarehouseId) {
         throw new Error('Warehouse Id cannot be empty');
       }
       return this.goodsTransfersService.updateTransferToWarehouse(id, data);

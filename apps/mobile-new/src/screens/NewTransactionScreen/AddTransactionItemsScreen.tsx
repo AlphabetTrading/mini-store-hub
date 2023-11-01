@@ -79,6 +79,7 @@ const AddTransactionItemsScreen = () => {
       variables: selectedCategory.id === AllCategory.id ? GET_ALL_QUERY_VARIABLE : GET_CATEGORY_QUERY_VARIABLE,
       onCompleted: async (data,) => {
         if (data.retailShopStockByRetailShopId.items) {
+
           const alteredItems = data.retailShopStockByRetailShopId.items.map(
             (item: any) => ({ ...item, selectedQuantity: 0 })
           );
@@ -87,9 +88,9 @@ const AddTransactionItemsScreen = () => {
         }
       },
       onError: (err) => {
+        console.log(err, " is error")
       },
-
-
+      // fetchPolicy: "cache-and-network",
     }
   );
 
@@ -157,8 +158,6 @@ const AddTransactionItemsScreen = () => {
     searchItems()
   }, [searchItems]);
 
-
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -171,8 +170,9 @@ const AddTransactionItemsScreen = () => {
       right: 0,
       bottom: 0,
       borderRadius: 33,
-      backgroundColor: theme.colors.background,
-      borderColor: theme.colors.tint,
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.white,
+      color: theme.colors.white,
       borderWidth: theme.mode === "light" ? 0 : 1.5,
       elevation: 4,
     },
@@ -224,6 +224,15 @@ const AddTransactionItemsScreen = () => {
                   width: "100%",
                 }}
               >
+                {/* <Text
+                  style={{
+                    fontSize: 18,
+                    fontFamily: "InterMedium",
+                    color: theme.colors.text,
+                  }}
+                >
+                  {JSON.stringify(alreadySelected[0], null, 2)}
+                </Text> */}
                 <FlatList
                   contentContainerStyle={styles.container}
                   refreshControl={
@@ -263,6 +272,19 @@ const AddTransactionItemsScreen = () => {
                 >
                   {t("noItemsFound")}
                 </Text>
+                <View>
+                  <Button onPress={onRefresh}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontFamily: "InterMedium",
+                        color: theme.colors.text,
+                      }}
+                    >
+                      {t("refresh")}
+                    </Text>
+                  </Button>
+                </View>
               </View>
             )}
           </View>

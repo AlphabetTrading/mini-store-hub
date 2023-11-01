@@ -25,7 +25,7 @@ const NotificationIconComp = () => {
           onPress={() => navigation.navigate("Notifications")}
         />
 
-        {data && data?.unreadNotificationsByUserId.length > 0 ? (
+        {data && data?.unreadNotificationsCountByUserId > 0 ? (
           <View
             style={{
               position: "absolute",
@@ -40,25 +40,10 @@ const NotificationIconComp = () => {
             }}
           >
             <Text style={{ color: "white", fontSize: 10 }}>
-              {data?.unreadNotificationsByUserId?.length}
+              {data?.unreadNotificationsCountByUserId}
             </Text>
           </View>
         ) : null}
-        {/* <View
-          style={{
-            position: "absolute",
-            bottom: -5,
-            right: -5,
-            backgroundColor: "#FF0000",
-            width: 16,
-            height: 16,
-            borderRadius: 12,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 8 }}>12</Text>
-        </View> */}
       </View>
     </View>
   );

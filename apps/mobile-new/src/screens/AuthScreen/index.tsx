@@ -52,6 +52,10 @@ const LoginScreen = ({ }: any) => {
     },
     onCompleted: async ({ login }: any) => {
       if (login) {
+        if (login?.user?.role !== "RETAIL_SHOP_MANAGER") {
+          notifyMessage("Error: " + "You are not allowed to login as retailshop manager");
+          return;
+        }
         setAuthState(login);
         navigation.navigate("Root", {
           screen: "HomeRoot",
@@ -69,6 +73,7 @@ const LoginScreen = ({ }: any) => {
       }
     },
     onError: (error) => {
+      console.log(error)
       notifyMessage("Error: " + error.message);
     },
     errorPolicy: "all"
@@ -150,7 +155,7 @@ const LoginScreen = ({ }: any) => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              setTimeout(() => {
+              const id = setTimeout(() => {
                 controller.abort();
                 notifyMessage("Something went wrong, please try again");
               }, 7000);
@@ -163,6 +168,9 @@ const LoginScreen = ({ }: any) => {
                   }
                 },
               });
+
+              clearTimeout(id);
+
               //   if (res.errors) {
               //     notifyMessage("Error: " + res.errorsmessage);
               //     if (

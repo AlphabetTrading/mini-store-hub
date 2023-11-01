@@ -10,7 +10,7 @@ type Props = {
 
 const SingleItem = ({ item, index }: Props) => {
     const { theme } = useAppTheme()
-    const { locale } = useLocalization()
+    const { t, locale } = useLocalization()
     return (
         <View
             style={{
@@ -22,7 +22,12 @@ const SingleItem = ({ item, index }: Props) => {
                 borderRadius: 6,
             }}
         >
-            <View>
+            <View
+                style={{
+                    flex: 1,
+                    gap: 5,
+                }}
+            >
                 <Text
                     style={{
                         fontFamily: "InterMedium",
@@ -43,15 +48,34 @@ const SingleItem = ({ item, index }: Props) => {
                     in-{item.unit}
                 </Text>
             </View>
-            <Text
+
+            <View
                 style={{
-                    fontSize: 16,
-                    fontFamily: "InterMedium",
-                    color: theme.colors.text,
+                    flex: 1,
+                    gap: 5,
+                    alignItems: "flex-end",
                 }}
             >
-                {item.serialNumber}
-            </Text>
+
+                <Text
+                    style={{
+                        fontSize: 16,
+                        fontFamily: "InterMedium",
+                        color: theme.colors.text,
+                    }}
+                >
+                    {t("serialNumber")}: {item.serialNumber}
+                </Text>
+                <Text
+                    style={{
+                        fontSize: 16,
+                        fontFamily: "InterMedium",
+                        color: theme.colors.text,
+                    }}
+                >
+                    {item.value}
+                </Text>
+            </View>
         </View>
     )
 }

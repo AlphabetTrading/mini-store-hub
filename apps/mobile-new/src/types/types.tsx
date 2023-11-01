@@ -40,6 +40,7 @@ export type RootTabParamList = {
   | NavigatorScreenParams<NewTransactionParamList>
   | undefined;
   SalesRoot: NavigatorScreenParams<SalesParamList> | undefined;
+  TransactionsRoot: NavigatorScreenParams<TransactionsParamList> | undefined;
   InsightsRoot: NavigatorScreenParams<InsightsTabParamList> | undefined;
   AccountRoot: NavigatorScreenParams<AccountTabParamList> | undefined;
 };
@@ -74,6 +75,12 @@ export type NewTransactionParamList = {
 export type SalesParamList = {
   Index: undefined;
   TransactionDetailScreen: { transactionID: string; totalPrice: number };
+};
+
+export type TransactionsParamList = {
+  Index: undefined;
+  IncomingTransactionDetailScreen: { transactionID: string; totalPrice: number };
+  SalesTransactionDetailScreen: { transactionID: string; totalPrice: number };
 };
 
 export type AccountTabParamList = {

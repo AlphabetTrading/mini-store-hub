@@ -13,6 +13,7 @@ import {
   UserRole,
 } from '@prisma/client';
 import { Notification } from './models/notification.model';
+import { RecordsEvent } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class NotificationService {
@@ -39,13 +40,21 @@ export class NotificationService {
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
       case UserRole.ADMIN:
-        recipientType = ['ALL'];
+        recipientType = [RecipientType.ALL, RecipientType.USER];
         break;
       case UserRole.RETAIL_SHOP_MANAGER:
-        recipientType = ['RETAIL_SHOP', 'ALL'];
+        recipientType = [
+          RecipientType.RETAIL_SHOP,
+          RecipientType.USER,
+          RecipientType.ALL,
+        ];
         break;
       case UserRole.WAREHOUSE_MANAGER:
-        recipientType = ['WAREHOUSE', 'ALL'];
+        recipientType = [
+          RecipientType.WAREHOUSE,
+          RecipientType.USER,
+          RecipientType.ALL,
+        ];
         break;
       default:
         break;
@@ -82,13 +91,88 @@ export class NotificationService {
           },
         ],
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         notificationReads: true,
         user: true,
       },
     });
 
-    return readNotifications;
+    return readNotifications.map((notification) => {
+      if (
+        notification.notificationReads.filter(
+          (notfi: any) => notfi.userId === userId,
+        ).length > 0
+      ) {
+        const notificationData = {
+          ...notification,
+          isRead: true,
+        };
+
+        delete notificationData.notificationReads;
+
+        return notificationData;
+      }
+      return notification;
+    });
+  }
+
+  async getAllUnreadNotificationsCount(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
+    let notificationTypes: RecipientType[] = [RecipientType.USER];
+
+    if (user.role === UserRole.ADMIN) {
+      notificationTypes = [RecipientType.ALL, RecipientType.USER];
+    } else if (user.role === UserRole.RETAIL_SHOP_MANAGER) {
+      notificationTypes = [
+        RecipientType.RETAIL_SHOP,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    } else if (user.role === UserRole.WAREHOUSE_MANAGER) {
+      notificationTypes = [
+        RecipientType.WAREHOUSE,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    }
+
+    const readNotificationIds = await this.prisma.notificationRead.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        notificationId: true,
+      },
+    });
+
+    const notificationIds = readNotificationIds.map(
+      (readNotification) => readNotification.notificationId,
+    );
+
+    const unreadNotifications = await this.prisma.notification.count({
+      where: {
+        isRead: false,
+        id: {
+          notIn: notificationIds,
+        },
+        recipientType: {
+          in: notificationTypes,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return unreadNotifications;
   }
 
   async getAllReadNotifications(userId: string): Promise<Notification[]> {
@@ -101,13 +185,13 @@ export class NotificationService {
     let recipientType: RecipientType[] = ['USER'];
     switch (user.role) {
       case UserRole.ADMIN:
-        recipientType = ['ALL'];
+        recipientType = ['ALL', 'USER'];
         break;
       case UserRole.RETAIL_SHOP_MANAGER:
-        recipientType = ['RETAIL_SHOP', 'ALL'];
+        recipientType = ['RETAIL_SHOP', 'ALL', 'USER'];
         break;
       case UserRole.WAREHOUSE_MANAGER:
-        recipientType = ['WAREHOUSE', 'ALL'];
+        recipientType = ['WAREHOUSE', 'ALL', 'USER'];
         break;
       default:
         break;
@@ -151,6 +235,30 @@ export class NotificationService {
   }
 
   async getAllUnreadNotifications(userId: string): Promise<Notification[]> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
+    let notificationTypes: RecipientType[] = [RecipientType.USER];
+
+    if (user.role === UserRole.ADMIN) {
+      notificationTypes = [RecipientType.ALL, RecipientType.USER];
+    } else if (user.role === UserRole.RETAIL_SHOP_MANAGER) {
+      notificationTypes = [
+        RecipientType.RETAIL_SHOP,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    } else if (user.role === UserRole.WAREHOUSE_MANAGER) {
+      notificationTypes = [
+        RecipientType.WAREHOUSE,
+        RecipientType.ALL,
+        RecipientType.USER,
+      ];
+    }
+
     const readNotificationIds = await this.prisma.notificationRead.findMany({
       where: {
         userId,
@@ -166,8 +274,12 @@ export class NotificationService {
 
     const unreadNotifications = await this.prisma.notification.findMany({
       where: {
+        isRead: false,
         id: {
           notIn: notificationIds,
+        },
+        recipientType: {
+          in: notificationTypes,
         },
       },
       include: {
@@ -283,6 +395,37 @@ export class NotificationService {
         user: true,
       },
     });
+  }
+
+  async getUsersNotificationDetailByUserIdAndNotificationId(
+    userId: string,
+    notificationId: string,
+  ) {
+    const notification = await this.prisma.notification.findUnique({
+      where: {
+        id: notificationId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('Notification is not found');
+    }
+
+    // check if it is read
+    const hasRead = this.prisma.notificationRead.findFirst({
+      where: {
+        notificationId,
+        userId,
+      },
+    });
+
+    return {
+      ...notification,
+      isRead: hasRead ? notification.isRead : false,
+    };
   }
 
   async getNotificationsByUserIdAndStatus(user_id: string, status: boolean) {
@@ -466,9 +609,8 @@ export class NotificationService {
         id: notificationId,
       },
     });
-
     // check if the notification is group notification
-    if (notification.recipientType !== 'USER') {
+    if (notification.recipientType !== UserRole.USER) {
       const notificationRead = await this.prisma.notificationRead.upsert({
         where: {
           notificationId_userId: {

@@ -85,6 +85,7 @@ const InsightsScreen = (props: Props) => {
           >
             {t("mostRevenue")}
           </Text>
+
           <TopSellingItems
             retailShopID={retailShopID}
             insightsType={INSIGHTS_TYPE.MOST_REVENUE_BY_ITEM}

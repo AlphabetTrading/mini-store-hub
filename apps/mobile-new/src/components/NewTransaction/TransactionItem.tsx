@@ -11,6 +11,7 @@ import { Entypo } from "@expo/vector-icons";
 import { RectButton, Swipeable } from "react-native-gesture-handler";
 import { useAppTheme } from "../../contexts/preference";
 import { useLocalization } from "../../contexts/localization";
+import QuantityControl from "./QuantityControl";
 
 export interface CheckoutItem {
   id?: string;
@@ -21,6 +22,7 @@ export interface CheckoutItem {
     id: string;
     name: string;
     amharicName: string;
+    unit: string;
     activePrice: {
       price: number;
       purchasedPrice: number;
@@ -134,6 +136,8 @@ const TransactionItem = ({
       });
     });
   };
+
+
   return (
     <View
       style={{
@@ -175,50 +179,83 @@ const TransactionItem = ({
         >
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              gap: 12,
+              flexDirection: "column",
+              alignItems: "stretch",
+              width: "100%",
             }}
           >
-            <View>
-              <Text
-                style={[
-                  // styles.itemTextStyle,
-                  {
-                    fontSize: 18,
-                    fontFamily: "InterMedium",
-                    color: theme.colors.text,
-                  },
-                ]}
-              >
-                {locale.includes("am") ? checkoutItem.product.amharicName : checkoutItem.product.name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: "InterLight",
-                  color: theme.colors.text,
-                }}
-              >
-                {t("unitPrice")}: {t("etb")} {checkoutItem.product.activePrice.price}
-              </Text>
-              <Text
-                style={{
+            <Text
+              style={[
+                {
                   fontSize: 18,
                   fontFamily: "InterMedium",
                   color: theme.colors.text,
+                },
+              ]}
+            >
+              {locale.includes("am") ? checkoutItem.product.amharicName : checkoutItem.product.name}
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  flexGrow: 1
                 }}
               >
-                {t("total")}{": "}{t("etb")}{" "}
-                <Text style={{ fontSize: 18, color: theme.colors.text }}>
-                  {checkoutItem.product.activePrice.price *
-                    checkoutItem.selectedQuantity}
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: "InterLight",
+                    color: theme.colors.text,
+                  }}
+                >
+                  {t("unitPrice")}: {t("etb")} {checkoutItem.product.activePrice.price}
                 </Text>
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontFamily: "InterMedium",
+                    color: theme.colors.text,
+                  }}
+                >
+                  {t("total")}{": "}{t("etb")}{" "}
+                  <Text style={{ fontSize: 18, color: theme.colors.text }}>
+                    {checkoutItem.product.activePrice.price *
+                      checkoutItem.selectedQuantity}
+                  </Text>
+                </Text>
+              </View>
+              <QuantityControl
+                onChange={(value: any) => {
+                  setCheckoutItems((prev: CheckoutItem[]) => {
+                    return prev.map((item) => {
+                      if (item.productId === checkoutItem.productId) {
+                        return {
+                          ...item,
+                          selectedQuantity: value,
+                        };
+                      } else {
+                        return item;
+                      }
+                    }
+                    );
+                  });
+                }
+                }
+                productItem={checkoutItem}
+              />
             </View>
           </View>
-          <View
+
+          {/* <View
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -254,7 +291,7 @@ const TransactionItem = ({
                 <Entypo name="plus" size={24} color={theme.colors.text} />
               </Pressable>
             </View>
-          </View>
+          </View> */}
         </View>
       </Swipeable>
     </View>

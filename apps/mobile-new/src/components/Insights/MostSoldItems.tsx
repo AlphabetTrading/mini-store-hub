@@ -20,7 +20,6 @@ const MostSoldItems = ({
         retailShopID,
         insightsType,
     );
-
     React.useEffect(() => {
         if (isRefreshing) {
             refetch();
@@ -32,7 +31,11 @@ const MostSoldItems = ({
             <ActivityIndicator color={theme.colors.tint} />
         </View>
     ) : error ? (
-        <Text>Error Try Again</Text>
+        <Text
+            style={{
+                color: theme.colors.textSecondary,
+            }}
+        >Error Try Again</Text>
     ) : (
         data?.findProductsBySoldQuantityAndRetailShop.items.map((item: any, index: number) => (
             <SingleItem key={item.id} item={item} index={index} />

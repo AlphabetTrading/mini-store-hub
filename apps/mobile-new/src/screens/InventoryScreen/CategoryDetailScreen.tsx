@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import SearchBarComponent from "../../components/NewTransaction/SearchBar";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "../../contexts/preference";
-import { Avatar, ActivityIndicator } from "react-native-paper";
+import { Avatar, ActivityIndicator, Button } from "react-native-paper";
 
 type Props = {};
 
@@ -194,7 +194,7 @@ const CategoryDetailScreen = ({
                       }}
                     >
                       <Avatar.Image
-                        source={{ uri: "https://picsum.photos/200" }}
+                        source={{ uri: item.product.images > 0 ? item.images[0] : "https://picsum.photos/200/300" }}
                         size={60}
                       />
                       {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
@@ -207,7 +207,7 @@ const CategoryDetailScreen = ({
                           }}
                         >
                           {/* {item.product.name} */}
-                          {locale === "en"
+                          {locale.includes("en")
                             ? item.product.name
                             : item.product.amharicName}
                         </Text>
@@ -231,7 +231,7 @@ const CategoryDetailScreen = ({
                           color: theme.colors.text,
                         }}
                       >
-                        {locale === "en"
+                        {locale.includes("en")
                           ? `${item.product.activePrice
                             ? item.product.activePrice.price
                             : 29
@@ -263,6 +263,23 @@ const CategoryDetailScreen = ({
               >
                 No Items Found
               </Text>
+              <Button
+                onPress={onRefresh}
+                style={{
+                  borderColor: theme.colors.tint,
+                  borderWidth: 1,
+                  marginTop: 10,
+                }}>
+                <Text
+                  style={{
+                    color: theme.colors.text,
+                    fontSize: 18,
+                    fontFamily: "InterMedium",
+                  }}
+                >
+                  {t("refresh")}
+                </Text>
+              </Button>
             </View>
           )}
         </View>

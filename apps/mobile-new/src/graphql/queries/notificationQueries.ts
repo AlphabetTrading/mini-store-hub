@@ -35,9 +35,18 @@ export const GET_UNREAD_NOTIFICATIONS = gql`
   }
 `;
 
+export const GET_UNREAD_NOTIFICATIONS_COUNT = gql`
+  query Query($userId: String!) {
+    unreadNotificationsCountByUserId(userId: $userId)
+  }
+`;
+
 export const GET_NOTIFICATION_DETAIL = gql`
-  query notificationById($notificationById: String!) {
-    notificationById(id: $notificationById) {
+  query Query($userId: String!, $notificationId: String!) {
+    getUsersNotificationDetailByUserIdAndNotificationId(
+      notificationId: $notificationId
+      userId: $userId
+    ) {
       amharicBody
       amharicTitle
       body
@@ -48,10 +57,6 @@ export const GET_NOTIFICATION_DETAIL = gql`
       recipientType
       title
       updatedAt
-      notificationReads {
-        id
-        userId
-      }
     }
   }
 `;
@@ -69,10 +74,6 @@ export const GET_USERS_NOTIFICATIONS = gql`
       recipientType
       title
       updatedAt
-      notificationReads {
-        id
-        userId
-      }
     }
   }
 `;

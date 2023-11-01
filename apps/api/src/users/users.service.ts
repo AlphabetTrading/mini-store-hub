@@ -35,6 +35,14 @@ export class UsersService {
     });
   }
 
+  async getRetailShopByUserId(userId: string) {
+    return this.prisma.retailShop.findFirst({
+      where: {
+        retailShopManagerId: userId,
+      },
+    });
+  }
+
   async updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({
       data: {
@@ -92,10 +100,10 @@ export class UsersService {
           username: payload.username,
           password: hashedPassword,
           role,
-          userProfile: {
+          userProfile: payload.userProfile && {
             create: {
               ...payload.userProfile,
-              address: {
+              address: payload.userProfile.address && {
                 create: {
                   ...payload.userProfile.address,
                 },

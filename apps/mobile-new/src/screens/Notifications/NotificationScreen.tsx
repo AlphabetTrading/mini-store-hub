@@ -9,23 +9,15 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useAuth } from "../../contexts/auth";
 import { useGetUsersNotifications } from "../../hooks/api/useGetNotificationsData";
 import { useAppTheme } from "../../contexts/preference";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Button } from "react-native-paper";
+import SingleNotificationItem from "../../components/Notifications/SingleNotificationItem";
 
 type Props = {};
 
-interface Notification {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-}
-
 const NotificationScreen = (props: Props) => {
-  const navigation = useNavigation();
   const { authState } = useAuth();
   const { data, loading, error, refetch } = useGetUsersNotifications(
     authState?.user?.id || ""
@@ -41,8 +33,14 @@ const NotificationScreen = (props: Props) => {
     }, 2000);
   }, []);
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+    },
+  });
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       {loading ? (
         <View
           style={{
@@ -54,97 +52,44 @@ const NotificationScreen = (props: Props) => {
         >
           <ActivityIndicator color={theme.colors.tint} />
         </View>
-      ) : error ? (
+      ) : !data && error ? (
         <View
           style={{
             marginVertical: 30,
             justifyContent: "center",
             alignItems: "center",
+            rowGap: 20,
           }}
         >
-          <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+          <Text style={{ fontSize: 18, fontFamily: "InterMedium", color: theme.colors.tint }}>
             There is an error, please refresh the page
           </Text>
+          <Button
+            style={{
+              paddingHorizontal: 10,
+              paddingVertical: 2,
+              borderWidth: 1,
+              borderRadius: 10,
+              borderColor: theme.colors.tint
+            }}
+            onPress={() => {
+              refetch();
+            }}
+          >
+            <Text style={{ color: theme.colors.text }}>Refresh</Text>
+          </Button>
         </View>
       ) : data.allNotificationsByUserId.length > 0 ? (
         <FlatList
           keyExtractor={(item) => item.id}
           data={data.allNotificationsByUserId}
-          key={data.allNotificationsByUserId.length}
           contentContainerStyle={styles.container}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           style={{ width: "100%" }}
-          renderItem={({ item, index }) => {
-            const hasReadNotification =
-              item.isRead ||
-              item?.notificationReads.filter(
-                (notfi: any) => notfi.userId === authState?.user.id
-              ).length > 0;
-            return (
-              <TouchableOpacity
-                key={item.id}
-                style={{
-                  width: "100%",
-                  backgroundColor: !hasReadNotification ? "#EFEFEF80" : "#FFF",
-                }}
-                onPress={() => {
-                  navigation.navigate("Notifications", {
-                    screen: "NotificationDetailScreen",
-                    params: {
-                      notificationID: item.id,
-                    },
-                  });
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: 20,
-                  }}
-                >
-                  <View style={{ gap: 10 }}>
-                    <Text style={{ fontFamily: "InterMedium", fontSize: 16 }}>
-                      {item.title}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: "InterLight",
-                        fontSize: 12,
-                        paddingRight: 10,
-                      }}
-                    >
-                      {item.body}
-                    </Text>
-                  </View>
-
-                  <View
-                    style={{
-                      width: 6,
-                      height: 6,
-                      backgroundColor:
-                        item.recipientType === "USER"
-                          ? "#00FF00"
-                          : item.recipientType === "RETAIL_SHOP"
-                            ? "#00FFFF"
-                            : "#FF0000",
-                      borderRadius: 3,
-                    }}
-                  ></View>
-                </View>
-                <Text
-                  style={{
-                    fontFamily: "InterLight",
-                    fontSize: 12,
-                    color: "#000",
-                  }}
-                ></Text>
-              </TouchableOpacity>
-            );
-          }}
+          renderItem={({ item }) => <SingleNotificationItem item={item} />}
+          ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#EFEFEF" }}></View>}
         />
       ) : (
         <View
@@ -165,10 +110,4 @@ const NotificationScreen = (props: Props) => {
 
 export default NotificationScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // padding: 15,
-    backgroundColor: Colors.light.background,
-  },
-});
+

@@ -12,6 +12,7 @@ export const GET_CATEGORIES = gql`
         parentId
         createdAt
         updatedAt
+        image
       }
     }
   }

@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import { Product } from './models/product.model';
 import { Prisma } from '@prisma/client';
+import { ProductRankWithExtraInfo } from './models/products-with-info.model';
 
 export const ProductsIncludeObject: Prisma.ProductInclude = {
   category: true,
@@ -50,7 +51,7 @@ export class ProductsService {
     take?: number;
     where?: Prisma.ProductWhereInput;
     orderBy?: Prisma.ProductOrderByWithRelationInput;
-  }): Promise<Product[]> {
+  }): Promise<ProductRankWithExtraInfo[]> {
     const products = await this.prisma.product.findMany({
       where,
       orderBy,
@@ -58,6 +59,28 @@ export class ProductsService {
         saleTransactionItem: true,
       },
     });
+
+    const productsWithTotalSales: ProductRankWithExtraInfo[] = products.map(
+      (product) => {
+        const totalSales = product.saleTransactionItem.reduce(
+          (acc, t) => acc + t.quantity,
+          0,
+        );
+
+        return {
+          value: totalSales,
+          ...product,
+        };
+      },
+    );
+
+    productsWithTotalSales.sort((a, b) => {
+      return b.value - a.value;
+    });
+    if (take)
+      return productsWithTotalSales.slice(skip * take, (skip + 1) * take);
+
+    return productsWithTotalSales;
 
     products.sort((a, b) => {
       const totalSalesA = a.saleTransactionItem.reduce(
@@ -88,7 +111,7 @@ export class ProductsService {
     take?: number;
     where?: Prisma.ProductWhereInput;
     orderBy?: Prisma.ProductOrderByWithRelationInput;
-  }): Promise<Product[]> {
+  }): Promise<ProductRankWithExtraInfo[]> {
     const products = await this.prisma.product.findMany({
       orderBy,
       where,
@@ -96,6 +119,29 @@ export class ProductsService {
         saleTransactionItem: true,
       },
     });
+
+    const productsWithTotalSales: ProductRankWithExtraInfo[] = products.map(
+      (product) => {
+        const totalSalesB = product.saleTransactionItem.reduce(
+          (acc, t) => acc + t.subTotal,
+          0,
+        );
+        return {
+          value: totalSalesB,
+          ...product,
+        };
+      },
+    );
+
+    productsWithTotalSales.sort((a, b) => {
+      return b.value - a.value;
+    });
+
+    if (take)
+      return productsWithTotalSales.slice(skip * take, (skip + 1) * take);
+
+    return productsWithTotalSales;
+
     products.sort((a, b) => {
       const totalSalesA = a.saleTransactionItem.reduce(
         (acc, t) => acc + t.subTotal,
@@ -128,6 +174,7 @@ export class ProductsService {
     const products = await this.prisma.product.findMany({
       orderBy,
       where: {
+        ...where,
         goods: {
           every: {
             goodsTransfer: {
@@ -171,7 +218,7 @@ export class ProductsService {
     take?: number;
     where?: Prisma.ProductWhereInput;
     orderBy?: Prisma.ProductOrderByWithRelationInput;
-  }): Promise<Product[]> {
+  }): Promise<ProductRankWithExtraInfo[]> {
     const products = await this.prisma.product.findMany({
       orderBy,
       where,
@@ -184,21 +231,30 @@ export class ProductsService {
       },
     });
 
-    products.sort((a, b) => {
-      const totalProfitA = a.saleTransactionItem.reduce(
-        (acc, t) => acc + t.subTotal,
-        0,
-      );
-      const totalProfitB = b.saleTransactionItem.reduce(
-        (acc, t) => acc + t.soldPriceHistory.purchasedPrice * t.quantity,
-        0,
-      );
-
-      return totalProfitB - totalProfitA;
+    const productsWithTotalSales: ProductRankWithExtraInfo[] = products.map(
+      (product) => {
+        const soldTotalAmount = product.saleTransactionItem.reduce(
+          (acc, t) => acc + t.subTotal,
+          0,
+        );
+        const purchaseTotalAmount = product.saleTransactionItem.reduce(
+          (acc, t) => acc + t.soldPriceHistory.purchasedPrice * t.quantity,
+          0,
+        );
+        return {
+          value: soldTotalAmount - purchaseTotalAmount,
+          ...product,
+        };
+      },
+    );
+    productsWithTotalSales.sort((a, b) => {
+      return b.value - a.value;
     });
-    if (take) return products.slice(skip * take, (skip + 1) * take);
 
-    return products;
+    if (take)
+      return productsWithTotalSales.slice(skip * take, (skip + 1) * take);
+
+    return productsWithTotalSales;
   }
 
   async count(where?: Prisma.ProductWhereInput): Promise<number> {
@@ -289,7 +345,6 @@ export class ProductsService {
 
   async create(data: CreateProductInput) {
     // Pad the currentSerialNumber with leading zeros to ensure it's 4 digits
-
     const currentSerialNumber = await this.prisma.product.count();
     const serialNumber = currentSerialNumber.toString().padStart(4, '0');
 

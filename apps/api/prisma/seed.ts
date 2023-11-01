@@ -49,7 +49,8 @@ async function seedUserModels() {
           username: 'admin',
           firstName: 'John',
           lastName: 'Doe',
-          phone: '+25912345678',
+          isActive: true,
+          phone: '0912345671',
           amharicFirstName: 'ጆን',
           amharicLastName: 'ዶኤ',
           gender: Gender.MALE,
@@ -61,7 +62,8 @@ async function seedUserModels() {
           username: 'warehouse',
           firstName: 'Jane',
           lastName: 'Doe',
-          phone: '+25912345679',
+          phone: '0912345672',
+          isActive: true,
           amharicFirstName: 'ጃን',
           amharicLastName: 'ዶኤ',
           gender: Gender.FEMALE,
@@ -73,7 +75,8 @@ async function seedUserModels() {
           username: 'retailshop',
           firstName: 'George',
           lastName: 'Thomas',
-          phone: '+25912345670',
+          isActive: true,
+          phone: '0912345673',
           amharicFirstName: 'ጆርጂ',
           amharicLastName: 'ቶማስ',
           gender: Gender.MALE,
@@ -212,18 +215,21 @@ async function seedCategories() {
           amharicName: 'አልባሳት',
           description: 'All the latest clothing products',
           amharicDescription: 'ሁሉም የአልባሳት እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         {
           name: 'Home & Kitchen',
           amharicName: 'ቤት እና የቤት መድብሎች',
           description: 'All the latest home & kitchen products',
           amharicDescription: 'ሁሉም የቤት እና የቤት መድብሎች እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         {
           name: 'Sports',
           amharicName: 'ስፖርት',
           description: 'All the latest sports products',
           amharicDescription: 'ሁሉም የስፖርት እቃዎች',
+          image: 'https://picsum.photos/200',
         },
 
         // grocery shop item category
@@ -232,12 +238,14 @@ async function seedCategories() {
           amharicName: 'መጠጥ የሚያስገባ',
           description: 'All the latest beverages products',
           amharicDescription: 'ሁሉም የመጠጥ እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         {
           name: 'Bread & Bakery',
           amharicName: 'ዳቦ እና ቤኪሊ',
           description: 'All the latest bread & bakery products',
           amharicDescription: 'ሁሉም የዳቦ እና ቤኪሊ እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         // super market item category
         {
@@ -245,18 +253,21 @@ async function seedCategories() {
           amharicName: 'ተክል እና በረከት',
           description: 'All the latest fruits & vegetables products',
           amharicDescription: 'ሁሉም የተክል እና በረከት እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         {
           name: 'Meat & Fish',
           amharicName: 'ፈረንጅ፣ ዓሣ እና አስተናጋጅ',
           description: 'All the latest meat & fish products',
           amharicDescription: 'ሁሉም የፈረንጅ፣ ዓሣ እና አስተናጋጅ እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         {
           name: 'Dairy & Eggs',
           amharicName: 'የተወለደ የብርሃን እና የዝንባቡ እጥረት',
           description: 'All the latest dairy & eggs products',
           amharicDescription: 'ሁሉም የተወለደ የብርሃን እና የዝንባቡ እጥረት እቃዎች',
+          image: 'https://picsum.photos/200',
         },
         {
           name: 'Biscuits, Snacks & Chocolates',
@@ -272,6 +283,8 @@ async function seedCategories() {
         amharicName: 'ኤሌክትሮኒክስ',
         description: faker.commerce.department(),
         amharicDescription: 'ሁሉም የኤሌክትሮኒክስ እቃዎች',
+        image: 'https://picsum.photos/200',
+
         subcategories: {
           create: [
             {
@@ -279,12 +292,14 @@ async function seedCategories() {
               amharicName: 'ላፕቶፕቶች',
               description: 'Laptops',
               amharicDescription: 'ላፕቶፕቶች',
+              image: 'https://picsum.photos/200',
             },
             {
               name: 'Mobile Phones',
               amharicName: 'ሞባይል ፎንሎች',
               description: 'Mobile Phones',
               amharicDescription: 'ሞባይል ፎንሎች',
+              image: 'https://picsum.photos/200',
             },
           ],
         },
@@ -323,6 +338,11 @@ async function seedProducts() {
         unit: UnitType.PIECES,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: [
+          'https://picsum.photos/200',
+          'https://picsum.photos/200',
+          'https://picsum.photos/200',
+        ],
       })),
 
       // generate 10 products
@@ -333,6 +353,7 @@ async function seedProducts() {
         unit: UnitType.BOTTLE,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
 
       // generate 10 products
@@ -343,6 +364,7 @@ async function seedProducts() {
         unit: UnitType.LITER,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
 
       // generate 10 products
@@ -353,6 +375,7 @@ async function seedProducts() {
         unit: UnitType.METER,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
 
       // generate 10 products
@@ -363,6 +386,7 @@ async function seedProducts() {
         unit: UnitType.LITER,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
 
       // generate 10 products
@@ -373,6 +397,7 @@ async function seedProducts() {
         unit: UnitType.METER,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
 
       // generate 10 products
@@ -383,6 +408,7 @@ async function seedProducts() {
         unit: UnitType.METER,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
 
       // generate 10 products
@@ -393,6 +419,7 @@ async function seedProducts() {
         unit: UnitType.KG,
         description: faker.commerce.productDescription(),
         serialNumber: generateSerialNumber(),
+        images: ['https://picsum.photos/200'],
       })),
     ];
 
@@ -412,6 +439,7 @@ async function seedProducts() {
           unit: product.unit,
           amharicName: product.amharicName,
           description: product.description,
+          images: ['https://picsum.photos/200'],
           category: {
             connect: {
               id: product.categoryId,
@@ -943,6 +971,17 @@ async function seedGoodsTransfers() {
       ],
     });
 
+    const products = await prisma.product.findMany({
+      take: 10,
+    });
+
+    const goods = products.map((product) => ({
+      productId: product.id,
+      quantity: randomInt(1, 10),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+
     await prisma.goodsTransfer.create({
       data: {
         sourceWarehouse: {
@@ -956,6 +995,11 @@ async function seedGoodsTransfers() {
           },
         },
         transferType: 'WarehouseToRetailShop',
+        goods: {
+          createMany: {
+            data: goods,
+          },
+        },
       },
     });
 

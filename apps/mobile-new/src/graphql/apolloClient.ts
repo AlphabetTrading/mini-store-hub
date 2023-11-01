@@ -8,14 +8,12 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { setContext } from "@apollo/client/link/context";
 import jwtDecode from "jwt-decode";
 import * as SecureStore from "expo-secure-store";
-import { CachePersistor } from "apollo3-cache-persist";
+import { AsyncStorageWrapper, CachePersistor } from "apollo3-cache-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
-  "https://mini-store-hub-api.onrender.com/graphql/";
-
-// export const BASE_URL = "http://54.89.62.66:5000/graphql";
+  "http://mini-store-env.eba-mxhxxem2.us-east-1.elasticbeanstalk.com/graphql/";
 
 const retryLink = new RetryLink({
   delay: {
@@ -42,7 +40,7 @@ const cache = new InMemoryCache();
 
 export const catchPersistor = new CachePersistor({
   cache,
-  storage: AsyncStorage,
+  storage: new AsyncStorageWrapper(AsyncStorage),
 });
 
 export const apolloClient = () => {
@@ -60,7 +58,7 @@ export const apolloClient = () => {
         const {
           refreshToken: { accessToken, refreshToken },
         } = await getRefresh(localState?.refreshToken);
-        console.log(accessToken, refreshToken);
+
         // update local state
         await SecureStore.setItemAsync(
           "login",
@@ -90,7 +88,6 @@ export const apolloClient = () => {
       return { headers };
     }
   });
-
   // create an apollo link instance, a network interface for apollo client
   const link = new HttpLink({
     uri: BASE_URL,
@@ -99,12 +96,8 @@ export const apolloClient = () => {
   const client = new ApolloClient({
     link: ApolloLink.from([retryLink, authLink, link]),
     cache,
-    connectToDevTools: process.env.NODE_ENV === "development",
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: "cache-and-network",
-      },
-    },
+    // connectToDevTools: process.env.NODE_ENV === "development",
+    defaultOptions: {},
   });
 
   return client;

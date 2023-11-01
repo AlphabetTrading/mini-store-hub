@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Float } from '@nestjs/graphql';
 import { NotificationService } from './notification.service';
 import { sendPushNotificationInput } from './dto/sendPushNotification.dto';
 import { UpdateNotificationTokenInput } from './dto/updateNotificationToken.dto';
@@ -91,6 +91,19 @@ export class NotificationResolver {
     return this.notificationService.findOne(notificationId);
   }
 
+  @Query(() => Notification, {
+    name: 'getUsersNotificationDetailByUserIdAndNotificationId',
+  })
+  async getUsersNotificationDetailByUserIdAndNotificationId(
+    @Args('userId') userId: string,
+    @Args('notificationId') notificationId: string,
+  ) {
+    return this.notificationService.getUsersNotificationDetailByUserIdAndNotificationId(
+      userId,
+      notificationId,
+    );
+  }
+
   // @Query(() => [Notification])
   // async readNotifications(@Args('userId') userId: string) {
   //   return this.notificationService.getNotificationsByUserIdAndStatus(
@@ -115,6 +128,11 @@ export class NotificationResolver {
   @Query(() => [Notification])
   async unreadNotificationsByUserId(@Args('userId') userId: string) {
     return this.notificationService.getAllUnreadNotifications(userId);
+  }
+
+  @Query(() => Float)
+  async unreadNotificationsCountByUserId(@Args('userId') userId: string) {
+    return this.notificationService.getAllUnreadNotificationsCount(userId);
   }
 
   @Query(() => [Notification])

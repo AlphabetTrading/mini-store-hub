@@ -26,6 +26,9 @@ export class RetailShop extends BaseModel {
   @Field(() => Address, { nullable: true })
   address?: Address;
 
+  @Field(() => Boolean)
+  status: boolean;
+
   @Field(() => User, { nullable: true })
   retailShopManager?: User;
 

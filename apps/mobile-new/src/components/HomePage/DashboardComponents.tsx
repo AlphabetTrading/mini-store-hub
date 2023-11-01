@@ -22,7 +22,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
   const { selectedFilter } = props;
   const { authState } = useAuth();
   const { t } = useLocalization();
-  const retailShopID = authState?.user.retailShop[0].id;
+  const retailShopID = authState?.user.retailShop[0]?.id;
   const { loading, data, refetch } = useGetSalesData(
     retailShopID,
     selectedFilter
@@ -142,7 +142,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
           </Svg>
         </View>
       </View>
-      <View
+      {/* <View
         style={{
           borderRadius: 12,
           justifyContent: "center",
@@ -188,8 +188,8 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             />
           </Svg>
         </View>
-      </View>
-      <View
+      </View> */}
+      {/* <View
         style={{
           borderRadius: 12,
           justifyContent: "center",
@@ -241,7 +241,7 @@ const DashboardComponents = (props: DashboardComponentsProps) => {
             />
           </Svg>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };

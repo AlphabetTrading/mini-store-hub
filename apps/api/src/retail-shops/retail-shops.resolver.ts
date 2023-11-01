@@ -68,7 +68,7 @@ export class RetailShopsResolver {
         },
       };
     } catch (e) {
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading retailshops!');
     }
   }
 
@@ -93,6 +93,16 @@ export class RetailShopsResolver {
     @Args('data') data: UpdateRetailShopInput,
   ) {
     return this.retailShopsService.update(id, data);
+  }
+
+  @Mutation(() => RetailShop)
+  async deactivateRetailShop(@Args('id') id: string) {
+    return this.retailShopsService.deactivate(id);
+  }
+
+  @Mutation(() => RetailShop)
+  async activateRetailShop(@Args('id') id: string) {
+    return this.retailShopsService.activate(id);
   }
 
   @Mutation(() => RetailShop)

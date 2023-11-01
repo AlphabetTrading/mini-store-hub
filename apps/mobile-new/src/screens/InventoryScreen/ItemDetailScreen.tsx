@@ -1,8 +1,10 @@
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   View,
+  Image
 } from "react-native";
 import React, { useCallback, useState } from "react";
 import { useQuery } from "@apollo/client";
@@ -67,7 +69,53 @@ const ItemDetailScreen = ({ route }: any) => {
           <ActivityIndicator color={theme.colors.tint} />
         </View>
       ) : (
-        <View style={styles.container}>
+        <ScrollView horizontal={false} style={styles.container}>
+          <View style={{ marginBottom: 10 }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ width: "100%", flexDirection: "row", justifyContent: "center", alignItems: "center" }}
+            // style={{ width: "100%", flexDirection: "row", justifyContent: "center", alignItems: "center" }}
+            >
+              {data.retailShopStockByProductIdAndByRetailShopId.product
+                .images.length > 0 ? (
+                data.retailShopStockByProductIdAndByRetailShopId.product.images.map(
+                  (image: any, index: number) => (
+                    <View
+                      key={index}
+                      style={{
+                        width: "100%",
+                        height: 200,
+                        borderRadius: 6,
+                        overflow: "hidden",
+                        marginRight: 10,
+                      }}
+                    >
+                      <Image
+                        source={{ uri: image }}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </View>
+                  )
+                )
+              ) : (
+                <View
+                  style={{
+                    width: 300,
+                    height: 200,
+                    borderRadius: 6,
+                    overflow: "hidden",
+                    marginRight: 10,
+                  }}
+                >
+                  <Image
+                    source={{ uri: "https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg" }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </View>
+              )}
+            </ScrollView>
+          </View>
           <Text
             style={{
               marginLeft: 8,
@@ -163,7 +211,7 @@ const ItemDetailScreen = ({ route }: any) => {
               keyExtractor={(item) => item.id.toString()}
             />
           </View>
-        </View>
+        </ScrollView>
       )}
     </BaseLayout>
   );

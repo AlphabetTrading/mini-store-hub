@@ -52,6 +52,19 @@ const linking: LinkingOptions<RootStackParamList> = {
               },
             },
           },
+          TransactionsRoot: {
+            initialRouteName: "index" as any,
+            screens: {
+              Index: "index",
+              IncomingTransactionDetailScreen: {
+                path: "transactiondetail/:transactionID",
+              },
+              SalesTransactionDetailScreen: {
+                path: "transactiondetail/:transactionID",
+              },
+
+            },
+          },
           InsightsRoot: {
             initialRouteName: "index" as any,
             screens: {

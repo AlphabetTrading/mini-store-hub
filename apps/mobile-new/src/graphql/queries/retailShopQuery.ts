@@ -79,6 +79,7 @@ export const GET_RETAIL_SHOP_PRODUCT_DETAIL = gql`
         amharicDescription
         serialNumber
         images
+        unit
         category {
           id
           name

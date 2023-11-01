@@ -15,6 +15,7 @@ export const LOGIN_MUTATION = gql`
         isActive
         phone
         username
+        role
         userProfile {
           photoUrl
           idUrl

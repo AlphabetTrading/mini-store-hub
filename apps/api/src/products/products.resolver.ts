@@ -4,7 +4,10 @@ import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Product } from './models/product.model';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { CreateProductInput } from './dto/create-product.input';
-import { PaginationProducts } from 'src/common/pagination/pagination-info';
+import {
+  PaginationProducts,
+  PaginationProductsWithExtraInfo,
+} from 'src/common/pagination/pagination-info';
 import { PaginationInput } from 'src/common/pagination/pagination.input';
 import { FilterProductInput } from './dto/filter-product.input';
 import { Prisma } from '@prisma/client';
@@ -45,17 +48,18 @@ export class ProductsResolver {
             {
               amharicName: filterProductInput?.name,
             },
+            {
+              serialNumber: filterProductInput?.serialNumber,
+            },
+            {
+              description: filterProductInput?.description,
+            },
+            {
+              category: filterProductInput?.category,
+            },
           ],
         },
-        {
-          serialNumber: filterProductInput?.serialNumber,
-        },
-        {
-          description: filterProductInput?.description,
-        },
-        {
-          category: filterProductInput?.category,
-        },
+
         {
           createdAt: filterProductInput?.createdAt,
         },
@@ -83,7 +87,9 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, { name: 'findProductsByTopProfit' })
+  @Query(() => PaginationProductsWithExtraInfo, {
+    name: 'findProductsByTopProfit',
+  })
   async findProductsByTopProfit(
     @Args('filterProductInput', {
       type: () => FilterProductInput,
@@ -97,7 +103,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [
@@ -150,7 +156,9 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, { name: 'findProductsByTopSell' })
+  @Query(() => PaginationProductsWithExtraInfo, {
+    name: 'findProductsByTopSell',
+  })
   async findProductsByTopSelling(
     @Args('filterProductInput', {
       type: () => FilterProductInput,
@@ -165,7 +173,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [
@@ -218,7 +226,7 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, {
+  @Query(() => PaginationProductsWithExtraInfo, {
     name: 'findProductsByTopSellAndByRetailShop',
   })
   async findProductsByTopSellingByRetailShop(
@@ -239,7 +247,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [
@@ -299,7 +307,7 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, {
+  @Query(() => PaginationProductsWithExtraInfo, {
     name: 'findProductsByTopSellAndByWarehouse',
   })
   async findProductsByTopSellingByWarehouse(
@@ -319,7 +327,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [
@@ -379,7 +387,9 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, { name: 'findProductsBySoldQuantity' })
+  @Query(() => PaginationProductsWithExtraInfo, {
+    name: 'findProductsBySoldQuantity',
+  })
   async findProductsBySoldQuantity(
     @Args('filterProductInput', {
       type: () => FilterProductInput,
@@ -394,7 +404,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [
@@ -449,7 +459,7 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, {
+  @Query(() => PaginationProductsWithExtraInfo, {
     name: 'findProductsBySoldQuantityAndRetailShop',
   })
   async findProductsBySoldQuantityAndRetailShop(
@@ -470,7 +480,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [
@@ -532,7 +542,7 @@ export class ProductsResolver {
     }
   }
 
-  @Query(() => PaginationProducts, {
+  @Query(() => PaginationProductsWithExtraInfo, {
     name: 'findProductsBySoldQuantityAndWarehouse',
   })
   async findProductsBySoldQuantityAndWarehouse(
@@ -553,7 +563,7 @@ export class ProductsResolver {
     orderBy?: OrderByProductInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
-  ): Promise<PaginationProducts> {
+  ): Promise<PaginationProductsWithExtraInfo> {
     try {
       const where: Prisma.ProductWhereInput = {
         AND: [

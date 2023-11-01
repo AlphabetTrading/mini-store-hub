@@ -14,6 +14,7 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { useAppTheme } from "../../contexts/preference";
 import { useLocalization } from "../../contexts/localization";
 import { ActivityIndicator } from "react-native-paper";
+import SingleCategoryItem from "../../components/Inventory/SingleCategoryItem";
 
 type Props = {};
 
@@ -103,44 +104,7 @@ const InventoryScreen = (props: Props) => {
                 ItemSeparatorComponent={() => (
                   <View style={{ width: 10, height: 10 }} />
                 )}
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: theme.colors.cardBackground,
-                      maxWidth: "100%",
-                      height: "100%",
-                      flex: 1 / 3,
-                      alignItems: "center",
-                      marginHorizontal: 5,
-                      borderRadius: 10,
-                    }}
-                    onPress={() => {
-                      navigation.navigate("Root", {
-                        screen: "InventoryRoot",
-                        params: {
-                          screen: "CategoryDetailScreen",
-                          params: {
-                            categoryID: item.id,
-                            categoryName: locale.includes("en")
-                              ? item.name
-                              : item.amharicName,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    <View style={styles.categoryItem} key={index}>
-                      <Image
-                        style={styles.categoryImage}
-                        // source={item.imageSrc}
-                        source={require("../../../assets/icons/categories/egg.png")}
-                      />
-                    </View>
-                    <Text style={styles.categoryText}>
-                      {locale.includes("en") ? item.name : item.amharicName}
-                    </Text>
-                  </TouchableOpacity>
-                )}
+                renderItem={({ item, index }) => <SingleCategoryItem item={item} />}
               />
             ) : (
               <View

@@ -7,23 +7,24 @@ import {
   View,
 } from "react-native";
 import React, { useEffect } from "react";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useGetSingleNotification } from "../../hooks/api/useGetNotificationsData";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format } from "date-fns";
 import { useMutation } from "@apollo/client";
-import { MARK_NOTIFICATION_AS_READ } from "../../graphql/queries/notificationQueries";
+import { GET_UNREAD_NOTIFICATIONS_COUNT, MARK_NOTIFICATION_AS_READ } from "../../graphql/queries/notificationQueries";
 import { useAuth } from "../../contexts/auth";
 import { useLocalization } from "../../contexts/localization";
 import { useAppTheme } from "../../contexts/preference";
 import { ActivityIndicator } from "react-native-paper";
+import { notifyMessage } from "../../components/Toast";
 
 const NotificationDetailScreen = ({ route, navigation }: any) => {
+  const { authState } = useAuth();
   const { data, loading, error, refetch } = useGetSingleNotification(
-    route.params?.notificationID || ""
+    route.params?.notificationID,
+    authState?.user.id ?? "",
   );
   const { t, locale } = useLocalization();
-  const { authState } = useAuth();
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -37,12 +38,22 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
   const [
     markNotificationAsRead,
     {
-      data: mutationData,
-      error: mutationError,
       loading: mutationLoading,
       reset,
     },
-  ] = useMutation(MARK_NOTIFICATION_AS_READ);
+  ] = useMutation(MARK_NOTIFICATION_AS_READ, {
+    onError: (err) => {
+      notifyMessage("Error marking notification as read")
+    },
+    refetchQueries: [
+      {
+        query: GET_UNREAD_NOTIFICATIONS_COUNT,
+        variables: {
+          userId: authState?.user.id ?? "",
+        },
+      },
+    ],
+  });
 
   useEffect(() => {
     // navigation.getParent()?.setOptions({
@@ -55,11 +66,8 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
     if (data)
       navigation.setOptions({
         title: locale.includes("en")
-          ? data.notificationById?.title
-          : data.notificationById?.amharicTitle ?? data.notificationById?.title,
-        headerStyle: {
-          backgroundColor: "#5684E0",
-        },
+          ? data.getUsersNotificationDetailByUserIdAndNotificationId?.title
+          : data.getUsersNotificationDetailByUserIdAndNotificationId?.amharicTitle ?? data.getUsersNotificationDetailByUserIdAndNotificationId?.title,
         headerTintColor: "#fff",
         headerTitleStyle: {
           fontWeight: "bold",
@@ -71,8 +79,8 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
 
   const hasReadNotification = (data: any) => {
     return (
-      data.notificationById.isRead ||
-      data.notificationById?.notificationReads.filter(
+      data.getUsersNotificationDetailByUserIdAndNotificationId.isRead ||
+      data.getUsersNotificationDetailByUserIdAndNotificationId?.notificationReads.filter(
         (notfi: any) => notfi.userId === authState?.user.id
       ).length > 0
     );
@@ -80,8 +88,21 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
 
   const { theme } = useAppTheme();
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      // padding: 15,
+    },
+  });
+
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: theme.colors.background,
+
+    }}>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -97,15 +118,16 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
           horizontal={true}
           style={{ width: "100%" }}
         >
-          {!data || !data.notificationById ? (
+          {!data || !data.getUsersNotificationDetailByUserIdAndNotificationId ? (
             <View
               style={{
                 marginVertical: 30,
                 justifyContent: "center",
                 alignItems: "center",
+                flex: 1,
               }}
             >
-              <Text style={{ fontSize: 18, fontFamily: "InterMedium" }}>
+              <Text style={{ fontSize: 18, fontFamily: "InterMedium", color: theme.colors.text }}>
                 There is an error, please refresh the page
               </Text>
             </View>
@@ -113,12 +135,13 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
             <View
               style={{
                 flex: 1,
-                justifyContent: "center",
+                // justifyContent: "center",
                 width: "100%",
-                paddingHorizontal: 10,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
               }}
             >
-              {!hasReadNotification(data) && (
+              {!data.getUsersNotificationDetailByUserIdAndNotificationId.isRead && (
                 <TouchableOpacity
                   style={{
                     alignItems: "center",
@@ -126,7 +149,7 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
                     marginBottom: 10,
                     width: 100,
                     borderRadius: 8,
-                    backgroundColor: Colors.light,
+                    backgroundColor: theme.colors.accent,
                   }}
                   onPress={async () => {
                     await markNotificationAsRead({
@@ -139,7 +162,10 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
                     refetch();
                   }}
                 >
-                  <Text style={{ padding: 10 }}>
+                  <Text style={{
+                    padding: 10,
+                    color: theme.colors.text
+                  }}>
                     {mutationLoading ? "Loading..." : "Mark as Read"}
                   </Text>
                 </TouchableOpacity>
@@ -154,7 +180,7 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: "flex-start",
                     marginVertical: 10,
                   }}
                 >
@@ -163,25 +189,49 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
                       fontFamily: "InterMedium",
                       textTransform: "capitalize",
                       fontSize: 20,
+                      flex: 3,
+                      color: theme.colors.text
                     }}
                   >
                     {locale.includes("en")
-                      ? data.notificationById?.title
-                      : data.notificationById?.amharicTitle ??
-                      data.notificationById?.title}
+                      ? data.getUsersNotificationDetailByUserIdAndNotificationId?.title
+                      : data.getUsersNotificationDetailByUserIdAndNotificationId?.amharicTitle ??
+                      data.getUsersNotificationDetailByUserIdAndNotificationId?.title}
                   </Text>
-                  <Text style={{ fontFamily: "InterMedium", fontSize: 14 }}>
-                    {format(
-                      new Date(data.notificationById?.createdAt),
-                      "MMM dd yyyy"
-                    )}
-                  </Text>
+                  <View style={{
+                    flex: 1,
+                  }}>
+                    <Text style={{
+                      fontFamily: "InterMedium", fontSize: 14, textAlign: "right",
+                      color: theme.colors.text
+                    }}>
+                      {format(
+                        new Date(data.getUsersNotificationDetailByUserIdAndNotificationId?.createdAt),
+                        "MM:HH"
+                      )}
+                    </Text>
+                    <Text style={{
+                      fontFamily: "InterMedium", fontSize: 14, textAlign: "right",
+
+                      color: theme.colors.text
+                    }}>
+                      {format(
+                        new Date(data.getUsersNotificationDetailByUserIdAndNotificationId?.createdAt),
+                        "MMM dd yyyy"
+                      )}
+                    </Text>
+
+                  </View>
                 </View>
-                <Text style={{ fontFamily: "InterLight", fontSize: 16 }}>
+                <Text style={{
+                  fontFamily: "InterLight", fontSize: 16,
+
+                  color: theme.colors.text
+                }}>
                   {locale.includes("en")
-                    ? data.notificationById?.body
-                    : data.notificationById?.amharicBody ??
-                    data.notificationById?.body}
+                    ? data.getUsersNotificationDetailByUserIdAndNotificationId?.body
+                    : data.getUsersNotificationDetailByUserIdAndNotificationId?.amharicBody ??
+                    data.getUsersNotificationDetailByUserIdAndNotificationId?.body}
                 </Text>
               </View>
             </View>
@@ -194,9 +244,3 @@ const NotificationDetailScreen = ({ route, navigation }: any) => {
 
 export default NotificationDetailScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // padding: 15,
-  },
-});

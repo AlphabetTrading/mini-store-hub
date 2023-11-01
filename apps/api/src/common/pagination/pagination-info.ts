@@ -5,7 +5,9 @@ import { StockItem } from 'src/goods-transfers/models/stock-item.model';
 import { Notification } from 'src/notification/models/notification.model';
 import { PriceHistory } from 'src/price-histories/models/price-history.model';
 import { Product } from 'src/products/models/product.model';
+import { ProductRankWithExtraInfo } from 'src/products/models/products-with-info.model';
 import { RetailShopStock } from 'src/retail-shop-inventories/models/retail-shop-inventory.model';
+import { RetailShopWithExtraInfo } from 'src/retail-shops/models/retail-shop-with-info.model';
 import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 import { SaleTransactionItem } from 'src/sale-transactions/models/sale-transaction-item.model';
 import { SaleTransaction } from 'src/sale-transactions/models/sale-transaction.model';
@@ -29,6 +31,15 @@ export class PaginationInfo {
 export class PaginationProducts {
   @Field(() => [Product])
   items: Product[];
+
+  @Field(() => PaginationInfo, { nullable: true })
+  meta?: PaginationInfo;
+}
+
+@ObjectType()
+export class PaginationProductsWithExtraInfo {
+  @Field(() => [ProductRankWithExtraInfo])
+  items: ProductRankWithExtraInfo[];
 
   @Field(() => PaginationInfo, { nullable: true })
   meta?: PaginationInfo;
@@ -65,6 +76,15 @@ export class PaginationPriceHistories {
 export class PaginationRetailShops {
   @Field(() => [RetailShop])
   items: RetailShop[];
+
+  @Field(() => PaginationInfo, { nullable: true })
+  meta?: PaginationInfo;
+}
+
+@ObjectType()
+export class PaginationRetailShopsWithExtraInfo {
+  @Field(() => [RetailShopWithExtraInfo])
+  items: RetailShopWithExtraInfo[];
 
   @Field(() => PaginationInfo, { nullable: true })
   meta?: PaginationInfo;

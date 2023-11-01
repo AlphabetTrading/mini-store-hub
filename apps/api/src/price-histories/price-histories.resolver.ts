@@ -67,7 +67,7 @@ export class PriceHistoriesResolver {
         },
       };
     } catch (e) {
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading price histories!');
     }
   }
 

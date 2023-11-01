@@ -15,6 +15,7 @@ export const GET_PRODUCTS_BY_TOP_SELL_AND_BY_RETAIL_SHOP = gql`
         amharicName
         unit
         serialNumber
+        value
       }
       meta {
         count

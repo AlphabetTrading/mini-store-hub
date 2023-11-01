@@ -74,7 +74,7 @@ export class WarehousesResolver {
       };
     } catch (e) {
       console.log(e, 'error ');
-      throw new BadRequestException('Error loading products!');
+      throw new BadRequestException('Error loading users!');
     }
   }
 
@@ -102,6 +102,16 @@ export class WarehousesResolver {
     @Args('data') data: UpdateWarehouseInput,
   ) {
     return this.warehousesService.update(id, data);
+  }
+
+  @Mutation(() => Warehouse)
+  async activateWarehouse(@Args('id') id: string) {
+    return this.warehousesService.activate(id);
+  }
+
+  @Mutation(() => Warehouse)
+  async deactivateWarehouse(@Args('id') id: string) {
+    return this.warehousesService.deactivate(id);
   }
 
   @HasRoles(UserRole.ADMIN)

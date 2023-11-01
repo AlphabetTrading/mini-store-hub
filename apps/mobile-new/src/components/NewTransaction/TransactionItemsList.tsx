@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import React from "react";
 import TransactionItem, { CheckoutItem } from "./TransactionItem";
 import CustomDivider from "../CustomDivider";
@@ -23,9 +23,9 @@ const TransactionItemsList = ({
 
   return (
     <FlatList
-      // refreshControl={
-      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      // }
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
       data={checkoutItems}
       renderItem={({ item, index }) => (
         <TransactionItem

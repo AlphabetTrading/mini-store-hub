@@ -17,8 +17,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 const userIncludeObject: Prisma.UserInclude = {
   userProfile: { include: { address: true } },
   notificationTokens: true,
-  warehouse: true,
-  retailShop: true,
+  warehouse: {
+    include: {
+      address: true,
+    },
+  },
+  retailShop: {
+    include: {
+      address: true,
+    },
+  },
   notifications: true,
 };
 
@@ -129,6 +137,12 @@ export class AuthService {
       throw new NotFoundException(`No user found for phone: ${phone}`);
     }
 
+    if (user.isActive === false) {
+      throw new BadRequestException(
+        'User is deactivated, please contact admin',
+      );
+    }
+
     const passwordValid = await this.passwordService.validatePassword(
       password,
       user.password,
@@ -139,14 +153,14 @@ export class AuthService {
       throw new BadRequestException('Invalid Credentials');
     }
 
-    const res = await this.generateTokens({
+    const res = this.generateTokens({
       userId: user.id,
     });
     return res;
   }
 
   validateUser(userId: string): Promise<User> {
-    return this.prisma.user.findUnique({
+   return this.prisma.user.findUnique({
       where: { id: userId },
       include: userIncludeObject,
     });

@@ -17,6 +17,9 @@ export class Warehouse extends BaseModel {
   @HideField()
   isMain: boolean;
 
+  @Field(() => Boolean)
+  status: boolean;
+
   @Field(() => String, { nullable: true })
   addressId?: string;
 

@@ -10,7 +10,7 @@ export class UpdateGoodsTransferInput extends PartialType(
   retailShopId?: string;
 
   @Field(() => String, { nullable: true })
-  sourceWarehouseId: string;
+  sourceWarehouseId?: string;
 
   @Field(() => String, { nullable: true })
   destinationWarehouseId?: string;

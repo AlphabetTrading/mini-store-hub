@@ -12,6 +12,17 @@ export const GET_ME_QUERY = gql`
       phone
       retailShop {
         id
+        name
+        amharicName
+        status
+        address {
+          id
+          city
+          formattedAddress
+          amharicFormattedAddress
+          street
+          updatedAt
+        }
       }
       role
       createdAt
@@ -23,9 +34,10 @@ export const GET_ME_QUERY = gql`
         photoUrl
         idUrl
         address {
+          id
           city
           formattedAddress
-          id
+          amharicFormattedAddress
           street
           updatedAt
         }

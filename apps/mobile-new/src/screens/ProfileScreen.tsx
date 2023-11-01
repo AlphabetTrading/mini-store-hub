@@ -3,7 +3,6 @@ import React from "react";
 import { BaseLayout } from "../components/BaseLayout";
 import { GET_ME_QUERY } from "../graphql/queries/userQueries";
 import { useQuery } from "@apollo/client";
-import { useAuth } from "../contexts/auth";
 import { useLocalization } from "../contexts/localization";
 import { useAppTheme } from "../contexts/preference";
 import { ActivityIndicator } from "react-native-paper";
@@ -11,7 +10,6 @@ import { ActivityIndicator } from "react-native-paper";
 type Props = {};
 
 const ProfileScreen = (props: Props) => {
-  const authState = useAuth();
   const { data, loading, error, refetch } = useQuery(GET_ME_QUERY);
   const { t, locale } = useLocalization();
   const { theme } = useAppTheme();
@@ -29,7 +27,7 @@ const ProfileScreen = (props: Props) => {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="small" />
+          <ActivityIndicator size="small" color={theme.colors.tint} />
         </View>
       ) : (
         <View style={styles.container}>
@@ -63,6 +61,7 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
             }}
           >
             {t("fullName")}
@@ -73,20 +72,21 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
-              paddingHorizontal: 20,
+              padding: 15, paddingHorizontal: 20,
             }}
           >
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
-              {`${data.me.firstName} ${data.me.lastName}`}
+              {
+                locale.includes("en") ? data.me.firstName + " " + data.me.lastName : data.me.amharicFirstName + " " + data.me.amharicLastName
+              }
             </Text>
           </View>
           <Text
@@ -94,9 +94,11 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
-            Phone Number
+            {t("phone")}
           </Text>
           <View
             style={{
@@ -104,17 +106,16 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
-              paddingHorizontal: 20,
+              padding: 15, paddingHorizontal: 20,
             }}
           >
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
               {data.me.phone}
@@ -125,9 +126,11 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
-            Address
+            {t("address")}
           </Text>
           <View
             style={{
@@ -135,17 +138,16 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
-              paddingHorizontal: 20,
+              padding: 15, paddingHorizontal: 20,
             }}
           >
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
               {data.me.userProfile?.address?.formattedAddress}
@@ -157,9 +159,11 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
+
             }}
           >
-            Retail Shop ID
+            {t("retailShopName")}
           </Text>
           <View
             style={{
@@ -167,9 +171,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
+              padding: 15,
               paddingHorizontal: 20,
             }}
           >
@@ -177,10 +181,12 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
-              {data.me.retailShop?.id}
+              {
+                locale.includes("en") ? data.me.retailShop[0].name : data.me.retailShop[0].amharicName ?? data.me.retailShop[0].name
+              }
             </Text>
           </View>
 
@@ -189,9 +195,10 @@ const ProfileScreen = (props: Props) => {
               fontSize: 16,
               textTransform: "capitalize",
               fontFamily: "InterBold",
+              color: theme.colors.text,
             }}
           >
-            Retail Shop Location
+            {t("retailShopAddress")}
           </Text>
           <View
             style={{
@@ -199,9 +206,9 @@ const ProfileScreen = (props: Props) => {
               backgroundColor: theme.colors.background,
               borderWidth: 1,
               borderRadius: 10,
-              borderColor: "#5684E080",
+              borderColor: theme.colors.tint,
               marginVertical: 10,
-              padding: 10,
+              padding: 15,
               paddingHorizontal: 20,
             }}
           >
@@ -209,10 +216,12 @@ const ProfileScreen = (props: Props) => {
               style={{
                 fontSize: 16,
                 fontFamily: "InterSemiBold",
-                color: "#A5BECC",
+                color: theme.colors.text,
               }}
             >
-              {data.me.retailShop?.address?.formattedAddress}
+              {
+                locale.includes("en") ? data.me.retailShop[0].address.formattedAddress : data.me.retailShop[0].address.amharicFormattedAddress ?? data.me.retailShop[0].address.formattedAddress
+              }
             </Text>
           </View>
         </View>

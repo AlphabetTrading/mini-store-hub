@@ -20,7 +20,7 @@ export class SaleTransactionItem extends BaseModel {
   soldPriceHistoryId: string;
 
   @Field(() => PriceHistory, { nullable: true })
-  soldPrice?: PriceHistory;
+  soldPriceHistory?: PriceHistory;
 
   @Field(() => Float)
   subTotal: number;
