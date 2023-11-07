@@ -267,6 +267,7 @@ export class WarehouseStockService {
         ...warehouseStockIncludeObject,
         product: {
           include: {
+            category: true,
             activePrice: true,
           },
         },

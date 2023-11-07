@@ -38,6 +38,9 @@ const RetailShopTopSellingProducts = ({ retailShopId }: Props) => {
       },
     },
   });
+
+  console.log(data)
+  
   return (
     <Card>
       <CardHeader title="Top Selling Products" />

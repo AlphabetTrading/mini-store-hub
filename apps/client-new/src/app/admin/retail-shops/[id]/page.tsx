@@ -66,6 +66,7 @@ const Page = ({ params }: Props) => {
       },
     }
   );
+
   const [
     getStock,
     { data: stockData, error: stockError, loading: stockLoading },
@@ -84,7 +85,7 @@ const Page = ({ params }: Props) => {
         },
       });
     }
-  }, [currentTab]);
+  }, [currentTab, getStock, page, params.id, rowsPerPage]);
   
 
   return (

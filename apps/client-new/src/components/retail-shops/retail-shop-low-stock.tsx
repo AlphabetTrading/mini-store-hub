@@ -32,6 +32,7 @@ const RetailShopLowStock = (props: Props) => {
   >(RETAIL_SHOP_LOW_STOCK_PRODUCTS, {
     variables: {
       retailShopId: props.retailShopId,
+      percentage: 30,
       paginationInput: {
         skip: 0,
         take: 5,

@@ -256,7 +256,8 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
                 align={align}
                 label="Warehouse Value"
                 value={`ETB ${
-                  valuation ? valuation?.toLocaleString("en-US") : 0
+                  valuation ? valuation.toLocaleString("en-US", {minimumFractionDigits: 2})
+                  : 0
                 }`}
               />
               <Divider />
@@ -280,9 +281,9 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
                 align={align}
                 label="Coordinates"
                 value={
-                  warehouse?.address?.lng &&
                   warehouse?.address?.lat &&
-                  `${warehouse?.address?.lng} , ${warehouse?.address?.lat}`
+                  warehouse?.address?.lng &&
+                  `${warehouse?.address?.lat}, ${warehouse?.address?.lng}`
                 }
               />
               <Divider />
@@ -320,7 +321,7 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
         <Grid item xs={12} lg={6}>
           <StockDistribution
             total={valuationData?.totalValuationByWarehouseId.totalQuantity}
-            stockItems={stockDistributionData?.warehouseStockByWarehouseId}
+            stockItems={stockDistributionData?.warehouseStockByWarehouseId.slice(0,5)}
           />
         </Grid>
       )}
