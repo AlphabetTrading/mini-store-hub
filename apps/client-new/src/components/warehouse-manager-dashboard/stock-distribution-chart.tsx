@@ -21,6 +21,7 @@ type Props = {
 };
 
 export const StockDistribution = ({ stockItems, total }: Props) => {
+  console.log(stockItems)
   const chartSeries = stockItems?.map((stockItem) => {
     return stockItem.quantity;
   });
@@ -31,6 +32,7 @@ export const StockDistribution = ({ stockItems, total }: Props) => {
     (acc, stockItem) => acc + stockItem.quantity,
     0
   );
+  console.log(labels, chartSeries, totalQuantity)
   if (total! - totalQuantity! > 0) {
     chartSeries?.push(total! - totalQuantity!);
     labels?.push("Others");

@@ -209,7 +209,7 @@ const Page = ({ params }: Props) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Product Name</TableCell>
-                      <TableCell>Categroy</TableCell>
+                      <TableCell>Category</TableCell>
                       <TableCell>Selected Quantity</TableCell>
                       <TableCell>Purchased Price</TableCell>
                       <TableCell>Selling Price</TableCell>
@@ -231,7 +231,7 @@ const Page = ({ params }: Props) => {
                               <Typography
                                 color="text.secondary"
                                 variant="body2"
-                              >{`SN- ${item.product.serialNumber}`}</Typography>
+                              >{`SN-${item.product.serialNumber}`}</Typography>
                             </Stack>
                           </TableCell>
 
@@ -266,13 +266,23 @@ const Page = ({ params }: Props) => {
                             </Stack>
                           </TableCell>
                           <TableCell>
-                            {item.product.activePrice?.purchasedPrice}
+                            {item.product.activePrice?.purchasedPrice.toLocaleString(
+                              "en-US",
+                              { minimumFractionDigits: 2 }
+                            )}
                           </TableCell>
                           <TableCell>
-                            {item.product.activePrice?.price}
+                            {item.product.activePrice?.price.toLocaleString(
+                              "en-US",
+                              { minimumFractionDigits: 2 }
+                            )}
                           </TableCell>
                           <TableCell>
-                            {item.product.activePrice?.price * item.quantity}
+                            {(
+                              item.product.activePrice?.price * item.quantity
+                            ).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                            })}
                           </TableCell>
                           <TableCell>
                             <IconButton
@@ -300,7 +310,7 @@ const Page = ({ params }: Props) => {
                     size={16}
                   />
                 )}
-                Regsiter
+                Register
               </Button>
             </Stack>
           </Stack>

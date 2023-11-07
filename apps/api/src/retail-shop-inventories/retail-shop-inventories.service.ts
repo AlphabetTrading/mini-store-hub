@@ -277,6 +277,7 @@ export class RetailShopStockService {
         product: {
           include: {
             activePrice: true,
+            category: true
           },
         },
       },

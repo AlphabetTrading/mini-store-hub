@@ -19,6 +19,7 @@ const RetailShopsListRow = ({
   handleItemToggle,
   selected,
 }: Props) => {
+  console.log(retailShop);
   const { data } = useSession();
   const router = useRouter();
   return (
@@ -40,13 +41,13 @@ const RetailShopsListRow = ({
           : "-"}
       </TableCell>
       <TableCell align="left">
-        {retailShop.address?.street && retailShop.address?.city
-          ? (retailShop.address?.street, retailShop.address?.city)
+        {retailShop.address?.formattedAddress
+          ? retailShop.address.formattedAddress
           : "-"}
       </TableCell>
       <TableCell align="left">
         {retailShop.address?.lng && retailShop.address?.lat
-          ? (retailShop.address?.lng, retailShop.address?.lat)
+          ? `${retailShop.address?.lat}, ${retailShop.address?.lng}}`
           : "-"}
       </TableCell>
     </TableRow>

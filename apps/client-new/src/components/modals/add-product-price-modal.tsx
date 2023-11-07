@@ -32,10 +32,10 @@ const initialValues: Values = {
 };
 const validationSchema = Yup.object({
   purchasedPrice: Yup.number()
-    .min(1, "Purchased price cannot be less than 0")
+    .min(0.1, "Purchased price cannot be less than 0")
     .required("Purchased price is required"),
   price: Yup.number()
-    .min(1, "Price cannot be less than 0")
+    .min(0.1, "Price cannot be less than 0")
     .required("Price is required"),
 });
 

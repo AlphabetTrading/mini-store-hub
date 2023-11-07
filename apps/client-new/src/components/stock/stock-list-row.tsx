@@ -31,11 +31,11 @@ const StockListRow = ({ warehouseStock }: Props) => {
         <TableCell align="left">{quantity}</TableCell>
 
         <TableCell align="left">
-          {product.activePrice?.purchasedPrice}
+          {(product.activePrice?.purchasedPrice).toLocaleString(undefined, {minimumFractionDigits: 2})}
         </TableCell>
-        <TableCell align="left">{product.activePrice?.price}</TableCell>
+        <TableCell align="left">{(product.activePrice?.price).toLocaleString(undefined, {minimumFractionDigits: 2})}</TableCell>
         <TableCell align="left">
-          {product.activePrice?.price * quantity}
+          {(product.activePrice?.price * quantity).toLocaleString(undefined, {minimumFractionDigits: 2})}
         </TableCell>
       </TableRow>
     </>
