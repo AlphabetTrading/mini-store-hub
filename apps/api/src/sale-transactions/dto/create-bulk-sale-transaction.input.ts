@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { DateTimeFilter } from 'src/common/filter/date-filter';
 import { CreateStockItemInput } from 'src/goods-transfers/dto/create-stock-item.input';
 
 @InputType()
@@ -8,4 +9,7 @@ export class CreateBulkSaleTransactionInput {
 
   @Field(() => String)
   retailShopId: string;
+
+  @Field(() => String, { nullable: true })
+  createdAt?: string;
 }
