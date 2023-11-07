@@ -22,19 +22,18 @@ type Props = {
 
 export const StockDistribution = ({ stockItems, total }: Props) => {
   const chartSeries = stockItems?.map((stockItem) => {
-    return stockItem.quantity;
+    return stockItem.quantity * stockItem.product.activePrice.price;
   });
   const labels = stockItems?.map((stockItem) => {
     return stockItem.product.name;
   });
-  const totalQuantity = stockItems?.reduce(
-    (acc, stockItem) => acc + stockItem.quantity,
+  const totalValuation = stockItems?.reduce(
+    (acc, stockItem) =>
+      acc + stockItem.product.activePrice.price * stockItem.quantity,
     0
   );
-  if (total! - totalQuantity! > 0) {
-    chartSeries?.push(total! - totalQuantity!);
-    labels?.push("Others");
-  }
+  chartSeries?.push(total! - totalValuation!);
+  labels?.push("Others");
 
   const useChartOptions = () => {
     const theme = useTheme();

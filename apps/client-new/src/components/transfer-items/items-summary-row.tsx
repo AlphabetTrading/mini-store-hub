@@ -65,7 +65,7 @@ const ItemsSummaryRow = ({
         <Stack>
           <Typography variant="body2">{warehouseStock.product.name}</Typography>
           <Typography variant="body2" color="text.secondary">
-            SN- {warehouseStock.product.serialNumber}
+            SN-{warehouseStock.product.serialNumber}
           </Typography>
         </Stack>
       </TableCell>
@@ -93,7 +93,9 @@ const ItemsSummaryRow = ({
         </Stack>
       </TableCell>
       <TableCell>
-        {warehouseStock.product.activePrice?.price * selectedQuantity}
+        {(
+          warehouseStock.product.activePrice?.price * selectedQuantity
+        ).toLocaleString("en-US", { minimumFractionDigits: 2 })}
       </TableCell>
       <TableCell>
         <IconButton onClick={() => handleRemoveItem(warehouseStock.product.id)}>

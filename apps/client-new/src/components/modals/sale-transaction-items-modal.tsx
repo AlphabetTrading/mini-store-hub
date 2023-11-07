@@ -22,10 +22,7 @@ import {
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import { StockItem } from "../../../types/product";
-import {
-
-  RetailShopStockData,
-} from "@/graphql/retail-shops/queries";
+import { RetailShopStockData } from "@/graphql/retail-shops/queries";
 import { SelectedWarehouseStockItem } from "./transfer-items-drawer";
 import StateHandler from "../state-handler";
 
@@ -74,7 +71,6 @@ const SaleTransactionItemsDrawer = ({
     return errors;
   };
 
-
   const formik = useFormik({
     initialValues,
     validate(values) {
@@ -116,46 +112,41 @@ const SaleTransactionItemsDrawer = ({
               }}
               sx={{ maxHeight: 350, display: "block", overflow: "auto", pl: 1 }}
             >
-        
-                {retailShopStocks
-                  ?.filter((item) => !selectedItemsId.includes(item.product.id))
-                  .map((item, idx) => (
-                    <Paper
+              {retailShopStocks
+                ?.filter((item) => !selectedItemsId.includes(item.product.id))
+                .map((item, idx) => (
+                  <Paper
+                    key={idx}
+                    sx={{
+                      alignItems: "flex-start",
+                      display: "flex",
+                      px: 2,
+                      py: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    <FormControlLabel
+                      control={<Radio />}
                       key={idx}
-                      sx={{
-                        alignItems: "flex-start",
-                        display: "flex",
-                        px: 2,
-                        py: 1,
-                      }}
-                      variant="outlined"
-                    >
-                      <FormControlLabel
-                        control={<Radio />}
-                        key={idx}
-                        label={
-                          <Box sx={{ ml: 2 }}>
-                            <Stack direction="row" gap={1}>
-                              <Typography variant="subtitle2">
-                                {item.product.name}
-                              </Typography>
-                              <Typography
-                                color="text.secondary"
-                                variant="body2"
-                              >
-                                {`(${item.product.serialNumber})`}
-                              </Typography>
-                            </Stack>
-                            <Typography color="text.secondary" variant="body2">
-                              {`Quantity: ${item.quantity}`}
+                      label={
+                        <Box sx={{ ml: 2 }}>
+                          <Stack direction="row" gap={1}>
+                            <Typography variant="subtitle2">
+                              {item.product.name}
                             </Typography>
-                          </Box>
-                        }
-                        value={item.product.id}
-                      />
-                    </Paper>
-                  ))}
-          
+                            <Typography color="text.secondary" variant="body2">
+                              {`(${item.product.serialNumber})`}
+                            </Typography>
+                          </Stack>
+                          <Typography color="text.secondary" variant="body2">
+                            {`Quantity: ${item.quantity}`}
+                          </Typography>
+                        </Box>
+                      }
+                      value={item.product.id}
+                    />
+                  </Paper>
+                ))}
             </Stack>
           </Card>
           <TextField

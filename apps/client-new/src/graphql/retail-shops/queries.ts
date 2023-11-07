@@ -49,6 +49,7 @@ export const RETAIL_SHOPS = gql`
           street
           lat
           lng
+          formattedAddress
         }
       }
       meta {
@@ -173,7 +174,6 @@ export const RETAIL_SHOP_STOCK = gql`
   }
 `;
 
-
 export interface RSTopSellingProductsData {
   findProductsBySoldQuantityAndRetailShop: {
     items: Product[];
@@ -248,6 +248,7 @@ export const RETAIL_SHOP_TOP_REVENUE_PRODUCTS = gql`
 
 export interface RSLowStockProductsVars {
   retailShopId: string;
+  percentage?: number;
   paginationInput?: {
     skip?: number;
     take?: number;
@@ -262,10 +263,12 @@ export interface RSLowStockProductsData {
 export const RETAIL_SHOP_LOW_STOCK_PRODUCTS = gql`
   query FindLowStockByRetailShopId(
     $retailShopId: String!
+    $percentage: Float
     $paginationInput: PaginationInput
   ) {
     findLowStockByRetailShopId(
       retailShopId: $retailShopId
+      percentage: $percentage
       paginationInput: $paginationInput
     ) {
       items {

@@ -66,6 +66,7 @@ const Page = ({ params }: Props) => {
       },
     }
   );
+
   const [
     getStock,
     { data: stockData, error: stockError, loading: stockLoading },
@@ -84,8 +85,7 @@ const Page = ({ params }: Props) => {
         },
       });
     }
-  }, [currentTab]);
-  
+  }, [currentTab, getStock, page, params.id, rowsPerPage]);
 
   return (
     <Box
@@ -121,7 +121,6 @@ const Page = ({ params }: Props) => {
                 <Typography>Detail</Typography>
               </Breadcrumbs>
             </Stack>
-
           </Stack>
           <div>
             <Tabs

@@ -89,7 +89,6 @@ const TransactionHistoryTable = ({ warehouseId }: Props) => {
           transactionHistory={transactionHistory}
         />
       )}
-     
     </>
   ) : (
     <Card>

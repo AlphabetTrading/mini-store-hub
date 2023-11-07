@@ -16,7 +16,6 @@ export interface Product {
   images: string[];
 }
 
-
 export interface PriceHistory {
   id: string;
   purchasedPrice: number;

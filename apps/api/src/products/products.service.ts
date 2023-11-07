@@ -57,6 +57,7 @@ export class ProductsService {
       orderBy,
       include: {
         saleTransactionItem: true,
+        category: true
       },
     });
 
@@ -117,6 +118,7 @@ export class ProductsService {
       where,
       include: {
         saleTransactionItem: true,
+        category: true
       },
     });
 
@@ -184,6 +186,7 @@ export class ProductsService {
         },
       },
       include: {
+        category: true,
         goods: {
           where: {},
         },
@@ -223,6 +226,7 @@ export class ProductsService {
       orderBy,
       where,
       include: {
+        category: true,
         saleTransactionItem: {
           include: {
             soldPriceHistory: true,

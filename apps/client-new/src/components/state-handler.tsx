@@ -39,7 +39,8 @@ const StateHandler = (props: Props) => {
     return (
       <Typography
         sx={{
-          pl: 2,
+          pl: 3,
+          pb: 2,
         }}
         variant="body2"
       >

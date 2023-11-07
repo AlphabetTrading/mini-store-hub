@@ -16,10 +16,12 @@ import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
 import dayjs from "dayjs";
 import RetailShopSaleDetail from "./retail-shop-sale-detail";
+import { SaleTransaction } from "../../../types/sale-transaction";
 import {
-  SaleTransaction,
-} from "../../../types/sale-transaction";
-import { RetailShopSaleTransactionsData, RetailShopSaleTransactionsVars, RETAIL_SHOP_SALE_TRANSACTIONS } from "@/graphql/sale-transaction/queries";
+  RetailShopSaleTransactionsData,
+  RetailShopSaleTransactionsVars,
+  RETAIL_SHOP_SALE_TRANSACTIONS,
+} from "@/graphql/sale-transaction/queries";
 
 type Props = {
   retailShopId: string;

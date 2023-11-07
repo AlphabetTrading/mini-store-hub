@@ -18,10 +18,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@apollo/client";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import {
-  PRODUCTS,
-  ProductsData,
-} from "@/graphql/products/queries";
+import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
 import { Product, StockItem } from "../../../types/product";
 import StateHandler from "../state-handler";
 import { useEffect, useState } from "react";
@@ -30,7 +27,9 @@ import { SaleTransactionItem } from "../../../types/sale-transaction";
 type Props = {
   open: boolean;
   handleClose: () => void;
-  handleAddItem:( (stockItem: StockItem ) => void) | ((stockItem: SaleTransactionItem ) => void);
+  handleAddItem:
+    | ((stockItem: StockItem) => void)
+    | ((stockItem: SaleTransactionItem) => void);
   selectedStockItems: StockItem[] | SaleTransactionItem[];
 };
 interface Values {

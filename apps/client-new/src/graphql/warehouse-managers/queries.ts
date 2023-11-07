@@ -124,6 +124,9 @@ export const GET_STOCK_DISTRIBUTION = gql`
         id
         name
         amharicName
+        activePrice {
+          price
+        }
       }
     }
   }

@@ -20,6 +20,7 @@ import {
 } from "@/graphql/admin/queries";
 import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
+import CustomChip from "../custom-chip";
 
 type Props = {};
 
@@ -61,7 +62,7 @@ const TopSellingProducts = (props: Props) => {
                   var totalSale = 0;
                   product.saleTransactionItem?.forEach((saleTransaction) => {
                     quantity += saleTransaction.quantity;
-                    totalSale += saleTransaction.subTotal??0;
+                    totalSale += saleTransaction.subTotal ?? 0;
                   });
                   return (
                     <TableRow key={index}>
@@ -75,7 +76,9 @@ const TopSellingProducts = (props: Props) => {
                           </Typography>
                         </Stack>
                       </TableCell>
-                      <TableCell>{product.category?.name}</TableCell>
+                      <TableCell>
+                        <CustomChip label={product.category?.name || ""} />
+                      </TableCell>
                       <TableCell>{quantity}</TableCell>
                       <TableCell>{totalSale}</TableCell>
                     </TableRow>

@@ -90,9 +90,7 @@ const TransactionHistoryDetail = ({
         showAlert("updated a", "transaction");
         router.back();
       },
-
     });
-
   };
   const [modalOpen, setModalOpen] = useState(false);
 

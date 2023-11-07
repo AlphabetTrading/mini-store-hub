@@ -18,7 +18,7 @@ const StockListRow = ({ warehouseStock }: Props) => {
             <Typography
               color="text.secondary"
               variant="body2"
-            >{`SN- ${product.serialNumber}`}</Typography>
+            >{`SN #${product.serialNumber}`}</Typography>
           </Stack>
         </TableCell>
 
@@ -31,11 +31,19 @@ const StockListRow = ({ warehouseStock }: Props) => {
         <TableCell align="left">{quantity}</TableCell>
 
         <TableCell align="left">
-          {product.activePrice?.purchasedPrice}
+          {(product.activePrice?.purchasedPrice).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
         </TableCell>
-        <TableCell align="left">{product.activePrice?.price}</TableCell>
         <TableCell align="left">
-          {product.activePrice?.price * quantity}
+          {(product.activePrice?.price).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
+        </TableCell>
+        <TableCell align="left">
+          {(product.activePrice?.price * quantity).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
         </TableCell>
       </TableRow>
     </>
