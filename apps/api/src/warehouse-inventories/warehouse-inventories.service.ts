@@ -80,10 +80,34 @@ export class WarehouseStockService {
       throw new Error('Warehouse stock not found');
     }
 
-    return this.prisma.warehouseStock.findMany({
+    const stocks = await this.prisma.warehouseStock.findMany({
       where: { warehouseId },
-      include: warehouseStockIncludeObject,
+      include: {
+        product: {
+          include: {
+            category: true,
+            activePrice: true,
+            goods: true,
+            priceHistory: true,
+            retailShopStock: true,
+            saleTransactionItem: true,
+          },
+        },
+        warehouse: {
+          include: {
+            address: true,
+            goodsTransfersAsDestination: true,
+            goodsTransfersAsSource: true,
+          },
+        },
+      },
     });
+
+    stocks.sort((a, b)=> {
+      return b.product.activePrice.price * b.quantity - a.product.activePrice.price * a.quantity
+    })
+
+    return stocks
   }
 
   async find({ sourceWarehouseId }: { sourceWarehouseId: string }) {
