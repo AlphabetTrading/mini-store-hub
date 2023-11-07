@@ -79,7 +79,6 @@ const AddTransactionItemsScreen = () => {
       variables: selectedCategory.id === AllCategory.id ? GET_ALL_QUERY_VARIABLE : GET_CATEGORY_QUERY_VARIABLE,
       onCompleted: async (data,) => {
         if (data.retailShopStockByRetailShopId.items) {
-
           const alteredItems = data.retailShopStockByRetailShopId.items.map(
             (item: any) => ({ ...item, selectedQuantity: 0 })
           );

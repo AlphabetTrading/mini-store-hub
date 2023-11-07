@@ -95,7 +95,8 @@ const LowStockItems = (props: Props) => {
                     }}
                   >
                     <Avatar.Image
-                      source={{ uri: "https://picsum.photos/200" }}
+                      // source={{ uri: "https://picsum.photos/200" }}
+                      source={{ uri: item.product.images.length > 0 ? item.product.images[0] : "https://picsum.photos/200/300" }}
                       size={40}
                     />
                     <View style={{ flex: 1, gap: 5 }}>
@@ -131,11 +132,11 @@ const LowStockItems = (props: Props) => {
                       {locale.includes("en")
                         ? `${item.product.activePrice
                           ? item.product.activePrice.price
-                          : 29
+                          : 'Not set'
                         } ${t("etb")}`
                         : `${t("etb")} ${item.product.activePrice
                           ? item.product.activePrice.price
-                          : 29
+                          : "Not set"
                         } `}
                     </Text>
                   </View>
