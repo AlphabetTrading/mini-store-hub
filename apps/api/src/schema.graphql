@@ -87,6 +87,7 @@ input CreateBulkRetailShopStockInput {
 }
 
 input CreateBulkSaleTransactionInput {
+  createdAt: String
   goods: [CreateStockItemInput!]
   retailShopId: String!
 }

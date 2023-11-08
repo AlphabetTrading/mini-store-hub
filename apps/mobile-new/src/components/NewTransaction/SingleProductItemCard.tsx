@@ -41,6 +41,7 @@ const SingleProductItemCard = React.memo(({
     updateItem(productItem);
   }, [productItem]);
 
+  console.log(productItem.product.images)
   return (
     <TouchableOpacity
       onPress={() => {
@@ -194,7 +195,10 @@ const SingleProductItemCard = React.memo(({
                 alignItems: "center",
               }}
             >
-              <Avatar.Image source={{ uri: "https://picsum.photos/200" }} />
+              <Avatar.Image 
+                    source={{ uri: item.product.images.length > 0 ? item.product.images[0] : "https://picsum.photos/200/300" }}
+              // source={{ uri: "https://picsum.photos/200" }}
+               />
               <View style={{ flex: 1, gap: 5 }}>
                 <Text
                   style={{

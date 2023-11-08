@@ -145,6 +145,7 @@ const CategoryDetailScreen = ({
               style={{
                 backgroundColor: theme.colors.background,
                 width: "100%",
+                marginBottom: 60
               }}
             >
               <FlatList
@@ -158,7 +159,8 @@ const CategoryDetailScreen = ({
                 data={filteredItems}
                 // key={filteredItems.id}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item, index }) => (
+                renderItem={({ item, index }) => {
+                return (
                   <TouchableOpacity
                     style={{
                       backgroundColor: theme.colors.background,
@@ -194,10 +196,9 @@ const CategoryDetailScreen = ({
                       }}
                     >
                       <Avatar.Image
-                        source={{ uri: item.product.images > 0 ? item.images[0] : "https://picsum.photos/200/300" }}
+                        source={{ uri: item.product.images.length > 0 ? item.product.images[0] : "https://picsum.photos/200/300" }}
                         size={60}
                       />
-                      {/* <Image style={{ borderRadius: 100 }} source={item.imageSrc} /> */}
                       <View style={{ flex: 1, gap: 5 }}>
                         <Text
                           style={{
@@ -206,7 +207,6 @@ const CategoryDetailScreen = ({
                             fontFamily: "InterMedium",
                           }}
                         >
-                          {/* {item.product.name} */}
                           {locale.includes("en")
                             ? item.product.name
                             : item.product.amharicName}
@@ -244,6 +244,8 @@ const CategoryDetailScreen = ({
                     </View>
                   </TouchableOpacity>
                 )}
+              } 
+
               />
             </View>
           ) : (

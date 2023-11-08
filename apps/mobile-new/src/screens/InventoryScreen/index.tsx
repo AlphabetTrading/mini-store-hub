@@ -22,7 +22,13 @@ const InventoryScreen = (props: Props) => {
   const navigation = useNavigation();
   const { data, error, refetch, loading } = useQuery(GET_CATEGORIES, {
     errorPolicy: "all",
+    variables: {
+      orderBy: {
+        name: "asc"
+      }
+    }
   });
+  console.log(data, " is data")
   const { theme } = useAppTheme();
 
   const styles = StyleSheet.create({

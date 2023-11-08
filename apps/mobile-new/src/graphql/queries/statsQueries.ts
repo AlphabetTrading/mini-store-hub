@@ -81,6 +81,10 @@ export const GET_LOW_STOCK_PRODUCTS = gql`
           unit
           updatedAt
           serialNumber
+          activePrice {
+            id
+            price
+          }
         }
         createdAt
         id

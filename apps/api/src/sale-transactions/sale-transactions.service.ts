@@ -924,6 +924,8 @@ export class SaleTransactionsService {
     });
     const goodsWithSubTotalResolved = await Promise.all(goodsWithSubTotal);
 
+    const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
+    
     return await this.prisma.saleTransaction.create({
       data: {
         totalPrice,
@@ -934,12 +936,18 @@ export class SaleTransactionsService {
         },
         saleTransactionItems: {
           createMany: {
-            data: goodsWithSubTotalResolved,
+            data: goodsWithSubTotalResolved.map((item) => ({
+              ...item,
+              createdAt,
+
+            }))
           },
         },
+        createdAt,
       },
       include: {
         saleTransactionItems: true,
+
       },
     });
   }
