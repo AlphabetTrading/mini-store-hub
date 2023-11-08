@@ -10,9 +10,9 @@ export const useGetLowStockItems = (retailShopId: string, option?: any) => {
       retailShopId,
       paginationInput: {
         skip: 0,
-        take: 5,
+        take: 10,
       },
-      percentage: 50,
+      percentage: 20,
     },
     ...option,
   });

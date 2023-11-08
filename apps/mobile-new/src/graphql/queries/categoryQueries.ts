@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_CATEGORIES = gql`
-  query Categories($filterCategoryInput: FilterCategoryInput) {
-    categories(filterCategoryInput: $filterCategoryInput) {
+query ExampleQuery($orderBy: OrderByCategoryInput, $filterCategoryInput: FilterCategoryInput) {
+  categories(orderBy: $orderBy, filterCategoryInput: $filterCategoryInput) {
       items {
         id
         name

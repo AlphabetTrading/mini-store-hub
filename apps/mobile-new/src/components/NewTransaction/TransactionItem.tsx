@@ -23,6 +23,7 @@ export interface CheckoutItem {
     name: string;
     amharicName: string;
     unit: string;
+    images: string[];
     activePrice: {
       price: number;
       purchasedPrice: number;

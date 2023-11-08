@@ -21,6 +21,7 @@ type Props = {
 };
 
 export const StockDistribution = ({ stockItems, total }: Props) => {
+  console.log(stockItems)
   const chartSeries = stockItems?.map((stockItem) => {
     return stockItem.quantity * stockItem.product.activePrice.price;
   });

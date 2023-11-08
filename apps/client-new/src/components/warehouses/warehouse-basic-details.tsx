@@ -256,11 +256,16 @@ const WarehouseBasicDetails = ({ warehouse }: Props) => {
                 align={align}
                 label="Warehouse Value"
                 value={`ETB ${
+<<<<<<< HEAD
                   valuation
                     ? valuation.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                       })
                     : 0
+=======
+                  valuation ? valuation.toLocaleString("en-US", {minimumFractionDigits: 2})
+                  : 0
+>>>>>>> 40c2586ee65a8f5c506d75f1799570bf4595faaf
                 }`}
               />
               <Divider />
