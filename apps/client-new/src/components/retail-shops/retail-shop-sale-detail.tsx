@@ -103,10 +103,7 @@ const RetailShopSaleDetail = ({
       );
   }, [retailShopId, itemsData]);
 
-  const handleAddItem = (
-    retailShopStock: StockItem,
-    quantity: number
-  ) => {
+  const handleAddItem = (retailShopStock: StockItem, quantity: number) => {
     const selectedStockItem: SelectedRetailShopStockItem = {
       saleTransactionItem: {
         ...retailShopStock,
@@ -164,7 +161,7 @@ const RetailShopSaleDetail = ({
               item.quantity + selectedRetailShopStockItem.selectedQuantity,
           };
         }
-        return item;  
+        return item;
       })
     );
     setSelectedRetailShopStockItems((prev) =>
@@ -228,7 +225,7 @@ const RetailShopSaleDetail = ({
           (item) => item.saleTransactionItem.product.id
         )}
         setOpen={setModalOpen}
-        retailShopStocks={retailShopStocks||[]}
+        retailShopStocks={retailShopStocks || []}
         // selectedStockItems={newSaleTransactionItems}
         // handleClose={() => setModalOpen(false)}
       />

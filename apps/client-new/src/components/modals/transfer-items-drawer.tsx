@@ -27,9 +27,11 @@ type Props = {
   setOpen: (open: boolean) => void;
   handleAddItem: (item: StockItem, quantity: number) => void;
   selectedItemsId: string[];
-  warehouseId:string;
-  warehouseStocks:StockItem[];
-  setSelectedItems?: React.Dispatch<React.SetStateAction<SelectedWarehouseStockItem[]>>;
+  warehouseId: string;
+  warehouseStocks: StockItem[];
+  setSelectedItems?: React.Dispatch<
+    React.SetStateAction<SelectedWarehouseStockItem[]>
+  >;
 };
 interface Values {
   quantity: number;
@@ -51,9 +53,8 @@ const TransferItemsDrawer = ({
   selectedItemsId,
   setSelectedItems,
   warehouseId,
-  warehouseStocks
+  warehouseStocks,
 }: Props) => {
-
   const generateValidationSchema = (values: Values) => {
     const maxQuantity = warehouseStocks.find(
       (item) => item.product.id === values.itemId
@@ -69,8 +70,6 @@ const TransferItemsDrawer = ({
     }
     return errors;
   };
-
-
 
   const formik = useFormik({
     initialValues,
@@ -113,45 +112,41 @@ const TransferItemsDrawer = ({
               }}
               sx={{ maxHeight: 350, display: "block", overflow: "auto", pl: 1 }}
             >
-                {warehouseStocks
-                  ?.filter((item) => !selectedItemsId.includes(item.product.id))
-                  .map((item, idx) => (
-                    <Paper
+              {warehouseStocks
+                ?.filter((item) => !selectedItemsId.includes(item.product.id))
+                .map((item, idx) => (
+                  <Paper
+                    key={idx}
+                    sx={{
+                      alignItems: "flex-start",
+                      display: "flex",
+                      px: 2,
+                      py: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    <FormControlLabel
+                      control={<Radio />}
                       key={idx}
-                      sx={{
-                        alignItems: "flex-start",
-                        display: "flex",
-                        px: 2,
-                        py: 1,
-                      }}
-                      variant="outlined"
-                    >
-                      <FormControlLabel
-                        control={<Radio />}
-                        key={idx}
-                        label={
-                          <Box sx={{ ml: 2 }}>
-                            <Stack direction="row" gap={1}>
-                              <Typography variant="subtitle2">
-                                {item.product.name}
-                              </Typography>
-                              <Typography
-                                color="text.secondary"
-                                variant="body2"
-                              >
-                                {`(${item.product.serialNumber})`}
-                              </Typography>
-                            </Stack>
-                            <Typography color="text.secondary" variant="body2">
-                              {`Quantity: ${item.quantity}`}
+                      label={
+                        <Box sx={{ ml: 2 }}>
+                          <Stack direction="row" gap={1}>
+                            <Typography variant="subtitle2">
+                              {item.product.name}
                             </Typography>
-                          </Box>
-                        }
-                        value={item.product.id}
-                      />
-                    </Paper>
-))}
-        
+                            <Typography color="text.secondary" variant="body2">
+                              {`(${item.product.serialNumber})`}
+                            </Typography>
+                          </Stack>
+                          <Typography color="text.secondary" variant="body2">
+                            {`Quantity: ${item.quantity}`}
+                          </Typography>
+                        </Box>
+                      }
+                      value={item.product.id}
+                    />
+                  </Paper>
+                ))}
             </Stack>
           </Card>
           <TextField

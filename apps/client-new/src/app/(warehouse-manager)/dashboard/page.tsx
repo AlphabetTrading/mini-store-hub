@@ -36,7 +36,6 @@ const Page = (props: Props) => {
   >(GET_TOTAL_VALUATION_OF_WAREHOUSE, {
     variables: {
       warehouseId: warehouseId,
-      
     },
   });
 

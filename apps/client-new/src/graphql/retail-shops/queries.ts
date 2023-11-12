@@ -174,7 +174,6 @@ export const RETAIL_SHOP_STOCK = gql`
   }
 `;
 
-
 export interface RSTopSellingProductsData {
   findProductsBySoldQuantityAndRetailShop: {
     items: Product[];

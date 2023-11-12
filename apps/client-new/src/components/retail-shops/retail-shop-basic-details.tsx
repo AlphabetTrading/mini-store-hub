@@ -219,7 +219,9 @@ const RetailShopBasicDetails = ({ retailShop }: Props) => {
           <PropertyListItem
             align={align}
             label="Retail Shop Value"
-            value={`ETB ${valuation.toLocaleString("en-US", {minimumFractionDigits: 2})}`}
+            value={`ETB ${valuation.toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+            })}`}
           />
           <Divider />
           <PropertyListItem

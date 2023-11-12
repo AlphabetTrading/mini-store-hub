@@ -14,7 +14,7 @@ const WarehousesListRow = ({ warehouse }: Props) => {
   return (
     <TableRow
       hover
-      sx={{ textDecoration: "none", position: "relative", cursor: "pointer"}}
+      sx={{ textDecoration: "none", position: "relative", cursor: "pointer" }}
       onClick={() => router.push(`/admin/warehouses/${warehouse.id}`)}
     >
       <TableCell>{warehouse?.name}</TableCell>

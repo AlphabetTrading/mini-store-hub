@@ -22,8 +22,14 @@ import {
 import ItemsSummaryTable from "@/components/transfer-items/items-summary-table";
 
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { WAREHOUSE_STOCKS, WarehouseStockData, WarehouseStockVars } from "@/graphql/products/queries";
-import TransferItemsDrawer, { SelectedWarehouseStockItem } from "@/components/modals/transfer-items-drawer";
+import {
+  WAREHOUSE_STOCKS,
+  WarehouseStockData,
+  WarehouseStockVars,
+} from "@/graphql/products/queries";
+import TransferItemsDrawer, {
+  SelectedWarehouseStockItem,
+} from "@/components/modals/transfer-items-drawer";
 import { StockItem } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
 import {
@@ -39,8 +45,6 @@ import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries"
 import WarehouseRadioGroup from "@/components/transfer-items/warehouse-radio-group";
 
 type Props = {};
-
-
 
 const Page = (props: Props) => {
   const [transferGoodsToRetailshop, { data, error, loading }] = useMutation<
@@ -59,26 +63,28 @@ const Page = (props: Props) => {
     null
   );
   useEffect(() => {
-    getWarehouseStockData({ variables: {
-      filterWarehouseStockInput: {
-        warehouse: {
-          id: selectedWarehouse||"",
+    getWarehouseStockData({
+      variables: {
+        filterWarehouseStockInput: {
+          warehouse: {
+            id: selectedWarehouse || "",
+          },
         },
       },
-    },})
-  }, [selectedWarehouse])
-  
+    });
+  }, [selectedWarehouse]);
 
   useEffect(() => {
     if (itemsData) {
-      setWarehouseStocks(JSON.parse(JSON.stringify(itemsData.warehouseStocks.items)));
+      setWarehouseStocks(
+        JSON.parse(JSON.stringify(itemsData.warehouseStocks.items))
+      );
     }
   }, [itemsData]);
 
-
-  const [selectedItems, setSelectedItems] = useState<SelectedWarehouseStockItem[]>(
-    []
-  );
+  const [selectedItems, setSelectedItems] = useState<
+    SelectedWarehouseStockItem[]
+  >([]);
   const [selectedRetailShop, setSelectedRetailShop] = useState<string | null>(
     null
   );
@@ -88,9 +94,9 @@ const Page = (props: Props) => {
     warehouse: string;
   }>({ retailShop: "", items: "", warehouse: "" });
 
-  const [filteredItems, setFilteredItems] = useState<SelectedWarehouseStockItem[]>(
-    []
-  );
+  const [filteredItems, setFilteredItems] = useState<
+    SelectedWarehouseStockItem[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {

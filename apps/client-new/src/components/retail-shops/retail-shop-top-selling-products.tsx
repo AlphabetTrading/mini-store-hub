@@ -39,8 +39,6 @@ const RetailShopTopSellingProducts = ({ retailShopId }: Props) => {
     },
   });
 
-  console.log(data)
-  
   return (
     <Card>
       <CardHeader title="Top Selling Products" />
@@ -66,7 +64,7 @@ const RetailShopTopSellingProducts = ({ retailShopId }: Props) => {
                   var totalSale = 0;
                   product.saleTransactionItem?.forEach((saleTransaction) => {
                     quantity += saleTransaction.quantity;
-                    totalSale += saleTransaction.subTotal??0;
+                    totalSale += saleTransaction.subTotal ?? 0;
                   });
                   return (
                     <TableRow key={index}>

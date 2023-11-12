@@ -7,10 +7,9 @@ export interface GoodsTransfer {
   transferType: TransferType;
   createdAt: Date;
   retailShop?: RetailShop;
-  goods:StockItem[];
+  goods: StockItem[];
   destinationWarehouse?: Warehouse;
   sourceWarehouse?: Warehouse;
-
 }
 
 export enum TransferType {
