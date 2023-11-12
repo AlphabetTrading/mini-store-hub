@@ -48,7 +48,7 @@ export class RetailShopStockResolver {
     paginationInput?: PaginationInput,
   ) {
     const where: Prisma.RetailShopStockWhereInput = {
-      AND: [
+      OR: [
         {
           id: filterRetailShopStockInput?.id,
         },
