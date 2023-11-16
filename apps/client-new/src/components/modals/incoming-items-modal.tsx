@@ -19,10 +19,11 @@ import { useQuery } from "@apollo/client";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { PRODUCTS, ProductsData } from "@/graphql/products/queries";
-import { Product, StockItem } from "../../../types/product";
+import { Product } from "../../../types/product";
 import StateHandler from "../state-handler";
 import { useEffect, useState } from "react";
 import { SaleTransactionItem } from "../../../types/sale-transaction";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
   open: boolean;

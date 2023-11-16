@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
-import { Product, StockItem } from "../../../types/product";
+import { Product } from "../../../types/product";
 import { Meta } from "../../../types/common";
+import { StockItem } from "../../../types/stock-item";
 
 export interface WarehouseStockVars {
   filterWarehouseStockInput: {

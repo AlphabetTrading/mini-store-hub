@@ -35,7 +35,7 @@ import {
 } from "@/graphql/warehouses/mutations";
 import { useRouter } from "next/navigation";
 import { WAREHOUSE_STOCKS } from "@/graphql/products/queries";
-import { StockItem } from "../../../../../../types/product";
+import { StockItem } from "../../../../../../types/stock-item";
 import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
 import CustomChip from "@/components/custom-chip";
 import { showAlert } from "@/helpers/showAlert";

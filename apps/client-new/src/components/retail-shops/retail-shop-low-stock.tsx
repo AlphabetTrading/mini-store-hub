@@ -17,9 +17,10 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Product, StockItem } from "../../../types/product";
+import { Product } from "../../../types/product";
 import CustomChip from "../custom-chip";
 import StateHandler from "../state-handler";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
   retailShopId: string;

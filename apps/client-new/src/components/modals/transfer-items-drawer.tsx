@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
-import { StockItem } from "../../../types/product";
+import { SelectedStockItem, StockItem } from "../../../types/stock-item";
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -30,7 +30,7 @@ type Props = {
   warehouseId: string;
   warehouseStocks: StockItem[];
   setSelectedItems?: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseStockItem[]>
+    React.SetStateAction<SelectedStockItem[]>
   >;
 };
 interface Values {
@@ -41,11 +41,6 @@ const initialValues: Values = {
   quantity: 1,
   itemId: "",
 };
-export interface SelectedWarehouseStockItem {
-  warehouseStock: StockItem;
-  selectedQuantity: number;
-}
-
 const TransferItemsDrawer = ({
   open,
   setOpen,

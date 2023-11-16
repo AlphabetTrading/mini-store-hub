@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
 import { RetailShop } from "../../../types/retail-shop";
 import { Meta } from "../../../types/common";
-import { StockItem, Product } from "../../../types/product";
+import { Product } from "../../../types/product";
 import { SaleTransaction } from "../../../types/sale-transaction";
+import { StockItem } from "../../../types/stock-item";
 
 export interface RetailShopsVars {
   filterRetailShopInput?: {
@@ -122,6 +123,19 @@ export const RETAIL_SHOP_VALUATION = gql`
 export interface RetailShopStockVars {
   filterRetailShopStockInput: {
     retailShopId: string;
+    product?: {
+      name?: {
+        contains?: string;
+      };
+      serialNumber?: {
+        contains?: string;
+      };
+      category?: {
+        name?: {
+          contains?: string;
+        };
+      };
+    };
   };
   paginationInput?: {
     skip?: number;

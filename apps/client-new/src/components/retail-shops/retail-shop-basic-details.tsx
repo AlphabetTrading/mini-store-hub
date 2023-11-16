@@ -185,11 +185,9 @@ const RetailShopBasicDetails = ({ retailShop }: Props) => {
         />
         <Divider />
         <PropertyList>
-          <PropertyListItem
-            align={align}
-            label="Name"
-            value={retailShop?.name}
-          />
+          <PropertyListItem align={align} label="Name">
+            <Typography variant="subtitle2">{retailShop?.name}</Typography>
+          </PropertyListItem>
           <Divider />
 
           <PropertyListItem

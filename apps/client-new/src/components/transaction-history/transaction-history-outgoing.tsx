@@ -40,9 +40,7 @@ import {
   WarehouseStockData,
   WarehouseStockVars,
 } from "@/graphql/products/queries";
-import TransferItemsDrawer, {
-  SelectedWarehouseStockItem,
-} from "../modals/transfer-items-drawer";
+import TransferItemsDrawer from "../modals/transfer-items-drawer";
 import { GoodsTransfer } from "../../../types/goods-transfer";
 import {
   UPDATE_TRANSFER_GOODS,
@@ -51,8 +49,8 @@ import {
 } from "@/graphql/transfer-goods/mutations";
 import { showAlert } from "@/helpers/showAlert";
 import { useRouter } from "next/navigation";
-import { StockItem } from "../../../types/product";
 import StateHandler from "../state-handler";
+import { SelectedStockItem, StockItem } from "../../../types/stock-item";
 
 type Props = {
   transactionHistory: GoodsTransfer;
@@ -79,7 +77,7 @@ const TransactionHistoryOutgoing = ({
   });
 
   const [selectedWarehouseStockItems, setSelectedWarehouseStockItems] =
-    useState<SelectedWarehouseStockItem[]>([]);
+    useState<SelectedStockItem[]>([]);
 
   const [warehouseStocks, setWarehouseStocks] = useState<StockItem[]>([]);
   useEffect(() => {
@@ -96,7 +94,7 @@ const TransactionHistoryOutgoing = ({
       setSelectedWarehouseStockItems(
         transactionHistory.goods.map((item) => {
           return {
-            warehouseStock: {
+            stockItem: {
               ...item,
               quantity:
                 itemsData?.warehouseStocks.items.find(
@@ -110,8 +108,8 @@ const TransactionHistoryOutgoing = ({
   }, [warehoueId, itemsData]);
 
   const handleAddItem = (warehouseStockItem: StockItem, quantity: number) => {
-    const selectedStockItem: SelectedWarehouseStockItem = {
-      warehouseStock: {
+    const selectedStockItem: SelectedStockItem = {
+      stockItem: {
         ...warehouseStockItem,
         quantity: warehouseStockItem.quantity - quantity,
       },
@@ -137,7 +135,7 @@ const TransactionHistoryOutgoing = ({
       variables: {
         data: {
           goods: selectedWarehouseStockItems.map((item) => ({
-            productId: item.warehouseStock.product.id,
+            productId: item.stockItem.product.id,
             quantity: item.selectedQuantity,
           })),
         },
@@ -159,13 +157,13 @@ const TransactionHistoryOutgoing = ({
   // };
 
   const handleRemoveItem = (
-    selectedWarehouseStockItem: SelectedWarehouseStockItem
+    selectedWarehouseStockItem: SelectedStockItem
   ) => {
     setWarehouseStocks((prev) =>
       prev?.map((item) => {
         if (
           item.product.id ===
-          selectedWarehouseStockItem.warehouseStock.product.id
+          selectedWarehouseStockItem.stockItem.product.id
         ) {
           return {
             ...item,
@@ -179,39 +177,39 @@ const TransactionHistoryOutgoing = ({
     setSelectedWarehouseStockItems((prev) =>
       prev.filter(
         (i) =>
-          i.warehouseStock.product.id !==
-          selectedWarehouseStockItem.warehouseStock.product.id
+          i.stockItem.product.id !==
+          selectedWarehouseStockItem.stockItem.product.id
       )
     );
   };
 
   const handleItemQuantityChange = (
-    selectedItem: SelectedWarehouseStockItem,
+    selectedItem: SelectedStockItem,
     val: number
   ) => {
     if (selectedItem.selectedQuantity + val <= 0) {
       setSelectedWarehouseStockItems(
         selectedWarehouseStockItems.filter(
           (item) =>
-            item.warehouseStock.product.id !==
-            selectedItem.warehouseStock.product.id
+            item.stockItem.product.id !==
+            selectedItem.stockItem.product.id
         )
       );
     } else if (
       // selectedItem.selectedQuantity + val >
-      selectedItem.warehouseStock.quantity - val <
+      selectedItem.stockItem.quantity - val <
       0
     ) {
       return;
     } else {
       selectedItem.selectedQuantity += val;
-      selectedItem.warehouseStock.quantity -= val;
+      selectedItem.stockItem.quantity -= val;
 
       setSelectedWarehouseStockItems((prev) =>
         prev.map((item) => {
           if (
-            item.warehouseStock.product.id ===
-            selectedItem.warehouseStock.product.id
+            item.stockItem.product.id ===
+            selectedItem.stockItem.product.id
           ) {
             return selectedItem;
           } else {
@@ -234,7 +232,7 @@ const TransactionHistoryOutgoing = ({
         open={modalOpen}
         handleAddItem={handleAddItem}
         selectedItemsId={selectedWarehouseStockItems.map(
-          (item) => item.warehouseStock.product.id
+          (item) => item.stockItem.product.id
         )}
         setOpen={setModalOpen}
         warehouseStocks={warehouseStocks}
@@ -333,19 +331,19 @@ const TransactionHistoryOutgoing = ({
           <TableBody>
             {selectedWarehouseStockItems.map(
               (selectedWarehouseStockItem, idx) => {
-                const { warehouseStock, selectedQuantity } =
+                const { stockItem, selectedQuantity } =
                   selectedWarehouseStockItem;
                 return (
                   <TableRow key={idx}>
                     <TableCell>
                       <Stack direction="row" alignItems="center">
                         <>
-                          {warehouseStock.product.images?.length > 0 ? (
+                          {stockItem.product.images?.length > 0 ? (
                             <Box
                               sx={{
                                 alignItems: "center",
                                 backgroundColor: "neutral.50",
-                                backgroundImage: `url("${warehouseStock.product.images[0]}")`,
+                                backgroundImage: `url("${stockItem.product.images[0]}")`,
                                 backgroundPosition: "center",
                                 backgroundSize: "cover",
                                 borderRadius: 1,
@@ -381,18 +379,18 @@ const TransactionHistoryOutgoing = ({
                           }}
                         >
                           <Typography variant="subtitle2">
-                            {warehouseStock.product.name}
+                            {stockItem.product.name}
                           </Typography>
                           <Typography color="text.secondary" variant="body2">
-                            {warehouseStock.product.serialNumber}
+                            {stockItem.product.serialNumber}
                           </Typography>
                         </Box>
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      <CustomChip label={warehouseStock.product.unit || ""} />
+                      <CustomChip label={stockItem.product.unit || ""} />
                     </TableCell>
-                    <TableCell>{warehouseStock.quantity}</TableCell>
+                    <TableCell>{stockItem.quantity}</TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
                         {selectedQuantity}
@@ -424,7 +422,7 @@ const TransactionHistoryOutgoing = ({
                     </TableCell>
                     <TableCell>
                       {
-                        selectedWarehouseStockItem.warehouseStock.product
+                        selectedWarehouseStockItem.stockItem.product
                           ?.activePrice.price
                       }
                     </TableCell>

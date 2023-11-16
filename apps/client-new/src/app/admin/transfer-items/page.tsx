@@ -27,10 +27,6 @@ import {
   WarehouseStockData,
   WarehouseStockVars,
 } from "@/graphql/products/queries";
-import TransferItemsDrawer, {
-  SelectedWarehouseStockItem,
-} from "@/components/modals/transfer-items-drawer";
-import { StockItem } from "../../../../types/product";
 import RetailShopsList from "@/components/transfer-items/retail-shops-list";
 import {
   TRANSFER_GOODS,
@@ -43,6 +39,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { GET_TOTAL_VALUATION_OF_WAREHOUSE } from "@/graphql/warehouse-managers/queries";
 import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries";
 import WarehouseRadioGroup from "@/components/transfer-items/warehouse-radio-group";
+import { SelectedStockItem, StockItem } from "../../../../types/stock-item";
+import TransferItemsDrawer from "@/components/modals/transfer-items-drawer";
 
 type Props = {};
 
@@ -83,7 +81,7 @@ const Page = (props: Props) => {
   }, [itemsData]);
 
   const [selectedItems, setSelectedItems] = useState<
-    SelectedWarehouseStockItem[]
+    SelectedStockItem[]
   >([]);
   const [selectedRetailShop, setSelectedRetailShop] = useState<string | null>(
     null
@@ -95,7 +93,7 @@ const Page = (props: Props) => {
   }>({ retailShop: "", items: "", warehouse: "" });
 
   const [filteredItems, setFilteredItems] = useState<
-    SelectedWarehouseStockItem[]
+    SelectedStockItem[]
   >([]);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -114,9 +112,9 @@ const Page = (props: Props) => {
   const handleSearch = (query: string) => {
     setFilteredItems(
       selectedItems.filter(
-        ({ warehouseStock }) =>
-          warehouseStock.product.name.toLowerCase().includes(query) ||
-          warehouseStock.product.serialNumber.includes(query)
+        ({ stockItem }) =>
+        stockItem.product.name.toLowerCase().includes(query) ||
+        stockItem.product.serialNumber.includes(query)
       )
     );
   };
@@ -155,7 +153,7 @@ const Page = (props: Props) => {
       variables: {
         data: {
           goods: selectedItems.map((item) => ({
-            productId: item.warehouseStock.product.id,
+            productId: item.stockItem.product.id,
             quantity: item.selectedQuantity,
             // price: item.warehouseStock.product.activePrice.price,
           })),
@@ -201,15 +199,15 @@ const Page = (props: Props) => {
   const [open, setOpen] = useState(false);
 
   const handleAddItem = (warehouseStock: StockItem, quantity: number) => {
-    const selectedStockItem: SelectedWarehouseStockItem = {
-      warehouseStock: warehouseStock,
+    const selectedStockItem: SelectedStockItem = {
+      stockItem: warehouseStock,
       selectedQuantity: quantity,
     };
     setSelectedItems((prev) => [...selectedItems, selectedStockItem]);
   };
   const handleRemoveItem = (id: string) => {
     setSelectedItems((prev) =>
-      prev.filter((stock) => stock.warehouseStock.product.id !== id)
+      prev.filter((stock) => stock.stockItem.product.id !== id)
     );
   };
 
@@ -332,7 +330,7 @@ const Page = (props: Props) => {
       </Box>
       <TransferItemsDrawer
         selectedItemsId={selectedItems.map(
-          (item) => item.warehouseStock.product.id
+          (item) => item.stockItem.product.id
         )}
         handleAddItem={handleAddItem}
         open={open}

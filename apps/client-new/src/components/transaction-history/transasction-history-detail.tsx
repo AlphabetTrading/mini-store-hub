@@ -25,7 +25,6 @@ import {
   AlertTitle,
 } from "@mui/material";
 import CustomChip from "../custom-chip";
-import { StockItem } from "../../../types/product";
 import { AddIncomingItemModal } from "../modals/incoming-items-modal";
 import { useMutation } from "@apollo/client";
 import {
@@ -37,6 +36,7 @@ import { GoodsTransfer } from "../../../types/goods-transfer";
 import { useRouter } from "next/navigation";
 import { showAlert } from "@/helpers/showAlert";
 import { WAREHOUSE_STOCKS } from "@/graphql/products/queries";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
   closeDetail: () => void;

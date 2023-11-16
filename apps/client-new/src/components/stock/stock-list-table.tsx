@@ -7,8 +7,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { StockItem } from "../../../types/product";
 import StockListRow from "./stock-list-row";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
   warehouseStocks: StockItem[];

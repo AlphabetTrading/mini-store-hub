@@ -23,11 +23,6 @@ export interface PriceHistory {
   createdAt: Date;
 }
 
-export interface StockItem {
-  quantity: number;
-  product: Product;
-}
-
 export enum Unit {
   BAG = "BAG",
   BOTTLE = "BOTTLE",
