@@ -1,4 +1,4 @@
-import { StockItem } from "./product";
+import { StockItem } from "./stock-item";
 import { RetailShop } from "./retail-shop";
 import { Warehouse } from "./warehouse";
 

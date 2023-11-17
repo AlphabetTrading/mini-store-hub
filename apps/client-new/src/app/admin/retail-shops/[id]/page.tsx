@@ -33,6 +33,7 @@ import Pagination from "@/components/Pagination";
 import RetailShopSalesTable from "@/components/retail-shops/retail-shop-sales-table";
 import RetailShopInsights from "@/components/retail-shops/retail-shop-insights";
 import RetailShopLowStock from "@/components/retail-shops/retail-shop-low-stock";
+import RetailShopSellProducts from "@/components/retail-shops/retail-shop-sell-products";
 
 type Props = {
   params: {
@@ -43,6 +44,7 @@ const tabs = [
   { label: "Details", value: "details" },
   { label: "Stock", value: "stock" },
   { label: "Sales", value: "sales" },
+  { label: "Sell Products", value: "sell products" },
   { label: "Insights", value: "insights" },
 ];
 
@@ -183,6 +185,9 @@ const Page = ({ params }: Props) => {
 
           {currentTab === "insights" && (
             <RetailShopInsights retailShopId={params.id} />
+          )}
+          {currentTab === "sell products" && (
+            <RetailShopSellProducts retailShopId={params.id} />
           )}
         </Stack>
       </Container>

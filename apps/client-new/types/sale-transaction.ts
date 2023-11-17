@@ -14,3 +14,10 @@ export interface SaleTransaction {
   totalPrice: number;
   saleTransactionItems: SaleTransactionItem[];
 }
+
+export interface SelectedRetailShopSaleTransaction {
+  saleTransactionItem: SaleTransactionItem;
+  selectedQuantity: number;
+}
+
+

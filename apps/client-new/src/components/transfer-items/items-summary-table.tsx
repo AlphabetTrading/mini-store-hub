@@ -6,20 +6,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import React from "react";
 import ItemsSummaryRow from "./items-summary-row";
 import EmptyTable from "../empty-table";
-import { SelectedWarehouseStockItem } from "../modals/transfer-items-drawer";
+import { SelectedStockItem } from "../../../types/stock-item";
 
 type Props = {
   handleRemoveItem: (id: string) => void;
-  selectedItems: SelectedWarehouseStockItem[];
+  selectedItems: SelectedStockItem[];
   setSelectedItems: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseStockItem[]>
+    React.SetStateAction<SelectedStockItem[]>
   >;
-  filteredItems: SelectedWarehouseStockItem[];
+  filteredItems: SelectedStockItem[];
 };
 
 const ItemsSummaryTable = ({
@@ -35,8 +34,8 @@ const ItemsSummaryTable = ({
           <TableRow>
             <TableCell>Item Name</TableCell>
             <TableCell>Selling Price Per Unit</TableCell>
-            <TableCell>Quanity</TableCell>
-            <TableCell>Selected Quanity</TableCell>
+            <TableCell>Total Quantity</TableCell>
+            <TableCell>Selected Quantity</TableCell>
             <TableCell>Total Price</TableCell>
             <TableCell>Action</TableCell>
           </TableRow>

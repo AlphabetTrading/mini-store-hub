@@ -1,7 +1,7 @@
 import { Stack, TableCell, TableRow, Typography } from "@mui/material";
 import React from "react";
-import { StockItem } from "../../../types/product";
 import CustomChip from "../custom-chip";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
   warehouseStock: StockItem;

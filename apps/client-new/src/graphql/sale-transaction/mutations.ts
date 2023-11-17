@@ -25,3 +25,28 @@ export const UPDATE_SALE_TRANSACTION = gql`
     }
   }
 `;
+
+export interface CreateSaleTransactionData {
+  createSaleTransaction: {
+    id: string;
+  };
+}
+
+export interface CreateSaleTransactionVars {
+  data: {
+    retailShopId: string;
+    goods: {
+      quantity: number;
+      productId: string;
+    }[];
+    createdAt?: string;
+  };
+}
+
+export const CREATE_SALE_TRANSACTION = gql`
+  mutation CreateSaleTransaction($data: CreateBulkSaleTransactionInput!) {
+    createSaleTransaction(data: $data) {
+      id
+    }
+  }
+`;

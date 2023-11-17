@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   SaleTransaction,
-  SaleTransactionItem,
+  SelectedRetailShopSaleTransaction,
+  
 } from "../../../types/sale-transaction";
 import {
   Box,
@@ -41,17 +42,13 @@ import {
 } from "@/graphql/retail-shops/queries";
 import { showAlert } from "@/helpers/showAlert";
 import StateHandler from "../state-handler";
-import { StockItem } from "../../../types/product";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
   saleTransaction: SaleTransaction;
   closeDetail: () => void;
   retailShopId: string;
 };
-interface SelectedRetailShopStockItem {
-  saleTransactionItem: SaleTransactionItem;
-  selectedQuantity: number;
-}
 
 const RetailShopSaleDetail = ({
   saleTransaction,
@@ -71,9 +68,13 @@ const RetailShopSaleDetail = ({
       },
     }
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
 
-  const [selectedRetailShopStockItems, setSelectedRetailShopStockItems] =
-    useState<SelectedRetailShopStockItem[]>([]);
+
+  const [selectedRetailShopSaleTransactions, setSelectedRetailShopSaleTransactions] =
+    useState<SelectedRetailShopSaleTransaction[]>([]);
 
   const [retailShopStocks, setRetailShopStocks] = useState<StockItem[]>();
   useEffect(() => {
@@ -88,8 +89,8 @@ const RetailShopSaleDetail = ({
 
   useEffect(() => {
     getRetailShopStockData();
-    setSelectedRetailShopStockItems &&
-      setSelectedRetailShopStockItems(
+    setSelectedRetailShopSaleTransactions &&
+      setSelectedRetailShopSaleTransactions(
         saleTransaction.saleTransactionItems.map((item) => ({
           saleTransactionItem: {
             ...item,
@@ -104,7 +105,7 @@ const RetailShopSaleDetail = ({
   }, [retailShopId, itemsData]);
 
   const handleAddItem = (retailShopStock: StockItem, quantity: number) => {
-    const selectedStockItem: SelectedRetailShopStockItem = {
+    const selectedStockItem: SelectedRetailShopSaleTransaction = {
       saleTransactionItem: {
         ...retailShopStock,
         quantity: retailShopStock.quantity - quantity,
@@ -112,8 +113,8 @@ const RetailShopSaleDetail = ({
       selectedQuantity: quantity,
     };
 
-    setSelectedRetailShopStockItems((prev) => [
-      ...selectedRetailShopStockItems,
+    setSelectedRetailShopSaleTransactions((prev) => [
+      ...selectedRetailShopSaleTransactions,
       selectedStockItem,
     ]);
   };
@@ -132,7 +133,7 @@ const RetailShopSaleDetail = ({
       variables: {
         updateSaleTransactionId: saleTransaction.id,
         data: {
-          goods: selectedRetailShopStockItems.map((item) => ({
+          goods: selectedRetailShopSaleTransactions.map((item) => ({
             productId: item.saleTransactionItem.product.id,
             quantity: item.selectedQuantity,
           })),
@@ -143,65 +144,65 @@ const RetailShopSaleDetail = ({
       },
     });
   };
-  // const handleAddItem = (stockItem: SelectedRetailShopStockItem) => {
-  //   setSelectedRetailShopStockItems((prev) => [...prev, stockItem]);
+  // const handleAddItem = (stockItem: SelectedRetailShopSaleTransaction) => {
+  //   setSelectedRetailShopSaleTransactions((prev) => [...prev, stockItem]);
   // };
   const handleRemoveItem = (
-    selectedRetailShopStockItem: SelectedRetailShopStockItem
+    selectedRetailShopSaleTransaction: SelectedRetailShopSaleTransaction
   ) => {
     setRetailShopStocks((prev) =>
       prev?.map((item) => {
         if (
           item.product.id ===
-          selectedRetailShopStockItem.saleTransactionItem.product.id
+          selectedRetailShopSaleTransaction.saleTransactionItem.product.id
         ) {
           return {
             ...item,
             quantity:
-              item.quantity + selectedRetailShopStockItem.selectedQuantity,
+              item.quantity + selectedRetailShopSaleTransaction.selectedQuantity,
           };
         }
         return item;
       })
     );
-    setSelectedRetailShopStockItems((prev) =>
+    setSelectedRetailShopSaleTransactions((prev) =>
       prev.filter(
         (i) =>
           i.saleTransactionItem.product.id !==
-          selectedRetailShopStockItem.saleTransactionItem.product.id
+          selectedRetailShopSaleTransaction.saleTransactionItem.product.id
       )
     );
   };
 
   const handleQuantityChange = (
-    selectedRetailShopStockItem: SelectedRetailShopStockItem,
+    selectedRetailShopSaleTransaction: SelectedRetailShopSaleTransaction,
     val: number
   ) => {
-    if (selectedRetailShopStockItem.selectedQuantity + val <= 0) {
-      setSelectedRetailShopStockItems(
-        selectedRetailShopStockItems.filter(
+    if (selectedRetailShopSaleTransaction.selectedQuantity + val <= 0) {
+      setSelectedRetailShopSaleTransactions(
+        selectedRetailShopSaleTransactions.filter(
           (item) =>
             item.saleTransactionItem.product.id !==
-            selectedRetailShopStockItem.saleTransactionItem.product.id
+            selectedRetailShopSaleTransaction.saleTransactionItem.product.id
         )
       );
     } else if (
-      // selectedRetailShopStockItem.selectedQuantity + val >
-      selectedRetailShopStockItem.saleTransactionItem.quantity - val <
+      // selectedRetailShopSaleTransaction.selectedQuantity + val >
+      selectedRetailShopSaleTransaction.saleTransactionItem.quantity - val <
       0
     ) {
       return;
     } else {
-      selectedRetailShopStockItem.selectedQuantity += val;
-      selectedRetailShopStockItem.saleTransactionItem.quantity -= val;
+      selectedRetailShopSaleTransaction.selectedQuantity += val;
+      selectedRetailShopSaleTransaction.saleTransactionItem.quantity -= val;
 
-      setSelectedRetailShopStockItems((prev) =>
+      setSelectedRetailShopSaleTransactions((prev) =>
         prev.map((item) => {
           if (
             item.saleTransactionItem.product.id ===
-            selectedRetailShopStockItem.saleTransactionItem.product.id
+            selectedRetailShopSaleTransaction.saleTransactionItem.product.id
           ) {
-            return selectedRetailShopStockItem;
+            return selectedRetailShopSaleTransaction;
           } else {
             return item;
           }
@@ -218,15 +219,23 @@ const RetailShopSaleDetail = ({
       empty={itemsData?.retailShopStockByRetailShopId.items.length === 0}
     >
       <SaleTransactionItemsDrawer
+      
         open={modalOpen}
         handleAddItem={handleAddItem}
         retailShopId={retailShopId}
-        selectedItemsId={selectedRetailShopStockItems.map(
+        selectedItemsId={selectedRetailShopSaleTransactions.map(
           (item) => item.saleTransactionItem.product.id
         )}
         setOpen={setModalOpen}
         retailShopStocks={retailShopStocks || []}
-        // selectedStockItems={newSaleTransactionItems}
+        searchQuery=""
+        setSearchQuery={setSearchQuery}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+        page={page}
+        setPage={setPage} 
+        retailShopStockLoading={itemsLoading} 
+        retailShopStockError={itemsError}        // selectedStockItems={newSaleTransactionItems}
         // handleClose={() => setModalOpen(false)}
       />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -314,7 +323,7 @@ const RetailShopSaleDetail = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {selectedRetailShopStockItems.map(
+            {selectedRetailShopSaleTransactions.map(
               (selectedSaleTransactionItem, idx) => {
                 const { product, subTotal, quantity } =
                   selectedSaleTransactionItem.saleTransactionItem;

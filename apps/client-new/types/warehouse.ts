@@ -1,5 +1,6 @@
 import { Address } from "./address";
-import { Product, StockItem, Unit } from "./product";
+import { Product, Unit } from "./product";
+import { StockItem } from "./stock-item";
 import { User } from "./user";
 
 export interface Warehouse {

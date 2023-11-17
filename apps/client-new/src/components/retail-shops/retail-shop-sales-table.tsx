@@ -78,20 +78,19 @@ const RetailShopSalesTable = (props: Props) => {
         >
           <Card>
             <TableContainer sx={{ overflowX: "auto" }}>
-              <Table sx={{ minWidth: 1200 }}>
+              <Table sx={{ minWidth: 500 }}>
                 <TableHead>
                   <TableRow>
                     {/* <TableCell /> */}
                     <TableCell>Date</TableCell>
                     {/* <TableCell>Time</TableCell> */}
                     <TableCell>Items</TableCell>
-                    <TableCell>Total</TableCell>
+                    <TableCell>Total</TableCell>  
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data?.saleTransactionsByRetailShop.items.map(
                     (saleTransaction, idx) => {
-                      console.log(saleTransaction);
                       return (
                         <TableRow key={idx}>
                           <TableCell width={100}>

@@ -1,30 +1,29 @@
 import {
-  WAREHOUSE_STOCKS,
-  WarehouseStockData,
-  WarehouseStockVars,
-} from "@/graphql/products/queries";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import {
   Drawer,
   Stack,
   Typography,
   Card,
-  RadioGroup,
-  Paper,
-  FormControlLabel,
-  Radio,
-  Box,
   TextField,
   Button,
-  CircularProgress,
   Alert,
+  TableHead,
+  TableCell,
+  TableRow,
+  Table,
+  TableBody,
+  Checkbox,
+  TableContainer,
+  SvgIcon,
+  Input,
 } from "@mui/material";
-import { useFormik } from "formik";
-import React, { useEffect } from "react";
-import { StockItem } from "../../../types/product";
-import { RetailShopStockData } from "@/graphql/retail-shops/queries";
-import { SelectedWarehouseStockItem } from "./transfer-items-drawer";
+import React from "react";
+import { SelectedStockItem, StockItem } from "../../../types/stock-item";
+import { Meta } from "../../../types/common";
+import Pagination from "../Pagination";
+import CustomChip from "../custom-chip";
+import SearchIcon from "@mui/icons-material/Search";
 import StateHandler from "../state-handler";
+import { ApolloError } from "@apollo/client";
 
 type Props = {
   open: boolean;
@@ -32,60 +31,47 @@ type Props = {
   handleAddItem: (item: StockItem, quantity: number) => void;
   selectedItemsId: string[];
   retailShopId: string;
-  setSelectedItems?: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseStockItem[]>
-  >;
   retailShopStocks: StockItem[];
-};
-interface Values {
-  quantity: number;
-  itemId: string;
-}
-const initialValues: Values = {
-  quantity: 1,
-  itemId: "",
+  meta?: Meta;
+  page: number;
+  rowsPerPage: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  setRowsPerPage: React.Dispatch<React.SetStateAction<number>>;
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  retailShopStockLoading: boolean;
+  retailShopStockError: ApolloError | undefined;
 };
 
+const validateQuantity = (value: number, max: number) => {
+  let error;
+  if (value <= 0) {
+    error = "Quantity must be greater than 0";
+  } else if (value > max) {
+    error = `Quantity must be less than or equal to ${max}`;
+  }
+  return error;
+};
 const SaleTransactionItemsDrawer = ({
   open,
   setOpen,
   handleAddItem,
   selectedItemsId,
-  setSelectedItems,
   retailShopId,
   retailShopStocks,
+  meta,
+  page,
+  rowsPerPage,
+  setPage,
+  setRowsPerPage,
+  searchQuery,
+  setSearchQuery,
+  retailShopStockLoading,
+  retailShopStockError,
 }: Props) => {
-  const generateValidationSchema = (values: Values) => {
-    const maxQuantity = retailShopStocks.find(
-      (item) => item.product.id === values.itemId
-    )?.quantity as number;
-    let errors: any = {};
-    if (!values.itemId) {
-      errors.itemId = "Item is required";
-    }
-    if (values.quantity < 1) {
-      errors.quantity = "Quantity cannot be less than 1";
-    } else if (values.quantity > maxQuantity) {
-      errors.quantity = `Quantity cannot be more than ${maxQuantity}`;
-    }
-    return errors;
-  };
-
-  const formik = useFormik({
-    initialValues,
-    validate(values) {
-      return generateValidationSchema(values);
-    },
-    onSubmit: (values, helpers) => {
-      const item: StockItem = retailShopStocks.find(
-        (i) => i.product.id === values.itemId
-      ) as StockItem;
-
-      handleAddItem(item, values.quantity);
-      setOpen(false);
-      helpers.resetForm();
-    },
-  });
+  const [selectedItems, setSelectedItems] = React.useState<SelectedStockItem[]>(
+    []
+  );
 
   return (
     <Drawer
@@ -95,61 +81,141 @@ const SaleTransactionItemsDrawer = ({
       PaperProps={{
         sx: {
           width: "100%",
-          maxWidth: 500,
+          maxWidth: 700,
         },
       }}
     >
-      <form onSubmit={formik.handleSubmit}>
-        <Stack sx={{ px: 4, py: 8 }} spacing={2}>
-          <Typography variant="h6">Add Item</Typography>
-          <Card sx={{ p: 4 }}>
-            <Stack
-              component={RadioGroup}
-              spacing={1}
-              value={formik.values.itemId.toString()}
-              onChange={(event) => {
-                formik.setFieldValue("itemId", event.currentTarget.value);
-              }}
-              sx={{ maxHeight: 350, display: "block", overflow: "auto", pl: 1 }}
+      <Stack sx={{ px: 4, py: 8 }} spacing={2}>
+        <Typography variant="h6">Add Item</Typography>
+        <Card sx={{ p: 4 }}>
+          <Stack alignItems="center" spacing={2} sx={{ p: 2 }} direction="row">
+            <SvgIcon>
+              <SearchIcon />
+            </SvgIcon>
+            <Input
+              disableUnderline
+              placeholder="Search by name or serial number"
+              value={searchQuery}
+              fullWidth
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Stack>
+          <TableContainer sx={{ overflowX: "auto" }}>
+            <StateHandler
+              error={retailShopStockError}
+              loading={retailShopStockLoading}
             >
-              {retailShopStocks
-                ?.filter((item) => !selectedItemsId.includes(item.product.id))
-                .map((item, idx) => (
-                  <Paper
-                    key={idx}
-                    sx={{
-                      alignItems: "flex-start",
-                      display: "flex",
-                      px: 2,
-                      py: 1,
-                    }}
-                    variant="outlined"
-                  >
-                    <FormControlLabel
-                      control={<Radio />}
-                      key={idx}
-                      label={
-                        <Box sx={{ ml: 2 }}>
-                          <Stack direction="row" gap={1}>
-                            <Typography variant="subtitle2">
+              <Table sx={{ minWidth: 300 }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox />
+                    </TableCell>
+                    <TableCell>Product</TableCell>
+                    <TableCell>Category</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Select</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {retailShopStocks?.map((item, idx) => {
+                    const currentItem = selectedItems.find(
+                      (selectedItem) =>
+                        selectedItem.stockItem.product.id === item.product.id
+                    );
+                    const helperText = validateQuantity(
+                      currentItem?.selectedQuantity as number,
+                      item.quantity
+                    );
+                    // console.log(currentItem)
+                    return (
+                      <TableRow hover key={idx}>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={selectedItems.some(
+                              (i) => i.stockItem.product.id === item.product.id
+                            )}
+                            onChange={(
+                              event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              if (event.target.checked) {
+                                setSelectedItems([
+                                  ...selectedItems,
+                                  { stockItem: item, selectedQuantity: 1 },
+                                ]);
+                              } else {
+                                setSelectedItems(
+                                  selectedItems.filter(
+                                    (i) =>
+                                      i.stockItem.product.id !== item.product.id
+                                  )
+                                );
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Stack>
+                            <Typography variant="body2">
                               {item.product.name}
                             </Typography>
-                            <Typography color="text.secondary" variant="body2">
-                              {`(${item.product.serialNumber})`}
+                            <Typography variant="body2" color="text.secondary">
+                              SN- {item.product.serialNumber}
                             </Typography>
                           </Stack>
-                          <Typography color="text.secondary" variant="body2">
-                            {`Quantity: ${item.quantity}`}
-                          </Typography>
-                        </Box>
-                      }
-                      value={item.product.id}
-                    />
-                  </Paper>
-                ))}
-            </Stack>
-          </Card>
-          <TextField
+                        </TableCell>
+                        <TableCell>
+                          <CustomChip
+                            label={item.product.category.name}
+                          ></CustomChip>
+                        </TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+
+                        <TableCell>
+                          <TextField
+                            error={Boolean(helperText)}
+                            // fullWidth
+                            helperText={helperText}
+                            label="Select Quantity"
+                            name="Select Quantity"
+                            type="number"
+                            // onBlur={formik.handleBlur}
+                            // onChange={formik.handleChange}
+                            // value={formik.values}
+                            onChange={(e) => {
+                              setSelectedItems(
+                                selectedItems.map((i) => {
+                                  if (
+                                    i.stockItem.product.id === item.product.id
+                                  ) {
+                                    return {
+                                      ...i,
+                                      selectedQuantity: Number(e.target.value),
+                                    };
+                                  }
+                                  return i;
+                                })
+                              );
+                            }}
+                            value={currentItem?.selectedQuantity}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </StateHandler>
+          </TableContainer>
+          <Pagination
+            meta={meta}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+          />
+        </Card>
+        {/* <TextField
             error={
               formik.errors.quantity && formik.touched.quantity ? true : false
             }
@@ -160,8 +226,8 @@ const SaleTransactionItemsDrawer = ({
             label="Quantity"
             type="number"
             name="quantity"
-          />
-          {!!(formik.touched.itemId && formik.errors.itemId) && (
+          /> */}
+        {/* {!!(formik.touched.itemId && formik.errors.itemId) && (
             <Alert severity="error">
               <div>
                 <Typography color="inherit" variant="subtitle2">
@@ -169,13 +235,29 @@ const SaleTransactionItemsDrawer = ({
                 </Typography>
               </div>
             </Alert>
-          )}
+          )} */}
 
-          <Button variant="contained" type="submit" fullWidth={false}>
-            Add Item
-          </Button>
-        </Stack>
-      </form>
+        <Button
+          variant="contained"
+          onClick={() => {
+            const invalid = selectedItems.some(
+              (item) =>
+                item.selectedQuantity <= 0 ||
+                item.selectedQuantity > item.stockItem.quantity
+            );
+            if (!invalid) {
+              selectedItems.forEach((item) => {
+                handleAddItem(item.stockItem, item.selectedQuantity);
+              });
+              setOpen(false);
+            }
+          }}
+          fullWidth={false}
+        >
+          Add Items
+        </Button>
+      </Stack>
+      {/* </form> */}
     </Drawer>
   );
 };

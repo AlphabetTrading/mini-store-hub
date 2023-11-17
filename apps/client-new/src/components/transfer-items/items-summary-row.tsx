@@ -7,15 +7,15 @@ import {
   Typography,
 } from "@mui/material";
 import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
-import { SelectedWarehouseStockItem } from "../modals/transfer-items-drawer";
+import { SelectedStockItem } from "../../../types/stock-item";
 
 type Props = {
-  selectedWarehouseItem: SelectedWarehouseStockItem;
+  selectedWarehouseItem: SelectedStockItem;
   handleRemoveItem(id: string): void;
   setSelectedItems: React.Dispatch<
-    React.SetStateAction<SelectedWarehouseStockItem[]>
+    React.SetStateAction<SelectedStockItem[]>
   >;
-  selectedItems: SelectedWarehouseStockItem[];
+  selectedItems: SelectedStockItem[];
 };
 
 const ItemsSummaryRow = ({
@@ -25,20 +25,20 @@ const ItemsSummaryRow = ({
   selectedItems,
 }: Props) => {
   const handleItemQuantityChange = (
-    selectedItem: SelectedWarehouseStockItem,
+    selectedItem: SelectedStockItem,
     val: number
   ) => {
     if (selectedItem.selectedQuantity + val <= 0) {
       setSelectedItems(
         selectedItems.filter(
           (item) =>
-            item.warehouseStock.product.id !==
-            selectedItem.warehouseStock.product.id
+            item.stockItem.product.id !==
+            selectedItem.stockItem.product.id
         )
       );
     } else if (
       selectedItem.selectedQuantity + val >
-      selectedItem.warehouseStock.quantity
+      selectedItem.stockItem.quantity
     ) {
       return;
     } else {
@@ -46,8 +46,8 @@ const ItemsSummaryRow = ({
       setSelectedItems((prev) =>
         prev.map((item) => {
           if (
-            item.warehouseStock.product.id ===
-            selectedItem.warehouseStock.product.id
+            item.stockItem.product.id ===
+            selectedItem.stockItem.product.id
           ) {
             return selectedItem;
           } else {
@@ -57,23 +57,23 @@ const ItemsSummaryRow = ({
       );
     }
   };
-  const { warehouseStock, selectedQuantity } = selectedWarehouseItem;
+  const { stockItem, selectedQuantity } = selectedWarehouseItem;
 
   return (
     <TableRow>
       <TableCell>
         <Stack>
-          <Typography variant="body2">{warehouseStock.product.name}</Typography>
+          <Typography variant="body2">{stockItem.product.name}</Typography>
           <Typography variant="body2" color="text.secondary">
-            SN-{warehouseStock.product.serialNumber}
+            SN-{stockItem.product.serialNumber}
           </Typography>
         </Stack>
       </TableCell>
-      <TableCell>{warehouseStock.product.activePrice?.price}</TableCell>
-      <TableCell>{warehouseStock.quantity}</TableCell>
+      <TableCell>{stockItem.product.activePrice?.price}</TableCell>
+      <TableCell>{stockItem.quantity}</TableCell>
       <TableCell>
         <Stack direction="row" alignItems="center" spacing={2}>
-          <Stack>
+          {/* <Stack>
             <IconButton
               sx={{ p: 0 }}
               onClick={() => handleItemQuantityChange(selectedWarehouseItem, 1)}
@@ -88,17 +88,17 @@ const ItemsSummaryRow = ({
             >
               <ArrowDropDown />
             </IconButton>
-          </Stack>
+          </Stack> */}
           <Typography>{selectedQuantity}</Typography>
         </Stack>
       </TableCell>
       <TableCell>
         {(
-          warehouseStock.product.activePrice?.price * selectedQuantity
+          stockItem.product.activePrice?.price * selectedQuantity
         ).toLocaleString("en-US", { minimumFractionDigits: 2 })}
       </TableCell>
       <TableCell>
-        <IconButton onClick={() => handleRemoveItem(warehouseStock.product.id)}>
+        <IconButton onClick={() => handleRemoveItem(stockItem.product.id)}>
           <DeleteOutline color="error" />
         </IconButton>
       </TableCell>
