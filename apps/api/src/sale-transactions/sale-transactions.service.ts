@@ -178,8 +178,6 @@ export class SaleTransactionsService {
       where: { id: retailShopId },
     });
 
-    console.log(retailShop, ' retailshop');
-
     if (!retailShop) {
       throw new NotFoundException('Retail Shop not found');
     }
@@ -632,7 +630,6 @@ export class SaleTransactionsService {
 
       return overallProfit;
     } catch (error) {
-      console.log(error);
       throw new BadRequestException('Invalid operation');
     }
   }
@@ -925,7 +922,7 @@ export class SaleTransactionsService {
     const goodsWithSubTotalResolved = await Promise.all(goodsWithSubTotal);
 
     const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
-    
+
     return await this.prisma.saleTransaction.create({
       data: {
         totalPrice,
@@ -939,15 +936,13 @@ export class SaleTransactionsService {
             data: goodsWithSubTotalResolved.map((item) => ({
               ...item,
               createdAt,
-
-            }))
+            })),
           },
         },
         createdAt,
       },
       include: {
         saleTransactionItems: true,
-
       },
     });
   }
@@ -963,14 +958,16 @@ export class SaleTransactionsService {
       throw new NotFoundException('Sale transaction not found');
     }
 
+    const createdAt = data.createdAt
+      ? new Date(data.createdAt)
+      : saleTransaction.createdAt;
+
     const { goods, retailShopId } = data;
 
     return await this.prisma.$transaction(async (tx) => {
       // decrease the stock of the retail shop with the previous goods
       for (const saleTransactionItem of saleTransaction.saleTransactionItems) {
         const { productId, quantity } = saleTransactionItem;
-
-        console.log(saleTransaction, ' sale transaction')
 
         // check if the product exists
         const product = await tx.retailShopStock.findUnique({
@@ -1002,11 +999,10 @@ export class SaleTransactionsService {
           },
         });
       }
-
       // check if retail shop has enough stock
       for (const good of goods) {
         const { productId, quantity } = good;
-        const retailShopStock = await this.prisma.retailShopStock.findUnique({
+        const retailShopStock = await tx.retailShopStock.findUnique({
           where: {
             productId_retailShopId: {
               retailShopId: retailShopId ?? saleTransaction.retailShopId,
@@ -1047,8 +1043,6 @@ export class SaleTransactionsService {
           },
         });
       }
-
-      // calculate total price
       let totalPrice = 0;
 
       const goodsWithSubTotal = goods.map(async (good) => {
@@ -1082,8 +1076,44 @@ export class SaleTransactionsService {
           soldPriceHistoryId: product.activePrice.id,
         };
       });
-      const goodsWithSubTotalResolved = await Promise.all(goodsWithSubTotal);
-      return await tx.saleTransaction.update({
+      const goodsWithSubTotalResolved: any[] = await Promise.all(
+        goodsWithSubTotal,
+      );
+      
+      // return await tx.saleTransaction.update({
+      //   where: { id },
+      //   data: {
+      //     totalPrice,
+      //     retailShop: {
+      //       connect: {
+      //         id: retailShopId ?? saleTransaction.retailShopId,
+      //       },
+      //     },
+      //     saleTransactionItems: {
+      //       deleteMany: {
+      //         saleTransactionId: id,
+      //       },
+      //       createMany: {
+      //         data: goodsWithSubTotalResolved,
+      //       },
+      //     },
+      //   },
+      //   include: {
+      //     saleTransactionItems: true,
+      //   },
+
+      // }, );
+
+      try {
+        await tx.saleTransactionItem.deleteMany({
+          where: {
+            saleTransactionId: id,
+          },
+        });
+      } catch (error) {
+      }
+
+      const res = await tx.saleTransaction.update({
         where: { id },
         data: {
           totalPrice,
@@ -1092,19 +1122,20 @@ export class SaleTransactionsService {
               id: retailShopId ?? saleTransaction.retailShopId,
             },
           },
-          saleTransactionItems: {
-            deleteMany: {
-              saleTransactionId: saleTransaction.id,
-            },
-            createMany: {
-              data: goodsWithSubTotalResolved,
-            },
-          },
+          createdAt,
         },
         include: {
           saleTransactionItems: true,
         },
       });
+
+      await tx.saleTransactionItem.createMany({
+        data: goodsWithSubTotalResolved.map((item) => ({
+          ...item,
+          saleTransactionId: id,
+        })),
+      });
+      return res;
     });
   }
   async remove(id: string) {

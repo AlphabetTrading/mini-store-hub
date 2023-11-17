@@ -57,6 +57,13 @@ export class ProductsResolver {
             {
               category: filterProductInput?.category,
             },
+            {
+              retailShopStock: {
+                some: {
+                  retailShop: filterProductInput?.retailShop,
+                },
+              },
+            }
           ],
         },
 

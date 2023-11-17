@@ -27,18 +27,18 @@ async function main() {
 
   console.log('Seeding...');
 
-  // await seedUserModels();
-  // await seedUserProfile();
-  // await seedCategories();
-  // await seedProducts();
-  // await seedPriceHistory();
-  // await seedWarehouses();
-  // await seedRetailShops();
-  // await seedWarehouseStocks();
-  // await seedRetailshopStocks();
-  // await seedGoodsTransfers();
-  // await seedSaleTransactions();
-  // await seedNotifications();
+  await seedUserModels();
+  await seedUserProfile();
+  await seedCategories();
+  await seedProducts();
+  await seedPriceHistory();
+  await seedWarehouses();
+  await seedRetailShops();
+  await seedWarehouseStocks();
+  await seedRetailshopStocks();
+  await seedGoodsTransfers();
+  await seedSaleTransactions();
+  await seedNotifications();
 }
 
 async function seedUserModels() {
@@ -49,114 +49,112 @@ async function seedUserModels() {
           username: 'admin',
           firstName: 'John',
           lastName: 'Doe',
-          isActive: true,
           phone: '0912345671',
           amharicFirstName: 'ጆን',
           amharicLastName: 'ዶኤ',
           gender: Gender.MALE,
+          isActive: true,
           password:
             '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
           role: 'ADMIN',
         },
-        // {
-        //   username: 'warehouse',
-        //   firstName: 'Jane',
-        //   lastName: 'Doe',
-        //   phone: '0912345672',
-        //   isActive: true,
-        //   amharicFirstName: 'ጃን',
-        //   amharicLastName: 'ዶኤ',
-        //   gender: Gender.FEMALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'WAREHOUSE_MANAGER',
-        // },
-        // {
-        //   username: 'retailshop',
-        //   firstName: 'George',
-        //   lastName: 'Thomas',
-        //   isActive: true,
-        //   phone: '0912345673',
-        //   amharicFirstName: 'ጆርጂ',
-        //   amharicLastName: 'ቶማስ',
-        //   gender: Gender.MALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'RETAIL_SHOP_MANAGER',
-        // },
-        // {
-        //   username: faker.internet.userName(),
-        //   firstName: faker.person.firstName(),
-        //   lastName: faker.person.lastName(),
-        //   phone: faker.phone.number(),
-        //   // generate random amharic name
-        //   amharicFirstName: 'አማርኛ ስም',
-        //   amharicLastName: 'አማርኛ የአባት ስም',
-        //   gender: Gender.MALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'WAREHOUSE_MANAGER',
-        // },
-        // {
-        //   username: faker.internet.userName(),
-        //   firstName: faker.person.firstName(),
-        //   lastName: faker.person.lastName(),
-        //   phone: faker.phone.number(),
-        //   amharicFirstName: 'አማርኛ ስም',
-        //   amharicLastName: 'አማርኛ የአባት ስም',
-        //   gender: Gender.MALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'WAREHOUSE_MANAGER',
-        // },
-        // {
-        //   username: faker.internet.userName(),
-        //   firstName: faker.person.firstName(),
-        //   lastName: faker.person.lastName(),
-        //   phone: faker.phone.number(),
-        //   amharicFirstName: 'አማርኛ ስም',
-        //   amharicLastName: 'አማርኛ የአባት ስም',
-        //   gender: Gender.MALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'RETAIL_SHOP_MANAGER',
-        // },
-        // {
-        //   username: faker.internet.userName(),
-        //   firstName: faker.person.firstName(),
-        //   lastName: faker.person.lastName(),
-        //   phone: faker.phone.number(),
-        //   amharicFirstName: 'አማርኛ ስም',
-        //   amharicLastName: 'አማርኛ የአባት ስም',
-        //   gender: Gender.MALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'RETAIL_SHOP_MANAGER',
-        // },
-        // {
-        //   username: faker.internet.userName(),
-        //   firstName: faker.person.firstName(),
-        //   lastName: faker.person.lastName(),
-        //   phone: faker.phone.number(),
-        //   amharicFirstName: 'አማርኛ ስም',
-        //   amharicLastName: 'አማርኛ የአባት ስም',
-        //   gender: Gender.MALE,
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'WAREHOUSE_MANAGER',
-        // },
-        // {
-        //   username: faker.internet.userName(),
-        //   firstName: faker.person.firstName(),
-        //   lastName: faker.person.lastName(),
-        //   amharicFirstName: 'አማርኛ ስም',
-        //   amharicLastName: 'አማርኛ የአባት ስም',
-        //   gender: Gender.MALE,
-        //   phone: faker.phone.number(),
-        //   password:
-        //     '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
-        //   role: 'RETAIL_SHOP_MANAGER',
-        // },
+        {
+          username: 'warehouse',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          phone: '0912345672',
+          amharicFirstName: 'ጃን',
+          amharicLastName: 'ዶኤ',
+          gender: Gender.FEMALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: 'retailshop',
+          firstName: 'George',
+          lastName: 'Thomas',
+          phone: '0912345673',
+          amharicFirstName: 'ጆርጂ',
+          amharicLastName: 'ቶማስ',
+          gender: Gender.MALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          // generate random amharic name
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          phone: faker.phone.number(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'WAREHOUSE_MANAGER',
+        },
+        {
+          username: faker.internet.userName(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          amharicFirstName: 'አማርኛ ስም',
+          amharicLastName: 'አማርኛ የአባት ስም',
+          gender: Gender.MALE,
+          phone: faker.phone.number(),
+          password:
+            '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm',
+          role: 'RETAIL_SHOP_MANAGER',
+        },
       ],
     });
     console.log('User models seeded successfully');
@@ -971,17 +969,6 @@ async function seedGoodsTransfers() {
       ],
     });
 
-    const products = await prisma.product.findMany({
-      take: 10,
-    });
-
-    const goods = products.map((product) => ({
-      productId: product.id,
-      quantity: randomInt(1, 10),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
-
     await prisma.goodsTransfer.create({
       data: {
         sourceWarehouse: {
@@ -995,11 +982,6 @@ async function seedGoodsTransfers() {
           },
         },
         transferType: 'WarehouseToRetailShop',
-        goods: {
-          createMany: {
-            data: goods,
-          },
-        },
       },
     });
 

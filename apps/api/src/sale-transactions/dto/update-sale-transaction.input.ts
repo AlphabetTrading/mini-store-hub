@@ -11,4 +11,7 @@ export class UpdateSaleTransactionInput extends PartialType(
 
   @Field(() => String, { nullable: true })
   retailShopId: string;
+
+  @Field(() => String, { nullable: true })
+  createdAt?: string;
 }
