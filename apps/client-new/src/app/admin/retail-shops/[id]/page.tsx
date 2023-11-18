@@ -77,6 +77,11 @@ const Page = ({ params }: Props) => {
     if (currentTab === "stock") {
       getStock({
         variables: {
+          orderBy: {
+            product: {
+              name: "asc"
+            }
+          },
           filterRetailShopStockInput: {
             retailShopId: params.id,
           },

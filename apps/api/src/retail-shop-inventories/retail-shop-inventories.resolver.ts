@@ -56,7 +56,22 @@ export class RetailShopStockResolver {
           retailShopId: filterRetailShopStockInput?.retailShopId,
         },
         {
-          product: filterRetailShopStockInput?.product,
+          product: {
+            OR: [
+              {
+                name: filterRetailShopStockInput?.product?.name,
+              },
+              {
+                serialNumber: filterRetailShopStockInput?.product?.serialNumber,
+              },
+              {
+                category: {
+                  name: filterRetailShopStockInput.product?.category?.name
+                }
+              }
+
+            ]
+          },
         },
         {
           createdAt: filterRetailShopStockInput?.createdAt,

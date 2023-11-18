@@ -61,6 +61,11 @@ const RetailShopSellProducts = (props: Props) => {
       filterRetailShopStockInput: {
         retailShopId: props.retailShopId,
       },
+      orderBy: {
+        product: {
+          name: "asc"
+        }
+      },
       paginationInput: {
         skip: page * rowsPerPage,
         take: rowsPerPage,
@@ -72,17 +77,17 @@ const RetailShopSellProducts = (props: Props) => {
       filterRetailShopStockInput: {
         retailShopId: props.retailShopId,
         product: {
-          category: {
-            name: {
-              contains: searchQuery,
-            },
-          },
+          // category: {
+          //   name: {
+          //     contains: searchQuery,
+          //   },
+          // },
           name: {
             contains: searchQuery,
           },
-          serialNumber: {
-            contains: searchQuery,
-          },
+          // serialNumber: {
+          //   contains: searchQuery,
+          // },
         },
       },
       paginationInput: {

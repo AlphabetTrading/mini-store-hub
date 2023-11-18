@@ -27,18 +27,18 @@ async function main() {
 
   console.log('Seeding...');
 
-  await seedUserModels();
-  await seedUserProfile();
-  await seedCategories();
-  await seedProducts();
-  await seedPriceHistory();
-  await seedWarehouses();
-  await seedRetailShops();
-  await seedWarehouseStocks();
-  await seedRetailshopStocks();
-  await seedGoodsTransfers();
-  await seedSaleTransactions();
-  await seedNotifications();
+  // await seedUserModels();
+  // await seedUserProfile();
+  // await seedCategories();
+  // await seedProducts();
+  // await seedPriceHistory();
+  // await seedWarehouses();
+  // await seedRetailShops();
+  // await seedWarehouseStocks();
+  // await seedRetailshopStocks();
+  // await seedGoodsTransfers();
+  // await seedSaleTransactions();
+  // await seedNotifications();
 }
 
 async function seedUserModels() {

@@ -62,6 +62,11 @@ const RetailShopSaleDetail = ({
     RETAIL_SHOP_STOCK,
     {
       variables: {
+        orderBy: {
+          product: {
+            name: "asc"
+          }
+        },
         filterRetailShopStockInput: {
           retailShopId: retailShopId,
         },

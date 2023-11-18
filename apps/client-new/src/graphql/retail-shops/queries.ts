@@ -137,6 +137,11 @@ export interface RetailShopStockVars {
       };
     };
   };
+  orderBy?: {
+    product?: {
+      name: string;
+    }
+  };
   paginationInput?: {
     skip?: number;
     take?: number;
@@ -152,11 +157,13 @@ export interface RetailShopStockData {
 
 export const RETAIL_SHOP_STOCK = gql`
   query RetailShopStockByRetailShopId(
-    $filterRetailShopStockInput: FilterRetailShopStockInput
+    $filterRetailShopStockInput: FilterRetailShopStockInput, 
+    $orderBy: OrderByRetailShopStockInput, 
     $paginationInput: PaginationInput
   ) {
     retailShopStockByRetailShopId(
-      filterRetailShopStockInput: $filterRetailShopStockInput
+      filterRetailShopStockInput: $filterRetailShopStockInput, 
+      orderBy: $orderBy, 
       paginationInput: $paginationInput
     ) {
       items {
