@@ -6,7 +6,9 @@ import { Prisma } from '@prisma/client';
 import { PriceHistory } from './models/price-history.model';
 
 const priceHistoryIncludeObject: Prisma.PriceHistoryInclude = {
-  product: true,
+  // product: true,
+  retailShopStock: true,
+  warehouseStock: true,
 };
 
 @Injectable()

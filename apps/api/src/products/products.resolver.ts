@@ -36,41 +36,24 @@ export class ProductsResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationProducts> {
     const where: Prisma.ProductWhereInput = {
-      AND: [
+      id: filterProductInput?.id,
+      OR: filterProductInput?.name && [
         {
-          id: filterProductInput?.id,
+          name: filterProductInput?.name,
         },
         {
-          OR: [
-            {
-              name: filterProductInput?.name,
-            },
-            {
-              amharicName: filterProductInput?.name,
-            },
-            {
-              serialNumber: filterProductInput?.serialNumber,
-            },
-            {
-              description: filterProductInput?.description,
-            },
-            {
-              category: filterProductInput?.category,
-            },
-            {
-              retailShopStock: {
-                some: {
-                  retailShop: filterProductInput?.retailShop,
-                },
-              },
-            }
-          ],
-        },
-
-        {
-          createdAt: filterProductInput?.createdAt,
+          amharicName: filterProductInput?.name,
         },
       ],
+      serialNumber: filterProductInput?.serialNumber,
+      description: filterProductInput?.description,
+      category: filterProductInput?.category,
+      retailShopStock: filterProductInput?.retailShop && {
+        some: {
+          retailShop: filterProductInput?.retailShop,
+        },
+      },
+      createdAt: filterProductInput?.createdAt,
     };
     try {
       const products = await this.productsService.findAll({

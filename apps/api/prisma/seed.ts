@@ -1,4 +1,11 @@
-import { Gender, PrismaClient, TransferType, UnitType } from '@prisma/client';
+import {
+  Gender,
+  PrismaClient,
+  StockType,
+  TransactionType,
+  TransferType,
+  UnitType,
+} from '@prisma/client';
 import { randomInt } from 'crypto';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
@@ -13,8 +20,8 @@ async function main() {
   await prisma.notification.deleteMany();
   await prisma.userProfile.deleteMany();
   await prisma.user.deleteMany();
-  await prisma.saleTransactionItem.deleteMany();
-  await prisma.saleTransaction.deleteMany();
+  await prisma.retailShopTransactionItem.deleteMany();
+  await prisma.retailShopTransaction.deleteMany();
   await prisma.priceHistory.deleteMany();
   await prisma.stockItem.deleteMany();
   await prisma.goodsTransfer.deleteMany();
@@ -27,18 +34,19 @@ async function main() {
 
   console.log('Seeding...');
 
-  // await seedUserModels();
-  // await seedUserProfile();
-  // await seedCategories();
-  // await seedProducts();
-  // await seedPriceHistory();
-  // await seedWarehouses();
-  // await seedRetailShops();
-  // await seedWarehouseStocks();
-  // await seedRetailshopStocks();
-  // await seedGoodsTransfers();
+  await seedUserModels();
+  await seedUserProfile();
+  await seedCategories();
+  await seedProducts();
+  await seedPriceHistory();
+  await seedWarehouses();
+  await seedRetailShops();
+  await seedWarehouseStocks();
+  await seedRetailshopStocks();
+  await seedGoodsTransfers();
   // await seedSaleTransactions();
-  // await seedNotifications();
+  await seedRetailShopsTransactions();
+  await seedNotifications();
 }
 
 async function seedUserModels() {
@@ -443,40 +451,6 @@ async function seedProducts() {
               id: product.categoryId,
             },
           },
-          activePrice: {
-            create: {
-              product: {
-                connect: {
-                  id: createdProduct.id,
-                },
-              },
-              price: randomInt(10, 30),
-              purchasedPrice: randomInt(5, 20),
-            },
-          },
-          priceHistory: {
-            createMany: {
-              data: [
-                {
-                  price: randomInt(10, 30),
-                  purchasedPrice: randomInt(5, 20),
-                },
-                {
-                  price: randomInt(10, 30),
-                  purchasedPrice: randomInt(5, 20),
-                },
-                {
-                  price: randomInt(10, 30),
-                  purchasedPrice: randomInt(5, 20),
-                },
-              ],
-            },
-
-            // create: {
-            //   price: randomInt(10, 30),
-            //   purchasedPrice: randomInt(5, 20),
-            // },
-          },
         },
       });
     }
@@ -491,10 +465,10 @@ async function seedProducts() {
 
 async function seedPriceHistory() {
   try {
-    const product = await prisma.product.findFirst();
-    await prisma.product.update({
+    const retailShopStock = await prisma.retailShopStock.findFirst();
+    await prisma.retailShopStock.update({
       where: {
-        id: product?.id,
+        id: retailShopStock?.id,
       },
       data: {
         priceHistory: {
@@ -516,13 +490,13 @@ async function seedPriceHistory() {
 
     const priceHistory = await prisma.priceHistory.findFirst({
       where: {
-        productId: product?.id,
+        retailShopStockId: retailShopStock?.id,
       },
     });
     // update the product's active price
-    await prisma.product.update({
+    await prisma.retailShopStock.update({
       where: {
-        id: product?.id,
+        id: retailShopStock?.id,
       },
       data: {
         activePrice: {
@@ -902,8 +876,93 @@ async function seedRetailshopStocks() {
       });
     } catch (error) {}
 
+    const retailShop = await prisma.retailShop.findUnique({
+      where: {
+        id: retailshops[2].id,
+      },
+    });
     await prisma.retailShopStock.create({
       data: {
+        activePrice: {
+          create: {
+            price: randomInt(10, 30),
+            purchasedPrice: randomInt(5, 20),
+            stockType: StockType.RETAIL_SHOP,
+          },
+        },
+        priceHistory: {
+          createMany: {
+            data: [
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+                // warehouseStockId: retailShopStock.warehouseId
+              },
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+              },
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+              },
+            ],
+          },
+        },
+        retailShop: {
+          connect: {
+            id: retailshops[2].id,
+          },
+        },
+        product: {
+          connect: {
+            id: products[3].id,
+          },
+        },
+        maxQuantity: 25,
+        quantity: 22,
+        warehouse: {
+          connect: {
+            id: warehouses[0].id,
+          },
+        },
+      },
+    });
+
+    await prisma.retailShopStock.create({
+      data: {
+        activePrice: {
+          create: {
+            price: randomInt(10, 30),
+            purchasedPrice: randomInt(5, 20),
+            stockType: StockType.RETAIL_SHOP,
+          },
+        },
+        priceHistory: {
+          createMany: {
+            data: [
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+                // warehouseStockId: retailShopStock.warehouseId
+              },
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+              },
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+              },
+            ],
+          },
+        },
         retailShop: {
           connect: {
             id: retailshops[2].id,
@@ -923,6 +982,60 @@ async function seedRetailshopStocks() {
         },
       },
     });
+
+    await prisma.retailShopStock.create({
+      data: {
+        activePrice: {
+          create: {
+            price: randomInt(10, 30),
+            purchasedPrice: randomInt(5, 20),
+            stockType: StockType.RETAIL_SHOP,
+          },
+        },
+        priceHistory: {
+          createMany: {
+            data: [
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+                // warehouseStockId: retailShopStock.warehouseId
+              },
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+              },
+              {
+                price: randomInt(10, 30),
+                purchasedPrice: randomInt(5, 20),
+                stockType: StockType.RETAIL_SHOP,
+              },
+            ],
+          },
+        },
+        retailShop: {
+          connect: {
+            id: retailshops[2].id,
+          },
+        },
+        product: {
+          connect: {
+            id: products[4].id,
+          },
+        },
+        maxQuantity: 25,
+        quantity: 22,
+        warehouse: {
+          connect: {
+            id: warehouses[0].id,
+          },
+        },
+      },
+    });
+
+
+
     console.log('Retailshops stock is seeded successfully');
   } catch (error) {
     console.error('Error seeding retailshops stock:', error);
@@ -993,42 +1106,95 @@ async function seedGoodsTransfers() {
   }
 }
 
-async function seedSaleTransactions() {
+// async function seedSaleTransactions() {
+//   try {
+//     const retailShops = await prisma.retailShop.findMany();
+//     const products = await prisma.product.findMany({
+//       include: {
+//         activePrice: true,
+//       },
+//     });
+
+//     for (let i = 0; i < 20; i++) {
+//       await prisma.saleTransaction.create({
+//         data: {
+//           retailShopId: retailShops[randomInt(0, retailShops.length - 1)].id,
+//           saleTransactionItems: {
+//             createMany: {
+//               data: [
+//                 {
+//                   productId: products[randomInt(0, products.length - 1)].id,
+//                   quantity: 2,
+//                   subTotal:
+//                     products[randomInt(0, products.length - 1)].activePrice
+//                       .price * 2,
+//                   soldPriceHistoryId:
+//                     products[randomInt(0, products.length - 1)].activePrice?.id,
+//                 },
+//               ],
+//             },
+//           },
+//           totalPrice: Number(faker.finance.amount()),
+//         },
+//       });
+//     }
+
+//     console.log('Sale transactions seeded successfully');
+//   } catch (error) {
+//     console.error('Error seeding sale transactions:', error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
+
+async function seedRetailShopsTransactions() {
   try {
     const retailShops = await prisma.retailShop.findMany();
-    const products = await prisma.product.findMany({
+    const retailShopStocks = await prisma.retailShopStock.findMany({
       include: {
         activePrice: true,
       },
+      where: {
+        activePriceId: {
+          not: null,
+        },
+      },
     });
+    console.log(retailShopStocks.length)
 
     for (let i = 0; i < 20; i++) {
-      await prisma.saleTransaction.create({
+      await prisma.retailShopTransaction.create({
         data: {
           retailShopId: retailShops[randomInt(0, retailShops.length - 1)].id,
-          saleTransactionItems: {
+          retailShopTransactionItems: {
             createMany: {
               data: [
                 {
-                  productId: products[randomInt(0, products.length - 1)].id,
-                  quantity: 2,
+                  purchasePrice: randomInt(0, 20),
+                  quantity: randomInt(0, 10),
+                  
+                  retailShopStockId:
+                    retailShopStocks[randomInt(0, retailShopStocks.length - 1)]
+                      .id,
                   subTotal:
-                    products[randomInt(0, products.length - 1)].activePrice
-                      .price * 2,
-                  soldPriceHistoryId:
-                    products[randomInt(0, products.length - 1)].activePrice?.id,
+                    retailShopStocks[randomInt(0, retailShopStocks.length - 1)]
+                      .activePrice.price * 2,
+                  sellingPrice: randomInt(0, 30),
+                  transactionType: ['PURCHASE', 'SALE'][
+                    randomInt(0, 2)
+                  ] as TransactionType,
                 },
               ],
             },
           },
-          totalPrice: Number(faker.finance.amount()),
+          // totalPrice: Number(faker.finance.amount()),
         },
       });
     }
 
-    console.log('Sale transactions seeded successfully');
+    console.log('Retail shop transactions seeded successfully');
   } catch (error) {
-    console.error('Error seeding sale transactions:', error);
+    console.error('Error seeding retail shop transactions:', error);
   } finally {
     await prisma.$disconnect();
   }

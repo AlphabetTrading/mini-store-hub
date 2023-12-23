@@ -9,6 +9,8 @@ import { ProductRankWithExtraInfo } from 'src/products/models/products-with-info
 import { RetailShopStock } from 'src/retail-shop-inventories/models/retail-shop-inventory.model';
 import { RetailShopWithExtraInfo } from 'src/retail-shops/models/retail-shop-with-info.model';
 import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
+import { RetailShopTransactionItem } from 'src/retailshop-transactions/models/retailshop-transaction-item.model';
+import { RetailShopTransaction } from 'src/retailshop-transactions/models/retailshop-transaction.model';
 import { SaleTransactionItem } from 'src/sale-transactions/models/sale-transaction-item.model';
 import { SaleTransaction } from 'src/sale-transactions/models/sale-transaction.model';
 import { User } from 'src/users/models/user.model';
@@ -192,7 +194,25 @@ export class PaginationSaleTransactionItems {
   meta?: PaginationInfo;
 }
 
+@ObjectType()
+export class PaginationRetailShopTransactionItems {
+  @Field(() => [RetailShopTransactionItem])
+  items: RetailShopTransactionItem[];
+
+  @Field(() => PaginationInfo, { nullable: true })
+  meta?: PaginationInfo;
+}
+
 // create me object type for sales transaction group by createdAt type
+@ObjectType()
+export class PaginationRetailShopTransactions {
+  @Field(() => [RetailShopTransaction])
+  items: RetailShopTransaction[];
+
+  @Field(() => PaginationInfo, { nullable: true })
+  meta?: PaginationInfo;
+}
+
 @ObjectType()
 export class PaginationSaleTransactions {
   @Field(() => [SaleTransaction])

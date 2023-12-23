@@ -4,16 +4,22 @@ import { UpdateProductInput } from './dto/update-product.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { Product } from './models/product.model';
-import { Prisma } from '@prisma/client';
+import { Prisma, TransactionType } from '@prisma/client';
 import { ProductRankWithExtraInfo } from './models/products-with-info.model';
 
 export const ProductsIncludeObject: Prisma.ProductInclude = {
   category: true,
-  activePrice: true,
-  priceHistory: true,
-  saleTransactionItem: true,
   goods: true,
-  retailShopStock: true,
+  retailShopStock: {
+    include: {
+      retailShop: true,
+      warehouse: true,
+      retailShopTransactionItems: true,
+      activePrice: true,
+      priceHistory: true,
+      product: true,
+    },
+  },
   warehouseStock: true,
 };
 
@@ -56,18 +62,33 @@ export class ProductsService {
       where,
       orderBy,
       include: {
-        saleTransactionItem: true,
-        category: true
+        // saleTransactionItem: true,
+        category: true,
+        retailShopStock: {
+          
+          include: {
+            activePrice: true,
+            retailShopTransactionItems: {
+              include: {
+                retailShopTransaction: true,
+              },
+            },
+          },
+        },
       },
     });
 
     const productsWithTotalSales: ProductRankWithExtraInfo[] = products.map(
       (product) => {
-        const totalSales = product.saleTransactionItem.reduce(
-          (acc, t) => acc + t.quantity,
+        const totalSales = product.retailShopStock.reduce(
+          (acc, t) =>
+            acc +
+            t.retailShopTransactionItems.reduce(
+              (acc, t) => acc + t.quantity,
+              0,
+            ),
           0,
         );
-
         return {
           value: totalSales,
           ...product,
@@ -82,24 +103,6 @@ export class ProductsService {
       return productsWithTotalSales.slice(skip * take, (skip + 1) * take);
 
     return productsWithTotalSales;
-
-    products.sort((a, b) => {
-      const totalSalesA = a.saleTransactionItem.reduce(
-        (acc, t) => acc + t.quantity,
-        0,
-      );
-      const totalSalesB = b.saleTransactionItem.reduce(
-        (acc, t) => acc + t.quantity,
-        0,
-      );
-
-      return totalSalesB - totalSalesA;
-    });
-
-    // paginate if there is skip and take
-
-    if (take) return products.slice(skip * take, (skip + 1) * take);
-    return products;
   }
 
   async findProductsByTopSale({
@@ -117,15 +120,34 @@ export class ProductsService {
       orderBy,
       where,
       include: {
-        saleTransactionItem: true,
-        category: true
+        retailShopStock: {
+          include: {
+            
+            retailShopTransactionItems: {
+              include: {
+
+                retailShopTransaction: true,
+              },
+            },
+            activePrice: true,
+          },
+        },
+        category: true,
       },
     });
 
     const productsWithTotalSales: ProductRankWithExtraInfo[] = products.map(
       (product) => {
-        const totalSalesB = product.saleTransactionItem.reduce(
-          (acc, t) => acc + t.subTotal,
+        const totalSalesB = product.retailShopStock.reduce(
+          (acc, t) =>
+            acc +
+            t.retailShopTransactionItems.reduce(
+              (acc, t) =>
+                acc + t.transactionType == TransactionType.SALE
+                  ? t.subTotal
+                  : 0,
+              0,
+            ),
           0,
         );
         return {
@@ -143,23 +165,6 @@ export class ProductsService {
       return productsWithTotalSales.slice(skip * take, (skip + 1) * take);
 
     return productsWithTotalSales;
-
-    products.sort((a, b) => {
-      const totalSalesA = a.saleTransactionItem.reduce(
-        (acc, t) => acc + t.subTotal,
-        0,
-      );
-      const totalSalesB = b.saleTransactionItem.reduce(
-        (acc, t) => acc + t.subTotal,
-        0,
-      );
-
-      return totalSalesB - totalSalesA;
-    });
-
-    if (take) return products.slice(skip * take, (skip + 1) * take);
-
-    return products;
   }
 
   async findProductsByTopGoodsTransfer({
@@ -227,9 +232,9 @@ export class ProductsService {
       where,
       include: {
         category: true,
-        saleTransactionItem: {
+        retailShopStock: {
           include: {
-            soldPriceHistory: true,
+            retailShopTransactionItems: {},
           },
         },
       },
@@ -237,14 +242,26 @@ export class ProductsService {
 
     const productsWithTotalSales: ProductRankWithExtraInfo[] = products.map(
       (product) => {
-        const soldTotalAmount = product.saleTransactionItem.reduce(
-          (acc, t) => acc + t.subTotal,
+        const soldTotalAmount = product.retailShopStock.reduce(
+          (acc, t) =>
+            acc +
+            t.retailShopTransactionItems.reduce(
+              (acc, t) => acc + t.subTotal,
+              0,
+            ),
           0,
         );
-        const purchaseTotalAmount = product.saleTransactionItem.reduce(
-          (acc, t) => acc + t.soldPriceHistory.purchasedPrice * t.quantity,
+
+        const purchaseTotalAmount = product.retailShopStock.reduce(
+          (acc, t) =>
+            acc +
+            t.retailShopTransactionItems.reduce(
+              (acc, t) => acc + t.purchasePrice * t.quantity,
+              0,
+            ),
           0,
         );
+
         return {
           value: soldTotalAmount - purchaseTotalAmount,
           ...product,

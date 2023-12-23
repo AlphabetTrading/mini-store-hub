@@ -11,7 +11,13 @@ CREATE TYPE "RecipientType" AS ENUM ('USER', 'RETAIL_SHOP', 'WAREHOUSE', 'ALL');
 CREATE TYPE "UnitType" AS ENUM ('PIECES', 'KG', 'LITER', 'METER', 'METER_SQUARE', 'BOX', 'BAG', 'BOTTLE', 'OTHER');
 
 -- CreateEnum
+CREATE TYPE "StockType" AS ENUM ('WAREHOUSE', 'RETAIL_SHOP');
+
+-- CreateEnum
 CREATE TYPE "TransferType" AS ENUM ('WarehouseToWarehouse', 'WarehouseToRetailShop');
+
+-- CreateEnum
+CREATE TYPE "TransactionType" AS ENUM ('PURCHASE', 'SALE');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -115,7 +121,6 @@ CREATE TABLE "Product" (
     "images" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "activePriceId" TEXT,
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
@@ -123,12 +128,13 @@ CREATE TABLE "Product" (
 -- CreateTable
 CREATE TABLE "PriceHistory" (
     "id" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "purchasedPrice" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "retailShopStockId" TEXT,
+    "stockType" "StockType" NOT NULL DEFAULT 'RETAIL_SHOP',
+    "warehouseStockId" TEXT,
 
     CONSTRAINT "PriceHistory_pkey" PRIMARY KEY ("id")
 );
@@ -203,31 +209,6 @@ CREATE TABLE "StockItem" (
 );
 
 -- CreateTable
-CREATE TABLE "SaleTransaction" (
-    "id" TEXT NOT NULL,
-    "totalPrice" DOUBLE PRECISION NOT NULL,
-    "retailShopId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "SaleTransaction_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "SaleTransactionItem" (
-    "id" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
-    "quantity" DOUBLE PRECISION NOT NULL,
-    "soldPriceHistoryId" TEXT NOT NULL,
-    "subTotal" DOUBLE PRECISION NOT NULL,
-    "saleTransactionId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "SaleTransactionItem_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "RetailShopStock" (
     "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
@@ -243,6 +224,32 @@ CREATE TABLE "RetailShopStock" (
 );
 
 -- CreateTable
+CREATE TABLE "RetailShopTransaction" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "retailShopId" TEXT NOT NULL,
+
+    CONSTRAINT "RetailShopTransaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "RetailShopTransactionItem" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "retailShopTransactionId" TEXT NOT NULL,
+    "quantity" DOUBLE PRECISION NOT NULL,
+    "transactionType" "TransactionType" NOT NULL,
+    "purchasePrice" DOUBLE PRECISION NOT NULL,
+    "sellingPrice" DOUBLE PRECISION NOT NULL,
+    "subTotal" DOUBLE PRECISION NOT NULL,
+    "retailShopStockId" TEXT NOT NULL,
+
+    CONSTRAINT "RetailShopTransactionItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "WarehouseStock" (
     "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
@@ -251,6 +258,7 @@ CREATE TABLE "WarehouseStock" (
     "maxQuantity" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "activePriceId" TEXT,
 
     CONSTRAINT "WarehouseStock_pkey" PRIMARY KEY ("id")
 );
@@ -316,9 +324,6 @@ CREATE UNIQUE INDEX "UserProfile_addressId_key" ON "UserProfile"("addressId");
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Product_activePriceId_key" ON "Product"("activePriceId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Product_id_createdAt_key" ON "Product"("id", "createdAt");
 
 -- CreateIndex
@@ -332,6 +337,9 @@ CREATE UNIQUE INDEX "RetailShopStock_activePriceId_key" ON "RetailShopStock"("ac
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RetailShopStock_productId_retailShopId_key" ON "RetailShopStock"("productId", "retailShopId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "WarehouseStock_activePriceId_key" ON "WarehouseStock"("activePriceId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "WarehouseStock_productId_warehouseId_key" ON "WarehouseStock"("productId", "warehouseId");
@@ -358,10 +366,10 @@ ALTER TABLE "Category" ADD CONSTRAINT "Category_parentId_fkey" FOREIGN KEY ("par
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_activePriceId_fkey" FOREIGN KEY ("activePriceId") REFERENCES "PriceHistory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "PriceHistory" ADD CONSTRAINT "PriceHistory_retailShopStockId_fkey" FOREIGN KEY ("retailShopStockId") REFERENCES "RetailShopStock"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PriceHistory" ADD CONSTRAINT "PriceHistory_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PriceHistory" ADD CONSTRAINT "PriceHistory_warehouseStockId_fkey" FOREIGN KEY ("warehouseStockId") REFERENCES "WarehouseStock"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RetailShop" ADD CONSTRAINT "RetailShop_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -391,18 +399,6 @@ ALTER TABLE "StockItem" ADD CONSTRAINT "StockItem_productId_fkey" FOREIGN KEY ("
 ALTER TABLE "StockItem" ADD CONSTRAINT "StockItem_goodsTransferId_fkey" FOREIGN KEY ("goodsTransferId") REFERENCES "GoodsTransfer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SaleTransaction" ADD CONSTRAINT "SaleTransaction_retailShopId_fkey" FOREIGN KEY ("retailShopId") REFERENCES "RetailShop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SaleTransactionItem" ADD CONSTRAINT "SaleTransactionItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SaleTransactionItem" ADD CONSTRAINT "SaleTransactionItem_soldPriceHistoryId_fkey" FOREIGN KEY ("soldPriceHistoryId") REFERENCES "PriceHistory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SaleTransactionItem" ADD CONSTRAINT "SaleTransactionItem_saleTransactionId_fkey" FOREIGN KEY ("saleTransactionId") REFERENCES "SaleTransaction"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "RetailShopStock" ADD CONSTRAINT "RetailShopStock_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -415,10 +411,22 @@ ALTER TABLE "RetailShopStock" ADD CONSTRAINT "RetailShopStock_retailShopId_fkey"
 ALTER TABLE "RetailShopStock" ADD CONSTRAINT "RetailShopStock_activePriceId_fkey" FOREIGN KEY ("activePriceId") REFERENCES "PriceHistory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "RetailShopTransaction" ADD CONSTRAINT "RetailShopTransaction_retailShopId_fkey" FOREIGN KEY ("retailShopId") REFERENCES "RetailShop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RetailShopTransactionItem" ADD CONSTRAINT "RetailShopTransactionItem_retailShopStockId_fkey" FOREIGN KEY ("retailShopStockId") REFERENCES "RetailShopStock"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RetailShopTransactionItem" ADD CONSTRAINT "RetailShopTransactionItem_retailShopTransactionId_fkey" FOREIGN KEY ("retailShopTransactionId") REFERENCES "RetailShopTransaction"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "WarehouseStock" ADD CONSTRAINT "WarehouseStock_warehouseId_fkey" FOREIGN KEY ("warehouseId") REFERENCES "Warehouse"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "WarehouseStock" ADD CONSTRAINT "WarehouseStock_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "WarehouseStock" ADD CONSTRAINT "WarehouseStock_activePriceId_fkey" FOREIGN KEY ("activePriceId") REFERENCES "PriceHistory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "DailyTransaction" ADD CONSTRAINT "DailyTransaction_retailShopId_fkey" FOREIGN KEY ("retailShopId") REFERENCES "RetailShop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

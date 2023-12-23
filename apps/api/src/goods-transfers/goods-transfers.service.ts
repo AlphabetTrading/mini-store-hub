@@ -8,7 +8,7 @@ import { CreateGoodsTransferInput } from './dto/create-goods-transfer.input';
 import { UpdateGoodsTransferInput } from './dto/update-goods-transfer.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GoodsTransfer } from './models/goods-transfer.model';
-import { Prisma } from '@prisma/client';
+import { Prisma, TransactionType } from '@prisma/client';
 import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
 
 const goodsTransferInclude: Prisma.GoodsTransferInclude = {
@@ -17,7 +17,6 @@ const goodsTransferInclude: Prisma.GoodsTransferInclude = {
     include: {
       product: {
         include: {
-          activePrice: true,
           category: true,
         },
       },
@@ -149,6 +148,18 @@ export class GoodsTransfersService {
               retailShopId: retailShopId,
               warehouseId: sourceWarehouseId,
               maxQuantity: good.quantity,
+              
+              retailShopTransactionItems:{
+                create:{
+                  quantity: good.quantity,
+                  transactionType: TransactionType.PURCHASE,
+                  purchasePrice: 20,
+                  sellingPrice: 30,
+                  subTotal: 30 * good.quantity,
+                  retailShopTransactionId: '1',
+
+                }
+              }
             },
             update: {
               quantity: {
@@ -157,7 +168,8 @@ export class GoodsTransfersService {
             },
           });
         }
-        return await tx.goodsTransfer.create({
+
+        const transfers =  await tx.goodsTransfer.create({
           data: {
             transferType: data.transferType,
             goods: {
@@ -187,6 +199,42 @@ export class GoodsTransfersService {
             sourceWarehouse: true,
           },
         });
+
+        const retailShopInputTransactions = []
+        await goods.map(async(good) => {
+          const retailShopStock = await tx.retailShopStock.findUnique({
+            where: {
+              productId_retailShopId: {
+                productId: good.productId,
+                retailShopId: retailShopId,
+              },
+            },
+          });
+
+          retailShopInputTransactions.push({
+            quantity: good.quantity,
+            productId: good.productId,
+            transactionType: TransactionType.PURCHASE,
+            purchasePrice: good.purchasePrice,
+            sellingPrice: good.sellingPrice,
+            subTotal: good.purchasePrice * good.quantity,
+            retailShopStockId: retailShopStock.id,
+          })
+        });
+
+         // create retail shop transaction 
+         await tx.retailShopTransaction.create({
+          data: {
+            retailShopId,
+            retailShopTransactionItems: {
+              createMany: {
+                data: retailShopInputTransactions,
+              }
+            }
+          },
+        });
+
+        return transfers
       },
       { maxWait: 20000, timeout: 20000 },
     );

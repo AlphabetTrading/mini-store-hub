@@ -48,39 +48,34 @@ export class RetailShopStockResolver {
     paginationInput?: PaginationInput,
   ) {
     const where: Prisma.RetailShopStockWhereInput = {
-      OR: [
-        {
-          id: filterRetailShopStockInput?.id,
-        },
-        {
-          retailShopId: filterRetailShopStockInput?.retailShopId,
-        },
-        {
-          product: {
-            OR: [
-              {
-                name: filterRetailShopStockInput?.product?.name,
-              },
-              {
-                serialNumber: filterRetailShopStockInput?.product?.serialNumber,
-              },
-              {
-                category: {
-                  name: filterRetailShopStockInput.product?.category?.name
-                }
-              }
-
-            ]
+      id: filterRetailShopStockInput?.id,
+      retailShopId: filterRetailShopStockInput?.retailShopId,
+      product: filterRetailShopStockInput?.product && {
+        OR: [
+          {
+            name: filterRetailShopStockInput?.product?.name,
           },
+          {
+            amharicName: filterRetailShopStockInput?.product?.name,
+          },
+        ],
+        serialNumber: filterRetailShopStockInput?.product?.serialNumber,
+        category: filterRetailShopStockInput.product?.category && {
+          OR: [
+            {
+              name: filterRetailShopStockInput.product?.category?.name,
+            },
+            {
+              amharicName: filterRetailShopStockInput.product?.category?.name,
+            },
+          ],
         },
-        {
-          createdAt: filterRetailShopStockInput?.createdAt,
-        },
-      ],
+      },
+      createdAt: filterRetailShopStockInput?.createdAt,
     };
 
     try {
-      const warehouseStocks =
+      const retailShopStocks =
         await this.retailShopStockService.findByRetailShopId({
           where,
           orderBy,
@@ -89,7 +84,7 @@ export class RetailShopStockResolver {
         });
       const count = await this.retailShopStockService.count(where);
       return {
-        items: warehouseStocks,
+        items: retailShopStocks,
         meta: {
           page: paginationInput?.skip,
           limit: paginationInput?.take,
@@ -189,7 +184,7 @@ export class RetailShopStockResolver {
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
     paginationInput?: PaginationInput,
   ) {
-    const warehouseStocks = await this.retailShopStockService.findLowStockItems(
+    const retailShopStocks = await this.retailShopStockService.findLowStockItems(
       {
         retailShopId,
         percentage,
@@ -198,9 +193,11 @@ export class RetailShopStockResolver {
       },
     );
 
-    const count = await this.retailShopStockService.count({});
+    const count = await this.retailShopStockService.count({
+      retailShopId,
+    });
     return {
-      items: warehouseStocks,
+      items: retailShopStocks,
       meta: {
         page: paginationInput?.skip,
         limit: paginationInput?.take,
@@ -238,6 +235,18 @@ export class RetailShopStockResolver {
       return this.retailShopStockService.update(id, data);
     } catch (e) {
       throw new Error(`Failed to update retail shop stock`);
+    }
+  }
+
+  @Mutation(() => RetailShopStock)
+  async updateRetailShopStockActivePrice(
+    @Args('id') id: string,
+    @Args('activePriceId') activePriceId: string,
+  ) {
+    try {
+      return this.retailShopStockService.updateActivePrice(id, activePriceId);
+    } catch (e) {
+      throw new Error(`Failed to update retail shop stock active price`);
     }
   }
 

@@ -45,7 +45,9 @@ export class PriceHistoriesResolver {
           createdAt: filterPriceHistoryInput?.createdAt,
         },
         {
-          product: filterPriceHistoryInput?.product,
+          retailShopStock: {
+            product: filterPriceHistoryInput?.product,
+          },
         },
       ],
     };

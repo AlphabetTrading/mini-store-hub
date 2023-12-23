@@ -8,13 +8,14 @@ import { UpdateRetailShopStockInput } from './dto/update-retail-shop.input';
 import { Prisma, RetailShopStock } from '@prisma/client';
 
 const retailShopStockInclude: Prisma.RetailShopStockInclude = {
+  activePrice: true,
+  priceHistory: true,
+  retailShopTransactionItems: true,
   product: {
     include: {
       category: true,
-      activePrice: true,
       goods: true,
-      priceHistory: true,
-      saleTransactionItem: true,
+      // saleTransactionItem: true,
     },
   },
   warehouse: true,
@@ -144,32 +145,111 @@ export class RetailShopStockService {
 
   async createMany(data: CreateBulkRetailShopStockInput) {
     // implement using promise all
-    const promises = data.goods.map(async (good) => {
-      return await this.prisma.retailShopStock.upsert({
-        where: {
-          productId_retailShopId: {
+    // const promises = data.goods.map(async (good) => {
+    //   const prevStock = await this.prisma.retailShopStock.findUnique({
+    //     where: {
+    //       productId_retailShopId: {
+    //         productId: good.productId,
+    //         retailShopId: data.retailShopId,
+    //       },
+    //     },
+    //   })
+
+    //   const retailShopStock = await this.prisma.retailShopStock.upsert({
+    //     where: {
+    //       productId_retailShopId: {
+    //         productId: good.productId,
+    //         retailShopId: data.retailShopId,
+    //       },
+    //     },
+    //     create: {
+    //       maxQuantity: good.quantity,
+    //       quantity: good.quantity,
+    //       productId: good.productId,
+    //       retailShopId: data.retailShopId,
+    //       warehouseId: data.warehouseId,
+    //     },
+    //     update: {
+    //       maxQuantity: good.quantity + prevStock.quantity,
+    //       quantity: {
+    //         increment: good.quantity,
+    //       },
+    //     },
+    //   });
+
+    //   this.prisma.retailShopTransaction.createMany({
+    //   });
+
+    // });
+    // return Promise.all(promises);
+
+    const transactionItems = [];
+    const transactions: Record<string, any> = {};
+    const res = await this.prisma.$transaction(async (tx) => {
+      const promises = data.goods.map(async (good) => {
+        const prevStock = await tx.retailShopStock.findUnique({
+          where: {
+            productId_retailShopId: {
+              productId: good.productId,
+              retailShopId: data.retailShopId,
+            },
+          },
+        });
+
+        const retailShopStock = await tx.retailShopStock.upsert({
+          where: {
+            productId_retailShopId: {
+              productId: good.productId,
+              retailShopId: data.retailShopId,
+            },
+          },
+          create: {
+            maxQuantity: good.quantity,
+            quantity: good.quantity,
             productId: good.productId,
             retailShopId: data.retailShopId,
+            warehouseId: data.warehouseId,
           },
-        },
-        create: {
-          maxQuantity: good.quantity,
-          quantity: good.quantity,
-          productId: good.productId,
-          retailShopId: data.retailShopId,
-          warehouseId: data.warehouseId,
-        },
-        update: {
-          maxQuantity: {
-            increment: good.quantity,
+          update: {
+            maxQuantity: good.quantity + prevStock.quantity,
+            quantity: {
+              increment: good.quantity,
+            },
           },
-          quantity: {
-            increment: good.quantity,
-          },
-        },
+        });
+
+        if (!transactions[retailShopStock.id]) {
+          transactions[retailShopStock.id] = {
+            retailShopTransactionItems: [],
+          };
+        }
+
+        transactionItems.push({
+          retailShopStockId: retailShopStock.id,
+          retailShopStockItems: [],
+        });
+
+        // await tx.retailShopTransaction.create({
+        //   data: {
+        //     // transactionDate: new Date(),
+        //     // transactionType: 'IN',
+        //     retailShopTransactionItem: {
+        //       create: {
+        //         productId: good.productId,
+        //         quantity: good.quantity,
+        //         sellingPrice: good.sellingPrice,
+        //         purchasePrice: good.purchasePrice,
+        //         subTotal: good.quantity * good.sellingPrice,
+        //         transactionType: 'IN',
+        //       },
+        //     },
+        //   },
+        // });
       });
+      return Promise.all(promises);
     });
-    return Promise.all(promises);
+
+    await this.prisma.$transaction(async (tx) => {});
   }
   async totalValuationByRetailShopId(retailShopId: string) {
     const retailShopStock = await this.prisma.retailShopStock.findFirst({
@@ -181,20 +261,24 @@ export class RetailShopStockService {
     }
 
     const retailShopStocks = await this.prisma.retailShopStock.findMany({
-      where: { retailShopId },
+      where: {
+        retailShopId,
+        activePrice: {
+          isNot: null,
+        },
+      },
 
       include: {
         ...retailShopStockInclude,
+        activePrice: true,
         product: {
-          include: {
-            activePrice: true,
-          },
+          include: {},
         },
       },
     });
     return {
       totalValuation: retailShopStocks.reduce((acc, cur) => {
-        return acc + cur.quantity * cur.product.activePrice.price;
+        return acc + cur.quantity * cur.activePrice.price;
       }, 0),
       totalQuantity: retailShopStocks.reduce((acc, cur) => {
         return acc + cur.quantity;
@@ -226,18 +310,16 @@ export class RetailShopStockService {
       },
       include: {
         ...retailShopStockInclude,
-
+        activePrice: true,
         product: {
-          include: {
-            activePrice: true,
-          },
+          include: {},
         },
       },
     });
 
     return {
       totalValuation: retailShopStocks.reduce((acc, cur) => {
-        return acc + cur.quantity * cur.product.activePrice.price;
+        return acc + cur.quantity * cur.activePrice.price;
       }, 0),
       count: retailShopStocks.length,
       totalQuantity: retailShopStocks.reduce((acc, cur) => {
@@ -245,7 +327,7 @@ export class RetailShopStockService {
       }, 0),
     };
   }
- 
+
   async findLowStockItems({
     retailShopId,
     percentage,
@@ -257,63 +339,42 @@ export class RetailShopStockService {
     retailShopId: string;
     percentage: number;
   }) {
-    const retailShopStock = await this.prisma.retailShopStock.findFirst({
-      where: { retailShopId },
+    const retailShop = await this.prisma.retailShop.findUnique({
+      where: { id: retailShopId },
     });
 
-    if (!retailShopStock) {
-      throw new Error('Warehouse stock not found');
+    if (!retailShop) {
+      throw new Error('RetailShop not found');
     }
-
     const retailShopStocks = await this.prisma.retailShopStock.findMany({
       where: {
         retailShopId,
-        quantity: {
-          lte: retailShopStock.maxQuantity * (percentage / 100),
-        },
       },
       include: {
         ...retailShopStockInclude,
+        activePrice: true,
         product: {
           include: {
-            activePrice: true,
-            category: true
+            category: true,
           },
         },
       },
     });
 
-    retailShopStocks.sort((retailShopA, retailShopB) => {
+    const filteredStocks = retailShopStocks.filter(
+      (stock) => stock.quantity <= (percentage / 100) * stock.maxQuantity,
+    );
+
+    filteredStocks.sort((retailShopA, retailShopB) => {
       return (
         retailShopA.maxQuantity * (percentage / 100) -
         retailShopB.maxQuantity * (percentage / 100)
       );
     });
 
-    if (take) return retailShopStocks.slice(skip * take, (skip + 1) * take);
+    if (take) return filteredStocks.slice(skip * take, (skip + 1) * take);
 
-    return retailShopStocks;
-
-    // const retailShopStocks = await this.prisma.retailShopStock.findMany({
-    //   where: {
-    //     retailShopId,
-    //     quantity: {
-    //       lte: retailShopStock.maxQuantity * (percentage / 100),
-    //     },
-    //   },
-    //   include: {
-    //     ...retailShopStockInclude,
-    //     product: {
-    //       include: {
-    //         activePrice: true,
-    //       },
-    //     },
-    //   },
-    //   skip,
-    //   take,
-    // });
-
-    return retailShopStocks;
+    return filteredStocks;
   }
 
   async update(id: string, data: UpdateRetailShopStockInput) {
@@ -341,5 +402,16 @@ export class RetailShopStockService {
     }
 
     return this.prisma.retailShopStock.delete({ where: { id } });
+  }
+
+  async updateActivePrice(id: string, activePriceId: string) {
+    return this.prisma.retailShopStock.update({
+      where: {
+        id,
+      },
+      data: {
+        activePriceId,
+      },
+    });
   }
 }

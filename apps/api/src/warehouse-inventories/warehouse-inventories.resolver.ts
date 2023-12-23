@@ -36,39 +36,34 @@ export class WarehouseStockResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationWarehouseStocks> {
     const where: Prisma.WarehouseStockWhereInput = {
-      AND: [
-        {
-          id: filterWarehouseStockInput?.id,
-        },
-        {
-          warehouse: filterWarehouseStockInput?.warehouse,
-        },
-        {
-          product: filterWarehouseStockInput?.product && {
-            OR: [
-              {
-                name: filterWarehouseStockInput.product?.name,
-              },
-              {
-                amharicName: filterWarehouseStockInput.product?.name,
-              },
-              {
-                serialNumber: filterWarehouseStockInput.product?.serialNumber,
-              },
-              {
-                description: filterWarehouseStockInput.product?.description,
-              },
-              {
-                category: filterWarehouseStockInput.product?.category,
-              },
-            ],
+      id: filterWarehouseStockInput?.id,
+      warehouse: filterWarehouseStockInput?.warehouse && {
+        id: filterWarehouseStockInput.warehouse.id,
+        OR: [
+          {
+            name: filterWarehouseStockInput.warehouse.name,
           },
-        },
-        {
-          createdAt: filterWarehouseStockInput?.createdAt,
-        },
-      ],
+          {
+            amharicName: filterWarehouseStockInput.warehouse.name,
+          },
+        ],
+      },
+      product: filterWarehouseStockInput?.product && {
+        OR: [
+          {
+            name: filterWarehouseStockInput.product.name,
+          },
+          {
+            amharicName: filterWarehouseStockInput.product?.name,
+          },
+        ],
+        serialNumber: filterWarehouseStockInput.product?.serialNumber,
+        description: filterWarehouseStockInput.product?.description,
+        category: filterWarehouseStockInput.product?.category,
+      },
+      createdAt: filterWarehouseStockInput?.createdAt,
     };
+
     try {
       const warehouseStocks = await this.warehouseStockService.findAll({
         where,

@@ -33,23 +33,11 @@ export class GoodsTransfersResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationGoodsTransfer> {
     const where: Prisma.GoodsTransferWhereInput = {
-      AND: [
-        {
-          id: filterGoodsTransferInput?.id,
-        },
-        {
-          transferType: filterGoodsTransferInput?.transferType,
-        },
-        {
-          sourceWarehouse: filterGoodsTransferInput?.sourceWarehouse,
-        },
-        {
-          destinationWarehouse: filterGoodsTransferInput?.destinationWarehouse,
-        },
-        {
-          createdAt: filterGoodsTransferInput?.createdAt,
-        },
-      ],
+      id: filterGoodsTransferInput?.id,
+      transferType: filterGoodsTransferInput?.transferType,
+      sourceWarehouse: filterGoodsTransferInput?.sourceWarehouse,
+      destinationWarehouse: filterGoodsTransferInput?.destinationWarehouse,
+      createdAt: filterGoodsTransferInput?.createdAt,
     };
 
     const count = await this.goodsTransfersService.count(where);
@@ -160,6 +148,11 @@ export class GoodsTransfersResolver {
   })
   async findIncomingGoodsTransferByWarehouseId(
     @Args('warehouseId') warehouseId: string,
+    @Args('filterGoodsTransferInput', {
+      type: () => FilterGoodsTransferInput,
+      nullable: true,
+    })
+    filterGoodsTransferInput?: FilterGoodsTransferInput,
     @Args('orderBy', { type: () => OrderByGoodsTransferInput, nullable: true })
     orderBy?: OrderByGoodsTransferInput,
     @Args('paginationInput', { type: () => PaginationInput, nullable: true })
@@ -167,6 +160,10 @@ export class GoodsTransfersResolver {
   ) {
     const where: Prisma.GoodsTransferWhereInput = {
       destinationWarehouseId: warehouseId,
+      id: filterGoodsTransferInput?.id,
+      transferType: filterGoodsTransferInput?.transferType,
+      sourceWarehouse: filterGoodsTransferInput?.sourceWarehouse,
+      createdAt: filterGoodsTransferInput?.createdAt,
     };
 
     const count = await this.goodsTransfersService.count(where);

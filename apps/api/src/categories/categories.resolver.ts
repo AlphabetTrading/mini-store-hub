@@ -41,33 +41,20 @@ export class CategoriesResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationCategories> {
     const where: Prisma.CategoryWhereInput = {
-      AND: [
+      id: filterCategoryInput?.id,
+      OR: [
         {
-          id: filterCategoryInput?.id,
+          name: filterCategoryInput?.name,
         },
         {
-          OR: [
-            {
-              name: filterCategoryInput?.name,
-            },
-            {
-              amharicName: filterCategoryInput?.name,
-            },
-            {
-              subcategories: {
-                some: filterCategoryInput?.subcategories,
-              },
-            },
-            {
-              description: filterCategoryInput?.description,
-            },
-          ],
-        },
-
-        {
-          createdAt: filterCategoryInput?.createdAt,
+          amharicName: filterCategoryInput?.name,
         },
       ],
+      subcategories: {
+        some: filterCategoryInput?.subcategories,
+      },
+      description: filterCategoryInput?.description,
+      createdAt: filterCategoryInput?.createdAt,
     };
 
     const categories = await this.categoriesService.findAll({

@@ -12,11 +12,17 @@ const warehouseStockIncludeObject: Prisma.WarehouseStockInclude = {
   product: {
     include: {
       category: true,
-      activePrice: true,
       goods: true,
-      priceHistory: true,
-      retailShopStock: true,
-      saleTransactionItem: true,
+      // priceHistory: true,
+      retailShopStock: {
+        include: {
+          retailShop: true,
+          retailShopTransactionItems: true,
+          priceHistory: true,
+        },
+      },
+      warehouseStock: true,
+      // saleTransactionItem: true,
     },
   },
   warehouse: {
@@ -33,9 +39,9 @@ export class WarehouseStockService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll({
+    where,
     skip,
     take,
-    where,
     orderBy,
   }: {
     skip?: number;
@@ -44,9 +50,9 @@ export class WarehouseStockService {
     orderBy?: Prisma.WarehouseStockOrderByWithRelationInput;
   }): Promise<WarehouseStock[]> {
     return this.prisma.warehouseStock.findMany({
+      where,
       skip,
       take,
-      where,
       orderBy,
       include: warehouseStockIncludeObject,
     });
@@ -83,15 +89,20 @@ export class WarehouseStockService {
     const stocks = await this.prisma.warehouseStock.findMany({
       where: { warehouseId },
       include: {
+        activePrice: true,
         product: {
           include: {
             category: true,
-            activePrice: true,
             goods: true,
-            priceHistory: true,
-            retailShopStock: true,
-            saleTransactionItem: true,
-          },
+            retailShopStock: {
+              include: {
+                retailShop: true,
+                retailShopTransactionItems: true,
+                priceHistory: true,
+                activePrice: true,
+              },
+            },
+            },
         },
         warehouse: {
           include: {
@@ -103,28 +114,49 @@ export class WarehouseStockService {
       },
     });
 
-    stocks.sort((a, b)=> {
-      return b.product.activePrice.price * b.quantity - a.product.activePrice.price * a.quantity
-    })
+    stocks.sort((a, b) => {
+      return (
+        b.activePrice.price * b.quantity -
+        a.activePrice.price * a.quantity
+      );
+    });
 
-    return stocks
+    return stocks;
   }
 
   async find({ sourceWarehouseId }: { sourceWarehouseId: string }) {
     // sort by the amount of goods transfered
 
     const warehouseStocks = await this.prisma.goodsTransfer.findMany({
+      // include: {
+      //   ...warehouseStockIncludeObject,
+      //   goods: {
+      //     include: {
+      //       product: {
+      //         include: {
+      //           // activePrice: true,
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
       include: {
-        ...warehouseStockIncludeObject,
         goods: {
           include: {
             product: {
               include: {
-                activePrice: true,
+                retailShopStock: {
+                  where: {
+                    warehouseId: sourceWarehouseId,
+                  },
+                  include: {
+                    activePrice: true,
+                  }
+                }
               },
             },
-          },
-        },
+          }
+        }
       },
       where: {
         sourceWarehouseId,
@@ -134,10 +166,10 @@ export class WarehouseStockService {
     const sortedGoodsTransfer = warehouseStocks.sort((a, b) => {
       return (
         a.goods.reduce((acc, cur) => {
-          return acc + cur.product.activePrice.price * cur.quantity;
+          return acc + cur.product.retailShopStock[0].activePrice.price * cur.quantity;
         }, 0) -
         b.goods.reduce((acc, cur) => {
-          return acc + cur.product.activePrice.price * cur.quantity;
+          return acc + cur.product.retailShopStock[0].activePrice.price * cur.quantity;
         }, 0)
       );
     });
@@ -150,10 +182,10 @@ export class WarehouseStockService {
             ...good,
             product: {
               ...good.product,
-              activePrice: {
-                ...good.product.activePrice,
-                price: good.product.activePrice.price * good.quantity,
-              },
+              // activePrice: {
+              //   ...good.product.activePrice,
+              //   price: good.product.activePrice.price * good.quantity,
+              // },
             },
           };
         }),
@@ -176,14 +208,14 @@ export class WarehouseStockService {
         ...warehouseStockIncludeObject,
         product: {
           include: {
-            activePrice: true,
+            // activePrice: true,
           },
         },
       },
     });
     return {
       totalValuation: warehouseStocks.reduce((acc, cur) => {
-        return acc + cur.quantity * cur.product.activePrice.price;
+        return acc + cur.quantity * cur.activePrice.price;
       }, 0),
       totalQuantity: warehouseStocks.reduce((acc, cur) => {
         return acc + cur.quantity;
@@ -218,7 +250,6 @@ export class WarehouseStockService {
 
         product: {
           include: {
-            activePrice: true,
           },
         },
       },
@@ -226,7 +257,7 @@ export class WarehouseStockService {
 
     return {
       totalValuation: warehouseStocks.reduce((acc, cur) => {
-        return acc + cur.quantity * cur.product.activePrice.price;
+        return acc + cur.quantity * cur.activePrice.price;
       }, 0),
       totalQuantity: warehouseStocks.reduce((acc, cur) => {
         return acc + cur.quantity;
@@ -268,7 +299,6 @@ export class WarehouseStockService {
         product: {
           include: {
             category: true,
-            activePrice: true,
           },
         },
       },

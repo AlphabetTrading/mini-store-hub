@@ -34,27 +34,17 @@ export class WarehousesResolver {
     paginationInput?: PaginationInput,
   ): Promise<PaginationWarehouses> {
     const where: Prisma.WarehouseWhereInput = {
-      AND: [
+      id: filterWarehouseInput?.id,
+      OR: [
         {
-          id: filterWarehouseInput?.id,
+          name: filterWarehouseInput?.name,
         },
         {
-          OR: [
-            {
-              name: filterWarehouseInput?.name,
-            },
-            {
-              amharicName: filterWarehouseInput?.name,
-            },
-          ],
-        },
-        {
-          createdAt: filterWarehouseInput?.createdAt,
-        },
-        {
-          isMain: false,
+          amharicName: filterWarehouseInput?.name,
         },
       ],
+      createdAt: filterWarehouseInput?.createdAt,
+      isMain: false,
     };
     try {
       const warehouses = await this.warehousesService.findAll({
@@ -73,7 +63,6 @@ export class WarehousesResolver {
         },
       };
     } catch (e) {
-      console.log(e, 'error ');
       throw new BadRequestException('Error loading users!');
     }
   }
@@ -87,6 +76,7 @@ export class WarehousesResolver {
   async warehouseByAddress(@Args('address') address: string) {
     return this.warehousesService.findByAddress(address);
   }
+  
   @HasRoles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
   @Mutation(() => Warehouse)

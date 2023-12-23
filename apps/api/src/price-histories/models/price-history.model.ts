@@ -1,28 +1,43 @@
-import { ObjectType, Field, Float } from '@nestjs/graphql';
+import { ObjectType, Field, Float, registerEnumType } from '@nestjs/graphql';
+import { StockType } from '@prisma/client';
 import { BaseModel } from 'src/common/models/base.model';
-import { Product } from 'src/products/models/product.model';
-import { SaleTransactionItem } from 'src/sale-transactions/models/sale-transaction-item.model';
+import { RetailShopStock } from 'src/retail-shop-inventories/models/retail-shop-inventory.model';
+import { WarehouseStock } from 'src/warehouse-inventories/models/warehouse-inventory.model';
+
+registerEnumType(StockType, {
+  name: 'StockType',
+  description: 'Stock type',
+});
 
 @ObjectType()
 export class PriceHistory extends BaseModel {
-  @Field(() => String)
-  productId: string;
-
   @Field(() => Float)
   price: number;
 
   @Field(() => Float)
   purchasedPrice: number;
 
-  // @Field({ name: 'product_created_at' })
-  // productCreatedAt: Date;
+  @Field(() => String, { nullable: true })
+  retailShopStockId?: string;
 
-  @Field(() => Product, { nullable: true })
-  product?: Product;
+  @Field(() => String, { nullable: true })
+  warehouseStockId?: string;
 
-  @Field(() => Product, { nullable: true })
-  activeProduct?: Product;
+  @Field(() => String, { nullable: true })
+  activeRetailShopStockId?: string;
 
-  @Field(() => [SaleTransactionItem], { nullable: true })
-  saleTransactionItems?: SaleTransactionItem[];
+  @Field(() => WarehouseStock, { nullable: true })
+  warehouseStock?: WarehouseStock;
+
+  @Field(() => RetailShopStock, { nullable: true })
+  retailShopStock?: RetailShopStock;
+
+  @Field(() => RetailShopStock, { nullable: true })
+  activeRetailShopStock?: RetailShopStock;
+
+  @Field(() => WarehouseStock, { nullable: true })
+  activeWarehouseStock?: WarehouseStock;
+
+  @Field(() => StockType, { nullable: true })
+  stockType?: StockType;
 }

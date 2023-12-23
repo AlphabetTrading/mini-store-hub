@@ -19,7 +19,8 @@ const retailShopInclude: Prisma.RetailShopInclude = {
       warehouse: true,
     },
   },
-  saleTransaction: true,
+  retailShopTransactions: true,
+  // saleTransaction: true,
 };
 
 @Injectable()

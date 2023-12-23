@@ -152,30 +152,35 @@ model Product {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  activePriceId String?        @unique
-  activePrice   PriceHistory?  @relation("ActivePrice", fields: [activePriceId], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  priceHistory  PriceHistory[] @relation("PriceHistory")
-
-  retailShopStock     RetailShopStock[]
-  warehouseStock      WarehouseStock[]
-  goods               StockItem[]
-  saleTransactionItem SaleTransactionItem[]
+  retailShopStock RetailShopStock[]
+  warehouseStock  WarehouseStock[]
+  goods           StockItem[]
+  // saleTransactionItem SaleTransactionItem[]
+  // retailShopTransactionItems RetailShopTransactionItem[]
 
   @@unique([id, createdAt])
 }
 
+// stock from warehouse, retail shop, etc
+
+enum StockType {
+  WAREHOUSE
+  RETAIL_SHOP
+}
+
 model PriceHistory {
-  id                   String                @id @default(uuid())
-  productId            String
-  price                Float
-  purchasedPrice       Float
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  activeProduct        Product?              @relation("ActivePrice")
-  product              Product               @relation("PriceHistory", fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  saleTransactionItems SaleTransactionItem[]
-  retailShopStockId    String?
-  retailShopStockItem  RetailShopStock?      @relation("RetailShopStock")
+  id                    String           @id @default(uuid())
+  price                 Float
+  purchasedPrice        Float
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  retailShopStockId     String?
+  stockType             StockType?       @default(RETAIL_SHOP)
+  activeRetailShopStock RetailShopStock? @relation("ActivePrice")
+  retailShopStock       RetailShopStock? @relation("RetailShopStockPriceHistory", fields: [retailShopStockId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  warehouseStockId      String?
+  warehouseStock        WarehouseStock?  @relation("WarehouseStockPriceHistory", fields: [warehouseStockId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  activeWarehouseStock  WarehouseStock?  @relation("ActiveWarehouseStockPrice")
 }
 
 model Address {
@@ -205,12 +210,13 @@ model RetailShop {
   updatedAt           DateTime @updatedAt
   status              Boolean? @default(true)
 
-  saleTransaction             SaleTransaction[]
+  // saleTransaction             SaleTransaction[]
   retailShopStock             RetailShopStock[]
-  goodsTransfersAsDestination GoodsTransfer[]      @relation("DestinationShop")
+  goodsTransfersAsDestination GoodsTransfer[]         @relation("DestinationShop")
   dailyTransaction            DailyTransaction[]
   monthlyTransaction          MonthlyTransaction[]
   annualTransaction           AnnualTransaction[]
+  retailShopTransactions      RetailShopTransaction[] @relation("RetailShopStock_RetailShopStockTransaction")
 }
 
 model Warehouse {
@@ -262,46 +268,101 @@ model StockItem {
   goodsTransfer   GoodsTransfer @relation("Goods Transfer", fields: [goodsTransferId], references: [id])
 }
 
-model SaleTransaction {
-  id                   String                @id @default(uuid())
-  totalPrice           Float
-  retailShopId         String
-  retailShop           RetailShop            @relation(fields: [retailShopId], references: [id])
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  saleTransactionItems SaleTransactionItem[] @relation("SaleTransaction")
-}
+// model SaleTransaction {
+//   id                   String                @id @default(uuid())
+//   totalPrice           Float
+//   retailShopId         String
+//   retailShop           RetailShop            @relation(fields: [retailShopId], references: [id])
+//   createdAt            DateTime              @default(now())
+//   updatedAt            DateTime              @updatedAt
+//   saleTransactionItems SaleTransactionItem[] @relation("SaleTransaction")
+// }
 
-model SaleTransactionItem { 
-  id                 String          @id @default(uuid())
-  productId          String
-  product            Product         @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  quantity           Float
-  soldPriceHistoryId String
-  soldPriceHistory   PriceHistory    @relation(fields: [soldPriceHistoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  subTotal           Float
-  saleTransactionId  String
-  saleTransaction    SaleTransaction @relation("SaleTransaction", fields: [saleTransactionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-}
+// model SaleTransactionItem {
+//   id                 String          @id @default(uuid())
+//   productId          String
+//   product            Product         @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+//   quantity           Float
+//   soldPriceHistoryId String
+//   soldPriceHistory   PriceHistory    @relation(fields: [soldPriceHistoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+//   subTotal           Float
+//   saleTransactionId  String
+//   saleTransaction    SaleTransaction @relation("SaleTransaction", fields: [saleTransactionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+//   createdAt          DateTime        @default(now())
+//   updatedAt          DateTime        @updatedAt
+// }
 
 model RetailShopStock {
-  id            String        @id @default(uuid())
-  productId     String
-  product       Product       @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  warehouseId   String
-  warehouse     Warehouse     @relation(fields: [warehouseId], references: [id])
-  quantity      Float
-  maxQuantity   Float
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  retailShop    RetailShop    @relation(fields: [retailShopId], references: [id])
-  retailShopId  String
-  activePriceId String?       @unique
-  activePrice   PriceHistory? @relation("RetailShopStock", fields: [activePriceId], references: [id])
+  id                         String                      @id @default(uuid())
+  productId                  String
+  product                    Product                     @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  warehouseId                String
+  warehouse                  Warehouse                   @relation(fields: [warehouseId], references: [id])
+  quantity                   Float
+  maxQuantity                Float
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @updatedAt
+  retailShop                 RetailShop                  @relation(fields: [retailShopId], references: [id])
+  retailShopId               String
+  activePriceId              String?                     @unique
+  activePrice                PriceHistory?               @relation("ActivePrice", fields: [activePriceId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  priceHistory               PriceHistory[]              @relation("RetailShopStockPriceHistory")
+  retailShopTransactionItems RetailShopTransactionItem[] @relation("RetailShopStock_RetailShopTransactionItem")
 
   @@unique([productId, retailShopId])
+}
+
+model RetailShopTransaction {
+  id                         String                      @id @default(uuid())
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @updatedAt
+  retailShopId               String
+  retailShop                 RetailShop                  @relation("RetailShopStock_RetailShopStockTransaction", fields: [retailShopId], references: [id])
+  retailShopTransactionItems RetailShopTransactionItem[] @relation("RetailShopStockTransaction_RetailShopTransactionItem")
+}
+
+// model RetailShopTransaction {
+//   id                         String                      @id @default(uuid())
+//   createdAt                  DateTime                    @default(now())
+//   updatedAt                  DateTime                    @updatedAt
+//   retailShopStockId          String
+//   retailShopStock            RetailShopStock             @relation(fields: [retailShopStockId], references: [id])
+//   // retailShopTransactionItems RetailShopTransactionItem[]
+// }
+
+model RetailShopTransactionItem {
+  id                      String                @id @default(uuid())
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  retailShopTransactionId String
+  quantity                Float
+  transactionType         TransactionType
+  purchasePrice           Float
+  sellingPrice            Float
+  subTotal                Float
+  retailShopStockId       String
+  retailShopStock         RetailShopStock       @relation("RetailShopStock_RetailShopTransactionItem", fields: [retailShopStockId], references: [id])
+  retailShopTransaction   RetailShopTransaction @relation("RetailShopStockTransaction_RetailShopTransactionItem", fields: [retailShopTransactionId], references: [id])
+}
+
+// model RetailShopTransactionItem {
+//   id                      String                @id @default(uuid())
+//   retailShopTransactionId String
+//   createdAt               DateTime              @default(now())
+//   updatedAt               DateTime              @updatedAt
+//   productId               String
+//   product                 Product               @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+//   quantity                Float
+//   transactionType         TransactionType
+//   purchasePrice           Float
+//   sellingPrice            Float
+//   subTotal                Float
+//   retailShopTransaction   RetailShopTransaction @relation(fields: [retailShopTransactionId], references: [id])
+// }
+
+enum TransactionType {
+  PURCHASE
+  SALE
 }
 
 model WarehouseStock {
@@ -314,6 +375,10 @@ model WarehouseStock {
   updatedAt   DateTime  @updatedAt
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
   product     Product   @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  activePriceId String?        @unique
+  priceHistory  PriceHistory[] @relation("WarehouseStockPriceHistory")
+  activePrice   PriceHistory?  @relation("ActiveWarehouseStockPrice", fields: [activePriceId], references: [id], onUpdate: Cascade, onDelete: SetNull)
 
   @@unique([productId, warehouseId])
 }

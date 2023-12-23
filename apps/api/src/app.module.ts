@@ -14,7 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import { PriceHistoriesModule } from './price-histories/price-histories.module';
-import { SaleTransactionsModule } from './sale-transactions/sale-transactions.module';
+// import { SaleTransactionsModule } from './sale-transactions/sale-transactions.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
@@ -27,6 +27,7 @@ import { RetailShopStocksModule } from './retail-shop-inventories/retail-shop-in
 import { NotificationModule } from './notification/notification.module';
 import { AllExceptionsFilter } from './middlewares/error.middleware';
 import { RolesGuard } from './auth/roles.guard';
+import { RetailShopTransactionsModule } from './retailshop-transactions/retailshop-transactions.module';
 
 @Module({
   imports: [
@@ -50,8 +51,9 @@ import { RolesGuard } from './auth/roles.guard';
     WarehouseStockModule,
     RetailShopStocksModule,
     GoodsTransfersModule,
-    SaleTransactionsModule,
+    // SaleTransactionsModule,
     NotificationModule,
+    RetailShopTransactionsModule,
   ],
   controllers: [AppController],
   providers: [
