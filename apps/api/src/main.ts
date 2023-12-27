@@ -27,14 +27,14 @@ async function bootstrap() {
   // enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
-
+    
   // const { httpAdapter } = app.get(HttpAdapterHost);
 
   // Prisma Client Exception Filter for unhandled exceptions
   // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   // app.useGlobalFilters(new AllExceptionsFilter({ httpAdapter }));
-
+    
   const configService = app.get(ConfigService);
   const nestConfig = configService.get<NestConfig>('nest');
   const corsConfig = configService.get<CorsConfig>('cors');

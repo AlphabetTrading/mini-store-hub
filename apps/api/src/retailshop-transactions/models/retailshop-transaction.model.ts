@@ -6,6 +6,10 @@ import { RetailShop } from 'src/retail-shops/models/retail-shop.model';
 
 @ObjectType()
 export class RetailShopTransaction extends BaseModel {
+
+  @Field(() => Float)
+  total: number;
+
   @Field(() => String)
   retailShopId: string;
 

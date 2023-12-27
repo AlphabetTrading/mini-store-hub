@@ -1,87 +1,71 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// generator dbml {
-//   provider = "prisma-dbml-generator"
-// }
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-enum Gender {
-  FEMALE
-  MALE
-}
-
-enum UserRole {
-  USER
-  ADMIN
-  WAREHOUSE_MANAGER
-  RETAIL_SHOP_MANAGER
-}
-
 model User {
-  id               String  @id @default(uuid())
-  firstName        String
-  lastName         String
-  username         String  @unique
-  phone            String  @unique
-  password         String
-  amharicFirstName String? @map("የ መጀመሪያ ስም") @db.Text
-  amharicLastName  String? @map("የ አባት ስም") @db.Text
-  gender           Gender  @default(MALE)
-
-  role      UserRole @default(USER)
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userProfile        UserProfile?
-  retailShop         RetailShop[]        @relation("RetailShopManager")
-  warehouse          Warehouse[]         @relation("WarehouseManager")
-  notificationTokens NotificationToken[] @relation("NotificationToken")
+  id                 String              @id @default(uuid())
+  firstName          String
+  lastName           String
+  username           String              @unique
+  phone              String              @unique
+  password           String
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicFirstName String? @map("የ መጀመሪያ ስም")
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicLastName String? @map("የ አባት ስም")
+  amharicFirstName   String?
+  amharicLastName    String?
+  gender             Gender              @default(MALE)
+  role               UserRole            @default(USER)
+  isActive           Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   notifications      Notification[]      @relation("Notifications")
+  notificationTokens NotificationToken[] @relation("NotificationToken")
+  retailShop         RetailShop[]        @relation("RetailShopManager")
+  userProfile        UserProfile?
+  warehouse          Warehouse[]         @relation("WarehouseManager")
 
   @@index([username, phone])
-}
-
-enum RecipientType {
-  USER
-  RETAIL_SHOP
-  WAREHOUSE
-  ALL
 }
 
 model Notification {
   id                String             @id @default(uuid())
   title             String
-  amharicTitle      String?            @map("የ ርዕስ ስም") @db.Text
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicTitle String? @map("የ ርዕስ ስም")
+  amharicTitle      String?
   body              String
-  amharicBody       String?            @map("መልእክት") @db.Text
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicBody String? @map("መልእክት")
+  amharicBody       String?
   status            Boolean            @default(false)
   recipientType     RecipientType      @default(USER)
   recipientId       String?
   isRead            Boolean
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
-  notificationReads NotificationRead[] @relation("ReadNotification")
-  user              User?              @relation("Notifications", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId            String?
+  user              User?              @relation("Notifications", fields: [userId], references: [id], onDelete: Cascade)
+  notificationReads NotificationRead[] @relation("ReadNotification")
 }
 
 model NotificationRead {
   id             String       @id @default(uuid())
   notificationId String
   userId         String
-  notification   Notification @relation("ReadNotification", fields: [notificationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  notification   Notification @relation("ReadNotification", fields: [notificationId], references: [id], onDelete: Cascade)
 
   @@unique([notificationId, userId])
 }
@@ -92,9 +76,9 @@ model NotificationToken {
   token       String   @unique
   status      Boolean  @default(false)
   userId      String
-  user        User     @relation("NotificationToken", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User     @relation("NotificationToken", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserProfile {
@@ -104,68 +88,52 @@ model UserProfile {
   idUrl     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User?    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   addressId String?  @unique
-  address   Address? @relation("User Address", fields: [addressId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  address   Address? @relation("User Address", fields: [addressId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
-  id                 String     @id @default(uuid())
-  name               String     @unique
-  amharicName        String?    @map("የ እቃ ክፍል ስም") @db.Text
-  description        String
-  amharicDescription String?    @map("መግለጫ") @db.Text
-  parentId           String?
-  image              String?
-  parent             Category?  @relation("Subcategory", fields: [parentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  subcategories      Category[] @relation("Subcategory")
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
-  products           Product[]
-}
-
-enum UnitType {
-  PIECES
-  KG
-  LITER
-  METER
-  METER_SQUARE
-  BOX
-  BAG
-  BOTTLE
-  OTHER
+  id            String     @id @default(uuid())
+  name          String     @unique
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicName String? @map("የ እቃ ክፍል ስም")
+  amharicName   String?
+  description   String
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicDescription String? @map("መግለጫ")
+  amharicDescription String?
+  parentId      String?
+  image         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  parent        Category?  @relation("Subcategory", fields: [parentId], references: [id], onDelete: Cascade)
+  subcategories Category[] @relation("Subcategory")
+  products      Product[]
 }
 
 model Product {
-  id                 String   @id @default(uuid())
-  serialNumber       String
-  name               String
-  // amharicName field contains the title of the product in amharic character
-  amharicName        String?  @map("የ እቃ ስም") @db.Text
-  description        String
-  // amharicDescription field contains the description of the product in amharic character
-  amharicDescription String?  @map("መግለጫ") @db.Text
-  categoryId         String
-  category           Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  unit               UnitType
-  images             String[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
+  id              String            @id @default(uuid())
+  serialNumber    String
+  name            String
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicName String? @map("የ እቃ ስም")
+  amharicName     String?
+  description     String
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicDescription String? @map("መግለጫ")
+  amharicDescription String?
+  categoryId      String
+  unit            UnitType
+  images          String[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  category        Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   retailShopStock RetailShopStock[]
-  warehouseStock  WarehouseStock[]
   goods           StockItem[]
-  // saleTransactionItem SaleTransactionItem[]
-  // retailShopTransactionItems RetailShopTransactionItem[]
+  warehouseStock  WarehouseStock[]
 
   @@unique([id, createdAt])
-}
-
-// stock from warehouse, retail shop, etc
-
-enum StockType {
-  WAREHOUSE
-  RETAIL_SHOP
 }
 
 model PriceHistory {
@@ -176,71 +144,69 @@ model PriceHistory {
   updatedAt             DateTime         @updatedAt
   retailShopStockId     String?
   stockType             StockType?       @default(RETAIL_SHOP)
-  activeRetailShopStock RetailShopStock? @relation("ActivePrice")
-  retailShopStock       RetailShopStock? @relation("RetailShopStockPriceHistory", fields: [retailShopStockId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   warehouseStockId      String?
-  warehouseStock        WarehouseStock?  @relation("WarehouseStockPriceHistory", fields: [warehouseStockId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  retailShopStock       RetailShopStock? @relation("RetailShopStockPriceHistory", fields: [retailShopStockId], references: [id], onDelete: Cascade)
+  warehouseStock        WarehouseStock?  @relation("WarehouseStockPriceHistory", fields: [warehouseStockId], references: [id], onDelete: Cascade)
+  activeRetailShopStock RetailShopStock? @relation("ActivePrice")
   activeWarehouseStock  WarehouseStock?  @relation("ActiveWarehouseStockPrice")
 }
 
 model Address {
-  id                      String       @id @default(uuid())
-  street                  String?
-  city                    String?
-  lng                     Float?
-  lat                     Float?
-  formattedAddress        String?
-  amharicFormattedAddress String?      @map("ሙሉ አድራሻ") @db.Text
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
-  retailShop              RetailShop?  @relation("RetailShop Address")
-  warehouse               Warehouse?   @relation("Warehouse Address")
-  userProfile             UserProfile? @relation("User Address")
+  id               String       @id @default(uuid())
+  street           String?
+  city             String?
+  lng              Float?
+  lat              Float?
+  formattedAddress String?
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicFormattedAddress String? @map("ሙሉ አድራሻ")
+  amharicFormattedAddress String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  retailShop       RetailShop?  @relation("RetailShop Address")
+  userProfile      UserProfile? @relation("User Address")
+  warehouse        Warehouse?   @relation("Warehouse Address")
 }
 
 model RetailShop {
-  id                  String   @id @default(uuid())
-  name                String
-  amharicName         String?  @map("የስራ ቦታ ስም") @db.Text
-  addressId           String?  @unique
-  address             Address? @relation("RetailShop Address", fields: [addressId], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  retailShopManagerId String?
-  retailShopManager   User?    @relation("RetailShopManager", fields: [retailShopManagerId], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  status              Boolean? @default(true)
-
-  // saleTransaction             SaleTransaction[]
-  retailShopStock             RetailShopStock[]
-  goodsTransfersAsDestination GoodsTransfer[]         @relation("DestinationShop")
-  dailyTransaction            DailyTransaction[]
-  monthlyTransaction          MonthlyTransaction[]
+  id                          String                  @id @default(uuid())
+  name                        String
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicName String? @map("የስራ ቦታ ስም")
+  amharicName                 String?
+  addressId                   String?                 @unique
+  retailShopManagerId         String?
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+  status                      Boolean?                @default(true)
   annualTransaction           AnnualTransaction[]
+  dailyTransaction            DailyTransaction[]
+  goodsTransfersAsDestination GoodsTransfer[]         @relation("DestinationShop")
+  monthlyTransaction          MonthlyTransaction[]
+  address                     Address?                @relation("RetailShop Address", fields: [addressId], references: [id])
+  retailShopManager           User?                   @relation("RetailShopManager", fields: [retailShopManagerId], references: [id])
+  retailShopStock             RetailShopStock[]
   retailShopTransactions      RetailShopTransaction[] @relation("RetailShopStock_RetailShopStockTransaction")
 }
 
 model Warehouse {
-  id                 String   @id @default(uuid())
-  name               String
-  amharicName        String?  @map("የስራ ቦታ ስም") @db.Text
-  addressId          String?  @unique
-  warehouseManagerId String?
-  isMain             Boolean  @default(false)
-  status             Boolean? @default(true)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  address                     Address?          @relation("Warehouse Address", fields: [addressId], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  warehouseManager            User?             @relation("WarehouseManager", fields: [warehouseManagerId], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  goodsTransfersAsSource      GoodsTransfer[]   @relation("SourceWarehouse")
-  warehouseStock              WarehouseStock[]
-  retailShopStock             RetailShopStock[]
+  id                          String            @id @default(uuid())
+  name                        String
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // amharicName String? @map("የስራ ቦታ ስም")
+  amharicName                 String?
+  addressId                   String?           @unique
+  warehouseManagerId          String?
+  isMain                      Boolean           @default(false)
+  status                      Boolean?          @default(true)
+  createdAt                   DateTime          @default(now())
+  updatedAt                   DateTime          @updatedAt
   goodsTransfersAsDestination GoodsTransfer[]   @relation("DestinationWarehouse")
-}
-
-enum TransferType {
-  WarehouseToWarehouse
-  WarehouseToRetailShop
+  goodsTransfersAsSource      GoodsTransfer[]   @relation("SourceWarehouse")
+  retailShopStock             RetailShopStock[]
+  address                     Address?          @relation("Warehouse Address", fields: [addressId], references: [id])
+  warehouseManager            User?             @relation("WarehouseManager", fields: [warehouseManagerId], references: [id])
+  warehouseStock              WarehouseStock[]
 }
 
 model GoodsTransfer {
@@ -248,12 +214,12 @@ model GoodsTransfer {
   createdAt              DateTime     @default(now())
   updatedAt              DateTime     @updatedAt
   retailShopId           String?
-  retailShop             RetailShop?  @relation("DestinationShop", fields: [retailShopId], references: [id])
   sourceWarehouseId      String
-  sourceWarehouse        Warehouse    @relation("SourceWarehouse", fields: [sourceWarehouseId], references: [id])
   destinationWarehouseId String?
-  destinationWarehouse   Warehouse?   @relation("DestinationWarehouse", fields: [destinationWarehouseId], references: [id])
   transferType           TransferType @default(WarehouseToWarehouse)
+  destinationWarehouse   Warehouse?   @relation("DestinationWarehouse", fields: [destinationWarehouseId], references: [id])
+  retailShop             RetailShop?  @relation("DestinationShop", fields: [retailShopId], references: [id])
+  sourceWarehouse        Warehouse    @relation("SourceWarehouse", fields: [sourceWarehouseId], references: [id])
   goods                  StockItem[]  @relation("Goods Transfer")
 }
 
@@ -261,52 +227,28 @@ model StockItem {
   id              String        @id @default(uuid())
   goodsTransferId String
   productId       String
-  product         Product?      @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   quantity        Float
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   goodsTransfer   GoodsTransfer @relation("Goods Transfer", fields: [goodsTransferId], references: [id])
+  product         Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
-
-// model SaleTransaction {
-//   id                   String                @id @default(uuid())
-//   totalPrice           Float
-//   retailShopId         String
-//   retailShop           RetailShop            @relation(fields: [retailShopId], references: [id])
-//   createdAt            DateTime              @default(now())
-//   updatedAt            DateTime              @updatedAt
-//   saleTransactionItems SaleTransactionItem[] @relation("SaleTransaction")
-// }
-
-// model SaleTransactionItem {
-//   id                 String          @id @default(uuid())
-//   productId          String
-//   product            Product         @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-//   quantity           Float
-//   soldPriceHistoryId String
-//   soldPriceHistory   PriceHistory    @relation(fields: [soldPriceHistoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-//   subTotal           Float
-//   saleTransactionId  String
-//   saleTransaction    SaleTransaction @relation("SaleTransaction", fields: [saleTransactionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-//   createdAt          DateTime        @default(now())
-//   updatedAt          DateTime        @updatedAt
-// }
 
 model RetailShopStock {
   id                         String                      @id @default(uuid())
   productId                  String
-  product                    Product                     @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   warehouseId                String
-  warehouse                  Warehouse                   @relation(fields: [warehouseId], references: [id])
   quantity                   Float
   maxQuantity                Float
   createdAt                  DateTime                    @default(now())
   updatedAt                  DateTime                    @updatedAt
-  retailShop                 RetailShop                  @relation(fields: [retailShopId], references: [id])
   retailShopId               String
   activePriceId              String?                     @unique
-  activePrice                PriceHistory?               @relation("ActivePrice", fields: [activePriceId], references: [id], onUpdate: Cascade, onDelete: SetNull)
   priceHistory               PriceHistory[]              @relation("RetailShopStockPriceHistory")
+  activePrice                PriceHistory?               @relation("ActivePrice", fields: [activePriceId], references: [id])
+  product                    Product                     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  retailShop                 RetailShop                  @relation(fields: [retailShopId], references: [id])
+  warehouse                  Warehouse                   @relation(fields: [warehouseId], references: [id])
   retailShopTransactionItems RetailShopTransactionItem[] @relation("RetailShopStock_RetailShopTransactionItem")
 
   @@unique([productId, retailShopId])
@@ -314,21 +256,13 @@ model RetailShopStock {
 
 model RetailShopTransaction {
   id                         String                      @id @default(uuid())
+  total                      Float
   createdAt                  DateTime                    @default(now())
   updatedAt                  DateTime                    @updatedAt
   retailShopId               String
   retailShop                 RetailShop                  @relation("RetailShopStock_RetailShopStockTransaction", fields: [retailShopId], references: [id])
   retailShopTransactionItems RetailShopTransactionItem[] @relation("RetailShopStockTransaction_RetailShopTransactionItem")
 }
-
-// model RetailShopTransaction {
-//   id                         String                      @id @default(uuid())
-//   createdAt                  DateTime                    @default(now())
-//   updatedAt                  DateTime                    @updatedAt
-//   retailShopStockId          String
-//   retailShopStock            RetailShopStock             @relation(fields: [retailShopStockId], references: [id])
-//   // retailShopTransactionItems RetailShopTransactionItem[]
-// }
 
 model RetailShopTransactionItem {
   id                      String                @id @default(uuid())
@@ -345,40 +279,19 @@ model RetailShopTransactionItem {
   retailShopTransaction   RetailShopTransaction @relation("RetailShopStockTransaction_RetailShopTransactionItem", fields: [retailShopTransactionId], references: [id])
 }
 
-// model RetailShopTransactionItem {
-//   id                      String                @id @default(uuid())
-//   retailShopTransactionId String
-//   createdAt               DateTime              @default(now())
-//   updatedAt               DateTime              @updatedAt
-//   productId               String
-//   product                 Product               @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-//   quantity                Float
-//   transactionType         TransactionType
-//   purchasePrice           Float
-//   sellingPrice            Float
-//   subTotal                Float
-//   retailShopTransaction   RetailShopTransaction @relation(fields: [retailShopTransactionId], references: [id])
-// }
-
-enum TransactionType {
-  PURCHASE
-  SALE
-}
-
 model WarehouseStock {
-  id          String    @id @default(uuid())
-  productId   String
-  warehouseId String
-  quantity    Float
-  maxQuantity Float
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
-  product     Product   @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-
+  id            String         @id @default(uuid())
+  productId     String
+  warehouseId   String
+  quantity      Float
+  maxQuantity   Float
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   activePriceId String?        @unique
   priceHistory  PriceHistory[] @relation("WarehouseStockPriceHistory")
-  activePrice   PriceHistory?  @relation("ActiveWarehouseStockPrice", fields: [activePriceId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  activePrice   PriceHistory?  @relation("ActiveWarehouseStockPrice", fields: [activePriceId], references: [id])
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  warehouse     Warehouse      @relation(fields: [warehouseId], references: [id])
 
   @@unique([productId, warehouseId])
 }
@@ -411,4 +324,50 @@ model AnnualTransaction {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   retailShop   RetailShop @relation(fields: [retailShopId], references: [id])
+}
+
+enum Gender {
+  FEMALE
+  MALE
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  WAREHOUSE_MANAGER
+  RETAIL_SHOP_MANAGER
+}
+
+enum RecipientType {
+  USER
+  RETAIL_SHOP
+  WAREHOUSE
+  ALL
+}
+
+enum UnitType {
+  PIECES
+  KG
+  LITER
+  METER
+  METER_SQUARE
+  BOX
+  BAG
+  BOTTLE
+  OTHER
+}
+
+enum StockType {
+  WAREHOUSE
+  RETAIL_SHOP
+}
+
+enum TransferType {
+  WarehouseToWarehouse
+  WarehouseToRetailShop
+}
+
+enum TransactionType {
+  PURCHASE
+  SALE
 }

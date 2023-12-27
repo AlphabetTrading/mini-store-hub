@@ -993,6 +993,7 @@ export class RetailShopTransactionsService {
 
     return await this.prisma.retailShopTransaction.create({
       data: {
+        total: totalPrice,
         retailShopId: retailShopId,
         retailShopTransactionItems: {
           createMany: {

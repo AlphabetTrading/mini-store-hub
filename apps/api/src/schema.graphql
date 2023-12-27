@@ -882,6 +882,7 @@ type RetailShopTransaction {
   retailShop: RetailShop!
   retailShopId: String!
   retailShopTransactionItems: [RetailShopTransactionItem!]!
+  total: Float!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!

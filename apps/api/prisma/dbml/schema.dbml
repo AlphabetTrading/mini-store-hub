@@ -9,44 +9,45 @@ Table User {
   username String [unique, not null]
   phone String [unique, not null]
   password String [not null]
-  amharicFirstName String
+  amharicFirstName String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   amharicLastName String
   gender Gender [not null, default: 'MALE']
   role UserRole [not null, default: 'USER']
   isActive Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  userProfile UserProfile
-  retailShop RetailShop [not null]
-  warehouse Warehouse [not null]
-  notificationTokens NotificationToken [not null]
   notifications Notification [not null]
+  notificationTokens NotificationToken [not null]
+  retailShop RetailShop [not null]
+  userProfile UserProfile
+  warehouse Warehouse [not null]
 }
 
 Table Notification {
   id String [pk]
   title String [not null]
-  amharicTitle String
+  amharicTitle String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   body String [not null]
-  amharicBody String
+  amharicBody String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   status Boolean [not null, default: false]
   recipientType RecipientType [not null, default: 'USER']
   recipientId String
   isRead Boolean [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  notificationReads NotificationRead [not null]
-  user User
   userId String
+  user User
+  notificationReads NotificationRead [not null]
 }
 
 Table NotificationRead {
   id String [pk]
   notificationId String [not null]
   userId String [not null]
-  notification Notification [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  notification Notification [not null]
 
   indexes {
     (notificationId, userId) [unique]
@@ -59,9 +60,9 @@ Table NotificationToken {
   token String [unique, not null]
   status Boolean [not null, default: false]
   userId String [not null]
-  user User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  user User [not null]
 }
 
 Table UserProfile {
@@ -71,23 +72,23 @@ Table UserProfile {
   idUrl String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  user User
   addressId String [unique]
   address Address
+  user User [not null]
 }
 
 Table Category {
   id String [pk]
   name String [unique, not null]
-  amharicName String
+  amharicName String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   description String [not null]
-  amharicDescription String
+  amharicDescription String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   parentId String
-  images String[] [not null]
-  parent Category
-  subcategories Category [not null]
+  image String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  parent Category
+  subcategories Category [not null]
   products Product [not null]
 }
 
@@ -95,22 +96,18 @@ Table Product {
   id String [pk]
   serialNumber String [not null]
   name String [not null]
-  amharicName String
+  amharicName String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   description String [not null]
-  amharicDecription String
+  amharicDescription String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   categoryId String [not null]
-  category Category [not null]
   unit UnitType [not null]
   images String[] [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  activePriceId String [unique]
-  activePrice PriceHistory
-  priceHistory PriceHistory [not null]
+  category Category [not null]
   retailShopStock RetailShopStock [not null]
-  warehouseStock WarehouseStock [not null]
   goods StockItem [not null]
-  saleTransactionItem SaleTransactionItem [not null]
+  warehouseStock WarehouseStock [not null]
 
   indexes {
     (id, createdAt) [unique]
@@ -119,16 +116,17 @@ Table Product {
 
 Table PriceHistory {
   id String [pk]
-  productId String [not null]
   price Float [not null]
   purchasedPrice Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  activeProduct Product
-  product Product [not null]
-  saleTransactionItems SaleTransactionItem [not null]
   retailShopStockId String
-  retailShopStockItem RetailShopStock
+  stockType StockType [default: 'RETAIL_SHOP']
+  warehouseStockId String
+  retailShopStock RetailShopStock
+  warehouseStock WarehouseStock
+  activeRetailShopStock RetailShopStock
+  activeWarehouseStock WarehouseStock
 }
 
 Table Address {
@@ -138,47 +136,49 @@ Table Address {
   lng Float
   lat Float
   formattedAddress String
-  amharicFormattedAddress String
+  amharicFormattedAddress String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   retailShop RetailShop
-  warehouse Warehouse
   userProfile UserProfile
+  warehouse Warehouse
 }
 
 Table RetailShop {
   id String [pk]
   name String [not null]
-  amharicName String
+  amharicName String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   addressId String [unique]
-  address Address
   retailShopManagerId String
-  retailShopManager User
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  saleTransaction SaleTransaction [not null]
-  retailShopStock RetailShopStock [not null]
-  goodsTransfersAsDestination GoodsTransfer [not null]
-  dailyTransaction DailyTransaction [not null]
-  monthlyTransaction MonthlyTransaction [not null]
+  status Boolean [default: true]
   annualTransaction AnnualTransaction [not null]
+  dailyTransaction DailyTransaction [not null]
+  goodsTransfersAsDestination GoodsTransfer [not null]
+  monthlyTransaction MonthlyTransaction [not null]
+  address Address
+  retailShopManager User
+  retailShopStock RetailShopStock [not null]
+  retailShopTransactions RetailShopTransaction [not null]
 }
 
 Table Warehouse {
   id String [pk]
   name String [not null]
-  amharicName String
+  amharicName String [note: 'This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*']
   addressId String [unique]
   warehouseManagerId String
   isMain Boolean [not null, default: false]
+  status Boolean [default: true]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  goodsTransfersAsDestination GoodsTransfer [not null]
+  goodsTransfersAsSource GoodsTransfer [not null]
+  retailShopStock RetailShopStock [not null]
   address Address
   warehouseManager User
-  goodsTransfersAsSource GoodsTransfer [not null]
   warehouseStock WarehouseStock [not null]
-  retailShopStock RetailShopStock [not null]
-  goodsTransfersAsDestination GoodsTransfer [not null]
 }
 
 Table GoodsTransfer {
@@ -186,12 +186,12 @@ Table GoodsTransfer {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   retailShopId String
-  retailShop RetailShop
   sourceWarehouseId String [not null]
-  sourceWarehouse Warehouse [not null]
   destinationWarehouseId String
-  destinationWarehouse Warehouse
   transferType TransferType [not null, default: 'WarehouseToWarehouse']
+  destinationWarehouse Warehouse
+  retailShop RetailShop
+  sourceWarehouse Warehouse [not null]
   goods StockItem [not null]
 }
 
@@ -199,55 +199,58 @@ Table StockItem {
   id String [pk]
   goodsTransferId String [not null]
   productId String [not null]
-  product Product
   quantity Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   goodsTransfer GoodsTransfer [not null]
-}
-
-Table SaleTransaction {
-  id String [pk]
-  totalPrice Float [not null]
-  retailShopId String [not null]
-  retailShop RetailShop [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  saleTransactionItems SaleTransactionItem [not null]
-}
-
-Table SaleTransactionItem {
-  id String [pk]
-  productId String [not null]
   product Product [not null]
-  quantity Float [not null]
-  soldPriceHistoryId String [not null]
-  soldPriceHistory PriceHistory [not null]
-  subTotal Float [not null]
-  saleTransactionId String [not null]
-  saleTransaction SaleTransaction [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
 }
 
 Table RetailShopStock {
   id String [pk]
   productId String [not null]
-  product Product [not null]
   warehouseId String [not null]
-  warehouse Warehouse [not null]
   quantity Float [not null]
   maxQuantity Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  retailShop RetailShop [not null]
   retailShopId String [not null]
   activePriceId String [unique]
+  priceHistory PriceHistory [not null]
   activePrice PriceHistory
+  product Product [not null]
+  retailShop RetailShop [not null]
+  warehouse Warehouse [not null]
+  retailShopTransactionItems RetailShopTransactionItem [not null]
 
   indexes {
     (productId, retailShopId) [unique]
   }
+}
+
+Table RetailShopTransaction {
+  id String [pk]
+  total Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShopId String [not null]
+  retailShop RetailShop [not null]
+  retailShopTransactionItems RetailShopTransactionItem [not null]
+}
+
+Table RetailShopTransactionItem {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  retailShopTransactionId String [not null]
+  quantity Float [not null]
+  transactionType TransactionType [not null]
+  purchasePrice Float [not null]
+  sellingPrice Float [not null]
+  subTotal Float [not null]
+  retailShopStockId String [not null]
+  retailShopStock RetailShopStock [not null]
+  retailShopTransaction RetailShopTransaction [not null]
 }
 
 Table WarehouseStock {
@@ -258,8 +261,11 @@ Table WarehouseStock {
   maxQuantity Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  warehouse Warehouse [not null]
+  activePriceId String [unique]
+  priceHistory PriceHistory [not null]
+  activePrice PriceHistory
   product Product [not null]
+  warehouse Warehouse [not null]
 
   indexes {
     (productId, warehouseId) [unique]
@@ -327,28 +333,38 @@ Enum UnitType {
   OTHER
 }
 
+Enum StockType {
+  WAREHOUSE
+  RETAIL_SHOP
+}
+
 Enum TransferType {
   WarehouseToWarehouse
   WarehouseToRetailShop
 }
 
-Ref: Notification.userId > User.id
+Enum TransactionType {
+  PURCHASE
+  SALE
+}
 
-Ref: NotificationRead.notificationId > Notification.id
+Ref: Notification.userId > User.id [delete: Cascade]
 
-Ref: NotificationToken.userId > User.id
+Ref: NotificationRead.notificationId > Notification.id [delete: Cascade]
 
-Ref: UserProfile.userId - User.id
+Ref: NotificationToken.userId > User.id [delete: Cascade]
 
-Ref: UserProfile.addressId - Address.id
+Ref: UserProfile.addressId - Address.id [delete: Cascade]
 
-Ref: Category.parentId - Category.id
+Ref: UserProfile.userId - User.id [delete: Cascade]
 
-Ref: Product.categoryId > Category.id
+Ref: Category.parentId - Category.id [delete: Cascade]
 
-Ref: Product.activePriceId - PriceHistory.id
+Ref: Product.categoryId > Category.id [delete: Cascade]
 
-Ref: PriceHistory.productId - Product.id
+Ref: PriceHistory.retailShopStockId > RetailShopStock.id [delete: Cascade]
+
+Ref: PriceHistory.warehouseStockId > WarehouseStock.id [delete: Cascade]
 
 Ref: RetailShop.addressId - Address.id
 
@@ -358,35 +374,35 @@ Ref: Warehouse.addressId - Address.id
 
 Ref: Warehouse.warehouseManagerId > User.id
 
+Ref: GoodsTransfer.destinationWarehouseId > Warehouse.id
+
 Ref: GoodsTransfer.retailShopId > RetailShop.id
 
 Ref: GoodsTransfer.sourceWarehouseId > Warehouse.id
 
-Ref: GoodsTransfer.destinationWarehouseId > Warehouse.id
-
-Ref: StockItem.productId > Product.id
-
 Ref: StockItem.goodsTransferId > GoodsTransfer.id
 
-Ref: SaleTransaction.retailShopId > RetailShop.id
-
-Ref: SaleTransactionItem.productId > Product.id
-
-Ref: SaleTransactionItem.soldPriceHistoryId > PriceHistory.id
-
-Ref: SaleTransactionItem.saleTransactionId > SaleTransaction.id
-
-Ref: RetailShopStock.productId > Product.id
-
-Ref: RetailShopStock.warehouseId > Warehouse.id
-
-Ref: RetailShopStock.retailShopId > RetailShop.id
+Ref: StockItem.productId > Product.id [delete: Cascade]
 
 Ref: RetailShopStock.activePriceId - PriceHistory.id
 
-Ref: WarehouseStock.warehouseId > Warehouse.id
+Ref: RetailShopStock.productId > Product.id [delete: Cascade]
 
-Ref: WarehouseStock.productId > Product.id
+Ref: RetailShopStock.retailShopId > RetailShop.id
+
+Ref: RetailShopStock.warehouseId > Warehouse.id
+
+Ref: RetailShopTransaction.retailShopId > RetailShop.id
+
+Ref: RetailShopTransactionItem.retailShopStockId > RetailShopStock.id
+
+Ref: RetailShopTransactionItem.retailShopTransactionId > RetailShopTransaction.id
+
+Ref: WarehouseStock.activePriceId - PriceHistory.id
+
+Ref: WarehouseStock.productId > Product.id [delete: Cascade]
+
+Ref: WarehouseStock.warehouseId > Warehouse.id
 
 Ref: DailyTransaction.retailShopId > RetailShop.id
 

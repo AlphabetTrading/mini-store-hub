@@ -148,18 +148,17 @@ export class GoodsTransfersService {
               retailShopId: retailShopId,
               warehouseId: sourceWarehouseId,
               maxQuantity: good.quantity,
-              
-              retailShopTransactionItems:{
-                create:{
+
+              retailShopTransactionItems: {
+                create: {
                   quantity: good.quantity,
                   transactionType: TransactionType.PURCHASE,
                   purchasePrice: 20,
                   sellingPrice: 30,
                   subTotal: 30 * good.quantity,
                   retailShopTransactionId: '1',
-
-                }
-              }
+                },
+              },
             },
             update: {
               quantity: {
@@ -169,7 +168,7 @@ export class GoodsTransfersService {
           });
         }
 
-        const transfers =  await tx.goodsTransfer.create({
+        const transfers = await tx.goodsTransfer.create({
           data: {
             transferType: data.transferType,
             goods: {
@@ -200,8 +199,9 @@ export class GoodsTransfersService {
           },
         });
 
-        const retailShopInputTransactions = []
-        await goods.map(async(good) => {
+        const retailShopInputTransactions = [];
+        let total = 0;
+        await goods.map(async (good) => {
           const retailShopStock = await tx.retailShopStock.findUnique({
             where: {
               productId_retailShopId: {
@@ -210,7 +210,7 @@ export class GoodsTransfersService {
               },
             },
           });
-
+          total += good.quantity * good.purchasePrice;
           retailShopInputTransactions.push({
             quantity: good.quantity,
             productId: good.productId,
@@ -219,22 +219,23 @@ export class GoodsTransfersService {
             sellingPrice: good.sellingPrice,
             subTotal: good.purchasePrice * good.quantity,
             retailShopStockId: retailShopStock.id,
-          })
+          });
         });
 
-         // create retail shop transaction 
-         await tx.retailShopTransaction.create({
+        // create retail shop transaction
+        await tx.retailShopTransaction.create({
           data: {
+            total,
             retailShopId,
             retailShopTransactionItems: {
               createMany: {
                 data: retailShopInputTransactions,
-              }
-            }
+              },
+            },
           },
         });
 
-        return transfers
+        return transfers;
       },
       { maxWait: 20000, timeout: 20000 },
     );

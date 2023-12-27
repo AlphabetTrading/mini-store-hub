@@ -17,6 +17,7 @@ import { SignupInput } from './dto/signup.input';
 import { RefreshTokenInput } from './dto/refresh-token.input';
 import { User } from 'src/users/models/user.model';
 
+
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private readonly auth: AuthService) {}
