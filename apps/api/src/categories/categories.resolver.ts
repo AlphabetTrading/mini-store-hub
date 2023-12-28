@@ -42,7 +42,7 @@ export class CategoriesResolver {
   ): Promise<PaginationCategories> {
     const where: Prisma.CategoryWhereInput = {
       id: filterCategoryInput?.id,
-      OR: [
+      OR: filterCategoryInput?.name && [
         {
           name: filterCategoryInput?.name,
         },

@@ -477,6 +477,7 @@ import {
                 {
                   price: 100,
                   purchasedPrice: 89,
+                  
                 },
                 {
                   price: 200,

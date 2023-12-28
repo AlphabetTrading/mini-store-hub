@@ -7,8 +7,9 @@ generator dbml {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  // shadowDatabaseUrl = env("DATABASE_URL")
 }
 
 model User {
@@ -94,44 +95,44 @@ model UserProfile {
 }
 
 model Category {
-  id            String     @id @default(uuid())
-  name          String     @unique
+  id                 String     @id @default(uuid())
+  name               String     @unique
   /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
   // amharicName String? @map("የ እቃ ክፍል ስም")
-  amharicName   String?
-  description   String
+  amharicName        String?
+  description        String
   /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
   // amharicDescription String? @map("መግለጫ")
   amharicDescription String?
-  parentId      String?
-  image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  parent        Category?  @relation("Subcategory", fields: [parentId], references: [id], onDelete: Cascade)
-  subcategories Category[] @relation("Subcategory")
-  products      Product[]
+  parentId           String?
+  image              String?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  parent             Category?  @relation("Subcategory", fields: [parentId], references: [id], onDelete: Cascade)
+  subcategories      Category[] @relation("Subcategory")
+  products           Product[]
 }
 
 model Product {
-  id              String            @id @default(uuid())
-  serialNumber    String
-  name            String
+  id                 String            @id @default(uuid())
+  serialNumber       String
+  name               String
   /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
   // amharicName String? @map("የ እቃ ስም")
-  amharicName     String?
-  description     String
+  amharicName        String?
+  description        String
   /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
   // amharicDescription String? @map("መግለጫ")
   amharicDescription String?
-  categoryId      String
-  unit            UnitType
-  images          String[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  category        Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  retailShopStock RetailShopStock[]
-  goods           StockItem[]
-  warehouseStock  WarehouseStock[]
+  categoryId         String
+  unit               UnitType
+  images             String[]
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  category           Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  retailShopStock    RetailShopStock[]
+  goods              StockItem[]
+  warehouseStock     WarehouseStock[]
 
   @@unique([id, createdAt])
 }
@@ -152,20 +153,20 @@ model PriceHistory {
 }
 
 model Address {
-  id               String       @id @default(uuid())
-  street           String?
-  city             String?
-  lng              Float?
-  lat              Float?
-  formattedAddress String?
+  id                      String       @id @default(uuid())
+  street                  String?
+  city                    String?
+  lng                     Float?
+  lat                     Float?
+  formattedAddress        String?
   /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
   // amharicFormattedAddress String? @map("ሙሉ አድራሻ")
   amharicFormattedAddress String?
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  retailShop       RetailShop?  @relation("RetailShop Address")
-  userProfile      UserProfile? @relation("User Address")
-  warehouse        Warehouse?   @relation("Warehouse Address")
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  retailShop              RetailShop?  @relation("RetailShop Address")
+  userProfile             UserProfile? @relation("User Address")
+  warehouse               Warehouse?   @relation("Warehouse Address")
 }
 
 model RetailShop {

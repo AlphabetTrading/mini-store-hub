@@ -35,7 +35,7 @@ export class WarehousesResolver {
   ): Promise<PaginationWarehouses> {
     const where: Prisma.WarehouseWhereInput = {
       id: filterWarehouseInput?.id,
-      OR: [
+      OR: filterWarehouseInput?.name && [
         {
           name: filterWarehouseInput?.name,
         },

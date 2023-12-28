@@ -27,6 +27,7 @@ export class CategoriesService {
     orderBy?: Prisma.CategoryOrderByWithRelationInput;
   }): Promise<Category[]> {
     try {
+      console.log('wehrer', where);
       const categories = await this.prisma.category.findMany({
         skip,
         take,
@@ -34,6 +35,7 @@ export class CategoriesService {
         orderBy,
         include: categoryInclude,
       });
+      console.log(categories);
       return categories;
     } catch (e) {
       return e;
