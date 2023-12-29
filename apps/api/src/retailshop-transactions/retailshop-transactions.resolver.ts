@@ -47,7 +47,7 @@ export class RetailShopTransactionsResolver {
         id: filterRetailShopTransactionInput?.id,
         retailShop: filterRetailShopTransactionInput?.retailShop,
         retailShopTransactionItems: {
-          every: filterRetailShopTransactionInput?.retailShopTransactionsItems as any,
+          some: filterRetailShopTransactionInput?.retailShopTransactionsItems as any,
         },
         createdAt: filterRetailShopTransactionInput?.createdAt,
       };

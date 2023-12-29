@@ -329,9 +329,9 @@ export class RetailShopTransactionsService {
     const retailShops = await this.prisma.retailShop.findMany({
       where: {
         retailShopStock: {
-          every: {
+          some: {
             retailShopTransactionItems: {
-              every: {
+              some: {
                 createdAt: {
                   gte: formattedStartDate,
                   lt: formattedEndDate,
@@ -395,7 +395,7 @@ export class RetailShopTransactionsService {
     const retailShops = await this.prisma.retailShop.findMany({
       where: {
         retailShopTransactions: {
-          every: {
+          some: {
             createdAt: {
               gte: formattedStartDate,
               lt: formattedEndDate,
@@ -456,7 +456,7 @@ export class RetailShopTransactionsService {
     const retailShops = await this.prisma.retailShop.findMany({
       where: {
         retailShopTransactions: {
-          every: {
+          some: {
             createdAt: {
               gte: formattedStartDate,
               lt: formattedEndDate,

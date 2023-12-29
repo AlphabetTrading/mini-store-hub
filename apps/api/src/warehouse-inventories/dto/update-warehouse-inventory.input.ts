@@ -13,4 +13,8 @@ export class UpdateWarehouseStockInput extends PartialType(
 
   @Field(() => Float, { nullable: true })
   quantity: number;
+
+  @Field(() => String, { nullable: true })
+  activePriceId?: string;
+
 }

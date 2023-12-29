@@ -268,7 +268,7 @@ export class ProductsResolver {
           },
           {
             retailShopStock: {
-              every: {
+              some: {
                 retailShopId,
               },
             },
@@ -348,7 +348,7 @@ export class ProductsResolver {
           },
           {
             warehouseStock: {
-              every: {
+              some: {
                 warehouseId,
               },
             },
@@ -501,7 +501,7 @@ export class ProductsResolver {
           },
           {
             retailShopStock: {
-              every: {
+              some: {
                 retailShopId,
               },
             },
@@ -584,7 +584,7 @@ export class ProductsResolver {
           },
           {
             warehouseStock: {
-              every: {
+              some: {
                 warehouseId,
               },
             },

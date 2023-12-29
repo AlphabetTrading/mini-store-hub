@@ -14,6 +14,10 @@ export class CreateRetailShopStockInput {
 
   @Field(() => String)
   retailShopId: string;
+
+  @Field(() => String, { nullable: true })
+  activePriceId?: string;
+
 }
 
 @InputType()

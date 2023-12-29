@@ -178,17 +178,18 @@ export class ProductsService {
     where?: Prisma.ProductWhereInput;
     orderBy?: Prisma.ProductOrderByWithRelationInput;
   }): Promise<Product[]> {
+
     const products = await this.prisma.product.findMany({
       orderBy,
       where: {
         ...where,
-        goods: {
-          every: {
-            goodsTransfer: {
-              sourceWarehouseId: '124',
-            },
-          },
-        },
+        // goods: {
+        //   some: {
+        //     goodsTransfer: {
+        //       sourceWarehouseId: '124',
+        //     },
+        //   },
+        // },
       },
       include: {
         category: true,

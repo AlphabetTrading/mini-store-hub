@@ -10,6 +10,10 @@ export class CreateWarehouseStockInput {
 
   @Field(() => Float)
   quantity: number;
+
+  @Field(() => String, { nullable: true })
+  activePriceId?: string;
+
 }
 
 @InputType()
