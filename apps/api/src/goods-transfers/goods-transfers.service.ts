@@ -10,6 +10,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { GoodsTransfer } from './models/goods-transfer.model';
 import { Prisma, TransactionType } from '@prisma/client';
 import { CreateGoodsTransferFromMainWarehouseInput } from './dto/create-goods-transfer-from-main.input';
+import { v4 as uuidv4 } from 'uuid';
+
 
 const goodsTransferInclude: Prisma.GoodsTransferInclude = {
   destinationWarehouse: true,
@@ -148,17 +150,17 @@ export class GoodsTransfersService {
               retailShopId: retailShopId,
               warehouseId: sourceWarehouseId,
               maxQuantity: good.quantity,
-
-              retailShopTransactionItems: {
-                create: {
-                  quantity: good.quantity,
-                  transactionType: TransactionType.PURCHASE,
-                  purchasePrice: 20,
-                  sellingPrice: 30,
-                  subTotal: 30 * good.quantity,
-                  retailShopTransactionId: '1',
-                },
-              },
+              
+              // retailShopTransactionItems: {
+              //   create: {
+              //     quantity: good.quantity,
+              //     transactionType: TransactionType.PURCHASE,
+              //     purchasePrice: good.purchasePrice,
+              //     sellingPrice: good.sellingPrice,
+              //     subTotal: good.purchasePrice * good.quantity,
+              //     retailShopTransactionId: retailShopTransactionId,
+              //   },
+              // },
             },
             update: {
               quantity: {

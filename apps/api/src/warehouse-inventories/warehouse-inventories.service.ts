@@ -9,16 +9,18 @@ import { Prisma } from '@prisma/client';
 import { WarehouseStock } from './models/warehouse-inventory.model';
 
 const warehouseStockIncludeObject: Prisma.WarehouseStockInclude = {
+  priceHistory: true,
+  activePrice: true,
   product: {
     include: {
       category: true,
       goods: true,
-      // priceHistory: true,
       retailShopStock: {
         include: {
           retailShop: true,
           retailShopTransactionItems: true,
           priceHistory: true,
+          activePrice: true,
         },
       },
       warehouseStock: true,
@@ -247,7 +249,6 @@ export class WarehouseStockService {
       },
       include: {
         ...warehouseStockIncludeObject,
-
         product: {
           include: {
           },
@@ -356,6 +357,27 @@ export class WarehouseStockService {
       throw new Error('Warehouse stock not found');
     }
 
+    // if isAll is true, update all the warehouseStocks with the same productId
+    if (data.isAll) {
+      const warehouseStocks = await this.prisma.warehouseStock.findMany({
+        where: { productId: warehouseStock.productId },
+      });
+
+      const promisis = warehouseStocks.map(async (warehouseStock) => {
+        return this.prisma.warehouseStock.update({
+          where: { id: warehouseStock.id },
+          data: {
+            activePriceId: data.activePriceId,
+          },
+        });
+      });
+
+      const res = await Promise.all(promisis);
+      return res;
+    }
+
+    delete data.isAll;
+    
     return this.prisma.warehouseStock.update({
       where: { id },
       data,

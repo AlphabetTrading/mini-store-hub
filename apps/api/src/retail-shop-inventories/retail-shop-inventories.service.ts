@@ -386,6 +386,24 @@ export class RetailShopStockService {
       throw new Error('Retail shop stock not found');
     }
 
+    // if isAll is true, update all the retailShopStocks with the same productId
+    if (data.isAll) {
+      const retailShopStocks = await this.prisma.retailShopStock.findMany({
+        where: { productId: retailShopStock.productId },
+      });
+
+      const promises = retailShopStocks.map(async (retailShopStock) => {
+        return this.prisma.retailShopStock.update({
+          where: { id: retailShopStock.id },
+          data: {
+            activePriceId: data.activePriceId,
+          },
+        });
+      });
+
+      return Promise.all(promises);
+    }
+    delete data.isAll;
     return this.prisma.retailShopStock.update({
       where: { id },
       data,

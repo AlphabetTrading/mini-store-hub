@@ -22,4 +22,8 @@ export class UpdateRetailShopStockInput extends PartialType(
 
   @Field(() => String, { nullable: true })
   activePriceId?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isAll?: boolean;
+
 }
