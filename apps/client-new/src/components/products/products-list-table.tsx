@@ -33,10 +33,11 @@ const ProductsListTable = ({ products }: Props) => {
           <TableRow>
             <TableCell />
             <TableCell>Name</TableCell>
+            <TableCell>Serial Number</TableCell>
             <TableCell>Category</TableCell>
             <TableCell>Unit</TableCell>
-            <TableCell>Purchase Price</TableCell>
-            <TableCell>Selling Price</TableCell>
+            {/* <TableCell>Purchase Price</TableCell>
+            <TableCell>Selling Price</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>

@@ -420,12 +420,12 @@ const TransactionHistoryOutgoing = ({
                         </Stack>
                       </Stack>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {
                         selectedWarehouseStockItem.stockItem.product
                           ?.activePrice.price
                       }
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <IconButton
                         onClick={() =>

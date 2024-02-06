@@ -46,14 +46,15 @@ export const WAREHOUSE_TRANSACTION_HISTORY = gql`
         goods {
           id
           quantity
+          # activePrice {
+          #     price
+          #   }
           product {
             name
             id
             serialNumber
             images
-            activePrice {
-              price
-            }
+           
             category {
               id
               name

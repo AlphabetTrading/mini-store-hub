@@ -3,6 +3,7 @@ import { Meta } from "../../../types/common";
 import { Product, Unit } from "../../../types/product";
 import { Category } from "../../../types/categories";
 import { LowStockItemsWarehouse } from "../../../types/warehouse";
+import { StockItem } from "../../../types/stock-item";
 
 export interface GetTotalWarehouseValuationData {
   totalValuationByWarehouseId: {
@@ -106,10 +107,7 @@ export const GET_LOW_STOCK_ITEMS_BY_WAREHOUSE = gql`
 `;
 
 export interface GetStockDistributionData {
-  warehouseStockByWarehouseId: {
-    quantity: number;
-    product: Product;
-  }[];
+  warehouseStockByWarehouseId: StockItem[];
 }
 
 export interface GetStockDistributionVars {

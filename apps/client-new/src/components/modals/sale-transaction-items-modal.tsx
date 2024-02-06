@@ -5,7 +5,6 @@ import {
   Card,
   TextField,
   Button,
-  Alert,
   TableHead,
   TableCell,
   TableRow,
@@ -17,7 +16,10 @@ import {
   Input,
 } from "@mui/material";
 import React from "react";
-import { SelectedStockItem, StockItem } from "../../../types/stock-item";
+import {
+  RetailShopStockItem,
+  SelectedRetailShopStockItem,
+} from "../../../types/stock-item";
 import { Meta } from "../../../types/common";
 import Pagination from "../Pagination";
 import CustomChip from "../custom-chip";
@@ -28,10 +30,10 @@ import { ApolloError } from "@apollo/client";
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  handleAddItem: (item: StockItem, quantity: number) => void;
+  handleAddItems: (item: SelectedRetailShopStockItem[]) => void;
   selectedItemsId: string[];
   retailShopId: string;
-  retailShopStocks: StockItem[];
+  retailShopStocks: RetailShopStockItem[];
   meta?: Meta;
   page: number;
   rowsPerPage: number;
@@ -41,6 +43,8 @@ type Props = {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   retailShopStockLoading: boolean;
   retailShopStockError: ApolloError | undefined;
+  selectedItems: SelectedRetailShopStockItem[];
+  setSelectedItems:React.Dispatch<React.SetStateAction<SelectedRetailShopStockItem[]>>;
 };
 
 const validateQuantity = (value: number, max: number) => {
@@ -55,7 +59,7 @@ const validateQuantity = (value: number, max: number) => {
 const SaleTransactionItemsDrawer = ({
   open,
   setOpen,
-  handleAddItem,
+  handleAddItems,
   selectedItemsId,
   retailShopId,
   retailShopStocks,
@@ -68,10 +72,9 @@ const SaleTransactionItemsDrawer = ({
   setSearchQuery,
   retailShopStockLoading,
   retailShopStockError,
+  selectedItems,
+  setSelectedItems
 }: Props) => {
-  const [selectedItems, setSelectedItems] = React.useState<SelectedStockItem[]>(
-    []
-  );
 
   return (
     <Drawer
@@ -104,7 +107,7 @@ const SaleTransactionItemsDrawer = ({
             <StateHandler
               error={retailShopStockError}
               loading={retailShopStockLoading}
-            >
+            > 
               <Table sx={{ minWidth: 300 }}>
                 <TableHead>
                   <TableRow>
@@ -119,9 +122,10 @@ const SaleTransactionItemsDrawer = ({
                 </TableHead>
                 <TableBody>
                   {retailShopStocks?.map((item, idx) => {
-                    const currentItem = selectedItems.find(
+                    const currentItem = selectedItems?.find(
                       (selectedItem) =>
-                        selectedItem.stockItem.product.id === item.product.id
+                        selectedItem.retailShopStockItem.product.id ===
+                        item.product.id
                     );
                     const helperText = validateQuantity(
                       currentItem?.selectedQuantity as number,
@@ -132,22 +136,30 @@ const SaleTransactionItemsDrawer = ({
                       <TableRow hover key={idx}>
                         <TableCell padding="checkbox">
                           <Checkbox
-                            checked={selectedItems.some(
-                              (i) => i.stockItem.product.id === item.product.id
-                            )}
+                            checked={
+                              selectedItems.some(
+                                (i) =>
+                                  i.retailShopStockItem.product.id ===
+                                  item.product.id
+                              ) || selectedItemsId.includes(item.product.id)
+                            }
                             onChange={(
                               event: React.ChangeEvent<HTMLInputElement>
                             ) => {
                               if (event.target.checked) {
                                 setSelectedItems([
                                   ...selectedItems,
-                                  { stockItem: item, selectedQuantity: 1 },
+                                  {
+                                    retailShopStockItem: item,
+                                    selectedQuantity: 1,
+                                  },
                                 ]);
                               } else {
                                 setSelectedItems(
                                   selectedItems.filter(
                                     (i) =>
-                                      i.stockItem.product.id !== item.product.id
+                                      i.retailShopStockItem.product.id !==
+                                      item.product.id
                                   )
                                 );
                               }
@@ -186,7 +198,8 @@ const SaleTransactionItemsDrawer = ({
                               setSelectedItems(
                                 selectedItems.map((i) => {
                                   if (
-                                    i.stockItem.product.id === item.product.id
+                                    i.retailShopStockItem.product.id ===
+                                    item.product.id
                                   ) {
                                     return {
                                       ...i,
@@ -243,12 +256,10 @@ const SaleTransactionItemsDrawer = ({
             const invalid = selectedItems.some(
               (item) =>
                 item.selectedQuantity <= 0 ||
-                item.selectedQuantity > item.stockItem.quantity
+                item.selectedQuantity > item.retailShopStockItem.quantity
             );
             if (!invalid) {
-              selectedItems.forEach((item) => {
-                handleAddItem(item.stockItem, item.selectedQuantity);
-              });
+              handleAddItems(selectedItems);
               setOpen(false);
             }
           }}

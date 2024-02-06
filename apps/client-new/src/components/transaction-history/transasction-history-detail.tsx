@@ -237,7 +237,7 @@ const TransactionHistoryDetail = ({
                         </Stack>
                       </Stack>
                     </TableCell>
-                    <TableCell>{product.activePrice?.price}</TableCell>
+                    {/* <TableCell>{product.activePrice?.price}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => handleRemoveItem(product.id)}>
                         <DeleteOutline color="error" />

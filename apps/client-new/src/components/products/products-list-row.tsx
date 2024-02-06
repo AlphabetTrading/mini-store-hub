@@ -187,11 +187,14 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
               }}
             >
               <Typography variant="subtitle2">{product.name}</Typography>
-              <Typography color="text.secondary" variant="body2">
+              {/* <Typography color="text.secondary" variant="body2">
                 {product.serialNumber}
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
+        </TableCell>
+        <TableCell align="left">
+          {product.serialNumber}
         </TableCell>
         <TableCell align="left">
           <CustomChip label={product.category.name} />
@@ -199,10 +202,10 @@ const ProductsListRow = ({ product, handleItemToggle, selected }: Props) => {
         <TableCell align="left">
           <CustomChip label={product.unit} status="neutral" />
         </TableCell>
-        <TableCell align="left">
+        {/* <TableCell align="left">
           {product.activePrice?.purchasedPrice}
-        </TableCell>
-        <TableCell align="left">{product.activePrice?.price}</TableCell>
+        </TableCell> */}
+        {/* <TableCell align="left">{product.activePrice?.price}</TableCell> */}
       </TableRow>
       {/* {selected && (
         <TableRow>

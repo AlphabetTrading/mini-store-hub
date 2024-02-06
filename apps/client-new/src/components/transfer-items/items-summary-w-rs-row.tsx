@@ -10,35 +10,35 @@ import { ArrowDropUp, ArrowDropDown, DeleteOutline } from "@mui/icons-material";
 import { SelectedRetailShopStockItem, SelectedStockItem } from "../../../types/stock-item";
 
 type Props = {
-  selectedWarehouseItem: SelectedRetailShopStockItem;
+  selectedWarehouseItem: SelectedStockItem;
   handleRemoveItem(id: string): void;
   setSelectedItems: React.Dispatch<
-    React.SetStateAction<SelectedRetailShopStockItem[]>
+    React.SetStateAction<SelectedStockItem[]>
   >;
-  selectedItems: SelectedRetailShopStockItem[];
+  selectedItems: SelectedStockItem[];
 };
 
-const ItemsSummaryRow = ({
+const ItemsSummaryWRSRow = ({
   selectedWarehouseItem,
   handleRemoveItem,
   setSelectedItems,
   selectedItems,
 }: Props) => {
   const handleItemQuantityChange = (
-    selectedItem: SelectedRetailShopStockItem,
+    selectedItem: SelectedStockItem,
     val: number
   ) => {
     if (selectedItem.selectedQuantity + val <= 0) {
       setSelectedItems(
         selectedItems.filter(
           (item) =>
-            item.retailShopStockItem.product.id !==
-            selectedItem.retailShopStockItem.product.id
+            item.stockItem.product.id !==
+            selectedItem.stockItem.product.id
         )
       );
     } else if (
       selectedItem.selectedQuantity + val >
-      selectedItem.retailShopStockItem.quantity
+      selectedItem.stockItem.quantity
     ) {
       return;
     } else {
@@ -46,8 +46,8 @@ const ItemsSummaryRow = ({
       setSelectedItems((prev) =>
         prev.map((item) => {
           if (
-            item.retailShopStockItem.product.id ===
-            selectedItem.retailShopStockItem.product.id
+            item.stockItem.product.id ===
+            selectedItem.stockItem.product.id
           ) {
             return selectedItem;
           } else {
@@ -57,20 +57,20 @@ const ItemsSummaryRow = ({
       );
     }
   };
-  const { retailShopStockItem, selectedQuantity } = selectedWarehouseItem;
+  const { stockItem, selectedQuantity } = selectedWarehouseItem;
 
   return (
     <TableRow>
       <TableCell>
         <Stack>
-          <Typography variant="body2">{retailShopStockItem.product.name}</Typography>
+          <Typography variant="body2">{stockItem.product.name}</Typography>
           <Typography variant="body2" color="text.secondary">
-            SN-{retailShopStockItem.product.serialNumber}
+            SN-{stockItem.product.serialNumber}
           </Typography>
         </Stack>
       </TableCell>
-      <TableCell>{retailShopStockItem.activePrice?.price}</TableCell>
-      <TableCell>{retailShopStockItem.quantity}</TableCell>
+      {/* <TableCell>{stockItem.activePrice?.price}</TableCell> */}
+      <TableCell>{stockItem.quantity}</TableCell>
       <TableCell>
         <Stack direction="row" alignItems="center" spacing={2}>
           {/* <Stack>
@@ -92,13 +92,13 @@ const ItemsSummaryRow = ({
           <Typography>{selectedQuantity}</Typography>
         </Stack>
       </TableCell>
-      <TableCell>
+      {/* <TableCell>
         {(
-          retailShopStockItem.activePrice?.price * selectedQuantity
+          stockItem.activePrice?.price * selectedQuantity
         ).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-      </TableCell>
+      </TableCell> */}
       <TableCell>
-        <IconButton onClick={() => handleRemoveItem(retailShopStockItem.product.id)}>
+        <IconButton onClick={() => handleRemoveItem(stockItem.product.id)}>
           <DeleteOutline color="error" />
         </IconButton>
       </TableCell>
@@ -106,4 +106,4 @@ const ItemsSummaryRow = ({
   );
 };
 
-export default ItemsSummaryRow;
+export default ItemsSummaryWRSRow;

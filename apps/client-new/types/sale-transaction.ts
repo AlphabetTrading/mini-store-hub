@@ -15,9 +15,5 @@ export interface SaleTransaction {
   saleTransactionItems: SaleTransactionItem[];
 }
 
-export interface SelectedRetailShopSaleTransaction {
-  saleTransactionItem: SaleTransactionItem;
-  selectedQuantity: number;
-}
 
 

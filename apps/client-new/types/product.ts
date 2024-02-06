@@ -10,8 +10,8 @@ export interface Product {
   description: string;
   amharicDescription: string;
   category: Category;
-  activePrice: PriceHistory;
-  priceHistory: PriceHistory[];
+  // activePrice: PriceHistory;
+  // priceHistory: PriceHistory[];
   saleTransactionItem?: SaleTransactionItem[];
   images: string[];
 }

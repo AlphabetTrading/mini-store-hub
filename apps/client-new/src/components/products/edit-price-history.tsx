@@ -62,125 +62,125 @@ const validationSchema = Yup.object({
 });
 
 const EditPriceHistory = ({ productId }: Props) => {
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit: async (values, helpers) => {},
-  });
+  // const formik = useFormik({
+  //   initialValues,
+  //   validationSchema,
+  //   onSubmit: async (values, helpers) => {},
+  // });
 
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+  // const [open, setOpen] = useState<boolean>(false);
+  // const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
 
-  const {
-    data: productData,
-    loading: productLoading,
-    error: productError,
-  } = useQuery<ProductData, ProductVars>(PRODUCT, {
-    variables: {
-      productId: productId,
-    },
-    fetchPolicy: "cache-and-network",
-  });
+  // const {
+  //   data: productData,
+  //   loading: productLoading,
+  //   error: productError,
+  // } = useQuery<ProductData, ProductVars>(PRODUCT, {
+  //   variables: {
+  //     productId: productId,
+  //   },
+  //   fetchPolicy: "cache-and-network",
+  // });
 
-  const handlePriceToggle = (id: string) => {
-    setSelectedPrice((prev) => {
-      if (prev === id) {
-        return null;
-      }
-      return id;
-    });
-  };
+  // const handlePriceToggle = (id: string) => {
+  //   setSelectedPrice((prev) => {
+  //     if (prev === id) {
+  //       return null;
+  //     }
+  //     return id;
+  //   });
+  // };
 
-  return (
-    <>
-      <AddProductPriceModal
-        productId={productId}
-        open={open}
-        handleClose={() => setOpen(false)}
-      />
-      <Box component="main" sx={{ py: 8 }}>
-        <Container maxWidth="xl">
-          <form onSubmit={formik.handleSubmit}>
-            <Stack spacing={1}>
-              <Card>
-                <CardContent>
-                  <Stack spacing={2}>
-                    <Stack
-                      spacing={2}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      direction="row"
-                    >
-                      <Typography variant="h6">Price History</Typography>
-                      <Button
-                        startIcon={<AddIcon />}
-                        onClick={() => setOpen(true)}
-                        variant="contained"
-                      >
-                        Add price
-                      </Button>
-                    </Stack>
-                    <StateHandler
-                      empty={productData?.product.priceHistory.length === 0}
-                      error={productError}
-                      loading={productLoading}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid xs={12} md={9}>
-                          <TableContainer sx={{ overflow: "auto" }}>
-                            <Table sx={{ minWidth: 800 }}>
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell />
-                                  <TableCell align="left">Date</TableCell>
-                                  <TableCell align="left">
-                                    Purchased Price Per Unit
-                                  </TableCell>
-                                  <TableCell align="left">
-                                    Selling Price Per Unit
-                                  </TableCell>
-                                  <TableCell />
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {productData?.product?.priceHistory?.map(
-                                  (history: PriceHistory, idx: number) => (
-                                    <PriceHistoryListRow
-                                      key={idx}
-                                      activePriceId={
-                                        productData?.product?.activePrice?.id
-                                      }
-                                      productId={productData?.product?.id}
-                                      priceHistory={history}
-                                    />
-                                  )
-                                )}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </Grid>
-                      </Grid>
-                    </StateHandler>
-                  </Stack>
-                </CardContent>
-              </Card>
-              <Stack
-                direction="row"
-                alignContent="center"
-                justifyContent="flex-end"
-                spacing={1}
-              >
-                {/* <Button color="inherit">Cancel</Button>
-                  <Button type="submit" variant="contained">
-                    Update
-                  </Button> */}
-              </Stack>
-            </Stack>
-          </form>
-        </Container>
-      </Box>
-    </>
-  );
+  // return (
+  //   <>
+  //     <AddProductPriceModal
+  //       productId={productId}
+  //       open={open}
+  //       handleClose={() => setOpen(false)}
+  //     />
+  //     <Box component="main" sx={{ py: 8 }}>
+  //       <Container maxWidth="xl">
+  //         <form onSubmit={formik.handleSubmit}>
+  //           <Stack spacing={1}>
+  //             <Card>
+  //               <CardContent>
+  //                 <Stack spacing={2}>
+  //                   <Stack
+  //                     spacing={2}
+  //                     justifyContent="space-between"
+  //                     alignItems="center"
+  //                     direction="row"
+  //                   >
+  //                     <Typography variant="h6">Price History</Typography>
+  //                     <Button
+  //                       startIcon={<AddIcon />}
+  //                       onClick={() => setOpen(true)}
+  //                       variant="contained"
+  //                     >
+  //                       Add price
+  //                     </Button>
+  //                   </Stack>
+  //                   <StateHandler
+  //                     empty={productData?.product.priceHistory.length === 0}
+  //                     error={productError}
+  //                     loading={productLoading}
+  //                   >
+  //                     <Grid container spacing={2}>
+  //                       <Grid xs={12} md={9}>
+  //                         <TableContainer sx={{ overflow: "auto" }}>
+  //                           <Table sx={{ minWidth: 800 }}>
+  //                             <TableHead>
+  //                               <TableRow>
+  //                                 <TableCell />
+  //                                 <TableCell align="left">Date</TableCell>
+  //                                 <TableCell align="left">
+  //                                   Purchased Price Per Unit
+  //                                 </TableCell>
+  //                                 <TableCell align="left">
+  //                                   Selling Price Per Unit
+  //                                 </TableCell>
+  //                                 <TableCell />
+  //                               </TableRow>
+  //                             </TableHead>
+  //                             <TableBody>
+  //                               {productData?.product?.priceHistory?.map(
+  //                                 (history: PriceHistory, idx: number) => (
+  //                                   <PriceHistoryListRow
+  //                                     key={idx}
+  //                                     activePriceId={
+  //                                       productData?.product?.activePrice?.id
+  //                                     }
+  //                                     productId={productData?.product?.id}
+  //                                     priceHistory={history}
+  //                                   />
+  //                                 )
+  //                               )}
+  //                             </TableBody>
+  //                           </Table>
+  //                         </TableContainer>
+  //                       </Grid>
+  //                     </Grid>
+  //                   </StateHandler>
+  //                 </Stack>
+  //               </CardContent>
+  //             </Card>
+  //             <Stack
+  //               direction="row"
+  //               alignContent="center"
+  //               justifyContent="flex-end"
+  //               spacing={1}
+  //             >
+  //               {/* <Button color="inherit">Cancel</Button>
+  //                 <Button type="submit" variant="contained">
+  //                   Update
+  //                 </Button> */}
+  //             </Stack>
+  //           </Stack>
+  //         </form>
+  //       </Container>
+  //     </Box>
+  //   </>
+  // );
 };
 
 export default EditPriceHistory;

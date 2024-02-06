@@ -1,10 +1,12 @@
 import {
   Button,
+  Checkbox,
   CircularProgress,
   Modal,
   Paper,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import * as Yup from "yup";
@@ -16,6 +18,7 @@ import {
 } from "@/graphql/products/mutations";
 import { on } from "events";
 import { PRODUCT } from "@/graphql/products/queries";
+import { useState } from "react";
 
 type Props = {
   open: boolean;
@@ -45,6 +48,16 @@ export const AddProductPriceModal = (props: Props) => {
     AddPriceHistoryData,
     AddPriceHistoryVars
   >(ADD_PRICE_HISTORY);
+  const [applyToAll, setApplyToAll] = useState(false);
+  const [makeActive, setMakeActive] = useState(false);
+
+
+  const handleApply = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setApplyToAll(event.target.checked);
+  };
+  const handleActive = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMakeActive(event.target.checked);
+  };
 
   const formik = useFormik({
     initialValues,
@@ -84,11 +97,12 @@ export const AddProductPriceModal = (props: Props) => {
             left: 0,
             right: 0,
             maxWidth: 520,
-            maxHeight: 600,
+            maxHeight: 400,
             m: "auto",
           }}
         >
           <Stack spacing={2} sx={{ p: 8 }}>
+            <Typography variant="h6">Add new price</Typography>
             <TextField
               label="Purchased Price"
               type="number"
@@ -115,6 +129,18 @@ export const AddProductPriceModal = (props: Props) => {
               helperText={formik.touched.price && formik.errors.price}
               error={formik.touched.price && formik.errors.price ? true : false}
             />
+            <Stack direction="row" alignItems="center">
+              <Checkbox checked={applyToAll} onChange={handleApply} />
+              <Typography variant="body2">
+                Apply changes to all retail shops
+              </Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center">
+              <Checkbox checked={makeActive} onChange={handleActive} />
+              <Typography variant="body2">
+                Make this price active
+              </Typography>
+            </Stack>
             <Button type="submit" variant="contained" disabled={loading}>
               {loading && (
                 <CircularProgress

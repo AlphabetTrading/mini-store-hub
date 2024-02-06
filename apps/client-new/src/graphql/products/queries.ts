@@ -70,26 +70,26 @@ export const WAREHOUSE_STOCKS = gql`
     ) {
       items {
         product {
-          priceHistory {
-            id
-            price
-            purchasedPrice
-            createdAt
-          }
           category {
             id
             name
           }
           id
           name
-          activePrice {
-            price
-            purchasedPrice
-          }
           serialNumber
           unit
         }
         quantity
+        # activePrice {
+        #     price
+        #     purchasedPrice
+        #   }
+        #   priceHistory {
+        #     id
+        #     price
+        #     purchasedPrice
+        #     createdAt
+        #   }
       }
       meta {
         count
@@ -154,13 +154,6 @@ export const PRODUCTS = gql`
         amharicName
         id
         images
-        priceHistory {
-          createdAt
-          id
-          price
-          purchasedPrice
-          createdAt
-        }
         serialNumber
         unit
         description
@@ -168,11 +161,6 @@ export const PRODUCTS = gql`
         category {
           id
           name
-        }
-        activePrice {
-          price
-          purchasedPrice
-          id
         }
       }
       meta {
@@ -201,17 +189,6 @@ export const PRODUCT = gql`
       description
       amharicName
       amharicDescription
-      activePrice {
-        id
-        price
-        purchasedPrice
-      }
-      priceHistory {
-        id
-        price
-        purchasedPrice
-        createdAt
-      }
       category {
         id
         name

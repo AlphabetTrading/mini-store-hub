@@ -3,34 +3,29 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Container,
-  Grid,
-  Stack,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Chart } from "../chart";
 import { Product } from "../../../types/product";
+import { StockItem } from "../../../types/stock-item";
 
 type Props = {
-  stockItems?: {
-    quantity: number;
-    product: Product;
-  }[];
+  stockItems?: StockItem[];
   total?: number;
 };
 
 export const StockDistribution = ({ stockItems, total }: Props) => {
   console.log(stockItems);
   const chartSeries = stockItems?.map((stockItem) => {
-    return stockItem.quantity * stockItem.product.activePrice.price;
+    return stockItem.quantity * (stockItem?.activePrice? stockItem.activePrice.purchasedPrice:0);
   });
   const labels = stockItems?.map((stockItem) => {
     return stockItem.product.name;
   });
   const totalValuation = stockItems?.reduce(
     (acc, stockItem) =>
-      acc + stockItem.product.activePrice.price * stockItem.quantity,
+      acc +  (stockItem?.activePrice? stockItem.activePrice.purchasedPrice:0) * stockItem.quantity,
     0
   );
   chartSeries?.push(total! - totalValuation!);

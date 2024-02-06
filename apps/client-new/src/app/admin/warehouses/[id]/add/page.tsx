@@ -211,9 +211,9 @@ const Page = ({ params }: Props) => {
                       <TableCell>Product Name</TableCell>
                       <TableCell>Category</TableCell>
                       <TableCell>Selected Quantity</TableCell>
-                      <TableCell>Purchased Price</TableCell>
+                      {/* <TableCell>Purchased Price</TableCell>
                       <TableCell>Selling Price</TableCell>
-                      <TableCell>Total Value</TableCell>
+                      <TableCell>Total Value</TableCell> */}
                       <TableCell>Action</TableCell>
                     </TableRow>
                   </TableHead>
@@ -265,25 +265,25 @@ const Page = ({ params }: Props) => {
                               <Typography>{item.quantity}</Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             {item.product.activePrice?.purchasedPrice.toLocaleString(
                               "en-US",
                               { minimumFractionDigits: 2 }
                             )}
-                          </TableCell>
-                          <TableCell>
+                          </TableCell> */}
+                          {/* <TableCell>
                             {item.product.activePrice?.price.toLocaleString(
                               "en-US",
                               { minimumFractionDigits: 2 }
                             )}
-                          </TableCell>
-                          <TableCell>
+                          </TableCell> */}
+                          {/* <TableCell>
                             {(
                               item.product.activePrice?.price * item.quantity
                             ).toLocaleString("en-US", {
                               minimumFractionDigits: 2,
                             })}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>
                             <IconButton
                               onClick={() => handleRemoveItem(item.product.id)}

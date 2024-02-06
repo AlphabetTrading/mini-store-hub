@@ -41,6 +41,7 @@ import { WAREHOUSE_TRANSACTION_HISTORY } from "@/graphql/transfer-goods/queries"
 import WarehouseRadioGroup from "@/components/transfer-items/warehouse-radio-group";
 import { SelectedStockItem, StockItem } from "../../../../types/stock-item";
 import TransferItemsDrawer from "@/components/modals/transfer-items-drawer";
+import ItemsSummaryWRS from "@/components/transfer-items/items-summary-w-rs";
 
 type Props = {};
 
@@ -280,7 +281,7 @@ const Page = (props: Props) => {
                   onChange={handleChange}
                 />
               </Stack>
-              <ItemsSummaryTable
+              <ItemsSummaryWRS
                 handleRemoveItem={handleRemoveItem}
                 filteredItems={filteredItems}
                 selectedItems={selectedItems}

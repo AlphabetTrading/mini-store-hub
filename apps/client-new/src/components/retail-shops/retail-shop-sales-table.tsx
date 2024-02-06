@@ -16,12 +16,15 @@ import { useQuery } from "@apollo/client";
 import StateHandler from "../state-handler";
 import dayjs from "dayjs";
 import RetailShopSaleDetail from "./retail-shop-sale-detail";
-import { SaleTransaction } from "../../../types/sale-transaction";
 import {
   RetailShopSaleTransactionsData,
   RetailShopSaleTransactionsVars,
   RETAIL_SHOP_SALE_TRANSACTIONS,
 } from "@/graphql/sale-transaction/queries";
+import {
+  RetailShopSaleTransaction,
+  RetailShopTransactionItem,
+} from "../../../types/retail-shop-transaction-item";
 
 type Props = {
   retailShopId: string;
@@ -35,7 +38,7 @@ const RetailShopSalesTable = (props: Props) => {
     filter: "updatedAt|desc",
   });
   const [saleTransaction, setSaleTransaction] =
-    useState<SaleTransaction | null>(null);
+    useState<RetailShopSaleTransaction | null>(null);
 
   const { data, loading, error, fetchMore } = useQuery<
     RetailShopSaleTransactionsData,
@@ -74,7 +77,7 @@ const RetailShopSalesTable = (props: Props) => {
         <StateHandler
           loading={loading}
           error={error}
-          empty={data?.saleTransactionsByRetailShop.items.length === 0}
+          empty={data?.retailShopTransactionsByRetailShop.items.length === 0}
         >
           <Card>
             <TableContainer sx={{ overflowX: "auto" }}>
@@ -85,11 +88,11 @@ const RetailShopSalesTable = (props: Props) => {
                     <TableCell>Date</TableCell>
                     {/* <TableCell>Time</TableCell> */}
                     <TableCell>Items</TableCell>
-                    <TableCell>Total</TableCell>  
+                    <TableCell>Total</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.saleTransactionsByRetailShop.items.map(
+                  {data?.retailShopTransactionsByRetailShop.items.map(
                     (saleTransaction, idx) => {
                       return (
                         <TableRow key={idx}>
@@ -111,7 +114,8 @@ const RetailShopSalesTable = (props: Props) => {
                             </Stack>
                           </TableCell>
                           <TableCell width={100}>
-                            {saleTransaction.saleTransactionItems.length}
+                            {saleTransaction.retailShopTransactionItems
+                              ?.length || 9}
                           </TableCell>
                           <TableCell>
                             <Typography variant="body1" color="text.secondary">
@@ -122,9 +126,7 @@ const RetailShopSalesTable = (props: Props) => {
                                 component="span"
                               >
                                 {` +${
-                                  saleTransaction.totalPrice
-                                    ? saleTransaction.totalPrice.toLocaleString()
-                                    : 0
+                                  saleTransaction.total.toLocaleString() || 0
                                 }`}
                               </Typography>
                             </Typography>
@@ -149,7 +151,7 @@ const RetailShopSalesTable = (props: Props) => {
             </TableContainer>
 
             <Pagination
-              meta={data?.saleTransactionsByRetailShop.meta}
+              meta={data?.retailShopTransactionsByRetailShop.meta}
               page={page}
               setPage={setPage}
               rowsPerPage={rowsPerPage}

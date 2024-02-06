@@ -18,7 +18,7 @@ import {
 import NextLink from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import RetailShopBasicDetails from "@/components/retail-shops/retail-shop-basic-details";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import {
   RETAIL_SHOP,
   RETAIL_SHOP_STOCK,
@@ -28,12 +28,12 @@ import {
   RetailShopVars,
 } from "@/graphql/retail-shops/queries";
 import StateHandler from "@/components/state-handler";
-import StockListTable from "@/components/stock/stock-list-table";
 import Pagination from "@/components/Pagination";
 import RetailShopSalesTable from "@/components/retail-shops/retail-shop-sales-table";
 import RetailShopInsights from "@/components/retail-shops/retail-shop-insights";
 import RetailShopLowStock from "@/components/retail-shops/retail-shop-low-stock";
 import RetailShopSellProducts from "@/components/retail-shops/retail-shop-sell-products";
+import RetailShopStockTable from "@/components/retail-shops/retail-shop-stock-table";
 
 type Props = {
   params: {
@@ -169,7 +169,7 @@ const Page = ({ params }: Props) => {
               }
             >
               <Card>
-                <StockListTable
+                <RetailShopStockTable
                   warehouseStocks={
                     stockData?.retailShopStockByRetailShopId.items || []
                   }

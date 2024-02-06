@@ -18,7 +18,7 @@ import {
 import BreadcrumbsSeparator from "../breadcrumbs-separator";
 import ItemsSummaryTable from "../transfer-items/items-summary-table";
 import NextLink from "next/link";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_SALE_TRANSACTION,
@@ -31,7 +31,7 @@ import {
   RetailShopStockData,
   RetailShopStockVars,
 } from "@/graphql/retail-shops/queries";
-import { SelectedStockItem, StockItem } from "../../../types/stock-item";
+import { SelectedRetailShopStockItem, SelectedStockItem, StockItem } from "../../../types/stock-item";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
@@ -46,6 +46,7 @@ const RetailShopSellProducts = (props: Props) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
+
   const [createSaleTransaction, { loading, error }] = useMutation<
     CreateSaleTransactionData,
     CreateSaleTransactionVars
@@ -97,11 +98,11 @@ const RetailShopSellProducts = (props: Props) => {
     });
   }, [rowsPerPage, page, searchQuery]);
 
-  const [selectedItems, setSelectedItems] = useState<SelectedStockItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<SelectedRetailShopStockItem[]>([]);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(
     dayjs(new Date())
   );
-  const [filteredItems, setFilteredItems] = useState<SelectedStockItem[]>([]);
+  const [filteredItems, setFilteredItems] = useState<SelectedRetailShopStockItem[]>([]);
   useEffect(() => {
     setFilteredItems(selectedItems);
   }, [selectedItems]);
@@ -112,7 +113,7 @@ const RetailShopSellProducts = (props: Props) => {
       variables: {
         data: {
           goods: selectedItems.map((item) => ({
-            productId: item.stockItem.product.id,
+            productId: item.retailShopStockItem.product.id,
             quantity: item.selectedQuantity,
           })),
           retailShopId: props.retailShopId,
@@ -129,20 +130,24 @@ const RetailShopSellProducts = (props: Props) => {
 
   const handleRemoveItem = (id: string) => {
     setSelectedItems((prev) =>
-      prev.filter((item) => item.stockItem.product.id !== id)
+      prev.filter((item) => item.retailShopStockItem.product.id !== id)
     );
   };
-  const handleAddItem = (item: StockItem, quantity: number) => {
-    setSelectedItems((prev) => {
-      const index = prev.findIndex(
-        (i) => i.stockItem.product.id === item.product.id
-      );
-      if (index > -1) {
-        prev[index].selectedQuantity = quantity;
-        return [...prev];
-      }
-      return [...prev, { stockItem: item, selectedQuantity: quantity }];
-    });
+  const handleAddItems = (items: SelectedRetailShopStockItem[]) => {
+    // const newItems:SelectedRetailShopStockItem = items.map((item) => ({
+
+    // }));
+    // setSelectedItems((prev) => [...prev, ...items]);
+    // setSelectedItems((prev) => {
+    //   const index = prev.findIndex(
+    //     (i) => i.stockItem.product.id === item.product.id
+    //   );
+    //   if (index > -1) {
+    //     prev[index].selectedQuantity = quantity;
+    //     return [...prev];
+    //   }
+    //   return [...prev, { stockItem: item, selectedQuantity: quantity }];
+    // });
   };
   return (
     <>
@@ -267,24 +272,24 @@ const RetailShopSellProducts = (props: Props) => {
         </Container>
       </Box>
       <SaleTransactionItemsDrawer
-        selectedItemsId={selectedItems.map((item) => item.stockItem.product.id)}
-        handleAddItem={handleAddItem}
+        selectedItemsId={selectedItems.map((item) => item.retailShopStockItem.product.id)}
+        handleAddItems={handleAddItems}
         open={open}
         setOpen={setOpen}
         retailShopId={props.retailShopId}
         retailShopStockLoading={retailShopStockLoading}
         retailShopStockError={retailShopStockError}
-        retailShopStocks={
-          retailShopStockData?.retailShopStockByRetailShopId.items || []
-        }
+        retailShopStocks={retailShopStockData?.retailShopStockByRetailShopId.items || []}
         meta={retailShopStockData?.retailShopStockByRetailShopId.meta}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
         page={page}
         setPage={setPage}
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+        setSearchQuery={setSearchQuery} 
+        selectedItems={selectedItems}
+         setSelectedItems={setSelectedItems} 
+              />
     </>
   );
 };

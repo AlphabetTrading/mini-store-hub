@@ -1,5 +1,4 @@
 import {
-  Box,
   Table,
   TableBody,
   TableCell,
@@ -8,18 +7,18 @@ import {
   TableRow,
 } from "@mui/material";
 import React from "react";
-import ItemsSummaryRow from "./items-summary-row";
 import EmptyTable from "../empty-table";
-import { SelectedRetailShopStockItem, SelectedStockItem } from "../../../types/stock-item";
+import { SelectedStockItem } from "../../../types/stock-item";
+import ItemsSummaryWRSRow from "./items-summary-w-rs-row";
 
 type Props = {
   handleRemoveItem: (id: string) => void;
-  selectedItems: SelectedRetailShopStockItem[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<SelectedRetailShopStockItem[]>>;
-  filteredItems: SelectedRetailShopStockItem[];
+  selectedItems: SelectedStockItem[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<SelectedStockItem[]>>;
+  filteredItems: SelectedStockItem[];
 };
 
-const ItemsSummaryTable = ({
+const ItemsSummaryWRS = ({
   handleRemoveItem,
   selectedItems,
   setSelectedItems,
@@ -44,7 +43,7 @@ const ItemsSummaryTable = ({
         ) : (
           <TableBody>
             {filteredItems.map((item, idx) => (
-              <ItemsSummaryRow
+              <ItemsSummaryWRSRow
                 key={idx}
                 selectedWarehouseItem={item}
                 handleRemoveItem={handleRemoveItem}
@@ -59,4 +58,4 @@ const ItemsSummaryTable = ({
   );
 };
 
-export default ItemsSummaryTable;
+export default ItemsSummaryWRS;

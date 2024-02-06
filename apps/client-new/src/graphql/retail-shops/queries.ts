@@ -3,7 +3,7 @@ import { RetailShop } from "../../../types/retail-shop";
 import { Meta } from "../../../types/common";
 import { Product } from "../../../types/product";
 import { SaleTransaction } from "../../../types/sale-transaction";
-import { StockItem } from "../../../types/stock-item";
+import { RetailShopStockItem, StockItem } from "../../../types/stock-item";
 
 export interface RetailShopsVars {
   filterRetailShopInput?: {
@@ -140,7 +140,7 @@ export interface RetailShopStockVars {
   orderBy?: {
     product?: {
       name: string;
-    }
+    };
   };
   paginationInput?: {
     skip?: number;
@@ -150,20 +150,20 @@ export interface RetailShopStockVars {
 
 export interface RetailShopStockData {
   retailShopStockByRetailShopId: {
-    items: StockItem[];
+    items: RetailShopStockItem[];
     meta: Meta;
   };
 }
 
 export const RETAIL_SHOP_STOCK = gql`
   query RetailShopStockByRetailShopId(
-    $filterRetailShopStockInput: FilterRetailShopStockInput, 
-    $orderBy: OrderByRetailShopStockInput, 
+    $filterRetailShopStockInput: FilterRetailShopStockInput
+    $orderBy: OrderByRetailShopStockInput
     $paginationInput: PaginationInput
   ) {
     retailShopStockByRetailShopId(
-      filterRetailShopStockInput: $filterRetailShopStockInput, 
-      orderBy: $orderBy, 
+      filterRetailShopStockInput: $filterRetailShopStockInput
+      orderBy: $orderBy
       paginationInput: $paginationInput
     ) {
       items {
@@ -177,13 +177,13 @@ export const RETAIL_SHOP_STOCK = gql`
             id
             name
           }
-          activePrice {
-            id
-            price
-            purchasedPrice
-          }
           serialNumber
           unit
+        }
+        activePrice {
+          id
+          price
+          purchasedPrice
         }
       }
       meta {

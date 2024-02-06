@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { Meta } from "../../../types/common";
-import { SaleTransaction } from "../../../types/sale-transaction";
+import { RetailShopSaleTransaction } from "../../../types/retail-shop-transaction-item";
 
 export interface RetailShopSaleTransactionsVars {
   retailShopId: string;
@@ -11,41 +11,50 @@ export interface RetailShopSaleTransactionsVars {
 }
 
 export interface RetailShopSaleTransactionsData {
-  saleTransactionsByRetailShop: {
-    items: SaleTransaction[];
+  retailShopTransactionsByRetailShop: {
+    items: RetailShopSaleTransaction[];
     meta: Meta;
   };
 }
 
 export const RETAIL_SHOP_SALE_TRANSACTIONS = gql`
-  query SaleTransactionsByRetailShop(
+  query RetailShopTransactionsByRetailShop(
     $retailShopId: String!
     $paginationInput: PaginationInput
   ) {
-    saleTransactionsByRetailShop(
+    retailShopTransactionsByRetailShop(
       retailShopId: $retailShopId
       paginationInput: $paginationInput
     ) {
       items {
+        id
         createdAt
-        totalPrice
-        saleTransactionItems {
-          quantity
+        total
+        retailShopTransactionItems {
           id
-          product {
-            id
-            name
-            images
-            serialNumber
-            unit
-            activePrice {
+          createdAt
+          subTotal
+          quantity
+          retailShopStock {
+            product {
+              id
+              name
+              images
+              serialNumber
+              unit
+            }
+            priceHistory {
+              id
               price
+              purchasedPrice
+            }
+            activePrice {
+              id
+              price
+              purchasedPrice
             }
           }
-
-          subTotal
         }
-        id
       }
       meta {
         count
@@ -55,3 +64,42 @@ export const RETAIL_SHOP_SALE_TRANSACTIONS = gql`
     }
   }
 `;
+
+// export const RETAIL_SHOP_SALE_TRANSACTIONS = gql`
+//   query SaleTransactionsByRetailShop(
+//     $retailShopId: String!
+//     $paginationInput: PaginationInput
+//   ) {
+//     saleTransactionsByRetailShop(
+//       retailShopId: $retailShopId
+//       paginationInput: $paginationInput
+//     ) {
+//       items {
+//         createdAt
+//         totalPrice
+//         saleTransactionItems {
+//           quantity
+//           id
+//           product {
+//             id
+//             name
+//             images
+//             serialNumber
+//             unit
+//             activePrice {
+//               price
+//             }
+//           }
+
+//           subTotal
+//         }
+//         id
+//       }
+//       meta {
+//         count
+//         limit
+//         page
+//       }
+//     }
+//   }
+// `;

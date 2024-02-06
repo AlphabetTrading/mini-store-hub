@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  SaleTransaction,
-  SelectedRetailShopSaleTransaction,
-  
-} from "../../../types/sale-transaction";
-import {
   Box,
   Button,
   Card,
@@ -42,10 +37,11 @@ import {
 } from "@/graphql/retail-shops/queries";
 import { showAlert } from "@/helpers/showAlert";
 import StateHandler from "../state-handler";
-import { StockItem } from "../../../types/stock-item";
+import { RetailShopStockItem, SelectedRetailShopStockItem, StockItem } from "../../../types/stock-item";
+import { RetailShopSaleTransaction, RetailShopTransactionItem, SelectedRetailShopSaleTransactionItem } from "../../../types/retail-shop-transaction-item";
 
 type Props = {
-  saleTransaction: SaleTransaction;
+  saleTransaction: RetailShopSaleTransaction;
   closeDetail: () => void;
   retailShopId: string;
 };
@@ -64,8 +60,8 @@ const RetailShopSaleDetail = ({
       variables: {
         orderBy: {
           product: {
-            name: "asc"
-          }
+            name: "asc",
+          },
         },
         filterRetailShopStockInput: {
           retailShopId: retailShopId,
@@ -73,15 +69,17 @@ const RetailShopSaleDetail = ({
       },
     }
   );
+  console.log(itemsData)
   const [searchQuery, setSearchQuery] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
 
+  const [
+    selectedRetailShopStockItems,
+    setSelectedRetailShopStockItems,
+  ] = useState<SelectedRetailShopStockItem[]>([]);
 
-  const [selectedRetailShopSaleTransactions, setSelectedRetailShopSaleTransactions] =
-    useState<SelectedRetailShopSaleTransaction[]>([]);
-
-  const [retailShopStocks, setRetailShopStocks] = useState<StockItem[]>();
+  const [retailShopStocks, setRetailShopStocks] = useState<RetailShopStockItem[]>();
   useEffect(() => {
     if (itemsData) {
       setRetailShopStocks(
@@ -91,36 +89,57 @@ const RetailShopSaleDetail = ({
       );
     }
   }, [itemsData]);
+  const [selectedItems, setSelectedItems] = React.useState<
+  SelectedRetailShopStockItem[]
+>([]);
+
 
   useEffect(() => {
     getRetailShopStockData();
-    setSelectedRetailShopSaleTransactions &&
-      setSelectedRetailShopSaleTransactions(
-        saleTransaction.saleTransactionItems.map((item) => ({
-          saleTransactionItem: {
-            ...item,
-            quantity:
-              itemsData?.retailShopStockByRetailShopId.items.find(
-                (i) => i.product.id === item.product.id
-              )?.quantity ?? 0,
-          },
-          selectedQuantity: item.quantity,
-        }))
+    setSelectedRetailShopStockItems &&
+    setSelectedRetailShopStockItems(
+        saleTransaction.retailShopTransactionItems?.map((item:RetailShopTransactionItem) => {
+          return {
+            retailShopStockItem: {
+              ...item.retailShopStock,
+              quantity:
+                itemsData?.retailShopStockByRetailShopId.items.find(
+                  (i) => i.product?.id === item?.retailShopStock.product?.id
+                )?.quantity ?? 0,
+            },
+            selectedQuantity: item.quantity,
+          };
+
+        })
+      //   saleTransaction.retailShopTransactionItems?.map((item) => {
+      
+      //   return {
+      //     saleTransactionItem: {
+      //       ...item,
+      //       quantity:
+      //         itemsData?.retailShopStockByRetailShopId.items.find(
+      //           (i) => i.product?.id === item?.product?.id
+      //         )?.quantity ?? 0,
+      //     },
+      //     selectedQuantity: item.quantity,
+      //   };
+
+      // })
       );
   }, [retailShopId, itemsData]);
 
-  const handleAddItem = (retailShopStock: StockItem, quantity: number) => {
-    const selectedStockItem: SelectedRetailShopSaleTransaction = {
-      saleTransactionItem: {
-        ...retailShopStock,
-        quantity: retailShopStock.quantity - quantity,
+  const handleAddItems = (items: SelectedRetailShopStockItem[]) => {
+    const selectedStockItems: SelectedRetailShopStockItem[] = items.map((item)=> ({
+      retailShopStockItem: {
+        ...item.retailShopStockItem,
+        quantity: item.retailShopStockItem.quantity - item.selectedQuantity,
       },
-      selectedQuantity: quantity,
-    };
+      selectedQuantity: item.selectedQuantity,
+    }));
 
-    setSelectedRetailShopSaleTransactions((prev) => [
-      ...selectedRetailShopSaleTransactions,
-      selectedStockItem,
+    setSelectedRetailShopStockItems((prev) => [
+      ...selectedRetailShopStockItems,
+      ...selectedStockItems,
     ]);
   };
 
@@ -138,8 +157,8 @@ const RetailShopSaleDetail = ({
       variables: {
         updateSaleTransactionId: saleTransaction.id,
         data: {
-          goods: selectedRetailShopSaleTransactions.map((item) => ({
-            productId: item.saleTransactionItem.product.id,
+          goods: selectedRetailShopStockItems.map((item) => ({
+            productId: item.retailShopStockItem.product.id,
             quantity: item.selectedQuantity,
           })),
         },
@@ -153,61 +172,63 @@ const RetailShopSaleDetail = ({
   //   setSelectedRetailShopSaleTransactions((prev) => [...prev, stockItem]);
   // };
   const handleRemoveItem = (
-    selectedRetailShopSaleTransaction: SelectedRetailShopSaleTransaction
+    selectedRetailShopStockItem: SelectedRetailShopStockItem
   ) => {
     setRetailShopStocks((prev) =>
       prev?.map((item) => {
         if (
           item.product.id ===
-          selectedRetailShopSaleTransaction.saleTransactionItem.product.id
+          selectedRetailShopStockItem.retailShopStockItem.product.id
         ) {
           return {
             ...item,
             quantity:
-              item.quantity + selectedRetailShopSaleTransaction.selectedQuantity,
+              item.quantity +
+              selectedRetailShopStockItem.selectedQuantity,
           };
         }
         return item;
       })
-    );
-    setSelectedRetailShopSaleTransactions((prev) =>
+      );
+      setSelectedItems((prev)=>prev.filter((item)=>item.retailShopStockItem.product.id !== selectedRetailShopStockItem.retailShopStockItem.product.id));
+      setSelectedRetailShopStockItems((prev) =>
       prev.filter(
         (i) =>
-          i.saleTransactionItem.product.id !==
-          selectedRetailShopSaleTransaction.saleTransactionItem.product.id
+          i.retailShopStockItem.product.id !==
+          selectedRetailShopStockItem.retailShopStockItem.product.id
       )
     );
   };
 
   const handleQuantityChange = (
-    selectedRetailShopSaleTransaction: SelectedRetailShopSaleTransaction,
+    selectedRetailShopStock: SelectedRetailShopStockItem,
     val: number
   ) => {
-    if (selectedRetailShopSaleTransaction.selectedQuantity + val <= 0) {
-      setSelectedRetailShopSaleTransactions(
-        selectedRetailShopSaleTransactions.filter(
+    if (selectedRetailShopStock.selectedQuantity + val <= 0) {
+      setSelectedRetailShopStockItems(
+        selectedRetailShopStockItems.filter(
           (item) =>
-            item.saleTransactionItem.product.id !==
-            selectedRetailShopSaleTransaction.saleTransactionItem.product.id
+            item.retailShopStockItem.product.id !==
+            selectedRetailShopStock.retailShopStockItem.product.id
         )
       );
     } else if (
       // selectedRetailShopSaleTransaction.selectedQuantity + val >
-      selectedRetailShopSaleTransaction.saleTransactionItem.quantity - val <
+      selectedRetailShopStock.retailShopStockItem.quantity - val <
       0
     ) {
       return;
     } else {
-      selectedRetailShopSaleTransaction.selectedQuantity += val;
-      selectedRetailShopSaleTransaction.saleTransactionItem.quantity -= val;
+      selectedRetailShopStock.selectedQuantity += val;
+      selectedRetailShopStock.retailShopStockItem.quantity -= val;
 
-      setSelectedRetailShopSaleTransactions((prev) =>
+      setSelectedRetailShopStockItems((prev) =>
         prev.map((item) => {
           if (
-            item.saleTransactionItem.product.id ===
-            selectedRetailShopSaleTransaction.saleTransactionItem.product.id
+            item.retailShopStockItem.product.id ===
+            selectedRetailShopStock.retailShopStockItem.product.id
           ) {
-            return selectedRetailShopSaleTransaction;
+            return selectedRetailShopStock;
           } else {
             return item;
           }
@@ -215,6 +236,7 @@ const RetailShopSaleDetail = ({
       );
     }
   };
+
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -224,12 +246,11 @@ const RetailShopSaleDetail = ({
       empty={itemsData?.retailShopStockByRetailShopId.items.length === 0}
     >
       <SaleTransactionItemsDrawer
-      
         open={modalOpen}
-        handleAddItem={handleAddItem}
+        handleAddItems={handleAddItems}
         retailShopId={retailShopId}
-        selectedItemsId={selectedRetailShopSaleTransactions.map(
-          (item) => item.saleTransactionItem.product.id
+        selectedItemsId={selectedRetailShopStockItems?.map(
+          (item) => item.retailShopStockItem?.product?.id
         )}
         setOpen={setModalOpen}
         retailShopStocks={retailShopStocks || []}
@@ -238,10 +259,12 @@ const RetailShopSaleDetail = ({
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
         page={page}
-        setPage={setPage} 
-        retailShopStockLoading={itemsLoading} 
-        retailShopStockError={itemsError}        // selectedStockItems={newSaleTransactionItems}
+        setPage={setPage}
+        retailShopStockLoading={itemsLoading}
+        retailShopStockError={itemsError} // selectedStockItems={newSaleTransactionItems}
         // handleClose={() => setModalOpen(false)}
+        selectedItems={selectedItems} 
+        setSelectedItems={setSelectedItems}
       />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <IconButton onClick={closeDetail}>
@@ -281,7 +304,7 @@ const RetailShopSaleDetail = ({
             }}
           >
             <Typography align="center" variant="h5">
-              {saleTransaction.totalPrice}
+              {saleTransaction.total} 
             </Typography>
             <Typography
               align="center"
@@ -302,7 +325,7 @@ const RetailShopSaleDetail = ({
             }}
           >
             <Typography align="center" variant="h5">
-              {saleTransaction.saleTransactionItems.length}
+              {saleTransaction.retailShopTransactionItems?.length}
             </Typography>
             <Typography
               align="center"
@@ -323,26 +346,27 @@ const RetailShopSaleDetail = ({
               <TableCell>Quantity</TableCell>
               <TableCell>Selected Quantity</TableCell>
               <TableCell>Price</TableCell>
-              <TableCell>Subtotal Price</TableCell>
+              {/* <TableCell>Subtotal Price</TableCell> */}
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {selectedRetailShopSaleTransactions.map(
-              (selectedSaleTransactionItem, idx) => {
-                const { product, subTotal, quantity } =
-                  selectedSaleTransactionItem.saleTransactionItem;
+            {selectedRetailShopStockItems?.map(
+              (selectedRetailShopStockItem, idx) => {
+
+                
+                const { retailShopStockItem } = selectedRetailShopStockItem;
                 return (
                   <TableRow key={idx}>
                     <TableCell>
                       <Stack direction="row" alignItems="center">
                         <>
-                          {product.images.length > 0 ? (
+                          {retailShopStockItem.product?.images?.length > 0 ? (
                             <Box
                               sx={{
                                 alignItems: "center",
                                 backgroundColor: "neutral.50",
-                                backgroundImage: `url("${product.images[0]}")`,
+                                backgroundImage: `url("${retailShopStockItem.product.images[0]}")`,
                                 backgroundPosition: "center",
                                 backgroundSize: "cover",
                                 borderRadius: 1,
@@ -378,27 +402,27 @@ const RetailShopSaleDetail = ({
                           }}
                         >
                           <Typography variant="subtitle2">
-                            {product.name}
+                            {retailShopStockItem.product?.name}
                           </Typography>
                           <Typography color="text.secondary" variant="body2">
-                            {product.serialNumber}
+                            {retailShopStockItem.product?.serialNumber}
                           </Typography>
                         </Box>
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      <CustomChip label={product.unit || ""} />
+                      <CustomChip label={retailShopStockItem.product?.unit || ""} />
                     </TableCell>
-                    <TableCell>{quantity}</TableCell>
+                    <TableCell>{retailShopStockItem.quantity}</TableCell>
                     <TableCell>
                       <Stack direction="row" alignItems="center" spacing={2}>
-                        {selectedSaleTransactionItem.selectedQuantity}
+                        {selectedRetailShopStockItem.selectedQuantity}
                         <Stack>
                           <IconButton
                             sx={{ p: 0 }}
                             onClick={() =>
                               handleQuantityChange(
-                                selectedSaleTransactionItem,
+                                selectedRetailShopStockItem,
                                 1
                               )
                             }
@@ -409,7 +433,7 @@ const RetailShopSaleDetail = ({
                             sx={{ p: 0 }}
                             onClick={() =>
                               handleQuantityChange(
-                                selectedSaleTransactionItem,
+                                selectedRetailShopStockItem,
                                 -1
                               )
                             }
@@ -421,15 +445,17 @@ const RetailShopSaleDetail = ({
                     </TableCell>
                     <TableCell>
                       {
-                        selectedSaleTransactionItem.saleTransactionItem.product
-                          ?.activePrice.price
+                        selectedRetailShopStockItem.retailShopStockItem?.activePrice?.price
                       }
                     </TableCell>
-                    <TableCell>{subTotal}</TableCell>
+                    {/* <TableCell>{selectedRetailShopStockItem.retailShopStockItem.}</TableCell> */}
+                    
+                    {/* <TableCell>{0}</TableCell> */}
+
                     <TableCell>
                       <IconButton
                         onClick={() =>
-                          handleRemoveItem(selectedSaleTransactionItem)
+                          handleRemoveItem(selectedRetailShopStockItem)
                         }
                       >
                         <DeleteOutline color="error" />

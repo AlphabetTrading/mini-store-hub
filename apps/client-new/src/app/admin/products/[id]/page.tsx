@@ -239,7 +239,7 @@ const Page = ({ params }: Props) => {
               {currentTab === "details" && (
                 <Stack>
                   <ProductBasicDetails product={data?.product} />
-                  <EditPriceHistory productId={params.id} />
+                  {/* <EditPriceHistory productId={params.id} /> */}
                 </Stack>
               )}
               {/* {currentTab === 'invoices' && <CustomerInvoices invoices={invoices} />}
