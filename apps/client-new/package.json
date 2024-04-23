@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -33,7 +33,6 @@
     "formik": "^2.4.2",
     "jwt-decode": "^3.1.2",
     "next": "13.4.10",
-    "next-auth": "^4.22.3",
     "nextjs-progressbar": "^0.0.16",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.1",
@@ -47,8 +46,10 @@
     "@graphql-codegen/cli": "^4.0.1",
     "@graphql-codegen/client-preset": "^4.0.1",
     "@types/apollo-upload-client": "^17.0.2",
+    "@types/next-auth": "^3.15.0",
     "autoprefixer": "^10.4.14",
     "eslint-config-prettier": "^8.8.0",
+    "next-auth": "^4.24.7",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "typescript": "^5.1.6"
