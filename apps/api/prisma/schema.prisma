@@ -33,8 +33,8 @@ model User {
   username         String  @unique
   phone            String  @unique
   password         String
-  amharicFirstName String? @map("የ መጀመሪያ ስም") @db.Text
-  amharicLastName  String? @map("የ አባት ስም") @db.Text
+  amharicFirstName String? @db.Text
+  amharicLastName  String? @db.Text
   gender           Gender  @default(MALE)
 
   role      UserRole @default(USER)
@@ -61,9 +61,9 @@ enum RecipientType {
 model Notification {
   id                String             @id @default(uuid())
   title             String
-  amharicTitle      String?            @map("የ ርዕስ ስም") @db.Text
+  amharicTitle      String?            @db.Text
   body              String
-  amharicBody       String?            @map("መልእክት") @db.Text
+  amharicBody       String?            @db.Text
   status            Boolean            @default(false)
   recipientType     RecipientType      @default(USER)
   recipientId       String?
@@ -112,9 +112,9 @@ model UserProfile {
 model Category {
   id                 String     @id @default(uuid())
   name               String     @unique
-  amharicName        String?    @map("የ እቃ ክፍል ስም") @db.Text
+  amharicName        String?    @db.Text
   description        String
-  amharicDescription String?    @map("መግለጫ") @db.Text
+  amharicDescription String?    @db.Text
   parentId           String?
   image              String?
   parent             Category?  @relation("Subcategory", fields: [parentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -141,10 +141,10 @@ model Product {
   serialNumber       String
   name               String
   // amharicName field contains the title of the product in amharic character
-  amharicName        String?  @map("የ እቃ ስም") @db.Text
+  amharicName        String?  @db.Text
   description        String
   // amharicDescription field contains the description of the product in amharic character
-  amharicDescription String?  @map("መግለጫ") @db.Text
+  amharicDescription String?  @db.Text
   categoryId         String
   category           Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   unit               UnitType
@@ -185,7 +185,7 @@ model Address {
   lng                     Float?
   lat                     Float?
   formattedAddress        String?
-  amharicFormattedAddress String?      @map("ሙሉ አድራሻ") @db.Text
+  amharicFormattedAddress String?      @db.Text
   createdAt               DateTime     @default(now())
   updatedAt               DateTime     @updatedAt
   retailShop              RetailShop?  @relation("RetailShop Address")
@@ -196,7 +196,7 @@ model Address {
 model RetailShop {
   id                  String   @id @default(uuid())
   name                String
-  amharicName         String?  @map("የስራ ቦታ ስም") @db.Text
+  amharicName         String?  @db.Text
   addressId           String?  @unique
   address             Address? @relation("RetailShop Address", fields: [addressId], references: [id], onUpdate: Cascade, onDelete: SetNull)
   retailShopManagerId String?
@@ -216,7 +216,7 @@ model RetailShop {
 model Warehouse {
   id                 String   @id @default(uuid())
   name               String
-  amharicName        String?  @map("የስራ ቦታ ስም") @db.Text
+  amharicName        String?  @db.Text
   addressId          String?  @unique
   warehouseManagerId String?
   isMain             Boolean  @default(false)
@@ -272,7 +272,7 @@ model SaleTransaction {
   saleTransactionItems SaleTransactionItem[] @relation("SaleTransaction")
 }
 
-model SaleTransactionItem { 
+model SaleTransactionItem {
   id                 String          @id @default(uuid())
   productId          String
   product            Product         @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
